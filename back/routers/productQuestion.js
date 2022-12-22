@@ -1,0 +1,228 @@
+const express = require("express");
+const isAdminCheck = require("../middlewares/isAdminCheck");
+const isLoggedIn = require("../middlewares/isLoggedIn");
+const models = require("../models");
+
+const router = express.Router();
+
+router.get("/my/list", isLoggedIn, async (req, res, next) => {
+  const { page } = req.query;
+
+  if (!req.user) {
+    return res.status(403).send("로그인 후 이용 가능합니다.");
+  }
+
+  const LIMIT = 10;
+
+  const _page = page ? page : 1;
+
+  const __page = _page - 1;
+  const OFFSET = __page * 10;
+
+  try {
+    const lengthQuery = `
+      SELECT  A.id,
+              A.name,
+              A.mobile,
+              A.email,
+              A.productName,
+              A.productUrl,
+              A.content,
+              A.password,
+              A.isCompleted,
+              A.answer,
+              A.answerdAt,
+              A.createdAt,
+              A.updatedAt,
+              A.UserId
+        FROM  productQuestions       A
+       WHERE  1 = 1
+         AND  A.UserId = ${req.user.id}
+    `;
+
+    const selectQuery = `
+    SELECT	A.id,
+            A.name,
+            A.mobile,
+            A.email,
+            A.productName,
+            A.productUrl,
+            A.content,
+            A.password,
+            A.isCompleted,
+            A.answer,
+            A.answerdAt,
+            A.createdAt,
+            A.updatedAt,
+            A.UserId
+      FROM	productQuestions       A
+     WHERE  1 = 1
+       AND  A.UserId = ${req.user.id}
+     ORDER  BY A.createdAt DESC
+     LIMIT  ${LIMIT}
+    OFFSET  ${OFFSET}
+    `;
+
+    const length = await models.sequelize.query(lengthQuery);
+    const prodQue = await models.sequelize.query(selectQuery);
+
+    const prodQueLen = length[0].length;
+
+    const lastPage =
+      prodQueLen % LIMIT > 0 ? prodQueLen / LIMIT + 1 : prodQueLen / LIMIT;
+
+    return res.status(200).json({
+      list: prodQue[0],
+      lastPage: parseInt(lastPage),
+    });
+  } catch (error) {
+    console.error(error);
+    return res.status(401).send("목록을 불러올 수 없습니다.");
+  }
+});
+
+// QUESTION
+router.post("/admin/list", isAdminCheck, async (req, res, next) => {
+  const { listType } = req.body;
+
+  let nanFlag = isNaN(listType);
+
+  if (!listType) {
+    nanFlag = false;
+  }
+
+  if (nanFlag) {
+    return res.status(400).send("잘못된 요청 입니다.");
+  }
+
+  let _listType = Number(listType);
+
+  if (_listType > 3 || !listType) {
+    _listType = 3;
+  }
+
+  try {
+    const selectQuery = `
+      SELECT  A.id,
+              A.name,
+              A.mobile,
+              A.email,
+              A.productName,
+              A.productUrl,
+              A.content,
+              A.password,
+              A.isCompleted,
+              A.answer,
+              A.answerdAt,
+              A.createdAt,
+              A.updatedAt,
+              A.UserId,
+        FROM  productQuestions       A
+       WHERE  1 = 1
+        ${
+          _listType === 1
+            ? `AND A.isCompleted = TRUE`
+            : _listType === 2
+            ? `AND A.isCompleted = FALSE`
+            : _listType === 3
+            ? ``
+            : ``
+        }
+      `;
+
+    const productQuestions = await models.sequelize.query(selectQuery);
+
+    return res.status(200).json({ productQuestions: productQuestions[0] });
+  } catch (error) {
+    console.error(error);
+    return res.status(401).send("상품문의 데이터를 가져올 수 없습니다.");
+  }
+});
+
+// CREATE
+
+router.post("/create", isLoggedIn, async (req, res, next) => {
+  const { name, mobile, email, productName, productUrl, content, password } =
+    req.body;
+
+  const insertQuery = `
+  INSERT    INTO    productQuestions
+  (
+    name,
+    mobile,
+    email,
+    productName,
+    productUrl,
+    content,
+    password,
+    UserId,
+    createdAt,
+    updatedAt
+  )
+  VALUES
+  (
+    "${name}",
+    "${mobile}",
+    "${email}",
+    "${productName}",
+    "${productUrl}",
+    "${content}",
+    "${password}",
+    ${req.user.id},
+    NOW(),
+    NOW()
+  )
+  `;
+
+  try {
+    await models.sequelize.query(insertQuery);
+
+    return res.status(201).json({ result: true });
+  } catch (error) {
+    console.error(error);
+    return res.status(401).send("상품 문의글을 작성할 수 없습니다.");
+  }
+});
+
+//UPDATE
+
+router.post("/answer/update", isAdminCheck, async (req, res, next) => {
+  const { id, answer } = req.body;
+
+  const selectQuery = `
+    SELECT    id,
+              title,
+              answer
+      FROM    productQuestions
+     WHERE    id = ${id}
+    `;
+
+  const updateQuery = `
+  UPDATE    productQuestions
+     SET    isCompleted = 1,
+            answer = "${answer}",
+            answerdAt = NOW()
+   WHERE    id = ${id}
+  `;
+
+  try {
+    const findResult = await models.sequelize.query(selectQuery);
+
+    if (findResult[0].length === 0) {
+      return res.status(401).send("존재하지 않는 상품문의 정보입니다.");
+    }
+
+    if (findResult[0][0].isCompleted) {
+      return res.status(401).send("이미 답변된 상품문의입니다.");
+    }
+
+    await models.sequelize.query(updateQuery);
+
+    return res.status(200).json({ result: true });
+  } catch (error) {
+    console.error(error);
+    return res.status(401).send("상품문의에 답변할 수 없습니다.");
+  }
+});
+
+module.exports = router;
