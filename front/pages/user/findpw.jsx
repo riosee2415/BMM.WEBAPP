@@ -1,5 +1,6 @@
 import React from "react";
 import ClientLayout from "../../components/ClientLayout";
+import Theme from "../../components/Theme";
 import Head from "next/head";
 import wrapper from "../../store/configureStore";
 import { LOAD_MY_INFO_REQUEST } from "../../reducers/user";
@@ -14,7 +15,6 @@ import {
   TextInput,
   CommonButton,
 } from "../../components/commonComponents";
-import Theme from "../../components/Theme";
 import styled from "styled-components";
 
 const SnsBtn = styled(Wrapper)`

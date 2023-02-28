@@ -2,12 +2,13 @@ import React, { useCallback, useEffect, useState } from "react";
 import Router from "next/router";
 import { Checkbox } from "antd";
 import useInput from "../../hooks/useInput";
+import useWidth from "../../hooks/useWidth";
 import { useDispatch, useSelector } from "react-redux";
 import { SIGNUP_REQUEST } from "../../reducers/user";
+import { LOAD_MY_INFO_REQUEST } from "../../reducers/user";
 import ClientLayout from "../../components/ClientLayout";
 import Head from "next/head";
 import wrapper from "../../store/configureStore";
-import { LOAD_MY_INFO_REQUEST } from "../../reducers/user";
 import axios from "axios";
 import { END } from "redux-saga";
 import {
@@ -18,7 +19,6 @@ import {
   TextInput,
   CommonButton,
 } from "../../components/commonComponents";
-import useWidth from "../../hooks/useWidth";
 import Theme from "../../components/Theme";
 import styled from "styled-components";
 
@@ -65,7 +65,6 @@ const SignUp = () => {
 
   // const email = useInput(``);
   // const nickname = useInput(``);
-
   // const password = useInput(``);
 
   // const [passwordCheck, setPasswordCheck] = useState(``);
