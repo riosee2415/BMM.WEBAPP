@@ -43,7 +43,7 @@ const SignupLabel = styled.label`
 `;
 
 const LabelSpan = styled.span`
-  color: #FF3939;
+  color: #ff3939;
 `;
 
 const CheckSpan = styled.span`
@@ -152,7 +152,9 @@ const SignUp = () => {
                 개인정보
               </Text>
 
-              <SignupLabel>아이디 <LabelSpan>*</LabelSpan></SignupLabel>
+              <SignupLabel>
+                아이디 <LabelSpan>*</LabelSpan>
+              </SignupLabel>
 
               <TextInput
                 width={`100%`}
@@ -161,7 +163,9 @@ const SignUp = () => {
                 margin={`0 0 20px`}
                 placeholder="아이디"
               />
-              <SignupLabel>비밀번호 <LabelSpan>*</LabelSpan></SignupLabel>
+              <SignupLabel>
+                비밀번호 <LabelSpan>*</LabelSpan>
+              </SignupLabel>
               <TextInput
                 width={`100%`}
                 height={`46px`}
@@ -170,7 +174,9 @@ const SignUp = () => {
                 required
                 placeholder="비밀번호"
               />
-              <SignupLabel>비밀번호 재확인 <LabelSpan>*</LabelSpan></SignupLabel>
+              <SignupLabel>
+                비밀번호 재확인 <LabelSpan>*</LabelSpan>
+              </SignupLabel>
               <TextInput
                 width={`100%`}
                 height={`46px`}
@@ -186,7 +192,9 @@ const SignUp = () => {
                 margin={`0 0 20px`}
                 placeholder="연락처"
               />
-              <SignupLabel>이메일 <LabelSpan>*</LabelSpan></SignupLabel>
+              <SignupLabel>
+                이메일 <LabelSpan>*</LabelSpan>
+              </SignupLabel>
               <TextInput
                 width={`100%`}
                 height={`46px`}
