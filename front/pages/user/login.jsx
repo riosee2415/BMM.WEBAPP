@@ -17,6 +17,10 @@ import {
   Image,
 } from "../../components/commonComponents";
 import styled from "styled-components";
+import { useState } from "react";
+import { useCallback } from "react";
+import { Modal } from "antd";
+import { CloseOutlined } from "@ant-design/icons";
 
 const SnsBtn = styled(Wrapper)`
   width: 58px;
@@ -29,16 +33,36 @@ const SnsBtn = styled(Wrapper)`
 
     background: ${(props) => props.hoverColor};
     border: ${(props) => props.hoverColor};
+
+    & img {
+      display: none;
+    }
+
+    & .hoverIcon {
+      display: block;
+    }
+  }
+
+  & .hoverIcon {
+    display: none;
   }
 `;
 
+const HoverImg = styled(Image)``;
+
 const Login = () => {
   ////// GLOBAL STATE //////
+
+  const [isModal, setIsModal] = useState(false);
+
   ////// HOOKS //////
   const width = useWidth();
   ////// REDUX //////
   ////// USEEFFECT //////
   ////// TOGGLE //////
+  const modalToggle = useCallback(() => {
+    setIsModal((prev) => !prev);
+  }, [isModal]);
   ////// HANDLER //////
   ////// DATAVIEW //////
 
@@ -54,6 +78,7 @@ const Login = () => {
             <Wrapper
               width={width < 500 ? `100%` : `450px`}
               padding={width < 500 ? `80px 20px` : `80px 60px`}
+              border={`1px solid ${Theme.lightGrey3_C}`}
             >
               <Text
                 fontSize={width < 500 ? `25px` : `36px`}
@@ -73,7 +98,7 @@ const Login = () => {
                 width={`100%`}
                 height={`46px`}
                 type="text"
-                placeholder="아이디"  
+                placeholder="아이디"
                 margin={`0 0 12px`}
               />
               <TextInput
@@ -119,15 +144,85 @@ const Login = () => {
                 SNS 로그인
               </Text>
               <Wrapper dr={`row`}>
-                <SnsBtn margin={`0 8px 0 0`} hoverColor={Theme.kakao_C}>
-                  <Image alt="kakao icon" src={``} width={`26px`} />
+                <SnsBtn
+                  margin={`0 8px 0 0`}
+                  hoverColor={Theme.kakao_C}
+                  onClick={modalToggle}
+                >
+                  <Image
+                    alt="kakao icon"
+                    src={`https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/bmm/assets/images/login/icon_kakao.png`}
+                    width={`26px`}
+                  />
                 </SnsBtn>
                 <SnsBtn hoverColor={Theme.naver_C}>
-                  <Image alt="naver icon" src={``} width={`26px`} />
+                  <Image
+                    alt="naver icon"
+                    src={`https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/bmm/assets/images/login/icon_naver.png`}
+                    width={`26px`}
+                  />
+
+                  <Image
+                    alt="naver icon"
+                    src={`https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/bmm/assets/images/login/icon_naver_A.png`}
+                    width={`26px`}
+                    className={`hoverIcon`}
+                  />
                 </SnsBtn>
               </Wrapper>
             </Wrapper>
           </RsWrapper>
+
+          <Modal
+            onCancel={modalToggle}
+            visible={isModal}
+            footer={null}
+            closable={null}
+            width={`570px`}
+          >
+            <Wrapper padding={width < 900 ? `0` : `20px`}>
+              <Wrapper
+                dr={`row`}
+                ju={`space-between`}
+                borderBottom={`1px solid ${Theme.lightGrey2_C}`}
+                padding={`0 0 18px`}
+              >
+                <Text
+                  fontSize={width < 900 ? `20px` : `24px`}
+                  fontWeight={`600`}
+                >
+                  가입 완료
+                </Text>
+                <Text
+                  color={Theme.grey_C}
+                  isHover
+                  fontSize={`20px`}
+                  onClick={modalToggle}
+                >
+                  <CloseOutlined />
+                </Text>
+              </Wrapper>
+              <Wrapper>
+                <Text
+                  fontSize={width < 900 ? `16px` : `18px`}
+                  margin={`50px 0`}
+                >
+                  일반 계정으로 가입을 완료하셨습니다.
+                </Text>
+
+                <CommonButton
+                  fontSize={width < 500 ? `16px` : `18px`}
+                  fontWeight={`600`}
+                  kindOf={`white`}
+                  width={`240px`}
+                  height={`54px`}
+                  onClick={modalToggle}
+                >
+                  쇼핑 계속하기
+                </CommonButton>
+              </Wrapper>
+            </Wrapper>
+          </Modal>
         </WholeWrapper>
       </ClientLayout>
     </>

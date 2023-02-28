@@ -18,6 +18,7 @@ import {
   Text,
   TextInput,
   CommonButton,
+  SpanText,
 } from "../../components/commonComponents";
 import Theme from "../../components/Theme";
 import styled from "styled-components";
@@ -25,31 +26,33 @@ import styled from "styled-components";
 const PostBtn = styled.button`
   width: 35%;
   height: 46px;
-  margin: 10px 0;
 
-  background-color: #f9f9fb;
-  color: #b5b5b5;
+  background-color: ${Theme.lightGrey3_C};
+  color: ${Theme.lightGrey_C};
   border: none;
 
   font-size: 16px;
   font-weight: bold;
 
   cursor: pointer;
+
+  &:hover {
+  }
 `;
 
 const SignupLabel = styled.label`
-  width: 100%;
-  margin-bottom: 10px;
-`;
-
-const LabelSpan = styled.span`
-  color: #ff3939;
+  margin-bottom: ${(props) => props.marginBottom || `10px`};
+  font-size: 16px;
 `;
 
 const CheckSpan = styled.span`
-  font-size: {width < 500 ? "16px" : "18px"};
+  font-size: 18px;
   font-weight: bold;
   margin-left: 8px;
+
+  @media (max-width: 500px) {
+    font-size: 16px;
+  }
 `;
 
 const CheckLabel = styled.label`
@@ -61,7 +64,8 @@ const SignUp = () => {
   ////// GLOBAL STATE //////
 
   ////// HOOKS //////
-  // const dispatch = useDispatch();
+  const width = useWidth();
+  const dispatch = useDispatch();
 
   // const email = useInput(``);
   // const nickname = useInput(``);
@@ -69,8 +73,6 @@ const SignUp = () => {
 
   // const [passwordCheck, setPasswordCheck] = useState(``);
   // const [passwordError, setPasswordError] = useState(false);
-
-  const width = useWidth();
 
   ////// REDUX //////
   // const { st_signUpLoading, st_signUpDone } = useSelector(
@@ -124,8 +126,7 @@ const SignUp = () => {
             <Wrapper
               width={width < 500 ? `100%` : `450px`}
               padding={width < 500 ? `80px 20px` : `80px 60px`}
-              dr={`coloumn`}
-              ju={`flex-start`}
+              al={`flex-start`}
             >
               <Text
                 fontSize={width < 500 ? `25px` : `36px`}
@@ -142,7 +143,6 @@ const SignUp = () => {
                 바이미마인의 회원 혜택을 누려보세요!
               </Text>
               <Text
-                width={`100%`}
                 fontSize={width < 500 ? `18px` : `20px`}
                 fontWeight={`600`}
                 color={Theme.lightGrey_C}
@@ -152,7 +152,7 @@ const SignUp = () => {
               </Text>
 
               <SignupLabel>
-                아이디 <LabelSpan>*</LabelSpan>
+                아이디 <SpanText color={Theme.red_C}>*</SpanText>
               </SignupLabel>
 
               <TextInput
@@ -163,7 +163,7 @@ const SignUp = () => {
                 placeholder="아이디"
               />
               <SignupLabel>
-                비밀번호 <LabelSpan>*</LabelSpan>
+                비밀번호 <SpanText color={Theme.red_C}>*</SpanText>
               </SignupLabel>
               <TextInput
                 width={`100%`}
@@ -174,7 +174,7 @@ const SignUp = () => {
                 placeholder="비밀번호"
               />
               <SignupLabel>
-                비밀번호 재확인 <LabelSpan>*</LabelSpan>
+                비밀번호 재확인 <SpanText color={Theme.red_C}>*</SpanText>
               </SignupLabel>
               <TextInput
                 width={`100%`}
@@ -192,7 +192,7 @@ const SignUp = () => {
                 placeholder="연락처"
               />
               <SignupLabel>
-                이메일 <LabelSpan>*</LabelSpan>
+                이메일 <SpanText color={Theme.red_C}>*</SpanText>
               </SignupLabel>
               <TextInput
                 width={`100%`}
@@ -201,20 +201,20 @@ const SignUp = () => {
                 margin={`0 0 20px`}
                 placeholder="이메일"
               />
-              <Wrapper dr="row" ju={`space-between`}>
-                <label>주소</label>
-                <Text color={Theme.red_C} ju={`flex-end`}>
+              <Wrapper dr={`row`} ju={`space-between`} margin={`0 0 10px`}>
+                <SignupLabel marginBottom={`0`}>주소</SignupLabel>
+                <Text color={Theme.red_C}>
                   *주문시 배송지로 쓰일 주소입니다.
                 </Text>
               </Wrapper>
-              <Wrapper dr="row" ju={`space-between`}>
+              <Wrapper dr={`row`} ju={`space-between`} margin={`0 0 10px`}>
                 <TextInput
-                  width={`60%`}
+                  width={`62%`}
                   height={`46px`}
                   type="post"
                   placeholder="우편번호"
                 />
-                <PostBtn type="dashed">우편번호</PostBtn>
+                <PostBtn>우편번호</PostBtn>
               </Wrapper>
               <TextInput
                 width={`100%`}
@@ -250,10 +250,11 @@ const SignUp = () => {
                   dr={`coloumn`}
                   ju={`flex-start`}
                 >
-                  <label>
-                    <Checkbox type="checkbox" bgColor={Theme.lightGrey3_C} />
-                    <CheckSpan></CheckSpan>모든 약관에 동의합니다.
-                  </label>
+                  <Checkbox>
+                    <Text fontSize={width < 500 ? `16px` : `18px`}>
+                      모든 약관에 동의합니다.
+                    </Text>
+                  </Checkbox>
                 </Wrapper>
                 <Wrapper
                   width={`100%`}

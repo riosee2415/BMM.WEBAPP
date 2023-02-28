@@ -14,25 +14,15 @@ import {
   Text,
   TextInput,
   CommonButton,
+  ATag,
 } from "../../components/commonComponents";
 import styled from "styled-components";
+import { useState } from "react";
+import Link from "next/dist/client/link";
 
-const SnsBtn = styled(Wrapper)`
-  width: 58px;
-  height: 58px;
-  border: 1px solid ${Theme.lightGrey2_C};
-  border-radius: 100%;
-
-  &:hover {
-    cursor: pointer;
-
-    background: ${(props) => props.hoverColor};
-    border: ${(props) => props.hoverColor};
-  }
-`;
-
-const FindPw = () => {
+const Findid = () => {
   ////// GLOBAL STATE //////
+  const [currentTab, setCurrentTab] = useState(0);
   ////// HOOKS //////
   const width = useWidth();
   ////// REDUX //////
@@ -61,47 +51,144 @@ const FindPw = () => {
               >
                 아이디 찾기
               </Text>
-              <Text
-                fontSize={width < 500 ? `16px` : `18px`}
-                margin={`0 0 40px`}
-                color={Theme.darkGrey_C}
-              >
-                개인정보를 입력해주세요.
-              </Text>
-              <TextInput
-                width={`100%`}
-                height={`46px`}
-                type="text"
-                placeholder="이름"
-                margin={`0 0 12px`}
-              />
-              <TextInput
-                width={`100%`}
-                height={`46px`}
-                type="email"
-                margin={`0 0 10px`}
-                placeholder="이메일"
-              />
-              <Wrapper
-                dr={`row`}
-                ju={`flex-end`}
-                color={Theme.grey_C}
-                margin={`0 0 30px`}
-              >
-                <Text isHover td={`underline`}>
-                  비밀번호 재설정
-                </Text>
-              </Wrapper>
-              <CommonButton
-                fontSize={width < 500 ? `16px` : `18px`}
-                fontWeight={`600`}
-                kindOf={`white`}
-                width={`100%`}
-                height={`54px`}
-                margin={`0 0 40px`}
-              >
-                인증코드 전송
-              </CommonButton>
+              {currentTab === 0 && (
+                <>
+                  <Text
+                    fontSize={width < 500 ? `16px` : `18px`}
+                    margin={`0 0 40px`}
+                    color={Theme.darkGrey_C}
+                  >
+                    개인정보를 입력해주세요.
+                  </Text>
+                  <TextInput
+                    width={`100%`}
+                    height={`46px`}
+                    type="text"
+                    placeholder="이름"
+                    margin={`0 0 12px`}
+                  />
+                  <TextInput
+                    width={`100%`}
+                    height={`46px`}
+                    type="email"
+                    margin={`0 0 10px`}
+                    placeholder="이메일"
+                  />
+                  <Wrapper
+                    dr={`row`}
+                    ju={`flex-end`}
+                    color={Theme.grey_C}
+                    margin={`0 0 30px`}
+                  >
+                    <Link href={`/user/findpw`}>
+                      <a>
+                        <Text isHover td={`underline`}>
+                          비밀번호 재설정
+                        </Text>
+                      </a>
+                    </Link>
+                  </Wrapper>
+                  <CommonButton
+                    fontSize={width < 500 ? `16px` : `18px`}
+                    fontWeight={`600`}
+                    kindOf={`white`}
+                    width={`100%`}
+                    height={`54px`}
+                    onClick={() => setCurrentTab(1)}
+                  >
+                    인증코드 전송
+                  </CommonButton>
+                </>
+              )}
+
+              {currentTab === 1 && (
+                <>
+                  <Text
+                    fontSize={width < 500 ? `16px` : `18px`}
+                    margin={`0 0 40px`}
+                    color={Theme.darkGrey_C}
+                  >
+                    이메일로 발송된 인증코드를 입력해주세요.
+                  </Text>
+                  <TextInput
+                    width={`100%`}
+                    height={`46px`}
+                    type="text"
+                    placeholder="인증코드"
+                    margin={`0 0 12px`}
+                  />
+                  <Wrapper
+                    dr={`row`}
+                    ju={`flex-end`}
+                    color={Theme.grey_C}
+                    margin={`0 0 30px`}
+                  >
+                    <Link href={`/user/findpw`}>
+                      <a>
+                        <Text isHover td={`underline`}>
+                          비밀번호 재설정
+                        </Text>
+                      </a>
+                    </Link>
+                  </Wrapper>
+                  <CommonButton
+                    fontSize={width < 500 ? `16px` : `18px`}
+                    fontWeight={`600`}
+                    kindOf={`white`}
+                    width={`100%`}
+                    height={`54px`}
+                    onClick={() => setCurrentTab(2)}
+                  >
+                    인증코드 제출
+                  </CommonButton>
+                </>
+              )}
+
+              {currentTab === 2 && (
+                <>
+                  <Text
+                    fontSize={width < 500 ? `16px` : `18px`}
+                    margin={`0 0 40px`}
+                    color={Theme.darkGrey_C}
+                  >
+                    아이디 찾기 결과
+                  </Text>
+                  <TextInput
+                    width={`100%`}
+                    height={`46px`}
+                    type="text"
+                    margin={`0 0 12px`}
+                    readOnly
+                  />
+                  <Wrapper
+                    dr={`row`}
+                    ju={`flex-end`}
+                    color={Theme.grey_C}
+                    margin={`0 0 30px`}
+                  >
+                    <Link href={`/user/findpw`}>
+                      <a>
+                        <Text isHover td={`underline`}>
+                          비밀번호 재설정
+                        </Text>
+                      </a>
+                    </Link>
+                  </Wrapper>
+                  <Link href={`/user/login`}>
+                    <ATag>
+                      <CommonButton
+                        fontSize={width < 500 ? `16px` : `18px`}
+                        fontWeight={`600`}
+                        kindOf={`white`}
+                        width={`100%`}
+                        height={`54px`}
+                      >
+                        로그인하러가기
+                      </CommonButton>
+                    </ATag>
+                  </Link>
+                </>
+              )}
             </Wrapper>
           </RsWrapper>
         </WholeWrapper>
@@ -132,4 +219,4 @@ export const getServerSideProps = wrapper.getServerSideProps(
   }
 );
 
-export default FindPw;
+export default Findid;
