@@ -13,7 +13,6 @@ import {
   Text,
   TextInput,
   CommonButton,
-  Image,
 } from "../../components/commonComponents";
 import Theme from "../../components/Theme";
 import styled from "styled-components";
@@ -32,7 +31,7 @@ const SnsBtn = styled(Wrapper)`
   }
 `;
 
-const Login = () => {
+const FindPw = () => {
   ////// GLOBAL STATE //////
   ////// HOOKS //////
   const width = useWidth();
@@ -45,7 +44,7 @@ const Login = () => {
   return (
     <>
       <Head>
-        <title>BUY ME MIN | 로그인</title>
+        <title>BUY ME MIN | 아이디 찾기</title>
       </Head>
 
       <ClientLayout>
@@ -60,28 +59,21 @@ const Login = () => {
                 fontWeight={`600`}
                 margin={`0 0 15px`}
               >
-                로그인
+                아이디 찾기
               </Text>
               <Text
                 fontSize={width < 500 ? `16px` : `18px`}
                 margin={`0 0 40px`}
                 color={Theme.darkGrey_C}
               >
-                바이미마인에 오신걸 환영합니다!
+                이메일로 발송된 인증코드를 입력해주세요.
               </Text>
               <TextInput
                 width={`100%`}
                 height={`46px`}
                 type="text"
-                placeholder="아이디"  
+                placeholder="인증코드"
                 margin={`0 0 12px`}
-              />
-              <TextInput
-                width={`100%`}
-                height={`46px`}
-                type="password"
-                margin={`0 0 10px`}
-                placeholder="비밀번호"
               />
               <Wrapper
                 dr={`row`}
@@ -89,22 +81,10 @@ const Login = () => {
                 color={Theme.grey_C}
                 margin={`0 0 30px`}
               >
-                <Text isHover td={`underline`} margin={`0 16px 0 0`}>
-                  아이디 찾기
-                </Text>
                 <Text isHover td={`underline`}>
-                  비번 재설정
+                  비밀번호 재설정
                 </Text>
               </Wrapper>
-              <CommonButton
-                fontSize={width < 500 ? `16px` : `18px`}
-                fontWeight={`600`}
-                width={`100%`}
-                height={`54px`}
-                margin={`0 0 12px`}
-              >
-                로그인
-              </CommonButton>
               <CommonButton
                 fontSize={width < 500 ? `16px` : `18px`}
                 fontWeight={`600`}
@@ -113,19 +93,8 @@ const Login = () => {
                 height={`54px`}
                 margin={`0 0 40px`}
               >
-                회원가입
+                인증코드 제출
               </CommonButton>
-              <Text color={Theme.lightGrey_C} margin={`0 0 16px`}>
-                SNS 로그인
-              </Text>
-              <Wrapper dr={`row`}>
-                <SnsBtn margin={`0 8px 0 0`} hoverColor={Theme.kakao_C}>
-                  <Image alt="kakao icon" src={``} width={`26px`} />
-                </SnsBtn>
-                <SnsBtn hoverColor={Theme.naver_C}>
-                  <Image alt="naver icon" src={``} width={`26px`} />
-                </SnsBtn>
-              </Wrapper>
             </Wrapper>
           </RsWrapper>
         </WholeWrapper>
@@ -156,4 +125,4 @@ export const getServerSideProps = wrapper.getServerSideProps(
   }
 );
 
-export default Login;
+export default FindPw;

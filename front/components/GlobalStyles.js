@@ -62,18 +62,18 @@ const GlobalStyles = createGlobalStyle`
 
   //ant checkbox
   .ant-checkbox-input:focus + .ant-checkbox-inner {
-    border-color: ${(props) => props.theme.basicTheme_C};
+    border-color: ${(props) => props.theme.lightGrey2_C};
   }
   .ant-checkbox-checked .ant-checkbox-inner {
-    background-color: ${(props) => props.theme.basicTheme_C};
-    border: 1px solid ${(props) => props.theme.basicTheme_C};
+    background-color: ${(props) => props.theme.lightGrey2_C};
+    border: 1px solid ${(props) => props.theme.lightGrey2_C};
   }
 
   .ant-checkbox-wrapper:hover {
     .ant-checkbox-inner,
     .ant-checkbox-checked::after {
-      border-color: ${(props) => props.theme.basicTheme_C} !important;
-      border: 1px solid ${(props) => props.theme.basicTheme_C};
+      border-color: ${(props) => props.theme.lightGrey2_C} !important;
+      border: 1px solid ${(props) => props.theme.lightGrey2_C};
     }
   }
 
