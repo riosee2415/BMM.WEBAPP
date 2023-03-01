@@ -54,6 +54,7 @@ const Login = () => {
   ////// GLOBAL STATE //////
 
   const [isModal, setIsModal] = useState(false);
+  const [isModal_2, setIsModal_2] = useState(false);
 
   ////// HOOKS //////
   const width = useWidth();
@@ -63,6 +64,10 @@ const Login = () => {
   const modalToggle = useCallback(() => {
     setIsModal((prev) => !prev);
   }, [isModal]);
+
+  const modalToggle_2 = useCallback(() => {
+    setIsModal_2((prev) => !prev);
+  }, [isModal_2]);
   ////// HANDLER //////
   ////// DATAVIEW //////
 
@@ -155,7 +160,10 @@ const Login = () => {
                     width={`26px`}
                   />
                 </SnsBtn>
-                <SnsBtn hoverColor={Theme.naver_C}>
+                <SnsBtn 
+                  hoverColor={Theme.naver_C}
+                  onClick={modalToggle_2}
+                >
                   <Image
                     alt="naver icon"
                     src={`https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/bmm/assets/images/login/icon_naver.png`}
@@ -220,6 +228,76 @@ const Login = () => {
                 >
                   쇼핑 계속하기
                 </CommonButton>
+              </Wrapper>
+            </Wrapper>
+          </Modal>
+
+          <Modal
+            onCancel={modalToggle_2}
+            visible={isModal_2}
+            footer={null}
+            closable={null}
+            width={`570px`}
+          >
+            <Wrapper padding={width < 900 ? `0` : `20px`}>
+              <Wrapper
+                dr={`row`}
+                ju={`space-between`}
+                borderBottom={`1px solid ${Theme.lightGrey2_C}`}
+                padding={`0 0 18px`}
+              >
+                <Text
+                  fontSize={width < 900 ? `20px` : `24px`}
+                  fontWeight={`600`}
+                >
+                  가입 완료
+                </Text>
+                <Text
+                  color={Theme.grey_C}
+                  isHover
+                  fontSize={`20px`}
+                  onClick={modalToggle_2}
+                >
+                  <CloseOutlined />
+                </Text>
+              </Wrapper>
+              <Wrapper>
+                <Wrapper margin={`50px 0 50px`}>
+                  <Text fontSize={width < 900 ? `16px` : `18px`}>
+                    일반 계정으로 가입을 완료하셨습니다.
+                  </Text>
+                  <Text fontSize={width < 900 ? `16px` : `18px`}>
+                    기본 정보 추가 기입은 회원정보수정을 이용해주세요.
+                  </Text>
+                  <Text color={Theme.grey_C}>
+                    ※ 기본 정보 : 연락처, 이메일, 배송지
+                  </Text>
+                </Wrapper>
+                <Wrapper
+                  dr={`row`}
+                  ju={`space-between`}
+                  margin={`0 10px 0`}
+                >
+                  <CommonButton
+                    fontSize={width < 500 ? `16px` : `18px`}
+                    fontWeight={`600`}
+                    width={`230px`}
+                    height={`54px`}
+                    onClick={modalToggle_2}
+                  >
+                    쇼핑 계속하기
+                  </CommonButton>
+                  <CommonButton
+                    fontSize={width < 500 ? `16px` : `18px`}
+                    fontWeight={`600`}
+                    kindOf={`white`}
+                    width={`230px`}
+                    height={`54px`}
+                    onClick={modalToggle_2}
+                  >
+                    회원정보수정
+                  </CommonButton>
+                </Wrapper>
               </Wrapper>
             </Wrapper>
           </Modal>

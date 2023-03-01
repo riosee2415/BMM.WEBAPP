@@ -20,7 +20,7 @@ import styled from "styled-components";
 import { useState } from "react";
 import Link from "next/dist/client/link";
 
-const Findid = () => {
+const FindId = () => {
   ////// GLOBAL STATE //////
   const [currentTab, setCurrentTab] = useState(0);
   ////// HOOKS //////
@@ -80,7 +80,7 @@ const Findid = () => {
                     color={Theme.grey_C}
                     margin={`0 0 30px`}
                   >
-                    <Link href={`/user/findpw`}>
+                    <Link href={`/user/findPw`}>
                       <a>
                         <Text isHover td={`underline`}>
                           비밀번호 재설정
@@ -123,7 +123,7 @@ const Findid = () => {
                     color={Theme.grey_C}
                     margin={`0 0 30px`}
                   >
-                    <Link href={`/user/findpw`}>
+                    <Link href={`/user/findPw`}>
                       <a>
                         <Text isHover td={`underline`}>
                           비밀번호 재설정
@@ -166,7 +166,7 @@ const Findid = () => {
                     color={Theme.grey_C}
                     margin={`0 0 30px`}
                   >
-                    <Link href={`/user/findpw`}>
+                    <Link href={`/user/findPw`}>
                       <a>
                         <Text isHover td={`underline`}>
                           비밀번호 재설정
@@ -219,4 +219,4 @@ export const getServerSideProps = wrapper.getServerSideProps(
   }
 );
 
-export default Findid;
+export default FindId;

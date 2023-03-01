@@ -37,6 +37,8 @@ const PostBtn = styled.button`
   cursor: pointer;
 
   &:hover {
+    background: ${(props) => props.theme.lightGrey2_C};
+    color: ${(props) => props.theme.darkGrey_C};
   }
 `;
 
@@ -48,17 +50,12 @@ const SignupLabel = styled.label`
 const CheckSpan = styled.span`
   font-size: 18px;
   font-weight: bold;
-  margin-left: 8px;
 
   @media (max-width: 500px) {
     font-size: 16px;
   }
 `;
 
-const CheckLabel = styled.label`
-  width: 100%;
-  margin-bottom: 16px;
-`;
 
 const SignUp = () => {
   ////// GLOBAL STATE //////
@@ -261,21 +258,23 @@ const SignUp = () => {
                   margin={`0 0 50px`}
                   padding={`0 14px`}
                   dr={`coloumn`}
-                  ju={`flex-start`}
-                  fontSize={width < 500 ? `16px` : `18px`}
+                  al={`flex-start`}
                 >
-                  <CheckLabel>
-                    <Checkbox />
+                  <Checkbox>
+                    <Text fontSize={width < 500 ? `16px` : `18px`}>
                     <CheckSpan>(필수)</CheckSpan> 개인정보처리방침에 동의합니다.
-                  </CheckLabel>
-                  <CheckLabel>
-                    <Checkbox />
+                    </Text>
+                  </Checkbox>
+                  <Checkbox>
+                    <Text fontSize={width < 500 ? `16px` : `18px`}>
                     <CheckSpan>(필수)</CheckSpan> 개인정보처리방침에 동의합니다.
-                  </CheckLabel>
-                  <CheckLabel>
-                    <Checkbox />
+                    </Text>
+                  </Checkbox>
+                  <Checkbox>
+                    <Text fontSize={width < 500 ? `16px` : `18px`}>
                     <CheckSpan>(필수)</CheckSpan> 개인정보처리방침에 동의합니다.
-                  </CheckLabel>
+                    </Text>
+                  </Checkbox>
                 </Wrapper>
                 <CommonButton
                   fontSize={width < 500 ? `16px` : `18px`}
