@@ -1,26 +1,26 @@
 const DataTypes = require("sequelize");
 const { Model } = DataTypes;
 
-module.exports = class FaqHistory extends Model {
+module.exports = class AdvertiseBanner extends Model {
   static init(sequelize) {
     return super.init(
       {
-        value: {
-          type: DataTypes.STRING(50),
+        imagePath: {
+          type: DataTypes.STRING(600),
           allowNull: false, // 필수
         },
-        content: {
-          type: DataTypes.STRING(500),
-          allowNull: false, // 필수
+        link: {
+          type: DataTypes.STRING(600),
+          allowNull: true, // 필수
         },
         updator: {
           type: DataTypes.INTEGER,
-          allowNull: true, // 필수
+          allowNull: true,
         },
       },
       {
-        modelName: "FaqHistory",
-        tableName: "faqHistory",
+        modelName: "AdvertiseBanner",
+        tableName: "advertiseBanner",
         charset: "utf8mb4",
         collate: "utf8mb4_general_ci", // 한글 저장
         sequelize,

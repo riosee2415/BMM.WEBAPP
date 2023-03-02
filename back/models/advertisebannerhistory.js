@@ -1,16 +1,12 @@
 const DataTypes = require("sequelize");
 const { Model } = DataTypes;
 
-module.exports = class FaqHistory extends Model {
+module.exports = class AdvertiseBannerHistory extends Model {
   static init(sequelize) {
     return super.init(
       {
         value: {
           type: DataTypes.STRING(50),
-          allowNull: false, // 필수
-        },
-        content: {
-          type: DataTypes.STRING(500),
           allowNull: false, // 필수
         },
         updator: {
@@ -19,8 +15,8 @@ module.exports = class FaqHistory extends Model {
         },
       },
       {
-        modelName: "FaqHistory",
-        tableName: "faqHistory",
+        modelName: "AdvertiseBannerHistory",
+        tableName: "advertiseBannerHistory",
         charset: "utf8mb4",
         collate: "utf8mb4_general_ci", // 한글 저장
         sequelize,
