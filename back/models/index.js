@@ -19,12 +19,15 @@ const kakaoch = require("./kakaoch");
 const kakaochHistory = require("./kakaochHistory");
 const popupHistory = require("./popupHistory");
 const faqType = require("./faqtype");
+const faq = require("./faq");
 const faqhistory = require("./faqhistory");
 const questionhistory = require("./questionhistory");
 const noticeHistory = require("./noticeHistory");
 const galleryImage = require("./galleryImage");
 const adminUserRightHistory = require("./adminUserRightHistory");
 const productQuestion = require("./productQuestion");
+const event = require("./event");
+const eventhistory = require("./eventhistory");
 
 const env = process.env.NODE_ENV || "development";
 const config = require("../config/config")[env];
@@ -57,12 +60,15 @@ db.KakaochHistory = kakaochHistory;
 db.MainBannerHistory = mainBannerHistory;
 db.PopupHistory = popupHistory;
 db.FaqType = faqType;
+db.Faq = faq;
 db.FaqHistory = faqhistory;
 db.QuestionHistory = questionhistory;
 db.NoticeHistory = noticeHistory;
 db.GalleryImage = galleryImage;
 db.AdminUserRightHistory = adminUserRightHistory;
 db.ProductQuestion = productQuestion;
+db.Event = event;
+db.EventHistory = eventhistory;
 
 Object.keys(db).forEach((modelName) => {
   db[modelName].init(sequelize);
