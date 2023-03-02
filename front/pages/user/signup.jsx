@@ -35,6 +35,7 @@ const PostBtn = styled.button`
   font-weight: bold;
 
   cursor: pointer;
+  transition: 0.2s;
 
   &:hover {
     background: ${(props) => props.theme.lightGrey2_C};
@@ -240,17 +241,20 @@ const SignUp = () => {
                   width={`100%`}
                   height={`50px`}
                   margin={`0 0 16px`}
-                  padding={`10px`}
                   bgColor={Theme.lightGrey3_C}
                   fontSize={width < 500 ? `16px` : `18px`}
-                  dr={`coloumn`}
-                  ju={`flex-start`}
                 >
-                  <Checkbox>
-                    <Text fontSize={width < 500 ? `16px` : `18px`}>
-                      모든 약관에 동의합니다.
-                    </Text>
-                  </Checkbox>
+                  <Wrapper
+                    padding={width < 500 ? `18px` : `10px`}
+                    dr={`coloumn`}
+                    ju={`flex-start`}
+                  >
+                    <Checkbox>
+                      <Text fontSize={width < 500 ? `16px` : `18px`}>
+                        모든 약관에 동의합니다.
+                      </Text>
+                    </Checkbox>
+                  </Wrapper>
                 </Wrapper>
                 <Wrapper margin={`0 0 50px`}>
                   <Wrapper>
@@ -279,13 +283,12 @@ const SignUp = () => {
                     <Checkbox>
                       <Text
                         fontSize={width < 500 ? `16px` : `18px`}
-                        margin={`0 0 16px`}
                       >
                         <CheckSpan>(필수)</CheckSpan> 개인정보처리방침에
                         동의합니다.
                       </Text>
                     </Checkbox>
-                  </Wrapper>                  
+                  </Wrapper>
                 </Wrapper>
                 <CommonButton
                   fontSize={width < 500 ? `16px` : `18px`}
