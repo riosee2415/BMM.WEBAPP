@@ -56,7 +56,6 @@ const CheckSpan = styled.span`
   }
 `;
 
-
 const SignUp = () => {
   ////// GLOBAL STATE //////
 
@@ -241,7 +240,7 @@ const SignUp = () => {
                   width={`100%`}
                   height={`50px`}
                   margin={`0 0 16px`}
-                  padding={`0 14px`}
+                  padding={`10px`}
                   bgColor={Theme.lightGrey3_C}
                   fontSize={width < 500 ? `16px` : `18px`}
                   dr={`coloumn`}
@@ -253,33 +252,40 @@ const SignUp = () => {
                     </Text>
                   </Checkbox>
                 </Wrapper>
-                <Wrapper
-                  margin={`0 0 50px`}
-                >
-                  <Checkbox>
-                    <Text 
-                      fontSize={width < 500 ? `16px` : `18px`}
-                      margin={`0 0 16px`}
-                    >
-                    <CheckSpan>(필수)</CheckSpan> 개인정보처리방침에 동의합니다.
-                    </Text>
-                  </Checkbox>
-                  <Checkbox>
-                  <Text 
-                      fontSize={width < 500 ? `16px` : `18px`}
-                      margin={`0 0 16px`}
-                    >
-                      <CheckSpan>(필수)</CheckSpan> 개인정보처리방침에 동의합니다.
-                    </Text>
-                  </Checkbox>
-                  <Checkbox>
-                  <Text 
-                      fontSize={width < 500 ? `16px` : `18px`}
-                      margin={`0 0 16px`}
-                    >
-                      <CheckSpan>(필수)</CheckSpan> 개인정보처리방침에 동의합니다.
-                    </Text>
-                  </Checkbox>
+                <Wrapper margin={`0 0 50px`}>
+                  <Wrapper>
+                    <Checkbox>
+                      <Text
+                        fontSize={width < 500 ? `16px` : `18px`}
+                        margin={`0 0 16px`}
+                      >
+                        <CheckSpan>(필수)</CheckSpan> 개인정보처리방침에
+                        동의합니다.
+                      </Text>
+                    </Checkbox>
+                  </Wrapper>
+                  <Wrapper>
+                    <Checkbox>
+                      <Text
+                        fontSize={width < 500 ? `16px` : `18px`}
+                        margin={`0 0 16px`}
+                      >
+                        <CheckSpan>(필수)</CheckSpan> 개인정보처리방침에
+                        동의합니다.
+                      </Text>
+                    </Checkbox>
+                  </Wrapper>
+                  <Wrapper>
+                    <Checkbox>
+                      <Text
+                        fontSize={width < 500 ? `16px` : `18px`}
+                        margin={`0 0 16px`}
+                      >
+                        <CheckSpan>(필수)</CheckSpan> 개인정보처리방침에
+                        동의합니다.
+                      </Text>
+                    </Checkbox>
+                  </Wrapper>                  
                 </Wrapper>
                 <CommonButton
                   fontSize={width < 500 ? `16px` : `18px`}
