@@ -1,6 +1,5 @@
 import React from "react";
 import ClientLayout from "../../components/ClientLayout";
-import Theme from "../../components/Theme";
 import Head from "next/head";
 import wrapper from "../../store/configureStore";
 import { LOAD_MY_INFO_REQUEST } from "../../reducers/user";
@@ -12,26 +11,12 @@ import {
   WholeWrapper,
   Wrapper,
   Text,
-  TextInput,
-  CommonButton,
+  CustomSelect,
+  CustomPage,
 } from "../../components/commonComponents";
-import styled from "styled-components";
+import { Select } from "antd";
 
-const SnsBtn = styled(Wrapper)`
-  width: 58px;
-  height: 58px;
-  border: 1px solid ${Theme.lightGrey2_C};
-  border-radius: 100%;
-
-  &:hover {
-    cursor: pointer;
-
-    background: ${(props) => props.hoverColor};
-    border: ${(props) => props.hoverColor};
-  }
-`;
-
-const FindPw = () => {
+const Index = () => {
   ////// GLOBAL STATE //////
   ////// HOOKS //////
   const width = useWidth();
@@ -44,24 +29,26 @@ const FindPw = () => {
   return (
     <>
       <Head>
-        <title>BUY ME MIN | 아이디 찾기</title>
+        <title>4leafsoftware</title>
       </Head>
 
       <ClientLayout>
-        <WholeWrapper padding={`95px 0 120px`}>
+        <WholeWrapper padding={`100px 0 0`}>
           <RsWrapper>
-            <Wrapper
-              width={width < 500 ? `100%` : `450px`}
-              padding={width < 500 ? `80px 20px` : `80px 60px`}
-            >
-              <Text
-                fontSize={width < 500 ? `25px` : `36px`}
-                fontWeight={`600`}
-                margin={`0 0 15px`}
-              >
-                아이디 찾기
-              </Text>
+            <Wrapper dr={`row`} ju={`space-between`}>
+              <Text>공지사항</Text>
+              <Wrapper width={`auto`} dr={`row`}>
+                <CustomSelect>
+                  <Select>
+                    <Select.Option>전체</Select.Option>
+                    <Select.Option>2</Select.Option>
+                    <Select.Option>3</Select.Option>
+                  </Select>
+                </CustomSelect>
+              </Wrapper>
             </Wrapper>
+
+            <CustomPage />
           </RsWrapper>
         </WholeWrapper>
       </ClientLayout>
@@ -91,4 +78,4 @@ export const getServerSideProps = wrapper.getServerSideProps(
   }
 );
 
-export default FindPw;
+export default Index;

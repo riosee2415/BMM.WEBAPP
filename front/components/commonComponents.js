@@ -523,6 +523,35 @@ export const CustomPage = styled(Pagination)`
   }
 `;
 
+export const CustomSelect = styled(Wrapper)`
+  width: ${(props) => props.width || `124px`};
+  height: ${(props) => props.height || `46px`};
+
+  .ant-select {
+    width: 100%;
+  }
+
+  .ant-select-single:not(.ant-select-customize-input) .ant-select-selector,
+  .ant-select-single:not(.ant-select-customize-input)
+    .ant-select-selector
+    .ant-select-selection-search-input {
+    width: 100%;
+    height: ${(props) => props.height || `46px`};
+    border-radius: ${(props) => props.radius || `46px`};
+    border: 1px solid ${(props) => props.theme.lightGrey2_C};
+  }
+
+  .ant-select-single .ant-select-selector .ant-select-selection-item,
+  .ant-select-single .ant-select-selector .ant-select-selection-placeholder {
+    width: 100%;
+    line-height: ${(props) => props.height || `46px`};
+  }
+
+  .ant-select-selector {
+    align-items: center !important;
+  }
+`;
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////ADMIN///////////////////////////////////////////////////////////////////
