@@ -1,7 +1,9 @@
 import React from "react";
+import { useState, useCallback } from "react";
 import ClientLayout from "../../components/ClientLayout";
 import Theme from "../../components/Theme";
 import Head from "next/head";
+import Link from "next/dist/client/link";
 import wrapper from "../../store/configureStore";
 import { LOAD_MY_INFO_REQUEST } from "../../reducers/user";
 import axios from "axios";
@@ -17,10 +19,10 @@ import {
   Image,
 } from "../../components/commonComponents";
 import styled from "styled-components";
-import { useState } from "react";
-import { useCallback } from "react";
 import { Modal } from "antd";
 import { CloseOutlined } from "@ant-design/icons";
+
+
 
 const SnsBtn = styled(Wrapper)`
   width: 58px;
@@ -45,6 +47,26 @@ const SnsBtn = styled(Wrapper)`
 
   & .hoverIcon {
     display: none;
+  }
+`;
+
+const ShoppingBtn = styled(Wrapper)`
+  width: 230px;
+  height: 54px;
+  font-size: 18px;
+  font-weight: 600;
+  background-color: ${Theme.white_C};
+  border: 1px solid ${Theme.lightGrey2_C};
+
+  cursor: pointer;
+
+  &:hover {
+  background: ${(props) => props.theme.lightGrey2_C};
+  color: ${(props) => props.theme.black_C};
+}
+
+  @media (max-width: 500px) {
+    font-size: 16px;
   }
 `;
 
@@ -119,12 +141,20 @@ const Login = () => {
                 color={Theme.grey_C}
                 margin={`0 0 30px`}
               >
-                <Text isHover td={`underline`} margin={`0 16px 0 0`}>
-                  아이디 찾기
-                </Text>
-                <Text isHover td={`underline`}>
-                  비번 재설정
-                </Text>
+                <Link href={`/user/findId`}>
+                  <a>
+                    <Text isHover td={`underline`} margin={`0 16px 0 0`}>
+                      아이디 찾기
+                    </Text>
+                  </a>
+                </Link>
+                <Link href={`/user/findPw`}>
+                  <a>
+                    <Text isHover td={`underline`}>
+                      비번 재설정
+                    </Text>
+                  </a>
+                </Link>
               </Wrapper>
               <CommonButton
                 fontSize={width < 500 ? `16px` : `18px`}
@@ -160,10 +190,7 @@ const Login = () => {
                     width={`26px`}
                   />
                 </SnsBtn>
-                <SnsBtn 
-                  hoverColor={Theme.naver_C}
-                  onClick={modalToggle_2}
-                >
+                <SnsBtn hoverColor={Theme.naver_C} onClick={modalToggle_2}>
                   <Image
                     alt="naver icon"
                     src={`https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/bmm/assets/images/login/icon_naver.png`}
@@ -273,20 +300,12 @@ const Login = () => {
                     ※ 기본 정보 : 연락처, 이메일, 배송지
                   </Text>
                 </Wrapper>
-                <Wrapper
-                  dr={`row`}
-                  ju={`space-between`}
-                  margin={`0 10px 0`}
-                >
-                  <CommonButton
-                    fontSize={width < 500 ? `16px` : `18px`}
-                    fontWeight={`600`}
-                    width={`230px`}
-                    height={`54px`}
+                <Wrapper dr={`row`} ju={`space-between`}>
+                  <ShoppingBtn
                     onClick={modalToggle_2}
                   >
                     쇼핑 계속하기
-                  </CommonButton>
+                  </ShoppingBtn>
                   <CommonButton
                     fontSize={width < 500 ? `16px` : `18px`}
                     fontWeight={`600`}

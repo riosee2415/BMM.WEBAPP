@@ -254,25 +254,30 @@ const SignUp = () => {
                   </Checkbox>
                 </Wrapper>
                 <Wrapper
-                  width={`100%`}
                   margin={`0 0 50px`}
-                  padding={`0 14px`}
-                  dr={`coloumn`}
-                  al={`flex-start`}
                 >
                   <Checkbox>
-                    <Text fontSize={width < 500 ? `16px` : `18px`}>
+                    <Text 
+                      fontSize={width < 500 ? `16px` : `18px`}
+                      margin={`0 0 16px`}
+                    >
                     <CheckSpan>(필수)</CheckSpan> 개인정보처리방침에 동의합니다.
                     </Text>
                   </Checkbox>
                   <Checkbox>
-                    <Text fontSize={width < 500 ? `16px` : `18px`}>
-                    <CheckSpan>(필수)</CheckSpan> 개인정보처리방침에 동의합니다.
+                  <Text 
+                      fontSize={width < 500 ? `16px` : `18px`}
+                      margin={`0 0 16px`}
+                    >
+                      <CheckSpan>(필수)</CheckSpan> 개인정보처리방침에 동의합니다.
                     </Text>
                   </Checkbox>
                   <Checkbox>
-                    <Text fontSize={width < 500 ? `16px` : `18px`}>
-                    <CheckSpan>(필수)</CheckSpan> 개인정보처리방침에 동의합니다.
+                  <Text 
+                      fontSize={width < 500 ? `16px` : `18px`}
+                      margin={`0 0 16px`}
+                    >
+                      <CheckSpan>(필수)</CheckSpan> 개인정보처리방침에 동의합니다.
                     </Text>
                   </Checkbox>
                 </Wrapper>
