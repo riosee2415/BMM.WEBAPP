@@ -53,21 +53,18 @@ const Detail = () => {
       <ClientLayout>
         <WholeWrapper padding={`95px 0 100px`}>
           <RsWrapper>
-            <Wrapper
-              dr={`row`}
-              ju={`flex-start`}
-            >
+            <Wrapper width={`840px`} dr={`row`} ju={`flex-start`}>
               <Text
                 fontSize={`23px`}
                 position={`absolute`}
                 top={`105px`}
-                left={`95px`}
                 color={Theme.basicTheme_C}
               >
                 <LeftOutlined />
               </Text>
               <Text
                 width={`840px`}
+                padding={`0 30px`}
                 fontSize={width < 500 ? `20px` : `34px`}
                 fontWeight={`600`}
                 margin={`0 0 30x`}

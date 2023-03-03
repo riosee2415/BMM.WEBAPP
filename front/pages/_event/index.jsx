@@ -67,8 +67,9 @@ const Index = () => {
                 transition={`0.2s`}
               />
             </Wrapper>
-            <Wrapper dr={`row`} ju={`space-between`}>
+            <Wrapper dr={`row`} ju={`flex-start`}>
               <Text
+                width={`640px`} 
                 fontSize={width < 500 ? `16px` : `20px`}
                 fontWeight={`600`}
                 cursor={`pointer`}
@@ -77,17 +78,19 @@ const Index = () => {
                 이벤트명이 들어올 곳입니다.
               </Text>
               <Text
+                width={`640px`}
+                padding={`0 20px`}
                 fontSize={width < 500 ? `16px` : `20px`}
                 fontWeight={`600`}
                 cursor={`pointer`}
                 transition={`0.2s`}
               >
                 이벤트명이 들어올 곳입니다.
-              </Text>
+              </Text>              
             </Wrapper>
             <Wrapper dr={`row`} ju={`space-between`}>
-              <Text margin={`0 0 60px`}>2022.12.01~2022.12.31</Text>
-              <Text margin={`0 0 60px`}>2022.12.01~2022.12.31</Text>
+              <Text width={`640px`} margin={`0 0 60px`}>2022.12.01~2022.12.31</Text>
+              <Text width={`640px`} padding={`0 20px`} margin={`0 0 60px`}>2022.12.01~2022.12.31</Text>
             </Wrapper>
             <Wrapper dr={`row`} ju={`space-between`}>
               <Image
@@ -107,8 +110,9 @@ const Index = () => {
                 transition={`0.2s`}
               />
             </Wrapper>
-            <Wrapper dr={`row`} ju={`space-between`}>
+            <Wrapper dr={`row`} ju={`flex-start`}>
               <Text
+                width={`640px`} 
                 fontSize={width < 500 ? `16px` : `20px`}
                 fontWeight={`600`}
                 cursor={`pointer`}
@@ -117,20 +121,20 @@ const Index = () => {
                 이벤트명이 들어올 곳입니다.
               </Text>
               <Text
+                width={`640px`}
+                padding={`0 20px`}
                 fontSize={width < 500 ? `16px` : `20px`}
                 fontWeight={`600`}
                 cursor={`pointer`}
                 transition={`0.2s`}
               >
                 이벤트명이 들어올 곳입니다.
-              </Text>
-            </Wrapper>
-
-            <Wrapper dr={`row`} ju={`space-between`}>
-              <Text margin={`0 0 60px`}>2022.12.01~2022.12.31</Text>
-              <Text margin={`0 0 60px`}>2022.12.01~2022.12.31</Text>
+              </Text>              
             </Wrapper>
             <Wrapper dr={`row`} ju={`space-between`}>
+              <Text width={`640px`} margin={`0 0 60px`}>2022.12.01~2022.12.31</Text>
+              <Text width={`640px`} padding={`0 20px`} margin={`0 0 60px`}>2022.12.01~2022.12.31</Text>
+            </Wrapper>            <Wrapper dr={`row`} ju={`space-between`}>
               <Image
                 alt="일본안약 배너"
                 src={`https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/bmm/assets/images/sample-img/event1.png`}
@@ -148,8 +152,9 @@ const Index = () => {
                 transition={`0.2s`}
               />
             </Wrapper>
-            <Wrapper dr={`row`} ju={`space-between`}>
+            <Wrapper dr={`row`} ju={`flex-start`}>
               <Text
+                width={`640px`} 
                 fontSize={width < 500 ? `16px` : `20px`}
                 fontWeight={`600`}
                 cursor={`pointer`}
@@ -158,20 +163,20 @@ const Index = () => {
                 이벤트명이 들어올 곳입니다.
               </Text>
               <Text
+                width={`640px`}
+                padding={`0 20px`}
                 fontSize={width < 500 ? `16px` : `20px`}
                 fontWeight={`600`}
                 cursor={`pointer`}
                 transition={`0.2s`}
               >
                 이벤트명이 들어올 곳입니다.
-              </Text>
-            </Wrapper>
-
-            <Wrapper dr={`row`} ju={`space-between`}>
-              <Text margin={`0 0 60px`}>2022.12.01~2022.12.31</Text>
-              <Text margin={`0 0 60px`}>2022.12.01~2022.12.31</Text>
+              </Text>              
             </Wrapper>
             <Wrapper dr={`row`} ju={`space-between`}>
+              <Text width={`640px`} margin={`0 0 60px`}>2022.12.01~2022.12.31</Text>
+              <Text width={`640px`} padding={`0 20px`} margin={`0 0 60px`}>2022.12.01~2022.12.31</Text>
+            </Wrapper>            <Wrapper dr={`row`} ju={`space-between`}>
               <Image
                 alt="일본안약 배너"
                 src={`https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/bmm/assets/images/sample-img/event1.png`}
@@ -189,8 +194,9 @@ const Index = () => {
                 transition={`0.2s`}
               />
             </Wrapper>
-            <Wrapper dr={`row`} ju={`space-between`}>
+            <Wrapper dr={`row`} ju={`flex-start`}>
               <Text
+                width={`640px`} 
                 fontSize={width < 500 ? `16px` : `20px`}
                 fontWeight={`600`}
                 cursor={`pointer`}
@@ -199,20 +205,20 @@ const Index = () => {
                 이벤트명이 들어올 곳입니다.
               </Text>
               <Text
+                width={`640px`}
+                padding={`0 20px`}
                 fontSize={width < 500 ? `16px` : `20px`}
                 fontWeight={`600`}
                 cursor={`pointer`}
                 transition={`0.2s`}
               >
                 이벤트명이 들어올 곳입니다.
-              </Text>
+              </Text>              
             </Wrapper>
-
             <Wrapper dr={`row`} ju={`space-between`}>
-              <Text margin={`0 0 60px`}>2022.12.01~2022.12.31</Text>
-              <Text margin={`0 0 60px`}>2022.12.01~2022.12.31</Text>
+              <Text width={`640px`} margin={`0 0 60px`}>2022.12.01~2022.12.31</Text>
+              <Text width={`640px`} padding={`0 20px`} margin={`0 0 60px`}>2022.12.01~2022.12.31</Text>
             </Wrapper>
-
             <CustomPage />
           </RsWrapper>
         </WholeWrapper>
