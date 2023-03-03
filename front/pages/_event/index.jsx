@@ -12,13 +12,10 @@ import {
   WholeWrapper,
   Wrapper,
   Text,
-  CustomSelect,
   CustomPage,
-  TextInput,
   Image,
 } from "../../components/commonComponents";
-import { Select } from "antd";
-import { SearchOutlined } from "@ant-design/icons";
+import Link from "next/dist/client/link";
 
 const Index = () => {
   ////// GLOBAL STATE //////
@@ -35,54 +32,185 @@ const Index = () => {
   return (
     <>
       <Head>
-        <title>BUY ME MIN | 공지사항</title>
+        <title>BUY ME MIN | 이벤트</title>
       </Head>
 
       <ClientLayout>
-        <WholeWrapper padding={`100px 0 0`}>
+        <WholeWrapper padding={`95px 0 0`}>
           <RsWrapper>
-            <Wrapper
-              dr={`row`}
-              ju={`flex-start`}
-              fontSize={width < 500 ? `20px` : `34px`}
-              fontWeight={`600`}
-              margin={`0 0 33px`}
-            >
-              <Text>이벤트</Text>
+            <Wrapper dr={`row`} ju={`flex-start`}>
+              <Text
+                fontSize={width < 500 ? `20px` : `34px`}
+                fontWeight={`600`}
+                margin={`0 0 33px`}
+              >
+                이벤트
+              </Text>
             </Wrapper>
             <Wrapper dr={`row`} ju={`space-between`}>
-              <Wrapper dr={`column`} al={`flex-start`}>
-                <Image
-                  alt="event picture"
-                  src={`https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/bmm/assets/images/sample-img/event1.png`}
-                  width={`629px`}
-                  margin={`0 0 22px`}
-                />
-                <Text
-                  fontSize={width < 500 ? `16px` : `20px`}
-                  fontWeight={`600`}
-                >
-                  이벤트명이 들어올 곳입니다.
-                </Text>
-                <Text>2022.12.01~2022.12.31</Text>
-              </Wrapper>
-              
-              <Wrapper dr={`column`} al={`flex-start`}>
-                <Image
-                  alt="event picture"
-                  src={`https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/bmm/assets/images/sample-img/event2.png`}
-                  width={`629px`}
-                  margin={`0 0 22px`}
-                />
-                <Text
-                  fontSize={width < 500 ? `16px` : `20px`}
-                  fontWeight={`600`}
-                >
-                  이벤트명이 들어올 곳입니다.
-                </Text>
-                <Text>2022.12.01~2022.12.31</Text>
-              </Wrapper>
+              <Image
+                alt="일본안약 배너"
+                src={`https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/bmm/assets/images/sample-img/event1.png`}
+                width={`629px`}
+                margin={`0 0 22px`}
+                cursor={`pointer`}
+                transition={`0.2s`}
+              />
+              <Image
+                alt="가루비과자 배너"
+                src={`https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/bmm/assets/images/sample-img/event2.png`}
+                width={`629px`}
+                margin={`0 0 22px`}
+                cursor={`pointer`}
+                transition={`0.2s`}
+              />
             </Wrapper>
+            <Wrapper dr={`row`} ju={`space-between`}>
+              <Text
+                fontSize={width < 500 ? `16px` : `20px`}
+                fontWeight={`600`}
+                cursor={`pointer`}
+                transition={`0.2s`}
+              >
+                이벤트명이 들어올 곳입니다.
+              </Text>
+              <Text
+                fontSize={width < 500 ? `16px` : `20px`}
+                fontWeight={`600`}
+                cursor={`pointer`}
+                transition={`0.2s`}
+              >
+                이벤트명이 들어올 곳입니다.
+              </Text>
+            </Wrapper>
+            <Wrapper dr={`row`} ju={`space-between`}>
+              <Text margin={`0 0 60px`}>2022.12.01~2022.12.31</Text>
+              <Text margin={`0 0 60px`}>2022.12.01~2022.12.31</Text>
+            </Wrapper>
+            <Wrapper dr={`row`} ju={`space-between`}>
+              <Image
+                alt="일본안약 배너"
+                src={`https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/bmm/assets/images/sample-img/event1.png`}
+                width={`629px`}
+                margin={`0 0 22px`}
+                cursor={`pointer`}
+                transition={`0.2s`}
+              />
+              <Image
+                alt="가루비과자 배너"
+                src={`https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/bmm/assets/images/sample-img/event2.png`}
+                width={`629px`}
+                margin={`0 0 22px`}
+                cursor={`pointer`}
+                transition={`0.2s`}
+              />
+            </Wrapper>
+            <Wrapper dr={`row`} ju={`space-between`}>
+              <Text
+                fontSize={width < 500 ? `16px` : `20px`}
+                fontWeight={`600`}
+                cursor={`pointer`}
+                transition={`0.2s`}
+              >
+                이벤트명이 들어올 곳입니다.
+              </Text>
+              <Text
+                fontSize={width < 500 ? `16px` : `20px`}
+                fontWeight={`600`}
+                cursor={`pointer`}
+                transition={`0.2s`}
+              >
+                이벤트명이 들어올 곳입니다.
+              </Text>
+            </Wrapper>
+
+            <Wrapper dr={`row`} ju={`space-between`}>
+              <Text margin={`0 0 60px`}>2022.12.01~2022.12.31</Text>
+              <Text margin={`0 0 60px`}>2022.12.01~2022.12.31</Text>
+            </Wrapper>
+            <Wrapper dr={`row`} ju={`space-between`}>
+              <Image
+                alt="일본안약 배너"
+                src={`https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/bmm/assets/images/sample-img/event1.png`}
+                width={`629px`}
+                margin={`0 0 22px`}
+                cursor={`pointer`}
+                transition={`0.2s`}
+              />
+              <Image
+                alt="가루비과자 배너"
+                src={`https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/bmm/assets/images/sample-img/event2.png`}
+                width={`629px`}
+                margin={`0 0 22px`}
+                cursor={`pointer`}
+                transition={`0.2s`}
+              />
+            </Wrapper>
+            <Wrapper dr={`row`} ju={`space-between`}>
+              <Text
+                fontSize={width < 500 ? `16px` : `20px`}
+                fontWeight={`600`}
+                cursor={`pointer`}
+                transition={`0.2s`}
+              >
+                이벤트명이 들어올 곳입니다.
+              </Text>
+              <Text
+                fontSize={width < 500 ? `16px` : `20px`}
+                fontWeight={`600`}
+                cursor={`pointer`}
+                transition={`0.2s`}
+              >
+                이벤트명이 들어올 곳입니다.
+              </Text>
+            </Wrapper>
+
+            <Wrapper dr={`row`} ju={`space-between`}>
+              <Text margin={`0 0 60px`}>2022.12.01~2022.12.31</Text>
+              <Text margin={`0 0 60px`}>2022.12.01~2022.12.31</Text>
+            </Wrapper>
+            <Wrapper dr={`row`} ju={`space-between`}>
+              <Image
+                alt="일본안약 배너"
+                src={`https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/bmm/assets/images/sample-img/event1.png`}
+                width={`629px`}
+                margin={`0 0 22px`}
+                cursor={`pointer`}
+                transition={`0.2s`}
+              />
+              <Image
+                alt="가루비과자 배너"
+                src={`https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/bmm/assets/images/sample-img/event2.png`}
+                width={`629px`}
+                margin={`0 0 22px`}
+                cursor={`pointer`}
+                transition={`0.2s`}
+              />
+            </Wrapper>
+            <Wrapper dr={`row`} ju={`space-between`}>
+              <Text
+                fontSize={width < 500 ? `16px` : `20px`}
+                fontWeight={`600`}
+                cursor={`pointer`}
+                transition={`0.2s`}
+              >
+                이벤트명이 들어올 곳입니다.
+              </Text>
+              <Text
+                fontSize={width < 500 ? `16px` : `20px`}
+                fontWeight={`600`}
+                cursor={`pointer`}
+                transition={`0.2s`}
+              >
+                이벤트명이 들어올 곳입니다.
+              </Text>
+            </Wrapper>
+
+            <Wrapper dr={`row`} ju={`space-between`}>
+              <Text margin={`0 0 60px`}>2022.12.01~2022.12.31</Text>
+              <Text margin={`0 0 60px`}>2022.12.01~2022.12.31</Text>
+            </Wrapper>
+
             <CustomPage />
           </RsWrapper>
         </WholeWrapper>

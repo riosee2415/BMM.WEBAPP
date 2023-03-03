@@ -28,6 +28,7 @@ const Index = () => {
   ////// REDUX //////
   ////// USEEFFECT //////
   ////// TOGGLE //////
+
   ////// HANDLER //////
   ////// DATAVIEW //////
 
@@ -38,7 +39,7 @@ const Index = () => {
       </Head>
 
       <ClientLayout>
-        <WholeWrapper padding={`100px 0 0`}>
+        <WholeWrapper padding={`95px 0 0`}>
           <RsWrapper>
             <Wrapper
               dr={`row`}
@@ -48,9 +49,12 @@ const Index = () => {
               margin={`0 0 33px`}
             >
               <Text>공지사항</Text>
-              <Wrapper width={`auto`} dr={`row`}> 
-                  
-                <CustomSelect margin={`0 10px 0 0`} width={width < 500 ? `80px` : `124px`} height={width < 500 ? `100%` : `46px`}>
+              <Wrapper width={`auto`} dr={`row`} ju={`flex-end`}>
+                <CustomSelect
+                  margin={`0 10px 0 0`}
+                  width={width < 500 ? `80px` : `124px`}
+                  height={width < 500 ? `100%` : `46px`}
+                >
                   <Select>
                     <Select.Option>전체</Select.Option>
                     <Select.Option>2</Select.Option>
@@ -68,7 +72,7 @@ const Index = () => {
                 <Text
                   fontSize={width < 500 ? `14px` : `16px`}
                   position={`absolute`}
-                  right={`100px`}
+                  right={width < 500 ? `20px` : `140px`}
                   cursor={`pointer`}
                 >
                   <SearchOutlined />
@@ -79,9 +83,13 @@ const Index = () => {
               height={`54px`}
               dr={`row`}
               ju={`space-between`}
-              padding={`0 10px`}
+              padding={`0 25px`}
               bgColor={Theme.lightGrey3_C}
+              borderTop={`1px solid ${Theme.basicTheme_C}`}
               borderBottom={`1px solid ${Theme.lightGrey2_C}`}
+              fontSize={width < 500 ? `14px` : `16px`}
+              fontWeight={`600`}
+              textAlign={`center`}
             >
               <Text>번호</Text>
               <Text>제목</Text>
@@ -92,20 +100,21 @@ const Index = () => {
               height={`60px`}
               dr={`row`}
               ju={`space-between`}
-              padding={`0 10px`}
+              padding={`0 30px`}
               borderBottom={`1px solid ${Theme.lightGrey2_C}`}
+              fontSize={width < 500 ? `14px` : `16px`}
             >
               <Text>1</Text>
-              <Text
-                textAlign={`left`}
-              >공지사항 제목이 들어오는 곳입니다.</Text>
+              <Text cursor={`pointer`} rowKey="id">
+                공지사항 제목이 들어오는 곳입니다.
+              </Text>
               <Text>456</Text>
               <Text>2022.12.31</Text>
             </Wrapper>
             <CustomPage />
           </RsWrapper>
         </WholeWrapper>
-      </ClientLayout> 
+      </ClientLayout>
     </>
   );
 };
