@@ -15,7 +15,6 @@ import {
   CustomPage,
   Image,
 } from "../../components/commonComponents";
-import Link from "next/dist/client/link";
 
 const Index = () => {
   ////// GLOBAL STATE //////
@@ -38,7 +37,10 @@ const Index = () => {
       <ClientLayout>
         <WholeWrapper padding={`95px 0 0`}>
           <RsWrapper>
-            <Wrapper dr={`row`} ju={`flex-start`}>
+            <Wrapper
+              dr={`row`}
+              ju={`flex-start`}
+            >
               <Text
                 fontSize={width < 500 ? `20px` : `34px`}
                 fontWeight={`600`}

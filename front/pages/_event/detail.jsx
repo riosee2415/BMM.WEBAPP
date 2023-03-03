@@ -53,7 +53,10 @@ const Detail = () => {
       <ClientLayout>
         <WholeWrapper padding={`95px 0 100px`}>
           <RsWrapper>
-            <Wrapper dr={`row`} ju={`flex-start`}>
+            <Wrapper
+              dr={`row`}
+              ju={`flex-start`}
+            >
               <Text
                 fontSize={`23px`}
                 position={`absolute`}
@@ -64,6 +67,7 @@ const Detail = () => {
                 <LeftOutlined />
               </Text>
               <Text
+                width={`840px`}
                 fontSize={width < 500 ? `20px` : `34px`}
                 fontWeight={`600`}
                 margin={`0 0 30x`}
@@ -93,7 +97,6 @@ const Detail = () => {
                 width={`840px`}
                 height={`980px`}
                 margin={`0 0 30px`}
-                textAlign={`center`}
               />
             </Wrapper>
             <Wrapper width={`840px`} margin={`0 0 60px`}>

@@ -53,7 +53,10 @@ const Detail = () => {
       <ClientLayout>
         <WholeWrapper padding={`95px 0 100px`}>
           <RsWrapper>
-            <Wrapper dr={`row`} ju={`flex-start`}>
+            <Wrapper
+              dr={`row`}
+              ju={`flex-start`}
+            >
               <Text
                 fontSize={`23px`}
                 position={`absolute`}
