@@ -87,13 +87,17 @@ const Detail = () => {
               </Text>
               <Text>2022.12.31</Text>
             </Wrapper>
-            <Wrapper>
+            <Wrapper
+                width={`840px`}
+            >
               <Image
                 alt="이벤트 사진"
                 src={`https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/bmm/assets/images/sample-img/detail.png`}
                 width={`420px`}
                 height={`395px`}
                 margin={`0 0 30px`}
+                dr={`row`}
+                al={`flex-start`}
               />
             </Wrapper>
             <Wrapper width={`840px`} margin={`0 0 60px`}>
