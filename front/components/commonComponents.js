@@ -348,6 +348,7 @@ export const Image = styled.img`
   left: ${(props) => props.left};
   bottom: ${(props) => props.bottom};
   right: ${(props) => props.right};
+  transition: 0.3s;
 `;
 
 export const ATag = styled.a`

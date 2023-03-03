@@ -18,6 +18,23 @@ import {
 } from "../../components/commonComponents";
 import { Select } from "antd";
 import { SearchOutlined } from "@ant-design/icons";
+import styled from "styled-components";
+
+const List = styled(Wrapper)`
+  height: 60px;
+  flex-direction: row;
+  border-bottom: 1px solid ${Theme.lightGrey2_C};
+  font-size: 16px;
+
+  &:hover {
+    cursor: pointer;
+    border-bottom: 1px solid ${Theme.basicTheme_C};
+  }
+
+  @media (max-width: 500px) {
+    font-size: 14px;
+  }
+`;
 
 const Index = () => {
   ////// GLOBAL STATE //////
@@ -48,12 +65,16 @@ const Index = () => {
               fontWeight={`600`}
               margin={`0 0 33px`}
             >
-              <Text>공지사항</Text>
-              <Wrapper width={`auto`} dr={`row`} ju={`flex-end`}>
+              <Text margin={width < 700 ? `0 0 20px` : `0`}>공지사항</Text>
+              <Wrapper
+                width={width < 700 ? `100%` : `auto`}
+                dr={`row`}
+                ju={`flex-end`}
+              >
                 <CustomSelect
                   margin={`0 10px 0 0`}
-                  width={width < 500 ? `80px` : `124px`}
-                  height={width < 500 ? `100%` : `46px`}
+                  width={width < 500 ? `100px` : `124px`}
+                  height={width < 500 ? `40px` : `46px`}
                 >
                   <Select>
                     <Select.Option>전체</Select.Option>
@@ -61,56 +82,62 @@ const Index = () => {
                     <Select.Option>3</Select.Option>
                   </Select>
                 </CustomSelect>
-                <TextInput
-                  width={width < 500 ? `170px` : `288px`}
-                  height={width < 500 ? `100%` : `46px`}
-                  type="text"
-                  fontSize={width < 500 ? `8px` : `16px`}
-                  placeholder="검색어를 입력해주세요."
-                  radius={`46px`}
-                />
-                <Text
-                  fontSize={width < 500 ? `14px` : `16px`}
-                  position={`absolute`}
-                  right={width < 500 ? `20px` : `140px`}
-                  cursor={`pointer`}
+                <Wrapper
+                  width={width < 500 ? `190px` : `288px`}
+                  position={`relative`}
                 >
-                  <SearchOutlined />
-                </Text>
+                  <TextInput
+                    width={width < 500 ? `190px` : `288px`}
+                    height={width < 500 ? `40px` : `46px`}
+                    type="text"
+                    fontSize={width < 500 ? `8px` : `16px`}
+                    placeholder="검색어를 입력해주세요."
+                    radius={`46px`}
+                    padding={`0 40px 0 10px`}
+                  />
+                  <Wrapper
+                    width={`auto`}
+                    fontSize={width < 500 ? `14px` : `16px`}
+                    position={`absolute`}
+                    right={`16px`}
+                    top={`0`}
+                    cursor={`pointer`}
+                    height={width < 500 ? `40px` : `46px`}
+                  >
+                    <SearchOutlined />
+                  </Wrapper>
+                </Wrapper>
               </Wrapper>
             </Wrapper>
             <Wrapper
               height={`54px`}
               dr={`row`}
-              ju={`space-between`}
-              padding={`0 25px`}
               bgColor={Theme.lightGrey3_C}
               borderTop={`1px solid ${Theme.basicTheme_C}`}
               borderBottom={`1px solid ${Theme.lightGrey2_C}`}
               fontSize={width < 500 ? `14px` : `16px`}
               fontWeight={`600`}
-              textAlign={`center`}
             >
-              <Text>번호</Text>
-              <Text>제목</Text>
-              <Text>조회수</Text>
-              <Text>작성일</Text>
+              <Wrapper width={width < 900 ? `10%` : `6%`}>번호</Wrapper>
+              <Wrapper width={width < 900 ? `50%` : `74%`}>제목</Wrapper>
+              <Wrapper width={width < 900 ? `15%` : `10%`}>조회수</Wrapper>
+              <Wrapper width={width < 900 ? `25%` : `10%`}>작성일</Wrapper>
             </Wrapper>
-            <Wrapper
-              height={`60px`}
-              dr={`row`}
-              ju={`space-between`}
-              padding={`0 30px`}
-              borderBottom={`1px solid ${Theme.lightGrey2_C}`}
-              fontSize={width < 500 ? `14px` : `16px`}
-            >
-              <Text>1</Text>
-              <Text cursor={`pointer`} rowKey="id">
-                공지사항 제목이 들어오는 곳입니다.
-              </Text>
-              <Text>456</Text>
-              <Text>2022.12.31</Text>
-            </Wrapper>
+
+            <List>
+              <Wrapper width={width < 900 ? `10%` : `6%`}>1</Wrapper>
+              <Wrapper
+                width={width < 900 ? `50%` : `74%`}
+                padding={width < 900 ? `0` : `0 14px`}
+                al={`flex-start`}
+              >
+                <Text width={`100%`} isEllipsis>
+                  공지사항 제목이 들어오는 곳입니다.
+                </Text>
+              </Wrapper>
+              <Wrapper width={width < 900 ? `15%` : `10%`}>456</Wrapper>
+              <Wrapper width={width < 900 ? `25%` : `10%`}>2022.12.31</Wrapper>
+            </List>
             <CustomPage />
           </RsWrapper>
         </WholeWrapper>
