@@ -47,7 +47,7 @@ const FindPw = () => {
   return (
     <>
       <Head>
-        <title>BUY ME MIN | 비밀번호 찾기</title>
+        <title>BUY ME MINE | 비밀번호 찾기</title>
       </Head>
 
       <ClientLayout>

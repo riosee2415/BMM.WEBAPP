@@ -34,7 +34,7 @@ const FindId = () => {
   return (
     <>
       <Head>
-        <title>BUY ME MIN | 아이디 찾기</title>
+        <title>BUY ME MINE | 아이디 찾기</title>
       </Head>
 
       <ClientLayout>

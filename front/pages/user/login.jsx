@@ -96,7 +96,7 @@ const Login = () => {
   return (
     <>
       <Head>
-        <title>BUY ME MIN | 로그인</title>
+        <title>BUY ME MINE | 로그인</title>
       </Head>
 
       <ClientLayout>

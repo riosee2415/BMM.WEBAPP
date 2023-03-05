@@ -15,8 +15,8 @@ import {
   Image,
 } from "../../components/commonComponents";
 import { LeftOutlined } from "@ant-design/icons";
-import styled from "styled-components";
 import Link from "next/dist/client/link";
+import styled from "styled-components";
 
 const ListBtn = styled(Wrapper)`
   width: 240px;
@@ -53,7 +53,7 @@ const Detail = () => {
   return (
     <>
       <Head>
-        <title>BUY ME MIN | 공지사항 상세</title>
+        <title>BUY ME MINE | 이벤트</title>
       </Head>
 
       <ClientLayout>
@@ -61,7 +61,7 @@ const Detail = () => {
           <RsWrapper>
             <Wrapper width={width < 1100 ? `100%` : `65%`}>
               <Wrapper dr={`row`} ju={`flex-start`} margin={`0 0 30px`}>
-                <Link href={`/notice`}>
+                <Link href={`/event`}>
                   <a>
                     <Text fontSize={`23px`} color={Theme.basicTheme_C}>
                       <LeftOutlined />
@@ -74,7 +74,7 @@ const Detail = () => {
                   fontSize={width < 700 ? `20px` : `34px`}
                   fontWeight={`bold`}
                 >
-                  공지사항
+                  이벤트
                 </Text>
               </Wrapper>
               <Wrapper
@@ -89,18 +89,17 @@ const Detail = () => {
                   fontWeight={`600`}
                   margin={`0 0 12px`}
                 >
-                  공지사항 제목이 들어오는 곳입니다.
+                  이벤트명이 들어올 곳입니다.
                 </Text>
                 <Text>2022.12.31</Text>
               </Wrapper>
-              <Wrapper al={`flex-start`}>
+              <Wrapper>
                 <Image
                   alt="이벤트 사진"
-                  src={`https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/bmm/assets/images/sample-img/detail.png`}
-                  width={width < 500 ? `100%` : `420px`}
+                  src={`https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/bmm/assets/images/sample-img/event-detail.png`}
+                  width={width < 500 ? `100%` : `840px`}
                   margin={`0 0 30px`}
                 />
-
                 <Text fontSize={`16px`}>
                   헌법개정안이 제2항의 찬성을 얻은 때에는 헌법개정은 확정되며,
                   대통령은 즉시 이를 공포하여야 한다. 국가안전보장회의는
@@ -117,7 +116,7 @@ const Detail = () => {
                 </Text>
               </Wrapper>
               <Wrapper margin={`60px 0 0`}>
-                <Link href={`/notice`}>
+                <Link href={`/event/`}>
                   <a>
                     <ListBtn>목록으로</ListBtn>
                   </a>

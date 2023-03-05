@@ -51,7 +51,7 @@ const Index = () => {
   return (
     <>
       <Head>
-        <title>BUY ME MIN | 이벤트</title>
+        <title>BUY ME MINE | 이벤트</title>
       </Head>
 
       <ClientLayout>

@@ -52,7 +52,7 @@ const Index = () => {
   return (
     <>
       <Head>
-        <title>BUY ME MIN | 공지사항</title>
+        <title>BUY ME MINE | 공지사항</title>
       </Head>
 
       <ClientLayout>

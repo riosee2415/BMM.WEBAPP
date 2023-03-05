@@ -114,7 +114,7 @@ const SignUp = () => {
   return (
     <>
       <Head>
-        <title>BUY ME MIN | 회원가입</title>
+        <title>BUY ME MINE | 회원가입</title>
       </Head>
 
       <ClientLayout>
