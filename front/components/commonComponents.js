@@ -239,8 +239,6 @@ export const CommonButton = styled(Button)`
   ${(props) =>
     props.kindOf === `delete` && `border : 1px solid ${props.theme.red_C};`}
 
-
-
 &:hover {
     background: ${(props) => props.theme.basicTheme_C};
     color: ${(props) => props.theme.black_C};
