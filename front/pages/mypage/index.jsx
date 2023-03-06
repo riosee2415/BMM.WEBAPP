@@ -183,54 +183,27 @@ const Index = () => {
                   height={`210px`}
                   al={`flex-start`}
                   bgColor={Theme.lightGrey3_C}
-                  padding={`0 20px`}
+                  padding={`15px 36px`}
                   position={`relative`}
                   margin={`0 0 20px`}
+                  radius={`3px`}
                 >
-                  <DetailText>상품 요청 내역</DetailText>
-                  <Wrapper
-                    width={`auto`}
-                    fontSize={width < 700 ? `14px` : `16px`}
-                    position={`absolute`}
-                    right={`16px`}
-                    top={width < 700 ? `35px` : `25px`}
-                    color={Theme.grey_C}
-                  >
+                  <DetailText dr={`row`} ju={`space-between`}>
+                    <Text>상품 요청 내역</Text>
                     <RightOutlined />
-                  </Wrapper>
-                  <DetailText>1:1 문의 내역</DetailText>
-                  <Wrapper
-                    width={`auto`}
-                    fontSize={width < 700 ? `14px` : `16px`}
-                    position={`absolute`}
-                    right={`16px`}
-                    top={width < 700 ? `70px` : `65px`}
-                    color={Theme.grey_C}
-                  >
+                  </DetailText>
+                  <DetailText dr={`row`} ju={`space-between`}>
+                    <Text>1:1 문의 내역</Text>
                     <RightOutlined />
-                  </Wrapper>
-                  <DetailText>나의 리뷰 내역</DetailText>
-                  <Wrapper
-                    width={`auto`}
-                    fontSize={width < 700 ? `14px` : `16px`}
-                    position={`absolute`}
-                    right={`16px`}
-                    top={width < 700 ? `105px` : `105px`}
-                    color={Theme.grey_C}
-                  >
+                  </DetailText>
+                  <DetailText dr={`row`} ju={`space-between`}>
+                    <Text>나의 리뷰 내역</Text>
                     <RightOutlined />
-                  </Wrapper>
-                  <DetailText>회원정보수정</DetailText>
-                  <Wrapper
-                    width={`auto`}
-                    fontSize={width < 700 ? `14px` : `16px`}
-                    position={`absolute`}
-                    right={`16px`}
-                    top={width < 700 ? `143px` : `145px`}
-                    color={Theme.grey_C}
-                  >
+                  </DetailText>
+                  <DetailText dr={`row`} ju={`space-between`}>
+                    <Text>회원정보수정</Text>
                     <RightOutlined />
-                  </Wrapper>
+                  </DetailText>
                 </Wrapper>
               </Wrapper>
             </Wrapper>
