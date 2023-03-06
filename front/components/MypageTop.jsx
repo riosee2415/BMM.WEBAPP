@@ -1,0 +1,102 @@
+import React, { useEffect } from "react";
+import {
+  Wrapper,
+  Text,
+  Image,
+  WholeWrapper,
+  RsWrapper,
+  SpanText,
+} from "./commonComponents";
+import Theme from "./Theme";
+import useWidth from "../hooks/useWidth";
+import { useDispatch, useSelector } from "react-redux";
+import styled from "styled-components";
+
+const MypageBox = styled(Wrapper)`
+  position: relative;
+  width: 25%;
+  height: 100%;
+
+  &:before {
+    content: "";
+    width: 1px;
+    height: 60px;
+    background: ${Theme.lightGrey2_C};
+    position: absolute;
+    right: 0;
+    top: 50%;
+    margin: -30px 0 0;
+
+    @media (max-width: 700px) {
+      display: none;
+    }
+  }
+
+  &:first-child,
+  &:last-child {
+    &:before {
+      display: none;
+    }
+  }
+
+  @media (max-width: 700px) {
+    width: 50%;
+    height: 50%;
+  }
+`;
+
+const MypageTop = () => {
+  const width = useWidth();
+  const dispatch = useDispatch();
+
+  return (
+    <WholeWrapper>
+      <Wrapper>
+        <Text fontSize={width < 700 ? `32px` : `42px`} fontWeight={`600`}>
+          마이페이지
+        </Text>
+        <Text fontSize={width < 700 ? `16px` : `18px`} margin={`0 0 30px`}>
+          000 회원님 환영합니다!
+        </Text>
+      </Wrapper>
+      <Wrapper
+        dr={`row`}
+        border={`1px solid ${Theme.lightGrey2_C}`}
+        margin={`0 0 60px`}
+        height={width < 700 ? `160px` : `130px`}
+      >
+        <MypageBox bgColor={Theme.lightGrey3_C}>
+          <Text
+            fontSize={width < 700 ? `18px` : `28px`}
+            fontWeight={`bold`}
+            color={Theme.grey_C}
+          >
+            등급명
+          </Text>
+          <Text>회원 등급</Text>
+        </MypageBox>
+        <MypageBox>
+          <Text fontSize={width < 700 ? `18px` : `28px`} fontWeight={`bold`}>
+            10,000
+          </Text>
+          <Text>포인트</Text>
+        </MypageBox>
+
+        <MypageBox>
+          <Text fontSize={width < 700 ? `18px` : `28px`} fontWeight={`bold`}>
+            3
+          </Text>
+          <Text>찜목록</Text>
+        </MypageBox>
+        <MypageBox>
+          <Text fontSize={width < 700 ? `18px` : `28px`} fontWeight={`bold`}>
+            6
+          </Text>
+          <Text>나의 주문 내역</Text>
+        </MypageBox>
+      </Wrapper>
+    </WholeWrapper>
+  );
+};
+
+export default MypageTop;
