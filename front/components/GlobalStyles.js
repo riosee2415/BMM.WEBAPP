@@ -99,6 +99,11 @@ const GlobalStyles = createGlobalStyle`
     color: ${(props) => props.theme.black_C};
     border-color: ${(props) => props.theme.basicTheme_C};
   }
+
+  .ant-badge-count{
+    color: ${(props) => props.theme.black_C};
+    background: ${(props) => props.theme.basicTheme_C};
+  }
   
   @media (max-width : 576px) {
     html { 

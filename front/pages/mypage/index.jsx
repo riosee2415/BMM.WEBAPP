@@ -16,9 +16,10 @@ import {
 import { RightOutlined } from "@ant-design/icons";
 import styled from "styled-components";
 
-const DetailText = styled.p`
+const DetailText = styled(Wrapper)`
   color: ${Theme.grey_C};
   font-size: 16px;
+  height: 45px;
 
   &:hover {
     cursor: pointer;
@@ -29,6 +30,31 @@ const DetailText = styled.p`
     font-size: 14px;
   }
 `;
+
+const MypageBox = styled(Wrapper)`
+  position: relative;
+  width: 25%;
+  height: 100%;
+
+  &:before {
+    content: "";
+    width: 1px;
+    height: 60px;
+    background: ${Theme.lightGrey2_C};
+    position: absolute;
+    right: 0;
+    top: 50%;
+    margin: -30px 0 0;
+  }
+
+  &:first-child,
+  &:last-child {
+    &:before {
+      display: none;
+    }
+  }
+`;
+
 const Index = () => {
   ////// GLOBAL STATE //////
 
@@ -64,15 +90,11 @@ const Index = () => {
             </Wrapper>
             <Wrapper
               dr={`row`}
-              borderTop={`1px solid ${Theme.lightGrey2_C}`}
-              borderBottom={`1px solid ${Theme.lightGrey2_C}`}
+              border={`1px solid ${Theme.lightGrey2_C}`}
               margin={`0 0 60px`}
+              height={`130px`}
             >
-              <Wrapper
-                width={`25%`}
-                height={`129px`}
-                bgColor={Theme.lightGrey3_C}
-              >
+              <MypageBox bgColor={Theme.lightGrey3_C}>
                 <Text
                   fontSize={width < 700 ? `20px` : `28px`}
                   fontWeight={`bold`}
@@ -81,12 +103,8 @@ const Index = () => {
                   등급명
                 </Text>
                 <Text>회원 등급</Text>
-              </Wrapper>
-              <Wrapper
-                width={`25%`}
-                height={`129px`}
-                borderRight={`1px solid ${Theme.lightGrey2_C}`}
-              >
+              </MypageBox>
+              <MypageBox>
                 <Text
                   fontSize={width < 700 ? `20px` : `28px`}
                   fontWeight={`bold`}
@@ -94,13 +112,9 @@ const Index = () => {
                   10,000
                 </Text>
                 <Text>포인트</Text>
-              </Wrapper>
+              </MypageBox>
 
-              <Wrapper
-                width={`25%`}
-                height={`129px`}
-                borderRight={`1px solid ${Theme.lightGrey2_C}`}
-              >
+              <MypageBox>
                 <Text
                   fontSize={width < 700 ? `20px` : `28px`}
                   fontWeight={`bold`}
@@ -108,8 +122,8 @@ const Index = () => {
                   3
                 </Text>
                 <Text>찜목록</Text>
-              </Wrapper>
-              <Wrapper width={`25%`} height={`129px`}>
+              </MypageBox>
+              <MypageBox>
                 <Text
                   fontSize={width < 700 ? `20px` : `28px`}
                   fontWeight={`bold`}
@@ -117,10 +131,10 @@ const Index = () => {
                   6
                 </Text>
                 <Text>나의 주문 내역</Text>
-              </Wrapper>
+              </MypageBox>
             </Wrapper>
             <Wrapper dr={`row`} ju={`space-between`}>
-              <Wrapper width={width < 700 ? `100%` : `45%`}>
+              <Wrapper width={width < 700 ? `100%` : `48%`}>
                 <Wrapper
                   al={`flex-start`}
                   fontSize={width < 700 ? `18px` : `20px`}
@@ -133,57 +147,30 @@ const Index = () => {
                   height={`210px`}
                   al={`flex-start`}
                   bgColor={Theme.lightGrey3_C}
-                  padding={`0 20px`}
+                  padding={`15px 36px`}
                   position={`relative`}
                   margin={`0 0 20px`}
+                  radius={`3px`}
                 >
-                  <DetailText>주문 / 배송 조회</DetailText>
-                  <Wrapper
-                    width={`auto`}
-                    fontSize={width < 700 ? `14px` : `16px`}
-                    position={`absolute`}
-                    right={`16px`}
-                    top={width < 700 ? `35px` : `25px`}
-                    color={Theme.grey_C}
-                  >
+                  <DetailText dr={`row`} ju={`space-between`}>
+                    <Text>주문 / 배송 조회</Text>
                     <RightOutlined />
-                  </Wrapper>
-                  <DetailText>취소 / 환불 내역</DetailText>
-                  <Wrapper
-                    width={`auto`}
-                    fontSize={width < 700 ? `14px` : `16px`}
-                    position={`absolute`}
-                    right={`16px`}
-                    top={width < 700 ? `70px` : `65px`}
-                    color={Theme.grey_C}
-                  >
+                  </DetailText>
+                  <DetailText dr={`row`} ju={`space-between`}>
+                    <Text>취소 / 환불 내역</Text>
                     <RightOutlined />
-                  </Wrapper>
-                  <DetailText>쿠폰 목록</DetailText>
-                  <Wrapper
-                    width={`auto`}
-                    fontSize={width < 700 ? `14px` : `16px`}
-                    position={`absolute`}
-                    right={`16px`}
-                    top={width < 700 ? `105px` : `105px`}
-                    color={Theme.grey_C}
-                  >
+                  </DetailText>
+                  <DetailText dr={`row`} ju={`space-between`}>
+                    <Text>쿠폰 목록</Text>
                     <RightOutlined />
-                  </Wrapper>
-                  <DetailText>포인트 내역</DetailText>
-                  <Wrapper
-                    width={`auto`}
-                    fontSize={width < 700 ? `14px` : `16px`}
-                    position={`absolute`}
-                    right={`16px`}
-                    top={width < 700 ? `143px` : `145px`}
-                    color={Theme.grey_C}
-                  >
+                  </DetailText>
+                  <DetailText dr={`row`} ju={`space-between`}>
+                    <Text>포인트 내역</Text>
                     <RightOutlined />
-                  </Wrapper>
+                  </DetailText>
                 </Wrapper>
               </Wrapper>
-              <Wrapper width={width < 700 ? `100%` : `45%`}>
+              <Wrapper width={width < 700 ? `100%` : `48%`}>
                 <Wrapper
                   al={`flex-start`}
                   fontSize={width < 700 ? `18px` : `20px`}
