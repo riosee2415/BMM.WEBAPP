@@ -121,8 +121,8 @@ const reducer = (state = initailState, action) =>
         console.log("GET SERVER SIDE PROPS ACTION");
 
         draft.st_loadMyInfoLoading = true;
-        draft.st_loadMyInfoError = null;
         draft.st_loadMyInfoDone = false;
+        draft.st_loadMyInfoError = null;
         break;
 
       case LOAD_MY_INFO_SUCCESS:
@@ -141,8 +141,8 @@ const reducer = (state = initailState, action) =>
 
       case LOGIN_REQUEST: {
         draft.st_loginLoading = true;
-        draft.st_loginDone = null;
-        draft.st_loginError = false;
+        draft.st_loginDone = false;
+        draft.st_loginError = null;
         break;
       }
       case LOGIN_SUCCESS: {
@@ -160,8 +160,8 @@ const reducer = (state = initailState, action) =>
       //////////////////////////////////////////////
       case LOGIN_ADMIN_REQUEST: {
         draft.st_loginAdminLoading = true;
-        draft.st_loginAdminDone = null;
-        draft.st_loginAdminError = false;
+        draft.st_loginAdminDone = false;
+        draft.st_loginAdminError = null;
         break;
       }
       case LOGIN_ADMIN_SUCCESS: {
@@ -180,8 +180,8 @@ const reducer = (state = initailState, action) =>
 
       case SIGNUP_REQUEST: {
         draft.st_signUpLoading = true;
-        draft.st_signUpDone = null;
-        draft.st_signUpError = false;
+        draft.st_signUpDone = false;
+        draft.st_signUpError = null;
         break;
       }
       case SIGNUP_SUCCESS: {
@@ -199,8 +199,8 @@ const reducer = (state = initailState, action) =>
 
       case USERLIST_REQUEST: {
         draft.st_userListLoading = true;
-        draft.st_userListDone = null;
-        draft.st_userListError = false;
+        draft.st_userListDone = false;
+        draft.st_userListError = null;
         break;
       }
       case USERLIST_SUCCESS: {
@@ -219,8 +219,8 @@ const reducer = (state = initailState, action) =>
 
       case ADMINUSERLIST_REQUEST: {
         draft.st_adminUserListLoading = true;
-        draft.st_adminUserListDone = null;
-        draft.st_adminUserListError = false;
+        draft.st_adminUserListDone = false;
+        draft.st_adminUserListError = null;
         break;
       }
       case ADMINUSERLIST_SUCCESS: {
@@ -239,8 +239,8 @@ const reducer = (state = initailState, action) =>
 
       case USERLIST_UPDATE_REQUEST: {
         draft.st_userListUpdateLoading = true;
-        draft.st_userListUpdateDone = null;
-        draft.st_userListUpdateError = false;
+        draft.st_userListUpdateDone = false;
+        draft.st_userListUpdateError = null;
         break;
       }
       case USERLIST_UPDATE_SUCCESS: {
@@ -258,8 +258,8 @@ const reducer = (state = initailState, action) =>
 
       case KAKAO_LOGIN_REQUEST: {
         draft.st_kakaoLoginLoading = true;
-        draft.st_kakaoLoginDone = null;
-        draft.st_kakaoLoginError = false;
+        draft.st_kakaoLoginDone = false;
+        draft.st_kakaoLoginError = null;
         break;
       }
       case KAKAO_LOGIN_SUCCESS: {
@@ -303,8 +303,8 @@ const reducer = (state = initailState, action) =>
 
       case MENURIGHT_UPDATE_REQUEST: {
         draft.st_menuRightUpdateLoading = true;
-        draft.st_menuRightUpdateDone = null;
-        draft.st_menuRightUpdateError = false;
+        draft.st_menuRightUpdateDone = false;
+        draft.st_menuRightUpdateError = null;
         break;
       }
       case MENURIGHT_UPDATE_SUCCESS: {

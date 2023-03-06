@@ -6,6 +6,7 @@ import AppHeader from "./AppHeader";
 import AppFooter from "./AppFooter";
 import { WholeWrapper } from "./commonComponents";
 import useWidth from "../hooks/useWidth";
+import QuickMenu from "./QuickMenu";
 
 const ClientLayout = ({ children }) => {
   const width = useWidth();
@@ -15,7 +16,11 @@ const ClientLayout = ({ children }) => {
       <AppHeader />
 
       {/* content */}
-      <WholeWrapper padding={`190px 0 0`}>{children}</WholeWrapper>
+      <WholeWrapper padding={width < 800 ? `107px 0 0` : `190px 0 0`}>
+        {children}
+      </WholeWrapper>
+
+      {width < 800 && <QuickMenu />}
 
       {/* Footer */}
 

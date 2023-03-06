@@ -13,7 +13,6 @@ import styled from "styled-components";
 import Head from "next/head";
 import Popup from "../components/popup/popup";
 import Mainslider from "../components/slide/MainSlider";
-import CC02 from "../components/common/CC02";
 
 const Home = ({}) => {
   ////// GLOBAL STATE //////
@@ -26,20 +25,15 @@ const Home = ({}) => {
   ////// HANDLER //////
   ////// DATAVIEW //////
 
-  const getEditContent = (contentValue) => {
-    console.log(contentValue);
-  };
-
   return (
     <>
       <Head>
-        <title>ALAL</title>
+        <title>BUY ME MINE</title>
       </Head>
 
       <ClientLayout>
         <WholeWrapper>
           <Mainslider />
-          <CC02 />
 
           <Popup />
         </WholeWrapper>
