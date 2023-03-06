@@ -698,11 +698,11 @@ const MainBanner = ({}) => {
                   onFinish={updateButtonHandler}
                 >
                   <Form.Item label="이미지 명칭" name="title">
-                    <Input size="small" allowClear />
+                    <Input.TextArea size="small" allowClear />
                   </Form.Item>
 
                   <Form.Item label="텍스트 뷰" name="content">
-                    <Input size="small" allowClear />
+                    <Input.TextArea size="small" allowClear />
                   </Form.Item>
 
                   <Form.Item label="연결링크" name="link">
