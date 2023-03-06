@@ -4,51 +4,51 @@ import {
   LOGIN_REQUEST,
   LOGIN_SUCCESS,
   LOGIN_FAILURE,
-  /////////////////////////////
+  //
   LOGIN_ADMIN_REQUEST,
   LOGIN_ADMIN_SUCCESS,
   LOGIN_ADMIN_FAILURE,
-  /////////////////////////////
+  //
   SIGNUP_REQUEST,
   SIGNUP_SUCCESS,
   SIGNUP_FAILURE,
-  /////////////////////////////
+  //
   USERLIST_REQUEST,
   USERLIST_SUCCESS,
   USERLIST_FAILURE,
-  /////////////////////////////
+  //
   USERLIST_UPDATE_REQUEST,
   USERLIST_UPDATE_SUCCESS,
   USERLIST_UPDATE_FAILURE,
-  /////////////////////////////
+  //
   LOAD_MY_INFO_REQUEST,
   LOAD_MY_INFO_SUCCESS,
   LOAD_MY_INFO_FAILURE,
-  /////////////////////////////
+  //
   KAKAO_LOGIN_REQUEST,
   KAKAO_LOGIN_SUCCESS,
   KAKAO_LOGIN_FAILURE,
-  /////////////////////////////
+  //
   USER_HISTORY_REQUEST,
   USER_HISTORY_SUCCESS,
   USER_HISTORY_FAILURE,
-  /////////////////////////////
+  //
   MENURIGHT_UPDATE_REQUEST,
   MENURIGHT_UPDATE_SUCCESS,
   MENURIGHT_UPDATE_FAILURE,
-  /////////////////////////////
+  //
   ADMINUSERLIST_REQUEST,
   ADMINUSERLIST_SUCCESS,
   ADMINUSERLIST_FAILURE,
-  /////////////////////////////
+  //
   ADMINUSERRIGHT_HISTORY_REQUEST,
   ADMINUSERRIGHT_HISTORY_SUCCESS,
   ADMINUSERRIGHT_HISTORY_FAILURE,
-  /////////////////////////////
+  //
   ADMINUSER_EXITTRUE_REQUEST,
   ADMINUSER_EXITTRUE_SUCCESS,
   ADMINUSER_EXITTRUE_FAILURE,
-  /////////////////////////////
+  //
   ADMINUSER_EXITFALSE_REQUEST,
   ADMINUSER_EXITFALSE_SUCCESS,
   ADMINUSER_EXITFALSE_FAILURE,

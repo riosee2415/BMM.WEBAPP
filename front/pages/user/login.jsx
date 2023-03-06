@@ -1,11 +1,11 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useState, useCallback } from "react";
 import ClientLayout from "../../components/ClientLayout";
 import Theme from "../../components/Theme";
 import Head from "next/head";
 import Link from "next/dist/client/link";
 import wrapper from "../../store/configureStore";
-import { LOAD_MY_INFO_REQUEST } from "../../reducers/user";
+import { LOAD_MY_INFO_REQUEST, LOGIN_REQUEST } from "../../reducers/user";
 import axios from "axios";
 import { END } from "redux-saga";
 import useWidth from "../../hooks/useWidth";
@@ -19,10 +19,11 @@ import {
   Image,
 } from "../../components/commonComponents";
 import styled from "styled-components";
-import { Modal } from "antd";
+import { message, Modal } from "antd";
 import { CloseOutlined } from "@ant-design/icons";
-
-
+import useInput from "../../hooks/useInput";
+import { useDispatch, useSelector } from "react-redux";
+import { useRouter } from "next/router";
 
 const SnsBtn = styled(Wrapper)`
   width: 58px;
@@ -61,9 +62,9 @@ const ShoppingBtn = styled(Wrapper)`
   cursor: pointer;
 
   &:hover {
-  background: ${(props) => props.theme.lightGrey2_C};
-  color: ${(props) => props.theme.black_C};
-}
+    background: ${(props) => props.theme.lightGrey2_C};
+    color: ${(props) => props.theme.black_C};
+  }
 
   @media (max-width: 500px) {
     font-size: 16px;
@@ -74,14 +75,42 @@ const HoverImg = styled(Image)``;
 
 const Login = () => {
   ////// GLOBAL STATE //////
+  const { st_loginDone, st_loginError } = useSelector((state) => state.user);
+
+  ////// HOOKS //////
+
+  const width = useWidth();
+  const router = useRouter();
+  const dispatch = useDispatch();
 
   const [isModal, setIsModal] = useState(false);
   const [isModal_2, setIsModal_2] = useState(false);
 
-  ////// HOOKS //////
-  const width = useWidth();
+  const userId = useInput("");
+  const password = useInput("");
   ////// REDUX //////
   ////// USEEFFECT //////
+  useEffect(() => {
+    if (st_loginDone) {
+      router.push(`/`);
+      return message.success({
+        content: "로그인되었습니다.",
+        style: {
+          marginTop: "200px",
+        },
+      });
+    }
+
+    if (st_loginError) {
+      return message.error({
+        content: st_loginError,
+        style: {
+          marginTop: "200px",
+        },
+      });
+    }
+  }, [st_loginDone, st_loginError]);
+
   ////// TOGGLE //////
   const modalToggle = useCallback(() => {
     setIsModal((prev) => !prev);
@@ -91,6 +120,46 @@ const Login = () => {
     setIsModal_2((prev) => !prev);
   }, [isModal_2]);
   ////// HANDLER //////
+
+  const moveLinkHandler = useCallback((link) => {
+    router.push(link);
+  }, []);
+
+  const loginHandler = useCallback(() => {
+    if (!userId.value) {
+      return message.error({
+        content: "이메일을 입력해주세요.",
+        style: {
+          marginTop: "200px",
+        },
+      });
+    }
+    if (!password.value) {
+      return message.error({
+        content: "비밀번호를 입력해주세요.",
+        style: {
+          marginTop: "200px",
+        },
+      });
+    }
+    dispatch({
+      type: LOGIN_REQUEST,
+      data: {
+        email: userId.value,
+        password: password.value,
+      },
+    });
+  }, [userId.value, password.value]);
+
+  const onSubmitHandler = useCallback(
+    (e) => {
+      if (e.key === "Enter") {
+        loginHandler();
+      }
+    },
+    [userId, password]
+  );
+
   ////// DATAVIEW //////
 
   return (
@@ -127,6 +196,8 @@ const Login = () => {
                 type="text"
                 placeholder="아이디"
                 margin={`0 0 12px`}
+                onKeyPress={onSubmitHandler}
+                {...userId}
               />
               <TextInput
                 width={`100%`}
@@ -134,6 +205,8 @@ const Login = () => {
                 type="password"
                 margin={`0 0 10px`}
                 placeholder="비밀번호"
+                onKeyPress={onSubmitHandler}
+                {...password}
               />
               <Wrapper
                 dr={`row`}
@@ -162,6 +235,7 @@ const Login = () => {
                 width={`100%`}
                 height={`54px`}
                 margin={`0 0 12px`}
+                onClick={loginHandler}
               >
                 로그인
               </CommonButton>
@@ -301,9 +375,7 @@ const Login = () => {
                   </Text>
                 </Wrapper>
                 <Wrapper dr={`row`} ju={`space-between`}>
-                  <ShoppingBtn
-                    onClick={modalToggle_2}
-                  >
+                  <ShoppingBtn onClick={modalToggle_2}>
                     쇼핑 계속하기
                   </ShoppingBtn>
                   <CommonButton
