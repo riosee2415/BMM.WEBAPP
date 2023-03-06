@@ -323,7 +323,7 @@ export const Text = styled.p`
     transition : 0.5s;
     cursor:pointer;
     &:hover{
-      color :${props.theme.basicTheme_C};
+      color :${props.theme.subTheme2_C};
     }
   `};
 `;
