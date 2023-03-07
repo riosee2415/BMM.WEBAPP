@@ -484,6 +484,7 @@ export const CustomPage = styled(Pagination)`
   & .ant-pagination-prev > button {
     border: none;
     border-radius: 100%;
+    color: ${(props) => props.theme.basicTheme_C};
   }
 
   & {
@@ -503,11 +504,13 @@ export const CustomPage = styled(Pagination)`
   }
 
   .ant-pagination-item:hover a {
-    color: ${(props) => props.theme.basicTheme_C};
+    background-color: ${(props) => props.theme.basicTheme_C} !important;
+    color: ${(props) => props.theme.black_C} !important;
   }
 
   & .ant-pagination-item a {
     color: ${(props) => props.theme.lightGrey6_C};
+    border-radius: 100%;
   }
 
   & .ant-pagination-item-active a {
@@ -515,8 +518,8 @@ export const CustomPage = styled(Pagination)`
   }
 
   & .ant-pagination-item-active {
-    background-color: ${(props) => props.theme.lightGrey_C} !important;
-    color: ${(props) => props.theme.basicTheme_C} !important;
+    background-color: ${(props) => props.theme.basicTheme_C} !important;
+    color: ${(props) => props.theme.black_C} !important;
     border: none;
   }
 

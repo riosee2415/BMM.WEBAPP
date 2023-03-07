@@ -134,7 +134,7 @@ const SubMenuCol = styled(ColWrapper)`
 const InMenu = styled(Wrapper)`
   background: ${Theme.lightGrey3_C};
   position: absolute;
-  top: 0;
+  bottom: 0;
   right: -100%;
   z-index: 30;
   height: 700px;
@@ -159,7 +159,6 @@ const SubMenu = styled(Wrapper)`
 `;
 
 const SubMenuTextCol = styled(Wrapper)`
-  position: relative;
   height: 42px;
   min-height: 42px;
   font-size: ${(props) => props.fontSize || `16px`};
@@ -171,7 +170,7 @@ const SubMenuTextCol = styled(Wrapper)`
   &:hover {
     background: ${Theme.subTheme3_C};
 
-    & + ${InMenu} {
+    & ${InMenu} {
       display: flex;
     }
   }
@@ -382,16 +381,39 @@ const AppHeader = () => {
                   </Text>
 
                   <SubMenuWrapper height={`48px`}>
-                    <SubMenuTextCol>LUSH(러쉬)</SubMenuTextCol>
-                    <SubMenuTextCol>의류 </SubMenuTextCol>
-                    <SubMenuTextCol>편의점</SubMenuTextCol>
-                    <SubMenuTextCol>DAISO(다이소)</SubMenuTextCol>
-                    <InMenu>
-                      <SubMenu>LUSH(러쉬)</SubMenu>
-                      <SubMenu>의류</SubMenu>
-                      <SubMenu>편의점</SubMenu>
-                      <SubMenu>DAISO(다이소)</SubMenu>
-                    </InMenu>
+                    <SubMenuTextCol>
+                      LUSH(러쉬)
+                      <InMenu>
+                        <SubMenu>LUSH(러쉬)</SubMenu>
+                        <SubMenu>의류</SubMenu>
+                        <SubMenu>편의점</SubMenu>
+                        <SubMenu>DAISO(다이소)</SubMenu>
+                      </InMenu>
+                    </SubMenuTextCol>
+                    <SubMenuTextCol>
+                      의류
+                      <InMenu>
+                        <SubMenu>의류</SubMenu>
+                        <SubMenu>편의점</SubMenu>
+                        <SubMenu>DAISO(다이소)</SubMenu>
+                      </InMenu>
+                    </SubMenuTextCol>
+                    <SubMenuTextCol>
+                      편의점
+                      <InMenu>
+                        <SubMenu>편의점</SubMenu>
+                        <SubMenu>DAISO(다이소)</SubMenu>
+                      </InMenu>
+                    </SubMenuTextCol>
+                    <SubMenuTextCol>
+                      DAISO(다이소)
+                      <InMenu>
+                        <SubMenu>LUSH(러쉬)</SubMenu>
+                        <SubMenu>의류</SubMenu>
+                        <SubMenu>편의점</SubMenu>
+                        <SubMenu>DAISO(다이소)</SubMenu>
+                      </InMenu>
+                    </SubMenuTextCol>
                   </SubMenuWrapper>
                 </MenuCol>
               </Wrapper>
