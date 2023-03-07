@@ -1,32 +1,54 @@
-import React, { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { LOAD_MY_INFO_REQUEST } from "../reducers/user";
-import useInput from "../hooks/useInput";
-import ClientLayout from "../components/ClientLayout";
+import React from "react";
+import ClientLayout from "../../components/ClientLayout";
+import Head from "next/head";
+import wrapper from "../../store/configureStore";
+import { LOAD_MY_INFO_REQUEST } from "../../reducers/user";
 import axios from "axios";
-import wrapper from "../store/configureStore";
 import { END } from "redux-saga";
+import useWidth from "../../hooks/useWidth";
 import {
-  CommonButton,
+  CustomPage,
   Image,
   ProductWrapper,
   RsWrapper,
+  SpanText,
   SquareBox,
   Text,
   WholeWrapper,
   Wrapper,
-} from "../components/commonComponents";
-import useWidth from "../hooks/useWidth";
-import Theme from "../components/Theme";
+} from "../../components/commonComponents";
+import Theme from "../../components/Theme";
+import { Select } from "antd";
 import styled from "styled-components";
-import Head from "next/head";
-import Popup from "../components/popup/popup";
-import Mainslider from "../components/slide/MainSlider";
-import MainEventSlider from "../components/slide/MainEventSlider";
-import MainNewSlider from "../components/slide/MainNewSlider";
-import MainBrandSlider from "../components/slide/MainBrandSlider";
-import MainRecommandSlider from "../components/slide/MainRecommandSlider";
-import { RightOutlined } from "@ant-design/icons";
+
+const CustomSelect = styled(Wrapper)`
+  width: ${(props) => props.width || `145px`};
+  height: ${(props) => props.height || `34px`};
+
+  .ant-select {
+    width: 100%;
+  }
+
+  .ant-select-single:not(.ant-select-customize-input) .ant-select-selector,
+  .ant-select-single:not(.ant-select-customize-input)
+    .ant-select-selector
+    .ant-select-selection-search-input {
+    width: 100%;
+    height: ${(props) => props.height || `34px`};
+    border: none;
+    border-bottom: 1px solid ${(props) => props.theme.lightGrey2_C};
+  }
+
+  .ant-select-single .ant-select-selector .ant-select-selection-item,
+  .ant-select-single .ant-select-selector .ant-select-selection-placeholder {
+    width: 100%;
+    line-height: ${(props) => props.height || `34px`};
+  }
+
+  .ant-select-selector {
+    align-items: center !important;
+  }
+`;
 
 const Btn = styled(Wrapper)`
   width: auto;
@@ -34,16 +56,17 @@ const Btn = styled(Wrapper)`
   padding: 0 20px;
   border-radius: 40px;
   font-size: 18px;
-  background: ${Theme.lightGrey3_C};
-  color: ${Theme.grey_C};
+  color: ${Theme.lightGrey_C};
   margin: 0 12px 0 0;
+  font-weight: 600;
+  border: 1px solid ${Theme.lightGrey2_C};
 
   ${(props) =>
     props.isActive &&
     `
-    font-weight: 600;
     color: ${Theme.black_C};
-    background: ${Theme.basicTheme_C};
+    background: ${Theme.subTheme3_C};
+    border: 1px solid ${Theme.basicTheme_C};
   `}
 
   &:last-child {
@@ -53,7 +76,8 @@ const Btn = styled(Wrapper)`
   &:hover {
     cursor: pointer;
     color: ${Theme.black_C};
-    background: ${Theme.basicTheme_C};
+    background: ${Theme.subTheme3_C};
+    border: 1px solid ${Theme.basicTheme_C};
   }
 
   @media (max-width: 800px) {
@@ -67,32 +91,8 @@ const Btn = styled(Wrapper)`
   }
 `;
 
-const EventBox = styled(Wrapper)`
-  position: relative;
-  overflow: ${(props) => props.overflow || `hidden`};
-
-  &:before {
-    content: "";
-    display: block;
-    padding-bottom: 33%;
-  }
-
-  & img:not(.check) {
-    position: absolute;
-    top: 0;
-    left: 0;
-    height: 100%;
-    transition: 0.5s;
-  }
-
-  &:hover img {
-    transform: scale(1.1);
-  }
-`;
-
-const Home = ({}) => {
+const Index = () => {
   ////// GLOBAL STATE //////
-
   ////// HOOKS //////
   const width = useWidth();
   ////// REDUX //////
@@ -154,65 +154,73 @@ const Home = ({}) => {
   return (
     <>
       <Head>
-        <title>BUY ME MINE</title>
+        <title>BUY ME MINE | 상품</title>
       </Head>
 
       <ClientLayout>
-        <WholeWrapper>
-          <Mainslider />
+        <WholeWrapper padding={width < 800 ? `70px 0 0` : `95px 0 0`}>
           <RsWrapper>
-            <MainEventSlider />
-            <Wrapper dr={`row`} margin={`0 0 100px`} ju={`space-between`}>
-              <Wrapper width={width < 800 ? `100%` : `38%`}>
-                <MainNewSlider />
-              </Wrapper>
-              <Wrapper
-                width={width < 800 ? `100%` : `60%`}
-                margin={width < 800 ? `50px 0 0` : `0`}
+            <Wrapper dr={`row`} ju={`space-between`}>
+              <Text
+                fontSize={width < 800 ? `22px` : `34px`}
+                fontWeight={`bold`}
               >
-                <MainBrandSlider />
+                의류
+              </Text>
+              <Wrapper dr={`row`} width={`auto`}>
+                <Image
+                  alt="home icon"
+                  src={`https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/bmm/assets/images/icon/home.png`}
+                  width={`12px`}
+                />
+                <Text color={Theme.grey_C} margin={`0 6px`}>
+                  HOME
+                </Text>
+                <Image
+                  alt="next icon"
+                  src={`https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/bmm/assets/images/icon/next.png`}
+                  width={`5px`}
+                />
+                <Text color={Theme.grey_C} margin={`0 6px`}>
+                  의류
+                </Text>
+                <Image
+                  alt="next icon"
+                  src={`https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/bmm/assets/images/icon/next.png`}
+                  width={`5px`}
+                />
+                <Text color={Theme.grey_C} margin={`0 0 0 6px`}>
+                  상의
+                </Text>
               </Wrapper>
             </Wrapper>
+            <Wrapper dr={`row`} ju={`flex-start`} margin={`18px 0 0`}>
+              <Btn>전체</Btn>
+              <Btn isActive>상의</Btn>
+              <Btn>하의</Btn>
+              <Btn>악세사리</Btn>
+            </Wrapper>
+            <Wrapper dr={`row`} ju={`space-between`} margin={`30px 0 24px`}>
+              <Text
+                fontSize={width < 800 ? `14px` : `16px`}
+                color={Theme.grey_C}
+              >
+                총&nbsp;
+                <SpanText fontWeight={`500`} color={Theme.basicTheme_C}>
+                  43
+                </SpanText>
+                개의 상품이 있습니다.
+              </Text>
 
-            <Image
-              alt="banner"
-              margin={`0 0 30px`}
-              src={`https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/bmm/assets/images/main/img_4nd_banner1.png`}
-            />
-            <Image
-              alt="banner"
-              margin={`0 0 30px`}
-              src={`https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/bmm/assets/images/main/img_4nd_banner2.png`}
-            />
-
-            <Text
-              margin={width < 800 ? `30px 0 20px` : `60px 0 40px`}
-              fontSize={width < 800 ? `22px` : `36px`}
-              color={Theme.darkGrey_C}
-              fontWeight={`600`}
-            >
-              바이미마인의 추천!
-            </Text>
-
-            <MainRecommandSlider />
-
-            <Text
-              margin={width < 800 ? `50px 0 20px` : `100px 0 30px`}
-              fontSize={width < 800 ? `22px` : `36px`}
-              color={Theme.darkGrey_C}
-              fontWeight={`600`}
-            >
-              카테고리별 인기상품
-            </Text>
-
-            <Wrapper dr={`row`} margin={`0 0 40px`}>
-              <Btn isActive>건강</Btn>
-              <Btn>뷰티</Btn>
-              <Btn>다이어트</Btn>
+              <CustomSelect>
+                <Select placeholder={`선택해주세요.`}>
+                  <Select.Option>추천순</Select.Option>
+                  <Select.Option>조회순</Select.Option>
+                </Select>
+              </CustomSelect>
             </Wrapper>
 
             <Wrapper dr={`row`} ju={`flex-start`} al={`flex-start`}>
-              {/* 최대 8개 */}
               {bannerData &&
                 bannerData.map((data, idx) => {
                   return (
@@ -286,69 +294,10 @@ const Home = ({}) => {
                     </ProductWrapper>
                   );
                 })}
+
+              <CustomPage />
             </Wrapper>
-
-            <CommonButton
-              width={width < 800 ? `230px` : `274px`}
-              height={width < 800 ? `50px` : `68px`}
-              fontSize={width < 800 ? `16px` : `20px`}
-              kindOf={`grey`}
-              margin={width < 800 ? `30px 0 50px` : `0 0 100px`}
-            >
-              해당 카테고리 상품 더보기 +
-            </CommonButton>
           </RsWrapper>
-
-          <Wrapper
-            bgImg={`url("https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/bmm/assets/images/main/img_5nd_banner.png")`}
-            height={width < 800 ? `150px` : `240px`}
-          ></Wrapper>
-
-          <RsWrapper
-            dr={`row`}
-            ju={`space-between`}
-            margin={width < 800 ? `60px 0` : `100px 0`}
-          >
-            <EventBox
-              width={width < 800 ? `100%` : `49%`}
-              al={`flex-end`}
-              ju={`flex-end`}
-              padding={width < 800 ? `20px` : `0 50px 40px 0`}
-              margin={width < 800 ? `0 0 15px` : `0`}
-            >
-              <Image
-                alt="thumbnail"
-                src={`https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/bmm/assets/images/main/img_6nd_banner1.png`}
-              />
-              <Text
-                isHover
-                fontSize={width < 800 ? `16px` : `18px`}
-                fontWeight={`600`}
-              >
-                자세히 보기 <RightOutlined />
-              </Text>
-            </EventBox>
-            <EventBox
-              width={width < 800 ? `100%` : `49%`}
-              al={`flex-end`}
-              ju={`flex-end`}
-              padding={width < 800 ? `20px` : `0 50px 40px 0`}
-            >
-              <Image
-                alt="thumbnail"
-                src={`https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/bmm/assets/images/main/img_6nd_banner2.png`}
-              />
-
-              <Text
-                isHover
-                fontSize={width < 800 ? `16px` : `18px`}
-                fontWeight={`600`}
-              >
-                자세히 보기 <RightOutlined />
-              </Text>
-            </EventBox>
-          </RsWrapper>
-          <Popup />
         </WholeWrapper>
       </ClientLayout>
     </>
@@ -376,4 +325,5 @@ export const getServerSideProps = wrapper.getServerSideProps(
     await context.store.sagaTask.toPromise();
   }
 );
-export default Home;
+
+export default Index;

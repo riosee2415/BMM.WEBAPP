@@ -127,12 +127,12 @@ const MainNewSlider = () => {
       <Wrapper position={`relative`}>
         <Wrapper
           width={`77px`}
-          height={`67px`}
+          height={width < 800 ? `50px` : `67px`}
           bgColor={Theme.basicTheme_C}
           position={`absolute`}
           top={`-10px`}
           right={`-10px`}
-          fontSize={`23px`}
+          fontSize={width < 800 ? `20px` : `23px`}
           fontWeight={`bold`}
           zIndex={`10`}
         >
@@ -159,7 +159,7 @@ const MainNewSlider = () => {
                     <Image alt="thumbnail" src={data.img} />
                   </SquareBox>
                   <Text
-                    fontSize={`24px`}
+                    fontSize={width < 800 ? `20px` : `24px`}
                     fontWeight={`600`}
                     margin={`18px 0 8px`}
                   >
