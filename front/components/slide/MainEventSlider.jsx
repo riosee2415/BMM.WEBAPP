@@ -1,16 +1,39 @@
 import React, { useEffect, useCallback } from "react";
-import { Wrapper, Image, Text, SquareBox } from "../commonComponents";
+import { Wrapper, Image } from "../commonComponents";
 import styled from "styled-components";
 import { useDispatch, useSelector } from "react-redux";
 import Theme from "../Theme";
 import { Carousel } from "antd";
 import useWidth from "../../hooks/useWidth";
 import { useRouter } from "next/router";
-import { HeartFilled, HeartOutlined } from "@ant-design/icons";
+
+const SquareBox = styled(Wrapper)`
+  width: 100%;
+  position: relative;
+  overflow: ${(props) => props.overflow || `hidden`};
+
+  &:before {
+    content: "";
+    display: block;
+    padding-bottom: 42%;
+  }
+
+  & img:not(.check) {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    transition: 0.5s;
+  }
+
+  &:hover img {
+    transform: scale(1.1);
+  }
+`;
 
 const MainEventSliderWrapper = styled(Wrapper)`
   margin: 56px 0 60px;
-  height: 260px;
+
   justify-content: flex-start;
 
   & .ant-carousel {
@@ -34,6 +57,12 @@ const MainEventSliderWrapper = styled(Wrapper)`
 
     &:hover {
       box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.3);
+    }
+
+    @media (max-width: 800px) {
+      width: 35px;
+      height: 35px;
+      background: rgba(255, 255, 255, 0.4);
     }
   }
 
@@ -108,12 +137,13 @@ const MainEventSlider = () => {
   return (
     <MainEventSliderWrapper
       overflow={bannerData && bannerData.length < 2 && `hidden`}
+      height={bannerData && bannerData.length < 2 && `260px`}
     >
       <SliderWrapper
         autoplay={true}
         speed={3000}
         autoplaySpeed={6000}
-        slidesToShow={2}
+        slidesToShow={width < 900 ? 1 : 2}
         dots={false}
         arrows={true}
       >
@@ -126,7 +156,9 @@ const MainEventSlider = () => {
                 display={`flex !important`}
                 padding={`0 10px`}
               >
-                <Image alt="image" height={`260px`} src={data.img} />
+                <SquareBox>
+                  <Image alt="image" src={data.img} />
+                </SquareBox>
               </Wrapper>
             );
           })}

@@ -460,21 +460,28 @@ const AppHeader = () => {
 
         <Wrapper height={`40px`} dr={`row`} bgColor={Theme.lightGrey3_C}>
           <SubMenuCol
-            width={`calc(100% / 3)`}
+            width={`calc(100% / 4)`}
+            isActive={router.pathname === `/`}
+            onClick={() => moveLinkHandler(`/`)}
+          >
+            <Text>메인</Text>
+          </SubMenuCol>
+          <SubMenuCol
+            width={`calc(100% / 4)`}
             isActive={router.pathname === `/notice`}
             onClick={() => moveLinkHandler(`/notice`)}
           >
             <Text>공지사항</Text>
           </SubMenuCol>
           <SubMenuCol
-            width={`calc(100% / 3)`}
+            width={`calc(100% / 4)`}
             isActive={router.pathname === `/event`}
             onClick={() => moveLinkHandler(`/event`)}
           >
             <Text>이벤트</Text>
           </SubMenuCol>
           <SubMenuCol
-            width={`calc(100% / 3)`}
+            width={`calc(100% / 4)`}
             onClick={() => moveLinkHandler(`/`)}
           >
             <Text>고객센터</Text>

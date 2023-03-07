@@ -40,6 +40,7 @@ export const RowWrapper = styled(Row)`
   letter-spacing: ${(props) => props.letterSpacing};
   cursor: ${(props) => props.cursor};
   opacity: ${(props) => props.opacity};
+  overflow: ${(props) => props.overflow};
 `;
 
 export const ColWrapper = styled(Col)`
@@ -152,6 +153,10 @@ export const Wrapper = styled.div`
   text-align: ${(props) => props.textAlign};
   letter-spacing: ${(props) => props.letterSpacing};
   opacity: ${(props) => props.opacity};
+
+  .line {
+    text-decoration: line-through;
+  }
 `;
 
 export const RsWrapper = styled.article`
@@ -226,6 +231,13 @@ export const CommonButton = styled(Button)`
   ${(props) =>
     props.kindOf === `subTheme` &&
     `border : 1px solid ${props.theme.subTheme_C};`}
+   /* kindOf: grey = 배경색-흰색 보더-lightGrey2_C */
+  ${(props) =>
+    props.kindOf === `grey` && `background : ${props.theme.white_C};`}
+  ${(props) => props.kindOf === `grey` && `color : ${props.theme.lightGrey_C};`}
+  ${(props) =>
+    props.kindOf === `grey` &&
+    `border : 1px solid ${props.theme.lightGrey2_C};`}
   ${(props) =>
     props.kindOf === `kakao` && `background : ${props.theme.kakao_C};`}
   ${(props) =>
@@ -259,6 +271,12 @@ export const CommonButton = styled(Button)`
       props.kindOf === `subTheme` && `color ${props.theme.subTheme_C};`}
     ${(props) =>
       props.kindOf === `subTheme` && `background ${props.theme.white_C};`}
+    ${(props) =>
+      props.kindOf === `grey` && `background : ${props.theme.basicTheme_C};`}
+    ${(props) => props.kindOf === `grey` && `color : ${props.theme.black_C};`}
+    ${(props) =>
+      props.kindOf === `grey` &&
+      `border : 1px solid ${props.theme.basicTheme_C};`}
     ${(props) =>
       props.kindOf === `kakao` && `background : ${props.theme.kakao_C};`}
     ${(props) =>
@@ -572,6 +590,46 @@ export const SquareBox = styled(Wrapper)`
 
   &:hover img {
     transform: scale(1.1);
+  }
+`;
+
+export const ProductWrapper = styled(Wrapper)`
+  width: calc(100% / 4 - 21px);
+  margin: 0 27px 80px 0;
+  align-items: flex-start;
+
+  &:nth-child(4n) {
+    margin: 0 0 80px;
+  }
+
+  &:hover {
+    cursor: pointer;
+  }
+
+  @media (max-width: 1000px) {
+    width: calc(100% / 3 - 7px);
+    margin: 0 10px 50px 0;
+
+    &:nth-child(4n) {
+      margin: 0 10px 50px 0;
+    }
+
+    &:nth-child(3n) {
+      margin: 0 0 50px;
+    }
+  }
+
+  @media (max-width: 800px) {
+    width: calc(100% / 2 - 8px);
+    margin: 0 15px 20px 0;
+
+    &:nth-child(3n) {
+      margin: 0 15px 20px 0;
+    }
+
+    &:nth-child(2n) {
+      margin: 0 0px 20px 0;
+    }
   }
 `;
 

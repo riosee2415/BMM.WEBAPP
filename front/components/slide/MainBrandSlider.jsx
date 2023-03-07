@@ -31,8 +31,6 @@ const ArrowBtn = styled(Wrapper)`
 `;
 
 const MainBrandWrapper = styled(RowWrapper)`
-  overflow: hidden;
-
   & .ant-carousel {
     width: 100%;
   }
@@ -43,13 +41,36 @@ const MainBrandWrapper = styled(RowWrapper)`
 
   & .ant-carousel .slick-slider {
     height: 100%;
-    overflow: hidden;
+  }
+
+  .ant-carousel .slick-dots {
+    bottom: -50px;
+    margin-right: 0;
+    margin-left: 0;
+    width: calc(100% - 124px);
+  }
+
+  .ant-carousel .slick-dots li button {
+    background: ${Theme.lightGrey3_C};
+    opacity: 1;
+    height: 6px;
+    border-radius: 10px;
+  }
+
+  .ant-carousel .slick-dots li.slick-active button {
+    background: ${Theme.black_C};
+    border-radius: 10px;
+  }
+
+  .ant-carousel .slick-dots li {
+    width: 100%;
+    height: 6px;
+    margin-right: 0;
+    margin-left: 0;
   }
 `;
 
 const SliderWrapper = styled(Carousel)`
-  overflow: hidden;
-
   & .slick-list {
     width: auto;
   }
@@ -107,29 +128,17 @@ const MainBrandSlider = () => {
       content: "소화제의 명가",
       name: "카베진a",
     },
-    {
-      img: "https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/bmm/assets/images/main/img_intro_4.png",
-      content: "소화제의 명가",
-      name: "카베진a",
-    },
-    {
-      img: "https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/bmm/assets/images/main/img_intro_5.png",
-      content: "소화제의 명가",
-      name: "카베진a",
-    },
-    {
-      img: "https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/bmm/assets/images/main/img_intro_6.png",
-      content: "소화제의 명가",
-      name: "카베진a",
-    },
   ];
 
   return (
-    <MainBrandWrapper>
+    <MainBrandWrapper
+      overflow={bannerData && bannerData.length < 6 && `hidden`}
+      height={bannerData && bannerData.length < 6 && `512px`}
+    >
       <SliderWrapper
         draggable={true}
         autoplay={false}
-        slidesToShow={3}
+        slidesToShow={width < 900 ? 2 : 3}
         centerMode={false}
         dots={true}
         ref={slideRef}
@@ -152,12 +161,15 @@ const MainBrandSlider = () => {
                     position={`absolute`}
                     top={`0`}
                     left={`0`}
-                    padding={`30px`}
+                    padding={width < 800 ? `15px` : `30px`}
                     al={`flex-start`}
                     ju={`flex-start`}
                   >
                     <Text fontSize={`15px`}>{data.content}</Text>
-                    <Text fontSize={`23px`} fontWeight={`bold`}>
+                    <Text
+                      fontSize={width < 800 ? `18px` : `23px`}
+                      fontWeight={`bold`}
+                    >
                       {data.name}
                     </Text>
                   </Wrapper>
@@ -166,13 +178,7 @@ const MainBrandSlider = () => {
             );
           })}
       </SliderWrapper>
-      <Wrapper
-        height={`100%`}
-        dr={`row`}
-        ju={`space-between`}
-        zIndex={`100`}
-        padding={`15px 0`}
-      >
+      <Wrapper height={`100%`} dr={`row`} ju={`flex-end`} padding={`15px 0`}>
         <Wrapper width={`auto`} dr={`row`}>
           <ArrowBtn
             margin={`0 18px 0 0`}
