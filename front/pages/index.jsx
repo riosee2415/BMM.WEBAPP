@@ -46,10 +46,10 @@ const Home = ({}) => {
           <RsWrapper>
             <MainEventSlider />
             <Wrapper dr={`row`} margin={`0 0 100px`} ju={`space-between`}>
-              <Wrapper width={`40%`}>
+              <Wrapper width={`38%`}>
                 <MainNewSlider />
               </Wrapper>
-              <Wrapper width={`58%`}>
+              <Wrapper width={`60%`}>
                 <MainBrandSlider />
               </Wrapper>
             </Wrapper>

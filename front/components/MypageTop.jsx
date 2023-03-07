@@ -1,16 +1,10 @@
 import React, { useEffect } from "react";
-import {
-  Wrapper,
-  Text,
-  Image,
-  WholeWrapper,
-  RsWrapper,
-  SpanText,
-} from "./commonComponents";
+import { Wrapper, Text, WholeWrapper, ATag } from "./commonComponents";
 import Theme from "./Theme";
 import useWidth from "../hooks/useWidth";
 import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
+import Link from "next/dist/client/link";
 
 const MypageBox = styled(Wrapper)`
   position: relative;
@@ -26,22 +20,20 @@ const MypageBox = styled(Wrapper)`
     right: 0;
     top: 50%;
     margin: -30px 0 0;
-
-    @media (max-width: 700px) {
-      display: none;
-    }
   }
 
-  &:first-child,
-  &:last-child {
-    &:before {
-      display: none;
-    }
+  &:first-child:before,
+  &:last-child:before {
+    display: none;
   }
 
   @media (max-width: 700px) {
     width: 50%;
     height: 50%;
+
+    &:before {
+      display: none;
+    }
   }
 `;
 
@@ -76,10 +68,18 @@ const MypageTop = () => {
           <Text>회원 등급</Text>
         </MypageBox>
         <MypageBox>
-          <Text fontSize={width < 700 ? `18px` : `28px`} fontWeight={`bold`}>
-            10,000
-          </Text>
-          <Text>포인트</Text>
+          <Link href={`/mypage/point`}>
+            <ATag dr={`column`} height={`100%`}>
+              <Text
+                isHover
+                fontSize={width < 700 ? `18px` : `28px`}
+                fontWeight={`bold`}
+              >
+                10,000
+              </Text>
+              <Text>포인트</Text>
+            </ATag>
+          </Link>
         </MypageBox>
 
         <MypageBox>

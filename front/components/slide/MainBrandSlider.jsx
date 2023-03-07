@@ -17,16 +17,16 @@ import { useRouter } from "next/router";
 import { CloseOutlined, LeftOutlined, RightOutlined } from "@ant-design/icons";
 
 const ArrowBtn = styled(Wrapper)`
-  width: 50px;
-  height: 50px;
-  background: rgba(0, 0, 0, 0.2);
-  color: ${Theme.white_C};
+  width: 43px;
+  height: 43px;
+  background: ${Theme.white_C};
+  box-shadow: 1px 1px 6px rgba(0, 0, 0, 0.1);
   cursor: pointer;
   border-radius: 100%;
   font-size: 20px;
 
   &:hover {
-    background: ${Theme.black_C};
+    background: ${Theme.basicTheme_C};
   }
 `;
 
@@ -166,14 +166,25 @@ const MainBrandSlider = () => {
             );
           })}
       </SliderWrapper>
-      <Wrapper height={`100%`} dr={`row`} ju={`space-between`} zIndex={`100`}>
-        <ArrowBtn onClick={() => slideRef.current.prev()}>
-          <LeftOutlined />
-        </ArrowBtn>
+      <Wrapper
+        height={`100%`}
+        dr={`row`}
+        ju={`space-between`}
+        zIndex={`100`}
+        padding={`15px 0`}
+      >
+        <Wrapper width={`auto`} dr={`row`}>
+          <ArrowBtn
+            margin={`0 18px 0 0`}
+            onClick={() => slideRef.current.prev()}
+          >
+            <LeftOutlined />
+          </ArrowBtn>
 
-        <ArrowBtn onClick={() => slideRef.current.next()}>
-          <RightOutlined />
-        </ArrowBtn>
+          <ArrowBtn onClick={() => slideRef.current.next()}>
+            <RightOutlined />
+          </ArrowBtn>
+        </Wrapper>
       </Wrapper>
     </MainBrandWrapper>
   );

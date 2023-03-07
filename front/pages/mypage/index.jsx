@@ -12,10 +12,12 @@ import {
   WholeWrapper,
   Wrapper,
   Text,
+  ATag,
 } from "../../components/commonComponents";
 import { RightOutlined } from "@ant-design/icons";
 import styled from "styled-components";
 import Link from "next/dist/client/link";
+import MypageTop from "../../components/MypageTop";
 
 const DetailText = styled(Wrapper)`
   color: ${Theme.grey_C};
@@ -78,62 +80,7 @@ const Index = () => {
       <ClientLayout>
         <WholeWrapper padding={`95px 0 100px`}>
           <RsWrapper>
-            <Wrapper>
-              <Text fontSize={width < 700 ? `32px` : `42px`} fontWeight={`600`}>
-                마이페이지
-              </Text>
-              <Text
-                fontSize={width < 700 ? `16px` : `18px`}
-                margin={`0 0 30px`}
-              >
-                000 회원님 환영합니다!
-              </Text>
-            </Wrapper>
-            <Wrapper
-              dr={`row`}
-              border={`1px solid ${Theme.lightGrey2_C}`}
-              margin={`0 0 60px`}
-              height={`130px`}
-            >
-              <MypageBox bgColor={Theme.lightGrey3_C}>
-                <Text
-                  fontSize={width < 700 ? `20px` : `28px`}
-                  fontWeight={`bold`}
-                  color={Theme.grey_C}
-                >
-                  등급명
-                </Text>
-                <Text>회원 등급</Text>
-              </MypageBox>
-              <MypageBox>
-                <Text
-                  fontSize={width < 700 ? `20px` : `28px`}
-                  fontWeight={`bold`}
-                >
-                  10,000
-                </Text>
-                <Text>포인트</Text>
-              </MypageBox>
-
-              <MypageBox>
-                <Text
-                  fontSize={width < 700 ? `20px` : `28px`}
-                  fontWeight={`bold`}
-                >
-                  3
-                </Text>
-                <Text>찜목록</Text>
-              </MypageBox>
-              <MypageBox>
-                <Text
-                  fontSize={width < 700 ? `20px` : `28px`}
-                  fontWeight={`bold`}
-                >
-                  6
-                </Text>
-                <Text>나의 주문 내역</Text>
-              </MypageBox>
-            </Wrapper>
+            <MypageTop />
             <Wrapper dr={`row`} ju={`space-between`}>
               <Wrapper width={width < 700 ? `100%` : `48%`}>
                 <Wrapper
@@ -161,14 +108,22 @@ const Index = () => {
                     <Text>취소 / 환불 내역</Text>
                     <RightOutlined />
                   </DetailText>
-                  <DetailText dr={`row`} ju={`space-between`}>
-                    <Text>쿠폰 목록</Text>
-                    <RightOutlined />
-                  </DetailText>
-                  <DetailText dr={`row`} ju={`space-between`}>
+                  <Link href={`/mypage/coupon`}>
+                    <ATag>
+                      <DetailText dr={`row`} ju={`space-between`}>
+                        <Text>쿠폰 목록</Text>
+                        <RightOutlined />
+                      </DetailText>
+                    </ATag>
+                  </Link>
+                  <Link href={`/mypage/point`}>
+                    <ATag>
+                      <DetailText dr={`row`} ju={`space-between`}>
                         <Text>포인트 내역</Text>
                         <RightOutlined />
-                  </DetailText>
+                      </DetailText>
+                    </ATag>
+                  </Link>
                 </Wrapper>
               </Wrapper>
               <Wrapper width={width < 700 ? `100%` : `48%`}>

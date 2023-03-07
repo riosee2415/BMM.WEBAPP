@@ -43,7 +43,7 @@ const Point = () => {
   return (
     <>
       <Head>
-        <title>BUY ME MINE | 마이페이지</title>
+        <title>BUY ME MINE | 포인트</title>
       </Head>
 
       <ClientLayout>
