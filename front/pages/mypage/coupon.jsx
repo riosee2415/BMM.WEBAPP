@@ -21,12 +21,7 @@ import MypageTop from "../../components/MypageTop";
 import { Modal } from "antd";
 import { CloseOutlined } from "@ant-design/icons";
 
-const CouponWrapper = styled(Wrapper)`
-  @media (max-width: 700px) {
-    display: none;
-    font-size: 14px;
-  }
-`;
+
 const List = styled(Wrapper)`
   height: 60px;
   flex-direction: row;
@@ -49,7 +44,8 @@ const BeforeBtn = styled(Wrapper)`
     color: ${(props) => props.theme.black_C};
   }
 
-  @media (max-width: 500px) {
+  @media (max-width: 700px) {
+    width: 150px;
     font-size: 16px;
   }
 `;
@@ -57,6 +53,8 @@ const BeforeBtn = styled(Wrapper)`
 const CheckBtn = styled.button`
   width: 20%;
   height: 46px;
+
+  margin: 0 10px;
 
   background-color: ${Theme.lightGrey3_C};
   color: ${Theme.lightGrey_C};
@@ -104,7 +102,7 @@ const Coupon = () => {
             <Wrapper
               dr={`row`}
               ju={`space-between`}
-              fontSize={`30px`}
+              fontSize={width < 700 ? `26px` : `30px`}
               fontWeight={`600`}
               margin={`0 0 30px`}
             >
@@ -120,43 +118,40 @@ const Coupon = () => {
                 쿠폰 등록하기
               </CommonButton>
             </Wrapper>
-            <CouponWrapper
-              height={`54px`}
-              dr={`row`}
-              color={Theme.grey_C}
-              bgColor={Theme.lightGrey3_C}
-              borderTop={`1px solid ${Theme.basicTheme_C}`}
-              borderBottom={`1px solid ${Theme.lightGrey2_C}`}
-              fontSize={`16px`}
-              fontWeight={`600`}
-            >
-              <Wrapper width={`10%`}>번호</Wrapper>
-              <Wrapper width={`50%`}>쿠폰명</Wrapper>
-              <Wrapper width={`15%`}>사용 기간</Wrapper>
-              <Wrapper width={`15%`}>조건 금액</Wrapper>
-              <Wrapper width={`10%`}>할인 금액</Wrapper>
-            </CouponWrapper>
-            <List>
-              <Wrapper width={width < 700 ? `0` : `10%`}>10</Wrapper>
               <Wrapper
-                width={width < 700 ? `` : `50%`}
-                padding={`0 50px`}
-                al={`flex-start`}
+                height={`54px`}
+                dr={`row`}
+                color={Theme.grey_C}
+                bgColor={Theme.lightGrey3_C}
+                borderTop={`1px solid ${Theme.basicTheme_C}`}
+                borderBottom={`1px solid ${Theme.lightGrey2_C}`}
+                fontSize={`16px`}
+                fontWeight={`600`}
               >
-                쿠폰 번호 : AB542354
+                <Wrapper width={`10%`}>번호</Wrapper>
+                <Wrapper width={`50%`}>쿠폰명</Wrapper>
+                <Wrapper width={`15%`}>사용 기간</Wrapper>
+                <Wrapper width={`15%`}>조건 금액</Wrapper>
+                <Wrapper width={`10%`}>할인 금액</Wrapper>
               </Wrapper>
-              <Wrapper width={`15%`} color={Theme.grey_C}>
-                2022.12.01 ~ 2022.01.31
-              </Wrapper>
-              <Wrapper width={width < 700 ? `20%` : `15%`} color={Theme.grey_C}>
-                최소 20,000원 이상 구매
-              </Wrapper>
-              <Wrapper width={`10%`} fontSize={`16px`} fontWeight={`600`}>
-                2,000원
-              </Wrapper>
-            </List>
+              <List>
+                <Wrapper width={`10%`}>10</Wrapper>
+                <Wrapper width={`50%`} padding={`0 50px`} al={`flex-start`}>
+                  쿠폰 번호 : AB542354
+                </Wrapper>
+                <Wrapper width={`15%`} color={Theme.grey_C}>
+                  2022.12.01 ~ 2022.01.31
+                </Wrapper>
+                <Wrapper width={`15%`} color={Theme.grey_C}>
+                  최소 20,000원 이상 구매
+                </Wrapper>
+                <Wrapper width={`10%`} fontSize={`16px`} fontWeight={`600`}>
+                  2,000원
+                </Wrapper>
+              </List>
             <CustomPage />
           </RsWrapper>
+
           <Modal
             onCancel={modalToggle}
             visible={isModal}
@@ -164,7 +159,7 @@ const Coupon = () => {
             closable={null}
             width={`570px`}
           >
-            <Wrapper padding={width < 900 ? `0` : `20px`}>
+            <Wrapper padding={width < 700 ? `0` : `20px`}>
               <Wrapper
                 dr={`row`}
                 ju={`space-between`}
@@ -172,7 +167,7 @@ const Coupon = () => {
                 padding={`0 0 18px`}
               >
                 <Text
-                  fontSize={width < 900 ? `20px` : `24px`}
+                  fontSize={width < 700 ? `20px` : `24px`}
                   fontWeight={`600`}
                 >
                   쿠폰 등록하기
@@ -187,16 +182,16 @@ const Coupon = () => {
                 </Text>
               </Wrapper>
               <Wrapper>
-                <Wrapper margin={`50px 0 78px`} al={`flex-start`}>
+                <Wrapper margin={width < 700 ? `50px 0 50px` : `50px 0 78px`} al={`flex-start`}>
                   <Text
-                    fontSize={width < 900 ? `16px` : `18px`}
+                    fontSize={width < 700 ? `16px` : `18px`}
                     margin={`0 0 15px`}
                   >
                     쿠폰 번호를 통해 등록하실 수 있습니다.
                   </Text>
                   <Wrapper dr={`row`} ju={`flex-start`}>
                     <TextInput
-                      width={`50%`}
+                      width={width < 700 ? `70%` : `50%`}
                       height={`46px`}
                       placeholder="쿠폰번호를 입력해주세요."
                     />
@@ -206,10 +201,10 @@ const Coupon = () => {
                 <Wrapper dr={`row`} ju={`space-between`}>
                   <BeforeBtn onClick={modalToggle}>이전으로</BeforeBtn>
                   <CommonButton
-                    fontSize={width < 500 ? `16px` : `18px`}
+                    fontSize={width < 700 ? `16px` : `18px`}
                     fontWeight={`600`}
                     kindOf={`white`}
-                    width={`230px`}
+                    width={width < 700 ? `150px` : `230px`}
                     height={`54px`}
                     onClick={modalToggle}
                   >
@@ -219,6 +214,7 @@ const Coupon = () => {
               </Wrapper>
             </Wrapper>
           </Modal>
+
           {/* 쿠폰번호가 틀렸을 때 */}
           <Modal
             onCancel={modalToggle}
@@ -227,7 +223,7 @@ const Coupon = () => {
             closable={null}
             width={`570px`}
           >
-            <Wrapper padding={width < 900 ? `0` : `20px`}>
+            <Wrapper padding={width < 700 ? `0` : `20px`}>
               <Wrapper
                 dr={`row`}
                 ju={`space-between`}
@@ -235,7 +231,7 @@ const Coupon = () => {
                 padding={`0 0 18px`}
               >
                 <Text
-                  fontSize={width < 900 ? `20px` : `24px`}
+                  fontSize={width < 700 ? `20px` : `24px`}
                   fontWeight={`600`}
                 >
                   쿠폰 등록하기
@@ -250,20 +246,20 @@ const Coupon = () => {
                 </Text>
               </Wrapper>
               <Wrapper>
-                <Wrapper margin={`50px 0 78px`} al={`flex-start`}>
+                <Wrapper margin={`50px 0 50px`} al={`flex-start`}>
                   <Text
-                    fontSize={width < 900 ? `16px` : `18px`}
+                    fontSize={width < 700 ? `16px` : `18px`}
                     margin={`0 0 15px`}
                   >
                     쿠폰 번호를 통해 등록하실 수 있습니다.
                   </Text>
                   <Wrapper dr={`row`} ju={`flex-start`} margin={`0 0 11px`}>
                     <TextInput
-                      width={`50%`}
+                      width={width < 700 ? `70%` : `50%`}
                       height={`46px`}
                       placeholder="쿠폰번호를 입력해주세요."
                     />
-                    <CheckBtn>확인</CheckBtn>
+                    <CheckBtn >확인</CheckBtn>
                   </Wrapper>
                   <Wrapper dr={`row`} ju={`flex-start`} color={Theme.red_C}>
                     <CloseOutlined />
@@ -273,10 +269,10 @@ const Coupon = () => {
                 <Wrapper dr={`row`} ju={`space-between`}>
                   <BeforeBtn onClick={modalToggle}>쇼핑계속하기</BeforeBtn>
                   <CommonButton
-                    fontSize={width < 500 ? `16px` : `18px`}
+                    fontSize={width < 700 ? `16px` : `18px`}
                     fontWeight={`600`}
                     kindOf={`white`}
-                    width={`230px`}
+                    width={width < 700 ? `150px` : `230px`}
                     height={`54px`}
                     onClick={modalToggle}
                   >
@@ -286,7 +282,8 @@ const Coupon = () => {
               </Wrapper>
             </Wrapper>
           </Modal>
-          \{/* 쿠폰번호가 맞았을 때 */}
+
+          {/* 쿠폰번호가 맞았을 때 */}
           <Modal
             onCancel={modalToggle}
             visible={isModal}
@@ -294,7 +291,7 @@ const Coupon = () => {
             closable={null}
             width={`570px`}
           >
-            <Wrapper padding={width < 900 ? `0` : `20px`}>
+            <Wrapper padding={width < 700 ? `0` : `20px`}>
               <Wrapper
                 dr={`row`}
                 ju={`space-between`}
@@ -302,7 +299,7 @@ const Coupon = () => {
                 padding={`0 0 18px`}
               >
                 <Text
-                  fontSize={width < 900 ? `20px` : `24px`}
+                  fontSize={width < 700 ? `20px` : `24px`}
                   fontWeight={`600`}
                 >
                   쿠폰 등록하기
@@ -317,7 +314,7 @@ const Coupon = () => {
                 </Text>
               </Wrapper>
               <Wrapper>
-                <Wrapper margin={`50px 0 78px`} al={`flex-start`}>
+                <Wrapper margin={`50px 0 50px`} al={`flex-start`}>
                   <Text
                     fontSize={width < 900 ? `16px` : `18px`}
                     margin={`0 0 15px`}
@@ -326,15 +323,24 @@ const Coupon = () => {
                   </Text>
                   <Wrapper dr={`row`} ju={`flex-start`} margin={`0 0 11px`}>
                     <TextInput
-                      width={`50%`}
+                      width={width < 700 ? `70%` : `50%`}
                       height={`46px`}
                       placeholder="쿠폰번호를 입력해주세요."
                     />
                     <CheckBtn>확인</CheckBtn>
                   </Wrapper>
-                  <Wrapper dr={`row`} ju={`flex-start`} color={Theme.red_C}>
-                    <CloseOutlined />
-                    <Text padding={`0 5px`}>쿠폰 번호가 틀렸습니다.</Text>
+                  <Wrapper
+                    dr={`row`}
+                    ju={`flex-start`}
+                    color={Theme.darkGrey_C}
+                  >
+                    <Wrapper
+                      width={`9px`}
+                      height={`9px`}
+                      border={`1px solid ${Theme.basicTheme_C}`}
+                      radius={`100%`}
+                    ></Wrapper>
+                    <Text padding={`0 5px`}>[쿠폰명]10,000원 할인 쿠폰</Text>
                   </Wrapper>
                 </Wrapper>
                 <Wrapper dr={`row`} ju={`space-between`}>
@@ -343,7 +349,7 @@ const Coupon = () => {
                     fontSize={width < 500 ? `16px` : `18px`}
                     fontWeight={`600`}
                     kindOf={`white`}
-                    width={`230px`}
+                    width={width < 700 ? `150px` : `230px`}
                     height={`54px`}
                     onClick={modalToggle}
                   >
