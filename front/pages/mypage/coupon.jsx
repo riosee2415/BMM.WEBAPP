@@ -108,7 +108,7 @@ const Coupon = () => {
   return (
     <>
       <Head>
-        <title>BUY ME MINE | 마이페이지</title>
+        <title>BUY ME MINE | 쿠폰</title>
       </Head>
 
       <ClientLayout>
