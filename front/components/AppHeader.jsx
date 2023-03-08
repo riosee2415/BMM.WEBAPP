@@ -260,7 +260,7 @@ const AppHeader = () => {
                 >
                   |
                 </Text>
-                <Link href={`/`}>
+                <Link href={`/customer/faq`}>
                   <a>
                     <Text>고객센터</Text>
                   </a>
@@ -292,7 +292,7 @@ const AppHeader = () => {
                 >
                   |
                 </Text>
-                <Link href={`/`}>
+                <Link href={`/customer/faq`}>
                   <a>
                     <Text>고객센터</Text>
                   </a>
@@ -434,7 +434,8 @@ const AppHeader = () => {
               </SubMenuCol>
               <SubMenuCol
                 width={`calc(100% / 6)`}
-                onClick={() => moveLinkHandler(`/lease?type=장비판매의뢰`)}
+                isActive={router.pathname.includes(`/customer`)}
+                onClick={() => moveLinkHandler(`/customer/faq`)}
               >
                 <Text>고객센터</Text>
               </SubMenuCol>
