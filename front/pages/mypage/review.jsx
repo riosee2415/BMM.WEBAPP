@@ -32,6 +32,15 @@ const List = styled(Wrapper)`
   font-size: 16px;
 `;
 
+const ImageList = styled(Wrapper)`
+width: 100%;
+flex-direction: row;
+justify-content: flex-start;
+margin: 0 0 15px;
+padding-right: 10px;
+
+`;
+
 const TextWrapper = styled(Wrapper)`
   width: 85%;
   display: flex;
@@ -66,7 +75,8 @@ const BeforeBtn = styled(Wrapper)`
 `;
 
 const PictureWrapper = styled(Wrapper)`
-  width: auto;
+  width: 20%;
+  height: 100px;
   border: 1px solid ${Theme.lightGrey2_C};
   border-radius: 5%;
   background-color: ${Theme.lightGrey2_C};
@@ -75,6 +85,10 @@ const PictureWrapper = styled(Wrapper)`
   &:hover {
     transition: 0.3s;
     background: ${(props) => props.theme.lightGrey3_C};
+  }
+
+  @media (max-width: 600px) {
+    height: 55px;
   }
 `;
 
@@ -154,7 +168,7 @@ const Review = () => {
             visible={isModal}
             footer={null}
             closable={null}
-            width={`70%`}
+            width={`65%`}
           >
             <Wrapper>
               <Wrapper dr={`row`} ju={`space-between`} padding={`0 0 14px`}>
@@ -162,31 +176,28 @@ const Review = () => {
                 <Text color={Theme.lightGrey_C}>2022.12.21</Text>
               </Wrapper>
             </Wrapper>
-            <Wrapper dr={`row`} ju={`flex-start`} margin={`0 0 15px`}>
+            <ImageList >
               <Image
                 alt="리뷰 사진"
                 src={`https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/bmm/assets/images/sample-img/review.png`}
                 width={`122px`}
-                padding={`0 10px`}
-              />
-              <Image
-                alt="리뷰 사진"
-                src={`https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/bmm/assets/images/sample-img/review.png`}
-                width={`122px`}
-                padding={`0 10px`}
-              />
-              <Image
-                alt="리뷰 사진"
-                src={`https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/bmm/assets/images/sample-img/review.png`}
-                width={`122px`}
-                padding={`0 10px`}
               />
               <Image
                 alt="리뷰 사진"
                 src={`https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/bmm/assets/images/sample-img/review.png`}
                 width={`122px`}
               />
-            </Wrapper>
+              <Image
+                alt="리뷰 사진"
+                src={`https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/bmm/assets/images/sample-img/review.png`}
+                width={`122px`}
+              />
+              <Image
+                alt="리뷰 사진"
+                src={`https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/bmm/assets/images/sample-img/review.png`}
+                width={`122px`}
+              />
+            </ImageList>
             <Wrapper margin={`0 0 55px`}>
               <Text>
                 리뷰의 내용이 30자로 들어오게 됩니다. 제목의 역할을 하게 됩니다.
@@ -205,7 +216,8 @@ const Review = () => {
               </Text>
             </Wrapper>
           </Modal>
-          <Modal
+
+          {/* <Modal
             onCancel={modalToggle}
             visible={isModal}
             footer={null}
@@ -258,9 +270,9 @@ const Review = () => {
                 </Wrapper>
               </Wrapper>
             </Wrapper>
-          </Modal>
+          </Modal> */}
 
-          <Modal
+          {/* <Modal
             onCancel={modalToggle}
             visible={isModal}
             footer={null}
@@ -330,8 +342,9 @@ const Review = () => {
                 </Wrapper>
                 <Wrapper al={`flex-start`}>
                   <Text fontSize={`16px`}>사진 첨부</Text>
+                </Wrapper>
                   <Wrapper
-                  width={`100%`}
+                    width={`100%`}
                     dr={`row`}
                     ju={`space-between`}
                     margin={`0 0 25px`}
@@ -339,22 +352,22 @@ const Review = () => {
                     <Image
                       alt="리뷰 사진"
                       src={`https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/bmm/assets/images/sample-img/review.png`}
-                      width={`25%`}
+                      width={`20%`}
                     />
                     <PictureWrapper>
-                      <Text fontSize={`25px`}>
+                      <Text fontSize={width < 600 ? `14px` : `20px`} >
                         <PlusOutlined />
                       </Text>
                       <Text>첨부하기</Text>
                     </PictureWrapper>
                     <PictureWrapper>
-                      <Text fontSize={`25px`}>
+                      <Text fontSize={width < 600 ? `14px` : `20px`}>
                         <PlusOutlined />
                       </Text>
                       <Text>첨부하기</Text>
                     </PictureWrapper>
                     <PictureWrapper>
-                      <Text fontSize={`25px`}>
+                      <Text fontSize={width < 600 ? `14px` : `20px`}>
                         <PlusOutlined />
                       </Text>
                       <Text>첨부하기</Text>
@@ -375,8 +388,7 @@ const Review = () => {
                   수정하기
                 </CommonButton>
               </Wrapper>
-            </Wrapper>
-          </Modal>
+          </Modal> */}
         </WholeWrapper>
       </ClientLayout>
     </>
