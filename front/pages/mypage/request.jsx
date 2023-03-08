@@ -13,13 +13,10 @@ import {
   Wrapper,
   Text,
   CustomPage,
-  CommonButton,
-  TextInput,
 } from "../../components/commonComponents";
 import styled from "styled-components";
 import MypageTop from "../../components/MypageTop";
-import { Modal } from "antd";
-import { CloseOutlined, LockFilled } from "@ant-design/icons";
+import { LockFilled } from "@ant-design/icons";
 
 const List = styled(Wrapper)`
   height: 60px;
@@ -42,66 +39,14 @@ const MobileList = styled(Wrapper)`
   }
 `;
 
-const BeforeBtn = styled(Wrapper)`
-  width: 49%;
-  height: 54px;
-  font-size: 18px;
-  font-weight: 600;
-  background-color: ${Theme.white_C};
-  border: 1px solid ${Theme.lightGrey2_C};
-
-  cursor: pointer;
-
-  &:hover {
-    background: ${(props) => props.theme.lightGrey2_C};
-    color: ${(props) => props.theme.black_C};
-  }
-
-  @media (max-width: 700px) {
-    font-size: 16px;
-  }
-`;
-
-const CheckBtn = styled.button`
-  width: 20%;
-  height: 46px;
-
-  margin: 0 0 0 10px;
-
-  background-color: ${Theme.lightGrey3_C};
-  color: ${Theme.lightGrey_C};
-  border: none;
-
-  font-size: 16px;
-  font-weight: bold;
-
-  cursor: pointer;
-  transition: 0.2s;
-
-  &:hover {
-    background: ${(props) => props.theme.lightGrey2_C};
-    color: ${(props) => props.theme.darkGrey_C};
-  }
-
-  @media (max-width: 700px) {
-    width: calc(30% - 10px);
-  }
-`;
-
 const Coupon = () => {
   ////// GLOBAL STATE //////
-  const [isModal, setIsModal] = useState(false);
-
   ////// HOOKS //////
   const width = useWidth();
 
   ////// REDUX //////
   ////// USEEFFECT //////
   ////// TOGGLE //////
-  const modalToggle = useCallback(() => {
-    setIsModal((prev) => !prev);
-  }, [isModal]);
-
   ////// HANDLER //////
   ////// DATAVIEW //////
 
@@ -142,28 +87,56 @@ const Coupon = () => {
               <Wrapper width={`15%`}>작성일</Wrapper>
               <Wrapper width={`15%`}>답변상태</Wrapper>
             </Wrapper>
-
+            {width < 600 ? (
+              <Wrapper>
+                <MobileList>
+                  <Wrapper al={`flex-start`} fontSize={`16px`}>
+                    <Text>
+                      상품 요청
+                      <LockFilled />
+                    </Text>
+                  </Wrapper>
+                  <Wrapper
+                    al={`flex-start`}
+                    color={Theme.grey_C}
+                    margin={`0 0 15px`}
+                  >
+                    김**
+                  </Wrapper>
+                  <Wrapper dr={`row`} ju={`space-between`}>
+                    <Text>2022.12.31</Text>
+                    <Text>답변완료</Text>
+                  </Wrapper>
+                </MobileList>
+              </Wrapper>
+            ) : (
               <List>
                 <Wrapper width={`10%`} color={Theme.grey_C}>
                   10
                 </Wrapper>
-                <Wrapper width={`45%`} padding={`0 50px`} al={`flex-start`}>
-                <Text>상품 요청<LockFilled /></Text>
+                <Wrapper
+                  width={`45%`}
+                  padding={`0 50px`}
+                  al={`flex-start`}
+                  color={Theme.darkGrey_C}
+                  cursor={`pointer`}
+                >
+                  <Text isHover>
+                    상품 요청
+                    <LockFilled />
+                  </Text>
                 </Wrapper>
                 <Wrapper width={`15%`} color={Theme.grey_C}>
-                김**
+                  김**
                 </Wrapper>
-                <Wrapper width={`15%`} color={Theme.grey_C}>
-                2022.12.31
-                </Wrapper>
+                <Wrapper width={`15%`}>2022.12.31</Wrapper>
                 <Wrapper width={`15%`} fontSize={`16px`} fontWeight={`600`}>
-                답변완료
+                  답변완료
                 </Wrapper>
               </List>
-
+            )}
             <CustomPage />
           </RsWrapper>
-
         </WholeWrapper>
       </ClientLayout>
     </>
