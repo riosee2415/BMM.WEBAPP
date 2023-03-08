@@ -39,7 +39,7 @@ const MobileList = styled(Wrapper)`
   }
 `;
 
-const Coupon = () => {
+const Request = () => {
   ////// GLOBAL STATE //////
   ////// HOOKS //////
   const width = useWidth();
@@ -53,7 +53,7 @@ const Coupon = () => {
   return (
     <>
       <Head>
-        <title>BUY ME MINE | 쿠폰</title>
+        <title>BUY ME MINE | 상품요청</title>
       </Head>
 
       <ClientLayout>
@@ -165,4 +165,4 @@ export const getServerSideProps = wrapper.getServerSideProps(
   }
 );
 
-export default Coupon;
+export default Request;

@@ -1,27 +1,24 @@
-import React, { useCallback, useEffect, useState } from "react";
-import Router from "next/router";
-import { Checkbox } from "antd";
-import useInput from "../../hooks/useInput";
-import useWidth from "../../hooks/useWidth";
-import { useDispatch, useSelector } from "react-redux";
-import { SIGNUP_REQUEST } from "../../reducers/user";
-import { LOAD_MY_INFO_REQUEST } from "../../reducers/user";
+import React, { useCallback, useState } from "react";
 import ClientLayout from "../../components/ClientLayout";
+import Theme from "../../components/Theme";
 import Head from "next/head";
 import wrapper from "../../store/configureStore";
+import { LOAD_MY_INFO_REQUEST } from "../../reducers/user";
 import axios from "axios";
 import { END } from "redux-saga";
+import useWidth from "../../hooks/useWidth";
 import {
   RsWrapper,
   WholeWrapper,
   Wrapper,
   Text,
-  TextInput,
   CommonButton,
-  SpanText,
+  TextInput,
 } from "../../components/commonComponents";
-import Theme from "../../components/Theme";
 import styled from "styled-components";
+import MypageTop from "../../components/MypageTop";
+import Modal from "antd/lib/modal/Modal";
+import { CloseOutlined } from "@ant-design/icons";
 
 const PostBtn = styled.button`
   width: 35%;
@@ -48,68 +45,68 @@ const SignupLabel = styled.label`
   font-size: 16px;
 `;
 
-const CheckSpan = styled.span`
+const OutBtn = styled(Wrapper)`
+  width: 49%;
+  height: 54px;
   font-size: 18px;
-  font-weight: bold;
+  font-weight: 600;
+  background-color: ${Theme.white_C};
+  border: 1px solid ${Theme.lightGrey2_C};
 
-  @media (max-width: 500px) {
+  cursor: pointer;
+
+  &:hover {
+    background: ${(props) => props.theme.lightGrey2_C};
+    color: ${(props) => props.theme.black_C};
+  }
+
+  @media (max-width: 900px) {
     font-size: 16px;
   }
 `;
 
-const SignUp = () => {
+const MemberModify = () => {
   ////// GLOBAL STATE //////
+  const [isModal, setIsModal] = useState(false);
 
   ////// HOOKS //////
   const width = useWidth();
-  const dispatch = useDispatch();
 
   ////// REDUX //////
   ////// USEEFFECT //////
-  ////// TOGGLE ////////
-  ////// HANDLER ///////
+  ////// TOGGLE //////
+  const modalToggle = useCallback(() => {
+    setIsModal((prev) => !prev);
+  }, [isModal]);
+
+  ////// HANDLER //////
   ////// DATAVIEW //////
 
   return (
     <>
       <Head>
-        <title>BUY ME MINE | 회원가입</title>
+        <title>BUY ME MINE | 회원정보수정</title>
       </Head>
 
       <ClientLayout>
-        <WholeWrapper padding={`95px 0 120px`}>
+        <WholeWrapper padding={`95px 0 100px`}>
           <RsWrapper>
+            <MypageTop />
             <Wrapper
               width={width < 500 ? `100%` : `450px`}
               padding={width < 500 ? `80px 20px` : `80px 60px`}
+              border={`1px solid ${Theme.lightGrey3_C}`}
               al={`flex-start`}
             >
               <Text
                 fontSize={width < 500 ? `25px` : `36px`}
                 fontWeight={`600`}
-                margin={`0 0 15px`}
-              >
-                회원가입
-              </Text>
-              <Text
-                fontSize={width < 500 ? `16px` : `18px`}
                 margin={`0 0 50px`}
-                color={Theme.darkGrey_C}
               >
-                바이미마인의 회원 혜택을 누려보세요!
-              </Text>
-              <Text
-                fontSize={width < 500 ? `18px` : `20px`}
-                fontWeight={`600`}
-                color={Theme.lightGrey_C}
-                margin={`0 0 20px`}
-              >
-                개인정보
+                회원정보수정
               </Text>
 
-              <SignupLabel>
-                아이디 <SpanText color={Theme.red_C}>*</SpanText>
-              </SignupLabel>
+              <SignupLabel>아이디</SignupLabel>
 
               <TextInput
                 width={`100%`}
@@ -118,26 +115,13 @@ const SignUp = () => {
                 margin={`0 0 20px`}
                 placeholder="아이디"
               />
-              <SignupLabel>
-                비밀번호 <SpanText color={Theme.red_C}>*</SpanText>
-              </SignupLabel>
+              <SignupLabel>비밀번호 확인</SignupLabel>
               <TextInput
                 width={`100%`}
                 height={`46px`}
                 type="password"
                 margin={`0 0 20px`}
-                required
                 placeholder="비밀번호"
-              />
-              <SignupLabel>
-                비밀번호 재확인 <SpanText color={Theme.red_C}>*</SpanText>
-              </SignupLabel>
-              <TextInput
-                width={`100%`}
-                height={`46px`}
-                type="password"
-                margin={`0 0 20px`}
-                placeholder="비밀번호 재확인"
               />
               <SignupLabel>연락처</SignupLabel>
               <TextInput
@@ -147,9 +131,7 @@ const SignUp = () => {
                 margin={`0 0 20px`}
                 placeholder="연락처"
               />
-              <SignupLabel>
-                이메일 <SpanText color={Theme.red_C}>*</SpanText>
-              </SignupLabel>
+              <SignupLabel>이메일</SignupLabel>
               <TextInput
                 width={`100%`}
                 height={`46px`}
@@ -187,80 +169,103 @@ const SignUp = () => {
                 placeholder="상세주소를 입력해주세요."
               />
               <Wrapper>
-                <Text
-                  width={`100%`}
-                  fontSize={width < 500 ? `18px` : `20px`}
-                  fontWeight={`600`}
-                  color={Theme.lightGrey_C}
-                  margin={`0 0 20px`}
-                >
-                  약관동의
-                </Text>
-                <Wrapper
-                  width={`100%`}
-                  height={`50px`}
-                  margin={`0 0 16px`}
-                  bgColor={Theme.lightGrey3_C}
-                  fontSize={width < 500 ? `16px` : `18px`}
-                >
-                  <Wrapper
-                    padding={width < 500 ? `18px` : `10px`}
-                    dr={`coloumn`}
-                    ju={`flex-start`}
-                  >
-                    <Checkbox>
-                      <Text fontSize={width < 500 ? `16px` : `18px`}>
-                        모든 약관에 동의합니다.
-                      </Text>
-                    </Checkbox>
-                  </Wrapper>
-                </Wrapper>
-                <Wrapper margin={`0 0 50px`}>
-                  <Wrapper>
-                    <Checkbox>
-                      <Text
-                        fontSize={width < 500 ? `16px` : `18px`}
-                        margin={`0 0 16px`}
-                      >
-                        <CheckSpan>(필수)</CheckSpan> 개인정보처리방침에
-                        동의합니다.
-                      </Text>
-                    </Checkbox>
-                  </Wrapper>
-                  <Wrapper>
-                    <Checkbox>
-                      <Text
-                        fontSize={width < 500 ? `16px` : `18px`}
-                        margin={`0 0 16px`}
-                      >
-                        <CheckSpan>(필수)</CheckSpan> 개인정보처리방침에
-                        동의합니다.
-                      </Text>
-                    </Checkbox>
-                  </Wrapper>
-                  <Wrapper>
-                    <Checkbox>
-                      <Text
-                        fontSize={width < 500 ? `16px` : `18px`}
-                      >
-                        <CheckSpan>(필수)</CheckSpan> 개인정보처리방침에
-                        동의합니다.
-                      </Text>
-                    </Checkbox>
-                  </Wrapper>
-                </Wrapper>
                 <CommonButton
                   fontSize={width < 500 ? `16px` : `18px`}
                   fontWeight={`600`}
                   kindOf={`white`}
                   width={`100%`}
                   height={`54px`}
+                  margin={`0 0 10px`}
                 >
-                  회원가입
+                  회원정보수정
                 </CommonButton>
+              </Wrapper>
+              <Wrapper
+                dr={`row`}
+                ju={`flex-start`}
+                color={Theme.grey_C}
+                onClick={modalToggle}
+              >
+                <Text isHover td={`underline`}>
+                  회원탈퇴
+                </Text>
               </Wrapper>
             </Wrapper>
           </RsWrapper>
+          <Modal
+            onCancel={modalToggle}
+            visible={isModal}
+            footer={null}
+            closable={null}
+            width={`570px`}
+          >
+            <Wrapper padding={width < 900 ? `0` : `20px`}>
+              <Wrapper
+                dr={`row`}
+                ju={`space-between`}
+                borderBottom={`1px solid ${Theme.lightGrey2_C}`}
+                padding={`0 0 18px`}
+              >
+                <Text
+                  fontSize={width < 900 ? `20px` : `24px`}
+                  fontWeight={`600`}
+                >
+                  회원탈퇴
+                </Text>
+                <Text
+                  color={Theme.grey_C}
+                  isHover
+                  fontSize={`20px`}
+                  onClick={modalToggle}
+                >
+                  <CloseOutlined />
+                </Text>
+              </Wrapper>
+              <Wrapper>
+                <Wrapper al={`flex-start`} margin={width < 900 ? `35px 0 35px` : `50px 0 50px`}>
+                  <Text
+                    fontSize={width < 900 ? `16px` : `18px`}
+                    margin={`0 0 15px`}
+                  >
+                    정말로 탈퇴하시겠습니까?
+                  </Text>
+                  <TextInput
+                    width={`80%`}
+                    height={`46px`}
+                    type="password"
+                    placeholder="비밀번호를 입력해주세요."
+                    margin={`0 0 12px`}
+                    fontSize={width < 900 ? `14px` : `16px`}
+                  />
+                  <Wrapper
+                    width={`100%`}
+                    height={`46px`}
+                    al={`flex-start`}
+                    border={`1px solid ${Theme.lightGrey3_C}`}
+                    bgColor={Theme.lightGrey3_C}
+                    color={Theme.lightGrey_C}
+                    padding={`0 11px`}
+                    fontSize={width < 900 ? `14px` : `16px`}
+                  >
+                    <Text>탈퇴시 주의사항이 들어올 곳입니다.</Text>
+                  </Wrapper>
+                </Wrapper>
+                <Wrapper dr={`row`} ju={`space-between`}>
+                  <OutBtn onClick={modalToggle}>탈퇴하기</OutBtn>
+                  <CommonButton
+                    fontSize={width < 900 ? `16px` : `18px`}
+                    fontWeight={`600`}
+                    kindOf={`white`}
+                    width={`49%`}
+                    height={`54px`}
+                    onClick={modalToggle}
+                  >
+                    이전으로
+                  </CommonButton>
+                </Wrapper>
+              </Wrapper>
+            </Wrapper>
+          </Modal>
         </WholeWrapper>
       </ClientLayout>
     </>
@@ -289,4 +294,4 @@ export const getServerSideProps = wrapper.getServerSideProps(
   }
 );
 
-export default SignUp;
+export default MemberModify;

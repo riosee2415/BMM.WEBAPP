@@ -57,7 +57,7 @@ const BeforeBtn = styled(Wrapper)`
   }
 `;
 
-const Coupon = () => {
+const Review = () => {
   ////// GLOBAL STATE //////
   const [isModal, setIsModal] = useState(false);
 
@@ -77,7 +77,7 @@ const Coupon = () => {
   return (
     <>
       <Head>
-        <title>BUY ME MINE | 쿠폰</title>
+        <title>BUY ME MINE | 나의 리뷰 내역</title>
       </Head>
 
       <ClientLayout>
@@ -173,7 +173,9 @@ const Coupon = () => {
               </Text>
             </Wrapper>
             <Wrapper dr={`row`} ju={`space-between`}>
-              <Text onclick={modalToggle} cursor={`pointer`}>삭제</Text>
+              <Text onclick={modalToggle} cursor={`pointer`}>
+                삭제
+              </Text>
               <Text onClick={modalToggle} cursor={`pointer`}>
                 닫기
                 <CloseOutlined />
@@ -234,6 +236,70 @@ const Coupon = () => {
               </Wrapper>
             </Wrapper>
           </Modal>
+
+          <Modal
+            onCancel={modalToggle}
+            visible={isModal}
+            footer={null}
+            closable={null}
+            width={`570px`}
+          >
+            <Wrapper padding={`20px`}>
+              <Wrapper
+                dr={`row`}
+                ju={`space-between`}
+                borderBottom={`1px solid ${Theme.lightGrey2_C}`}
+                padding={`0 0 18px`}
+              >
+                <Text
+                  fontSize={width < 700 ? `20px` : `24px`}
+                  fontWeight={`600`}
+                >
+                  리뷰 수정하기
+                </Text>
+                <Text
+                  color={Theme.grey_C}
+                  isHover
+                  fontSize={`20px`}
+                  onClick={modalToggle}
+                >
+                  <CloseOutlined />
+                </Text>
+              </Wrapper>
+              <Wrapper>
+                <Wrapper>
+                    <Text>작성자</Text>
+                    <Text>imnickname</Text>
+                </Wrapper>
+                <Wrapper>
+                    <Text>리뷰 내용</Text>
+                    <Text>리뷰의 내용이 있었다고용~</Text>
+                </Wrapper>
+                <Wrapper>
+                    <Text>사진 첨부</Text>
+                    <Wrapper>
+                        <Image />
+                        <Image />
+                        <Image />
+                        <Image />
+                    </Wrapper>
+                </Wrapper>
+              </Wrapper>
+                <Wrapper dr={`row`} ju={`space-between`}>
+                  <BeforeBtn onClick={modalToggle}>이전으로</BeforeBtn>
+                  <CommonButton
+                    fontSize={width < 500 ? `16px` : `18px`}
+                    fontWeight={`600`}
+                    kindOf={`white`}
+                    width={`49%`}
+                    height={`54px`}
+                    onClick={modalToggle}
+                  >
+                    수정하기
+                  </CommonButton>
+                </Wrapper>
+              </Wrapper>
+          </Modal>
         </WholeWrapper>
       </ClientLayout>
     </>
@@ -262,4 +328,4 @@ export const getServerSideProps = wrapper.getServerSideProps(
   }
 );
 
-export default Coupon;
+export default Review;
