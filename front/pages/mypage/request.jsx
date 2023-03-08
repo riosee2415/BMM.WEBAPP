@@ -90,11 +90,13 @@ const Request = () => {
             {width < 600 ? (
               <Wrapper>
                 <MobileList>
-                  <Wrapper al={`flex-start`} fontSize={`16px`}>
-                    <Text>
-                      상품 요청
-                      <LockFilled />
-                    </Text>
+                  <Wrapper color={Theme.darkGrey_C} cursor={`pointer`}>
+                    <Wrapper dr={`row`} ju={`flex-start`} fontSize={`16px`}>
+                      <Text isHover>상품 요청</Text>
+                      <Text padding={`0 5px`}>
+                        <LockFilled />
+                      </Text>
+                    </Wrapper>
                   </Wrapper>
                   <Wrapper
                     al={`flex-start`}
@@ -117,14 +119,15 @@ const Request = () => {
                 <Wrapper
                   width={`45%`}
                   padding={`0 50px`}
-                  al={`flex-start`}
                   color={Theme.darkGrey_C}
                   cursor={`pointer`}
                 >
-                  <Text isHover>
-                    상품 요청
-                    <LockFilled />
-                  </Text>
+                  <Wrapper dr={`row`} ju={`flex-start`}>
+                    <Text isHover>상품 요청</Text>
+                    <Text padding={`0 5px`}>
+                      <LockFilled />
+                    </Text>
+                  </Wrapper>
                 </Wrapper>
                 <Wrapper width={`15%`} color={Theme.grey_C}>
                   김**

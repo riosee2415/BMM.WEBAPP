@@ -19,7 +19,11 @@ import {
 import styled from "styled-components";
 import MypageTop from "../../components/MypageTop";
 import { Modal } from "antd";
-import { CloseOutlined, PictureOutlined } from "@ant-design/icons";
+import {
+  CloseOutlined,
+  PictureOutlined,
+  PlusOutlined,
+} from "@ant-design/icons";
 
 const List = styled(Wrapper)`
   height: 60px;
@@ -35,6 +39,10 @@ const TextWrapper = styled(Wrapper)`
   justify-content: flex-start;
   padding: 0 0 0 50px;
   font-size: 16px;
+
+  @media (max-width: 600px) {
+    width: 65%;
+  }
 `;
 
 const BeforeBtn = styled(Wrapper)`
@@ -54,6 +62,19 @@ const BeforeBtn = styled(Wrapper)`
 
   @media (max-width: 700px) {
     font-size: 16px;
+  }
+`;
+
+const PictureWrapper = styled(Wrapper)`
+  width: auto;
+  border: 1px solid ${Theme.lightGrey2_C};
+  border-radius: 5%;
+  background-color: ${Theme.lightGrey2_C};
+  cursor: pointer;
+
+  &:hover {
+    transition: 0.3s;
+    background: ${(props) => props.theme.lightGrey3_C};
   }
 `;
 
@@ -105,8 +126,8 @@ const Review = () => {
               fontWeight={`600`}
               //   display={width < 800 ? `none` : `flex`}
             >
-              <Wrapper width={`85%`}>리뷰 제목</Wrapper>
-              <Wrapper width={`15%`}>작성 날짜</Wrapper>
+              <Wrapper width={width < 600 ? `65%` : `85%`}>리뷰 제목</Wrapper>
+              <Wrapper width={width < 600 ? `35%` : `15%`}>작성 날짜</Wrapper>
             </Wrapper>
             <List>
               <TextWrapper onClick={modalToggle}>
@@ -121,7 +142,7 @@ const Review = () => {
                   <PictureOutlined />
                 </Wrapper>
               </TextWrapper>
-              <Wrapper width={`15%`} color={Theme.lightGrey_C}>
+              <Wrapper width={width < 600 ? `25%` : `15%`} color={Theme.lightGrey_C}>
                 2022.12.31
               </Wrapper>
             </List>
@@ -141,7 +162,7 @@ const Review = () => {
                 <Text color={Theme.lightGrey_C}>2022.12.21</Text>
               </Wrapper>
             </Wrapper>
-            <Wrapper dr={`row`} ju={`flex-start`} margin={`0 0 14px`}>
+            <Wrapper dr={`row`} ju={`flex-start`} margin={`0 0 15px`}>
               <Image
                 alt="리뷰 사진"
                 src={`https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/bmm/assets/images/sample-img/review.png`}
@@ -152,11 +173,13 @@ const Review = () => {
                 alt="리뷰 사진"
                 src={`https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/bmm/assets/images/sample-img/review.png`}
                 width={`122px`}
+                padding={`0 10px`}
               />
               <Image
                 alt="리뷰 사진"
                 src={`https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/bmm/assets/images/sample-img/review.png`}
                 width={`122px`}
+                padding={`0 10px`}
               />
               <Image
                 alt="리뷰 사진"
@@ -249,7 +272,8 @@ const Review = () => {
                 dr={`row`}
                 ju={`space-between`}
                 borderBottom={`1px solid ${Theme.lightGrey2_C}`}
-                padding={`0 0 18px`}
+                padding={`0 0 17px`}
+                margin={`0 0 23px`}
               >
                 <Text
                   fontSize={width < 700 ? `20px` : `24px`}
@@ -267,38 +291,91 @@ const Review = () => {
                 </Text>
               </Wrapper>
               <Wrapper>
-                <Wrapper>
-                    <Text>작성자</Text>
-                    <Text>imnickname</Text>
-                </Wrapper>
-                <Wrapper>
-                    <Text>리뷰 내용</Text>
-                    <Text>리뷰의 내용이 있었다고용~</Text>
-                </Wrapper>
-                <Wrapper>
-                    <Text>사진 첨부</Text>
-                    <Wrapper>
-                        <Image />
-                        <Image />
-                        <Image />
-                        <Image />
-                    </Wrapper>
-                </Wrapper>
-              </Wrapper>
                 <Wrapper dr={`row`} ju={`space-between`}>
-                  <BeforeBtn onClick={modalToggle}>이전으로</BeforeBtn>
-                  <CommonButton
-                    fontSize={width < 500 ? `16px` : `18px`}
-                    fontWeight={`600`}
-                    kindOf={`white`}
-                    width={`49%`}
-                    height={`54px`}
-                    onClick={modalToggle}
+                  <Text fontSize={`16px`} margin={`0 0 15px`}>
+                    작성자
+                  </Text>
+                  <Wrapper
+                    width={`80%`}
+                    height={width < 600 ? `35px` : `46px`}
+                    al={`flex-start`}
+                    border={`1px solid ${Theme.lightGrey3_C}`}
+                    bgColor={Theme.lightGrey3_C}
+                    color={Theme.lightGrey_C}
+                    padding={`0 11px`}
+                    fontSize={width < 900 ? `14px` : `16px`}
+                    margin={`0 0 15px`}
                   >
-                    수정하기
-                  </CommonButton>
+                    <Text>imnickname</Text>
+                  </Wrapper>
+                </Wrapper>
+                <Wrapper dr={`row`} ju={`space-between`}>
+                  <Text
+                    margin={width < 600 ? `0` : `-30% 0 0`}
+                    fontSize={`16px`}
+                  >
+                    리뷰 내용
+                  </Text>
+
+                  <Wrapper
+                    width={width < 600 ? `100%` : `80%`}
+                    border={`1px solid ${Theme.lightGrey2_C}`}
+                    al={`flex-start`}
+                    margin={width < 600 ? `0 0 30px` : `0 0 40px`}
+                  >
+                    <Text width={`100%`} height={`145px`} padding={`5px`}>
+                      리뷰의 내용이 있었다고용~
+                    </Text>
+                  </Wrapper>
+                </Wrapper>
+                <Wrapper al={`flex-start`}>
+                  <Text fontSize={`16px`}>사진 첨부</Text>
+                  <Wrapper
+                  width={`100%`}
+                    dr={`row`}
+                    ju={`space-between`}
+                    margin={`0 0 25px`}
+                  >
+                    <Image
+                      alt="리뷰 사진"
+                      src={`https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/bmm/assets/images/sample-img/review.png`}
+                      width={`25%`}
+                    />
+                    <PictureWrapper>
+                      <Text fontSize={`25px`}>
+                        <PlusOutlined />
+                      </Text>
+                      <Text>첨부하기</Text>
+                    </PictureWrapper>
+                    <PictureWrapper>
+                      <Text fontSize={`25px`}>
+                        <PlusOutlined />
+                      </Text>
+                      <Text>첨부하기</Text>
+                    </PictureWrapper>
+                    <PictureWrapper>
+                      <Text fontSize={`25px`}>
+                        <PlusOutlined />
+                      </Text>
+                      <Text>첨부하기</Text>
+                    </PictureWrapper>
+                  </Wrapper>
                 </Wrapper>
               </Wrapper>
+              <Wrapper dr={`row`} ju={`space-between`}>
+                <BeforeBtn onClick={modalToggle}>이전으로</BeforeBtn>
+                <CommonButton
+                  fontSize={width < 500 ? `16px` : `18px`}
+                  fontWeight={`600`}
+                  kindOf={`white`}
+                  width={`49%`}
+                  height={`54px`}
+                  onClick={modalToggle}
+                >
+                  수정하기
+                </CommonButton>
+              </Wrapper>
+            </Wrapper>
           </Modal>
         </WholeWrapper>
       </ClientLayout>
