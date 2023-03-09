@@ -15,6 +15,8 @@ import {
   CustomPage,
   Image,
   CommonButton,
+  SpanText,
+  TextArea,
 } from "../../components/commonComponents";
 import styled from "styled-components";
 import MypageTop from "../../components/MypageTop";
@@ -32,13 +34,6 @@ const List = styled(Wrapper)`
   font-size: 16px;
 `;
 
-const ImageList = styled(Wrapper)`
-  width: 100%;
-  flex-direction: row;
-  justify-content: flex-start;
-  margin: 0 0 15px;
-`;
-
 const TextWrapper = styled(Wrapper)`
   width: 85%;
   display: flex;
@@ -47,8 +42,9 @@ const TextWrapper = styled(Wrapper)`
   padding: 0 0 0 50px;
   font-size: 16px;
 
-  @media (max-width: 600px) {
-    width: 65%;
+  @media (max-width: 700px) {
+    width: 75%;
+    padding: 0;
   }
 `;
 
@@ -73,11 +69,12 @@ const BeforeBtn = styled(Wrapper)`
 `;
 
 const PictureWrapper = styled(Wrapper)`
-  width: 20%;
-  height: 100px;
+  width: 111px;
+  height: 111px;
   border: 1px solid ${Theme.lightGrey2_C};
   border-radius: 5%;
   background-color: ${Theme.lightGrey2_C};
+  color: ${Theme.grey_C};
   cursor: pointer;
 
   &:hover {
@@ -86,7 +83,26 @@ const PictureWrapper = styled(Wrapper)`
   }
 
   @media (max-width: 600px) {
-    height: 55px;
+    width: 150px;
+    height: 150px;
+  }
+`;
+
+const Circle = styled(Wrapper)`
+  width: 15px;
+  height: 15px;
+  background: ${Theme.white_C};
+  border-radius: 100%;
+  color: ${Theme.red_C};
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  font-size: 10px;
+
+  &:hover {
+    cursor: pointer;
+    background: ${Theme.red_C};
+    color: ${Theme.white_C};
   }
 `;
 
@@ -94,6 +110,7 @@ const Review = () => {
   ////// GLOBAL STATE //////
   const [isModal, setIsModal] = useState(false);
   const [deleteModal, setDeleteModal] = useState(false);
+  const [uModal, setUModal] = useState(true);
 
   ////// HOOKS //////
   const width = useWidth();
@@ -109,6 +126,10 @@ const Review = () => {
     setDeleteModal((prev) => !prev);
   }, [deleteModal]);
 
+  const uModalToggle = useCallback(() => {
+    setUModal((prev) => !prev);
+  }, [uModal]);
+
   ////// HANDLER //////
   ////// DATAVIEW //////
 
@@ -119,7 +140,7 @@ const Review = () => {
       </Head>
 
       <ClientLayout>
-        <WholeWrapper padding={`95px 0 100px`}>
+        <WholeWrapper padding={`95px 0 0`}>
           <RsWrapper>
             <MypageTop />
             <Wrapper
@@ -141,14 +162,13 @@ const Review = () => {
               borderBottom={`1px solid ${Theme.lightGrey2_C}`}
               fontSize={`16px`}
               fontWeight={`600`}
-              //   display={width < 800 ? `none` : `flex`}
             >
-              <Wrapper width={width < 600 ? `65%` : `85%`}>리뷰 제목</Wrapper>
-              <Wrapper width={width < 600 ? `35%` : `15%`}>작성 날짜</Wrapper>
+              <Wrapper width={width < 700 ? `75%` : `85%`}>리뷰 제목</Wrapper>
+              <Wrapper width={width < 700 ? `25%` : `15%`}>작성 날짜</Wrapper>
             </Wrapper>
-            <List>
-              <TextWrapper onClick={modalToggle}>
-                <Text width={`52%`} isEllipsis isHover>
+            <List onClick={modalToggle}>
+              <TextWrapper>
+                <Text maxWidth={width < 700 ? `80%` : `52%`} isEllipsis isHover>
                   리뷰의 내용이 30자로 들어오게 됩니다. 제목의 역할을 하게
                   됩니다. 내용이 더 들어오게 된다면 이렇게 나타납니다. 내용이 더
                   들어오게 된다면 이렇게 나타납니다. 내용이 더 들어오게 된다면
@@ -160,82 +180,82 @@ const Review = () => {
                 </Wrapper>
               </TextWrapper>
               <Wrapper
-                width={width < 600 ? `25%` : `15%`}
+                width={width < 700 ? `25%` : `15%`}
                 color={Theme.lightGrey_C}
               >
                 2022.12.31
               </Wrapper>
             </List>
+
+            {isModal && (
+              <Wrapper
+                bgColor={Theme.lightGrey3_C}
+                padding={width < 700 ? `15px` : `30px`}
+              >
+                <Wrapper dr={`row`} ju={`space-between`} padding={`0 0 14px`}>
+                  <Text fontSize={`16px`}>작성자 : imnickname</Text>
+                  <Text color={Theme.lightGrey_C}>2022.12.21</Text>
+                </Wrapper>
+                <Wrapper dr={`row`} ju={`flex-start`}>
+                  <Image
+                    alt="리뷰 사진"
+                    src={`https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/bmm/assets/images/sample-img/review.png`}
+                    width={width < 700 ? `95px` : `122px`}
+                    height={width < 700 ? `95px` : `122px`}
+                    margin={`0 11px 10px 0`}
+                  />
+                  <Image
+                    alt="리뷰 사진"
+                    src={`https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/bmm/assets/images/sample-img/review.png`}
+                    width={width < 700 ? `95px` : `122px`}
+                    height={width < 700 ? `95px` : `122px`}
+                    margin={`0 11px 10px 0`}
+                  />
+                  <Image
+                    alt="리뷰 사진"
+                    src={`https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/bmm/assets/images/sample-img/review.png`}
+                    width={width < 700 ? `95px` : `122px`}
+                    height={width < 700 ? `95px` : `122px`}
+                    margin={`0 11px 10px 0`}
+                  />
+                  <Image
+                    alt="리뷰 사진"
+                    src={`https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/bmm/assets/images/sample-img/review.png`}
+                    width={width < 700 ? `95px` : `122px`}
+                    height={width < 700 ? `95px` : `122px`}
+                    margin={`0 11px 10px 0`}
+                  />
+                </Wrapper>
+
+                <Wrapper margin={`0 0 55px`} color={Theme.grey_C}>
+                  <Text>
+                    리뷰의 내용이 30자로 들어오게 됩니다. 제목의 역할을 하게
+                    됩니다. 내용이 더 들어오게 된다면 이렇게 나타납니다. 내용이
+                    더 들어오게 된다면 이렇게 나타납니다. 내용이 더 들어오게
+                    된다면 이렇게 나타납니다. 내용이 더 들어오게 된다면 이렇게
+                    나타납니다.
+                  </Text>
+                </Wrapper>
+                <Wrapper dr={`row`} ju={`space-between`} fontSize={`16px`}>
+                  <Text
+                    isHover
+                    onClick={deletemodalToggle}
+                    color={Theme.lightGrey_C}
+                  >
+                    삭제
+                  </Text>
+                  <Text isHover onClick={modalToggle}>
+                    닫기
+                    <SpanText margin={`0 0 0 5px`} color={Theme.basicTheme_C}>
+                      <CloseOutlined />
+                    </SpanText>
+                  </Text>
+                </Wrapper>
+              </Wrapper>
+            )}
+
             <CustomPage />
           </RsWrapper>
-
-          <Modal
-            onCancel={modalToggle}
-            visible={isModal}
-            footer={null}
-            closable={null}
-            width={`65%`}
-          >
-            <Wrapper>
-              <Wrapper dr={`row`} ju={`space-between`} padding={`0 0 14px`}>
-                <Text fontSize={`16px`}>작성자 : imnickname</Text>
-                <Text color={Theme.lightGrey_C}>2022.12.21</Text>
-              </Wrapper>
-            </Wrapper>
-            <Wrapper width={`auto`} dr={`row`} ju={`space-between`}>
-              <ImageList>
-                <Image
-                  alt="리뷰 사진"
-                  src={`https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/bmm/assets/images/sample-img/review.png`}
-                  width={`20%`}
-                />
-                <Image
-                  alt="리뷰 사진"
-                  src={`https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/bmm/assets/images/sample-img/review.png`}
-                  width={`20%`}
-                />
-                <Image
-                  alt="리뷰 사진"
-                  src={`https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/bmm/assets/images/sample-img/review.png`}
-                  width={`20%`}
-                />
-                <Image
-                  alt="리뷰 사진"
-                  src={`https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/bmm/assets/images/sample-img/review.png`}
-                  width={`20%`}
-                />
-              </ImageList>
-            </Wrapper>
-
-            <Wrapper margin={`0 0 55px`}>
-              <Text>
-                리뷰의 내용이 30자로 들어오게 됩니다. 제목의 역할을 하게 됩니다.
-                내용이 더 들어오게 된다면 이렇게 나타납니다. 내용이 더 들어오게
-                된다면 이렇게 나타납니다. 내용이 더 들어오게 된다면 이렇게
-                나타납니다. 내용이 더 들어오게 된다면 이렇게 나타납니다.
-              </Text>
-            </Wrapper>
-            <Wrapper dr={`row`} ju={`space-between`} postion={`relative`} cursor={`pointer`}>
-              <Text onClick={deletemodalToggle} >
-                삭제
-              </Text>
-              <Text onClick={modalToggle}>
-                닫기
-              </Text>
-              <Wrapper
-                width={`auto`}
-                dr={`row`}
-                ju={`flex-end`}
-                position={`absolute`}
-                botoom={`0`}
-                right={`1%`}
-              >
-                <Text color={Theme.basicTheme_C}>
-                  <CloseOutlined />
-                </Text>
-              </Wrapper>
-            </Wrapper>
-          </Modal>
 
           <Modal
             onCancel={deletemodalToggle}
@@ -276,7 +296,9 @@ const Review = () => {
                   </Text>
                 </Wrapper>
                 <Wrapper dr={`row`} ju={`space-between`}>
-                  <BeforeBtn onClick={deletemodalToggle}>리뷰삭제하기</BeforeBtn>
+                  <BeforeBtn onClick={deletemodalToggle}>
+                    리뷰삭제하기
+                  </BeforeBtn>
                   <CommonButton
                     fontSize={width < 500 ? `16px` : `18px`}
                     fontWeight={`600`}
@@ -292,14 +314,14 @@ const Review = () => {
             </Wrapper>
           </Modal>
 
-          {/* <Modal
-            onCancel={modalToggle}
-            visible={isModal}
+          <Modal
+            onCancel={uModalToggle}
+            visible={uModal}
             footer={null}
             closable={null}
             width={`570px`}
           >
-            <Wrapper padding={`20px`}>
+            <Wrapper padding={width < 600 ? `20px 0px` : `20px`}>
               <Wrapper
                 dr={`row`}
                 ju={`space-between`}
@@ -317,82 +339,81 @@ const Review = () => {
                   color={Theme.grey_C}
                   isHover
                   fontSize={`20px`}
-                  onClick={modalToggle}
+                  onClick={uModalToggle}
                 >
                   <CloseOutlined />
                 </Text>
               </Wrapper>
               <Wrapper>
-                <Wrapper dr={`row`} ju={`space-between`}>
-                  <Text fontSize={`16px`} margin={`0 0 15px`}>
+                <Wrapper dr={`row`} ju={`space-between`} margin={`0 0 15px`}>
+                  <Text lineHeight={`46px`} fontSize={`16px`}>
                     작성자
                   </Text>
                   <Wrapper
-                    width={`80%`}
-                    height={width < 600 ? `35px` : `46px`}
+                    width={width < 700 ? `100%` : `80%`}
+                    height={`46px`}
                     al={`flex-start`}
                     border={`1px solid ${Theme.lightGrey3_C}`}
                     bgColor={Theme.lightGrey3_C}
                     color={Theme.lightGrey_C}
                     padding={`0 11px`}
                     fontSize={width < 900 ? `14px` : `16px`}
-                    margin={`0 0 15px`}
                   >
                     <Text>imnickname</Text>
                   </Wrapper>
                 </Wrapper>
-                <Wrapper dr={`row`} ju={`space-between`}>
-                  <Text
-                    margin={width < 600 ? `0` : `-30% 0 0`}
-                    fontSize={`16px`}
-                  >
+                <Wrapper
+                  dr={`row`}
+                  ju={`space-between`}
+                  margin={`0 0 20px`}
+                  al={`flex-start`}
+                >
+                  <Text fontSize={`16px`} lineHeight={`46px`}>
                     리뷰 내용
                   </Text>
 
-                  <Wrapper
-                    width={width < 600 ? `100%` : `80%`}
-                    border={`1px solid ${Theme.lightGrey2_C}`}
-                    al={`flex-start`}
-                    margin={width < 600 ? `0 0 30px` : `0 0 40px`}
-                  >
-                    <Text width={`100%`} height={`145px`} padding={`5px`}>
-                      리뷰의 내용이 있었다고용~
-                    </Text>
-                  </Wrapper>
+                  <TextArea
+                    width={width < 700 ? `100%` : `80%`}
+                    height={`145px`}
+                    placeholder="리뷰를 작성해주세요."
+                  />
                 </Wrapper>
                 <Wrapper al={`flex-start`}>
                   <Text fontSize={`16px`}>사진 첨부</Text>
                 </Wrapper>
+                <Wrapper dr={`row`} ju={`space-between`} margin={`8px 0 25px`}>
                   <Wrapper
-                    width={`100%`}
-                    dr={`row`}
-                    ju={`space-between`}
-                    margin={`0 0 25px`}
+                    position={`relative`}
+                    width={width < 600 ? `150px` : `111px`}
                   >
                     <Image
+                      height={width < 600 ? `150px` : `111px`}
                       alt="리뷰 사진"
                       src={`https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/bmm/assets/images/sample-img/review.png`}
-                      width={`20%`}
                     />
-                    <PictureWrapper>
-                      <Text fontSize={width < 600 ? `14px` : `20px`} >
-                        <PlusOutlined />
-                      </Text>
-                      <Text>첨부하기</Text>
-                    </PictureWrapper>
-                    <PictureWrapper>
-                      <Text fontSize={width < 600 ? `14px` : `20px`}>
-                        <PlusOutlined />
-                      </Text>
-                      <Text>첨부하기</Text>
-                    </PictureWrapper>
-                    <PictureWrapper>
-                      <Text fontSize={width < 600 ? `14px` : `20px`}>
-                        <PlusOutlined />
-                      </Text>
-                      <Text>첨부하기</Text>
-                    </PictureWrapper>
+                    <Circle>
+                      <CloseOutlined />
+                    </Circle>
                   </Wrapper>
+
+                  <PictureWrapper>
+                    <Text fontSize={width < 700 ? `14px` : `20px`}>
+                      <PlusOutlined />
+                    </Text>
+                    <Text>첨부하기</Text>
+                  </PictureWrapper>
+                  <PictureWrapper margin={`10px 0 0`}>
+                    <Text fontSize={width < 700 ? `14px` : `20px`}>
+                      <PlusOutlined />
+                    </Text>
+                    <Text>첨부하기</Text>
+                  </PictureWrapper>
+                  <PictureWrapper margin={`10px 0 0`}>
+                    <Text fontSize={width < 700 ? `14px` : `20px`}>
+                      <PlusOutlined />
+                    </Text>
+                    <Text>첨부하기</Text>
+                  </PictureWrapper>
                 </Wrapper>
               </Wrapper>
               <Wrapper dr={`row`} ju={`space-between`}>
@@ -408,7 +429,8 @@ const Review = () => {
                   수정하기
                 </CommonButton>
               </Wrapper>
-          </Modal> */}
+            </Wrapper>
+          </Modal>
         </WholeWrapper>
       </ClientLayout>
     </>

@@ -1,12 +1,12 @@
 import React, { useCallback, useState } from "react";
-import ClientLayout from "../../components/ClientLayout";
-import Theme from "../../components/Theme";
+import ClientLayout from "../../../components/ClientLayout";
+import Theme from "../../../components/Theme";
 import Head from "next/head";
-import wrapper from "../../store/configureStore";
-import { LOAD_MY_INFO_REQUEST } from "../../reducers/user";
+import wrapper from "../../../store/configureStore";
+import { LOAD_MY_INFO_REQUEST } from "../../../reducers/user";
 import axios from "axios";
 import { END } from "redux-saga";
-import useWidth from "../../hooks/useWidth";
+import useWidth from "../../../hooks/useWidth";
 import {
   RsWrapper,
   WholeWrapper,
@@ -14,9 +14,9 @@ import {
   Text,
   ATag,
   SpanText,
-} from "../../components/commonComponents";
+} from "../../../components/commonComponents";
 import styled from "styled-components";
-import MypageTop from "../../components/MypageTop";
+import MypageTop from "../../../components/MypageTop";
 import Link from "next/dist/client/link";
 
 const ListBtn = styled(Wrapper)`
@@ -70,7 +70,7 @@ const Question = () => {
               <Text>1:1 문의 내역</Text>
             </Wrapper>
             <Wrapper dr={`row`} ju={`space-between`} margin={`0 0 33px`}>
-              <Text margin={width < 800 ? `0 0 5px` : `0`}>
+              <Text lineHeight={`46px`} fontSize={`16px`}>
                 아이디<SpanText color={Theme.red_C}>*</SpanText>
               </Text>
               <Wrapper
@@ -80,12 +80,13 @@ const Question = () => {
                 bgColor={Theme.lightGrey3_C}
                 al={`flex-start`}
                 padding={`0 10px`}
+                color={Theme.grey_C}
               >
-                <Text color={Theme.grey_C}>screenscratchcost300,000won</Text>
+                screenscratchcost300,000won
               </Wrapper>
             </Wrapper>
             <Wrapper dr={`row`} ju={`space-between`} margin={`0 0 33px`}>
-              <Text margin={width < 800 ? `0 0 5px` : `0`}>
+              <Text lineHeight={`46px`} fontSize={`16px`}>
                 이름<SpanText color={Theme.red_C}>*</SpanText>
               </Text>
               <Wrapper
@@ -101,7 +102,7 @@ const Question = () => {
             </Wrapper>
 
             <Wrapper dr={`row`} ju={`space-between`} margin={`0 0 33px`}>
-              <Text margin={width < 800 ? `0 0 5px` : `0`}>
+              <Text lineHeight={`46px`} fontSize={`16px`}>
                 제목<SpanText color={Theme.red_C}>*</SpanText>
               </Text>
               <Wrapper
@@ -116,8 +117,13 @@ const Question = () => {
               </Wrapper>
             </Wrapper>
 
-            <Wrapper dr={`row`} ju={`space-between`}>
-              <Text margin={width < 800 ? `0 0 5px` : `-10px 0 0`}>
+            <Wrapper
+              dr={`row`}
+              ju={`space-between`}
+              margin={`0 0 40px`}
+              al={`flex-start`}
+            >
+              <Text lineHeight={`46px`} fontSize={`16px`}>
                 내용<SpanText color={Theme.red_C}>*</SpanText>
               </Text>
               <Wrapper
@@ -125,22 +131,23 @@ const Question = () => {
                 border={`1px solid ${Theme.lightGrey2_C}`}
                 bgColor={Theme.lightGrey3_C}
                 al={`flex-start`}
-                margin={`0 0 40px`}
+                ju={`flex-start`}
+                minHeight={`120px`}
+                padding={`10px`}
               >
-                <Text
-                  width={`100%`}
-                  height={`120px`}
-                  padding={`10px`}
-                  color={Theme.grey_C}
-                >
-                  내용입니다.
+                <Text color={Theme.grey_C}>
+                  리뷰의 내용이 30자로 들어오게 됩니다. 제목의 역할을 하게
+                  됩니다. 내용이 더 들어오게 된다면 이렇게 나타납니다. 내용이 더
+                  들어오게 된다면 이렇게 나타납니다. 내용이 더 들어오게 된다면
+                  이렇게 나타납니다. 내용이 더 들어오게 된다면 이렇게
+                  나타납니다.리뷰의 내용이 30자로 들어오게 됩니다. 제목의 역할을
                 </Text>
               </Wrapper>
             </Wrapper>
             <Link href={`/mypage/question`}>
-              <ATag>
+              <a>
                 <ListBtn>목록으로</ListBtn>
-              </ATag>
+              </a>
             </Link>
           </RsWrapper>
         </WholeWrapper>

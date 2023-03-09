@@ -23,6 +23,11 @@ const List = styled(Wrapper)`
   flex-direction: row;
   border-bottom: 1px solid ${Theme.lightGrey2_C};
   font-size: 16px;
+
+  &:hover {
+    cursor: pointer;
+    background: ${Theme.subTheme_C};
+  }
 `;
 
 const MobileList = styled(Wrapper)`
@@ -57,7 +62,7 @@ const Request = () => {
       </Head>
 
       <ClientLayout>
-        <WholeWrapper padding={`95px 0 100px`}>
+        <WholeWrapper padding={`95px 0 0`}>
           <RsWrapper>
             <MypageTop />
             <Wrapper
@@ -82,61 +87,97 @@ const Request = () => {
               display={width < 800 ? `none` : `flex`}
             >
               <Wrapper width={`10%`}>번호</Wrapper>
-              <Wrapper width={`45%`}>제목</Wrapper>
-              <Wrapper width={`15%`}>작성자</Wrapper>
-              <Wrapper width={`15%`}>작성일</Wrapper>
-              <Wrapper width={`15%`}>답변상태</Wrapper>
+              <Wrapper width={`60%`}>제목</Wrapper>
+              <Wrapper width={`10%`}>작성자</Wrapper>
+              <Wrapper width={`10%`}>작성일</Wrapper>
+              <Wrapper width={`10%`}>답변상태</Wrapper>
             </Wrapper>
-            {width < 600 ? (
+            {width < 700 ? (
               <Wrapper>
                 <MobileList>
-                  <Wrapper color={Theme.darkGrey_C} cursor={`pointer`}>
-                    <Wrapper dr={`row`} ju={`flex-start`} fontSize={`16px`}>
-                      <Text isHover>상품 요청</Text>
+                  <Wrapper
+                    dr={`row`}
+                    ju={`flex-start`}
+                    color={Theme.darkGrey_C}
+                    fontSize={`16px`}
+                    margin={`0 0 10px`}
+                  >
+                    <Text maxWidth={`90%`} isEllipsis isHover>
+                      상품 요청
+                    </Text>
+                    <Text padding={`0 5px`}>
+                      <LockFilled />
+                    </Text>
+                  </Wrapper>
+
+                  <Wrapper dr={`row`} ju={`space-between`}>
+                    <Text color={Theme.grey_C}>김**</Text>
+                    <Text>2022.12.31</Text>
+                    <Text>답변완료</Text>
+                    {/* <Text color={Theme.lightGrey_C}>미답변</Text> */}
+                  </Wrapper>
+                </MobileList>
+              </Wrapper>
+            ) : (
+              <>
+                <List>
+                  <Wrapper width={`10%`} color={Theme.grey_C}>
+                    10
+                  </Wrapper>
+                  <Wrapper
+                    width={`60%`}
+                    padding={`0 14px`}
+                    color={Theme.darkGrey_C}
+                  >
+                    <Wrapper dr={`row`} ju={`flex-start`}>
+                      <Text maxWidth={`52%`} isEllipsis isHover>
+                        상품 요청
+                      </Text>
                       <Text padding={`0 5px`}>
                         <LockFilled />
                       </Text>
                     </Wrapper>
                   </Wrapper>
-                  <Wrapper
-                    al={`flex-start`}
-                    color={Theme.grey_C}
-                    margin={`0 0 15px`}
-                  >
+                  <Wrapper width={`10%`} color={Theme.grey_C}>
                     김**
                   </Wrapper>
-                  <Wrapper dr={`row`} ju={`space-between`}>
-                    <Text>2022.12.31</Text>
-                    <Text>답변완료</Text>
+                  <Wrapper width={`10%`}>2022.12.31</Wrapper>
+                  <Wrapper width={`10%`} fontSize={`16px`} fontWeight={`600`}>
+                    답변완료
                   </Wrapper>
-                </MobileList>
-              </Wrapper>
-            ) : (
-              <List>
-                <Wrapper width={`10%`} color={Theme.grey_C}>
-                  10
-                </Wrapper>
-                <Wrapper
-                  width={`45%`}
-                  padding={`0 50px`}
-                  color={Theme.darkGrey_C}
-                  cursor={`pointer`}
-                >
-                  <Wrapper dr={`row`} ju={`flex-start`}>
-                    <Text isHover>상품 요청</Text>
-                    <Text padding={`0 5px`}>
-                      <LockFilled />
-                    </Text>
+                </List>
+                <List>
+                  <Wrapper width={`10%`} color={Theme.grey_C}>
+                    10
                   </Wrapper>
-                </Wrapper>
-                <Wrapper width={`15%`} color={Theme.grey_C}>
-                  김**
-                </Wrapper>
-                <Wrapper width={`15%`}>2022.12.31</Wrapper>
-                <Wrapper width={`15%`} fontSize={`16px`} fontWeight={`600`}>
-                  답변완료
-                </Wrapper>
-              </List>
+                  <Wrapper
+                    width={`60%`}
+                    padding={`0 14px`}
+                    color={Theme.darkGrey_C}
+                  >
+                    <Wrapper dr={`row`} ju={`flex-start`}>
+                      <Text maxWidth={`52%`} isEllipsis isHover>
+                        상품 요청
+                      </Text>
+                      <Text padding={`0 5px`}>
+                        <LockFilled />
+                      </Text>
+                    </Wrapper>
+                  </Wrapper>
+                  <Wrapper width={`10%`} color={Theme.grey_C}>
+                    김**
+                  </Wrapper>
+                  <Wrapper width={`10%`}>2022.12.31</Wrapper>
+                  <Wrapper
+                    width={`10%`}
+                    fontSize={`16px`}
+                    fontWeight={`600`}
+                    color={Theme.lightGrey_C}
+                  >
+                    미답변
+                  </Wrapper>
+                </List>
+              </>
             )}
             <CustomPage />
           </RsWrapper>

@@ -295,6 +295,7 @@ export const CommonButton = styled(Button)`
 export const Text = styled.p`
   overflow: ${(props) => props.overflow};
   width: ${(props) => props.width};
+  max-width: ${(props) => props.maxWidth};
   height: ${(props) => props.height};
   min-height: ${(props) => props.minHeight};
   max-height: ${(props) => props.maxHeight};
@@ -456,13 +457,13 @@ export const TextArea = styled.textarea`
   width: ${(props) => props.width};
   height: ${(props) => props.height || `100px`};
   padding: ${(props) => props.padding || `10px`};
-  border: ${(props) => props.border || `1px solid ${props.theme.grey_C}`};
+  border: ${(props) => props.border || `1px solid ${props.theme.lightGrey2_C}`};
   border-radius: ${(props) => props.theme.radius};
   background: ${(props) => props.bgColor};
   transition: ${(props) => props.transition || props.theme.transition};
   margin: ${(props) => props.margin};
   resize: none;
-  border-radius: ${(props) => props.radius || `10px`};
+  border-radius: ${(props) => props.radius};
 
   &:focus {
     outline: none;
