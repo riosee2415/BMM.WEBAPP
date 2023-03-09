@@ -100,10 +100,14 @@ const Index = () => {
                   margin={`0 0 20px`}
                   radius={`3px`}
                 >
-                  <DetailText dr={`row`} ju={`space-between`}>
-                    <Text>주문 / 배송 조회</Text>
-                    <RightOutlined />
-                  </DetailText>
+                  <Link href={`/mypage/ordercheck`}>
+                    <ATag>
+                      <DetailText dr={`row`} ju={`space-between`}>
+                        <Text>주문 / 배송 조회</Text>
+                        <RightOutlined />
+                      </DetailText>
+                    </ATag>
+                  </Link>
                   <DetailText dr={`row`} ju={`space-between`}>
                     <Text>취소 / 환불 내역</Text>
                     <RightOutlined />

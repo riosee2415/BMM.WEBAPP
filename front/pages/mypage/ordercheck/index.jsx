@@ -1,12 +1,12 @@
 import React, { useCallback, useState } from "react";
-import ClientLayout from "../../components/ClientLayout";
-import Theme from "../../components/Theme";
+import ClientLayout from "../../../components/ClientLayout";
+import Theme from "../../../components/Theme";
 import Head from "next/head";
-import wrapper from "../../store/configureStore";
-import { LOAD_MY_INFO_REQUEST } from "../../reducers/user";
+import wrapper from "../../../store/configureStore";
+import { LOAD_MY_INFO_REQUEST } from "../../../reducers/user";
 import axios from "axios";
 import { END } from "redux-saga";
-import useWidth from "../../hooks/useWidth";
+import useWidth from "../../../hooks/useWidth";
 import {
   RsWrapper,
   WholeWrapper,
@@ -14,9 +14,9 @@ import {
   Text,
   CustomPage,
   ATag,
-} from "../../components/commonComponents";
+} from "../../../components/commonComponents";
 import styled from "styled-components";
-import MypageTop from "../../components/MypageTop";
+import MypageTop from "../../../components/MypageTop";
 import Link from "next/dist/client/link";
 
 const List = styled(Wrapper)`
@@ -29,7 +29,7 @@ const List = styled(Wrapper)`
 `;
 
 
-const OrderCheck = () => {
+const Index = () => {
   ////// GLOBAL STATE //////
   ////// HOOKS //////
   const width = useWidth();
@@ -71,12 +71,12 @@ const OrderCheck = () => {
               fontWeight={`600`}
             >
               <Wrapper width={`10%`}>주문일자</Wrapper>
-              <Wrapper width={`30%`}>상품명</Wrapper>
-              <Wrapper width={`15%`}>주문수량</Wrapper>
-              <Wrapper width={`15%`}>상품금액</Wrapper>
-              <Wrapper width={`15%`}>무게</Wrapper>
-              <Wrapper width={`15%`}>배송비</Wrapper>
-              <Wrapper width={`15%`}>상태</Wrapper>
+              <Wrapper width={`40%`}>상품명</Wrapper>
+              <Wrapper width={`10%`}>주문수량</Wrapper>
+              <Wrapper width={`10%`}>상품금액</Wrapper>
+              <Wrapper width={`10%`}>무게</Wrapper>
+              <Wrapper width={`10%`}>배송비</Wrapper>
+              <Wrapper width={`10%`}>상태</Wrapper>
             </Wrapper>
 
             <List>      
@@ -89,7 +89,7 @@ const OrderCheck = () => {
                 color={Theme.darkGrey_C}
                 cursor={`pointer`}
               >
-                <Link href={`/mypage/q_detail`}>
+                <Link href={`/ordercheck/`}>
                   <ATag>
                     <Wrapper dr={`row`} ju={`flex-start`}>
                       <Text width={`75%`} isEllipsis isHover>제목이 들어올 곳입니다.</Text>
@@ -131,4 +131,4 @@ export const getServerSideProps = wrapper.getServerSideProps(
   }
 );
 
-export default OrderCheck;
+export default Index;
