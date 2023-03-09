@@ -78,7 +78,7 @@ const Index = () => {
       </Head>
 
       <ClientLayout>
-        <WholeWrapper padding={`95px 0 100px`}>
+        <WholeWrapper padding={`95px 0 0`}>
           <RsWrapper>
             <MypageTop />
             <Wrapper dr={`row`} ju={`space-between`}>
@@ -144,22 +144,38 @@ const Index = () => {
                   margin={`0 0 20px`}
                   radius={`3px`}
                 >
-                  <DetailText dr={`row`} ju={`space-between`}>
-                    <Text>상품 요청 내역</Text>
-                    <RightOutlined />
-                  </DetailText>
-                  <DetailText dr={`row`} ju={`space-between`}>
-                    <Text>1:1 문의 내역</Text>
-                    <RightOutlined />
-                  </DetailText>
-                  <DetailText dr={`row`} ju={`space-between`}>
-                    <Text>나의 리뷰 내역</Text>
-                    <RightOutlined />
-                  </DetailText>
-                  <DetailText dr={`row`} ju={`space-between`}>
-                    <Text>회원정보수정</Text>
-                    <RightOutlined />
-                  </DetailText>
+                  <Link href={`/mypage/request`}>
+                    <ATag>
+                      <DetailText dr={`row`} ju={`space-between`}>
+                        <Text>상품 요청 내역</Text>
+                        <RightOutlined />
+                      </DetailText>
+                    </ATag>
+                  </Link>
+                  <Link href={`/mypage/question`}>
+                    <ATag>
+                      <DetailText dr={`row`} ju={`space-between`}>
+                        <Text>1:1 문의 내역</Text>
+                        <RightOutlined />
+                      </DetailText>
+                    </ATag>
+                  </Link>
+                  <Link href={`/mypage/review`}>
+                    <ATag>
+                      <DetailText dr={`row`} ju={`space-between`}>
+                        <Text>나의 리뷰 내역</Text>
+                        <RightOutlined />
+                      </DetailText>
+                    </ATag>
+                  </Link>
+                  <Link href={`/mypage/membermodify`}>
+                    <ATag>
+                      <DetailText dr={`row`} ju={`space-between`}>
+                        <Text>회원정보수정</Text>
+                        <RightOutlined />
+                      </DetailText>
+                    </ATag>
+                  </Link>
                 </Wrapper>
               </Wrapper>
             </Wrapper>

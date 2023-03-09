@@ -83,10 +83,18 @@ const MypageTop = () => {
         </MypageBox>
 
         <MypageBox>
-          <Text fontSize={width < 700 ? `18px` : `28px`} fontWeight={`bold`}>
-            3
-          </Text>
-          <Text>찜목록</Text>
+          <Link href={`/mypage/wishlist`}>
+            <ATag dr={`column`} height={`100%`}>
+              <Text
+                fontSize={width < 700 ? `18px` : `28px`}
+                fontWeight={`bold`}
+                isHover
+              >
+                3
+              </Text>
+              <Text>찜목록</Text>
+            </ATag>
+          </Link>
         </MypageBox>
         <MypageBox>
           <Text fontSize={width < 700 ? `18px` : `28px`} fontWeight={`bold`}>

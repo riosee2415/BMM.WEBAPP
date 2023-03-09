@@ -112,7 +112,7 @@ const Coupon = () => {
       </Head>
 
       <ClientLayout>
-        <WholeWrapper padding={`95px 0 100px`}>
+        <WholeWrapper padding={`95px 0 0`}>
           <RsWrapper>
             <MypageTop />
             <Wrapper

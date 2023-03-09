@@ -65,6 +65,23 @@ const OutBtn = styled(Wrapper)`
   }
 `;
 
+const ModifyBtn = styled(Wrapper)`
+  width: 100%;
+  height: 54px;
+  font-size: 18px;
+  font-weight: 600;
+  background-color: ${Theme.white_C};
+  border: 1px solid ${Theme.basicTheme_C};
+  margin: 0 0 12px;
+
+  cursor: pointer;
+
+  &:hover {
+    background: ${(props) => props.theme.basicTheme_C};
+    color: ${(props) => props.theme.black_C};
+  }
+`;
+
 const MemberModify = () => {
   ////// GLOBAL STATE //////
   const [isModal, setIsModal] = useState(false);
@@ -89,7 +106,7 @@ const MemberModify = () => {
       </Head>
 
       <ClientLayout>
-        <WholeWrapper padding={`95px 0 100px`}>
+        <WholeWrapper padding={`95px 0 0`}>
           <RsWrapper>
             <MypageTop />
             <Wrapper
@@ -169,16 +186,7 @@ const MemberModify = () => {
                 placeholder="상세주소를 입력해주세요."
               />
               <Wrapper>
-                <CommonButton
-                  fontSize={width < 500 ? `16px` : `18px`}
-                  fontWeight={`600`}
-                  kindOf={`white`}
-                  width={`100%`}
-                  height={`54px`}
-                  margin={`0 0 10px`}
-                >
-                  회원정보수정
-                </CommonButton>
+                <ModifyBtn>회원정보수정</ModifyBtn>
               </Wrapper>
               <Wrapper
                 dr={`row`}
@@ -222,7 +230,10 @@ const MemberModify = () => {
                 </Text>
               </Wrapper>
               <Wrapper>
-                <Wrapper al={`flex-start`} margin={width < 900 ? `35px 0 35px` : `50px 0 50px`}>
+                <Wrapper
+                  al={`flex-start`}
+                  margin={width < 900 ? `35px 0 35px` : `50px 0 50px`}
+                >
                   <Text
                     fontSize={width < 900 ? `16px` : `18px`}
                     margin={`0 0 15px`}
@@ -253,7 +264,7 @@ const MemberModify = () => {
                 <Wrapper dr={`row`} ju={`space-between`}>
                   <OutBtn onClick={modalToggle}>탈퇴하기</OutBtn>
                   <CommonButton
-                    fontSize={width < 900 ? `16px` : `18px`}
+                    fontSize={width < 500 ? `16px` : `18px`}
                     fontWeight={`600`}
                     kindOf={`white`}
                     width={`49%`}

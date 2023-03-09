@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useCallback, useState } from "react";
 import ClientLayout from "../../components/ClientLayout";
 import Theme from "../../components/Theme";
 import Head from "next/head";
@@ -13,9 +13,11 @@ import {
   Wrapper,
   Text,
   CustomPage,
+  ATag,
 } from "../../components/commonComponents";
 import styled from "styled-components";
 import MypageTop from "../../components/MypageTop";
+import Link from "next/dist/client/link";
 
 const List = styled(Wrapper)`
   height: 60px;
@@ -23,27 +25,25 @@ const List = styled(Wrapper)`
   border-bottom: 1px solid ${Theme.lightGrey2_C};
   font-size: 16px;
 
-  @media (max-width: 500px) {
-    font-size: 14px;
-  }
-`;
-const Point = () => {
-  ////// GLOBAL STATE //////
 
+`;
+
+
+const OrderCheck = () => {
+  ////// GLOBAL STATE //////
   ////// HOOKS //////
   const width = useWidth();
 
   ////// REDUX //////
   ////// USEEFFECT //////
   ////// TOGGLE //////
-
   ////// HANDLER //////
   ////// DATAVIEW //////
 
   return (
     <>
       <Head>
-        <title>BUY ME MINE | 포인트</title>
+        <title>BUY ME MINE | 주문 / 배송 조회</title>
       </Head>
 
       <ClientLayout>
@@ -52,13 +52,14 @@ const Point = () => {
             <MypageTop />
             <Wrapper
               dr={`row`}
-              ju={`flex-start`}
-              fontSize={width < 700 ? `24px` : `30px`}
+              ju={`space-between`}
+              fontSize={width < 700 ? `26px` : `30px`}
               fontWeight={`600`}
               margin={`0 0 30px`}
             >
-              <Text>포인트</Text>
+              <Text>주문 / 배송 조회</Text>
             </Wrapper>
+
             <Wrapper
               height={`54px`}
               dr={`row`}
@@ -66,23 +67,39 @@ const Point = () => {
               bgColor={Theme.lightGrey3_C}
               borderTop={`1px solid ${Theme.basicTheme_C}`}
               borderBottom={`1px solid ${Theme.lightGrey2_C}`}
-              fontSize={width < 700 ? `14px` : `16px`}
+              fontSize={`16px`}
               fontWeight={`600`}
             >
-              <Wrapper width={width < 700 ? `15%` : `10%`}>번호</Wrapper>
-              <Wrapper width={width < 700 ? `70%` : `65%`}>포인트 내역</Wrapper>
-              <Wrapper width={width < 700 ? `15%` : `25%`}>내역</Wrapper>
+              <Wrapper width={`10%`}>주문일자</Wrapper>
+              <Wrapper width={`30%`}>상품명</Wrapper>
+              <Wrapper width={`15%`}>주문수량</Wrapper>
+              <Wrapper width={`15%`}>상품금액</Wrapper>
+              <Wrapper width={`15%`}>무게</Wrapper>
+              <Wrapper width={`15%`}>배송비</Wrapper>
+              <Wrapper width={`15%`}>상태</Wrapper>
             </Wrapper>
-            <List>
-              <Wrapper width={width < 700 ? `15%` : `10%`}>1</Wrapper>
-              <Wrapper
-                width={width < 700 ? `70%` : `65%`}
-                padding={width < 700 ? `0 10px` : `0 50px`}
-                al={`flex-start`}
-              >
-                상품 구매 - 포인트 적립
+
+            <List>      
+              <Wrapper width={`10%`} color={Theme.grey_C} display={width < 800 ? `none` : `flex`}>
+                10
               </Wrapper>
-              <Wrapper width={width < 700 ? `15%` : `25%`}>+123</Wrapper>
+              <Wrapper
+                width={width < 800 ? `75%` : `75%`}
+                padding={`0 50px`}
+                color={Theme.darkGrey_C}
+                cursor={`pointer`}
+              >
+                <Link href={`/mypage/q_detail`}>
+                  <ATag>
+                    <Wrapper dr={`row`} ju={`flex-start`}>
+                      <Text width={`75%`} isEllipsis isHover>제목이 들어올 곳입니다.</Text>
+                    </Wrapper>
+                  </ATag>
+                </Link>
+              </Wrapper>
+              <Wrapper width={width < 800 ? `25%` : `15%`} >
+                2022.12.22
+              </Wrapper>
             </List>
             <CustomPage />
           </RsWrapper>
@@ -114,4 +131,4 @@ export const getServerSideProps = wrapper.getServerSideProps(
   }
 );
 
-export default Point;
+export default OrderCheck;
