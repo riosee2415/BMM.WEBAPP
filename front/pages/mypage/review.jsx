@@ -33,12 +33,10 @@ const List = styled(Wrapper)`
 `;
 
 const ImageList = styled(Wrapper)`
-width: 100%;
-flex-direction: row;
-justify-content: flex-start;
-margin: 0 0 15px;
-padding-right: 10px;
-
+  width: 100%;
+  flex-direction: row;
+  justify-content: flex-start;
+  margin: 0 0 15px;
 `;
 
 const TextWrapper = styled(Wrapper)`
@@ -95,6 +93,7 @@ const PictureWrapper = styled(Wrapper)`
 const Review = () => {
   ////// GLOBAL STATE //////
   const [isModal, setIsModal] = useState(false);
+  const [deleteModal, setDeleteModal] = useState(false);
 
   ////// HOOKS //////
   const width = useWidth();
@@ -105,6 +104,10 @@ const Review = () => {
   const modalToggle = useCallback(() => {
     setIsModal((prev) => !prev);
   }, [isModal]);
+
+  const deletemodalToggle = useCallback(() => {
+    setDeleteModal((prev) => !prev);
+  }, [deleteModal]);
 
   ////// HANDLER //////
   ////// DATAVIEW //////
@@ -156,7 +159,10 @@ const Review = () => {
                   <PictureOutlined />
                 </Wrapper>
               </TextWrapper>
-              <Wrapper width={width < 600 ? `25%` : `15%`} color={Theme.lightGrey_C}>
+              <Wrapper
+                width={width < 600 ? `25%` : `15%`}
+                color={Theme.lightGrey_C}
+              >
                 2022.12.31
               </Wrapper>
             </List>
@@ -176,28 +182,31 @@ const Review = () => {
                 <Text color={Theme.lightGrey_C}>2022.12.21</Text>
               </Wrapper>
             </Wrapper>
-            <ImageList >
-              <Image
-                alt="리뷰 사진"
-                src={`https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/bmm/assets/images/sample-img/review.png`}
-                width={`122px`}
-              />
-              <Image
-                alt="리뷰 사진"
-                src={`https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/bmm/assets/images/sample-img/review.png`}
-                width={`122px`}
-              />
-              <Image
-                alt="리뷰 사진"
-                src={`https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/bmm/assets/images/sample-img/review.png`}
-                width={`122px`}
-              />
-              <Image
-                alt="리뷰 사진"
-                src={`https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/bmm/assets/images/sample-img/review.png`}
-                width={`122px`}
-              />
-            </ImageList>
+            <Wrapper width={`auto`} dr={`row`} ju={`space-between`}>
+              <ImageList>
+                <Image
+                  alt="리뷰 사진"
+                  src={`https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/bmm/assets/images/sample-img/review.png`}
+                  width={`20%`}
+                />
+                <Image
+                  alt="리뷰 사진"
+                  src={`https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/bmm/assets/images/sample-img/review.png`}
+                  width={`20%`}
+                />
+                <Image
+                  alt="리뷰 사진"
+                  src={`https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/bmm/assets/images/sample-img/review.png`}
+                  width={`20%`}
+                />
+                <Image
+                  alt="리뷰 사진"
+                  src={`https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/bmm/assets/images/sample-img/review.png`}
+                  width={`20%`}
+                />
+              </ImageList>
+            </Wrapper>
+
             <Wrapper margin={`0 0 55px`}>
               <Text>
                 리뷰의 내용이 30자로 들어오게 됩니다. 제목의 역할을 하게 됩니다.
@@ -206,20 +215,31 @@ const Review = () => {
                 나타납니다. 내용이 더 들어오게 된다면 이렇게 나타납니다.
               </Text>
             </Wrapper>
-            <Wrapper dr={`row`} ju={`space-between`}>
-              <Text onclick={modalToggle} cursor={`pointer`}>
+            <Wrapper dr={`row`} ju={`space-between`} postion={`relative`} cursor={`pointer`}>
+              <Text onClick={deletemodalToggle} >
                 삭제
               </Text>
-              <Text onClick={modalToggle} cursor={`pointer`}>
+              <Text onClick={modalToggle}>
                 닫기
-                <CloseOutlined />
               </Text>
+              <Wrapper
+                width={`auto`}
+                dr={`row`}
+                ju={`flex-end`}
+                position={`absolute`}
+                botoom={`0`}
+                right={`1%`}
+              >
+                <Text color={Theme.basicTheme_C}>
+                  <CloseOutlined />
+                </Text>
+              </Wrapper>
             </Wrapper>
           </Modal>
 
-          {/* <Modal
-            onCancel={modalToggle}
-            visible={isModal}
+          <Modal
+            onCancel={deletemodalToggle}
+            visible={deleteModal}
             footer={null}
             closable={null}
             width={`570px`}
@@ -241,7 +261,7 @@ const Review = () => {
                   color={Theme.grey_C}
                   isHover
                   fontSize={`20px`}
-                  onClick={modalToggle}
+                  onClick={deletemodalToggle}
                 >
                   <CloseOutlined />
                 </Text>
@@ -256,21 +276,21 @@ const Review = () => {
                   </Text>
                 </Wrapper>
                 <Wrapper dr={`row`} ju={`space-between`}>
-                  <BeforeBtn onClick={modalToggle}>리뷰삭제하기</BeforeBtn>
+                  <BeforeBtn onClick={deletemodalToggle}>리뷰삭제하기</BeforeBtn>
                   <CommonButton
                     fontSize={width < 500 ? `16px` : `18px`}
                     fontWeight={`600`}
                     kindOf={`white`}
                     width={`49%`}
                     height={`54px`}
-                    onClick={modalToggle}
+                    onClick={deletemodalToggle}
                   >
                     취소하기
                   </CommonButton>
                 </Wrapper>
               </Wrapper>
             </Wrapper>
-          </Modal> */}
+          </Modal>
 
           {/* <Modal
             onCancel={modalToggle}
