@@ -89,7 +89,7 @@ const Index = () => {
                 color={Theme.darkGrey_C}
                 cursor={`pointer`}
               >
-                <Link href={`/ordercheck/`}>
+                <Link href={`/mypage/ordercheck/1`}>
                   <ATag>
                     <Wrapper dr={`row`} ju={`flex-start`}>
                       <Text width={`75%`} isEllipsis isHover>제목이 들어올 곳입니다.</Text>
