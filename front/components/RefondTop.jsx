@@ -172,7 +172,7 @@ const RefondTop = () => {
                 <Wrapper>
                   <ReviewBtn>리뷰 작성</ReviewBtn>
                 </Wrapper>
-                <Link href={`/mypage/ordercheck/refond`}>
+                <Link href={`/mypage/refond`}>
                   <ATag>
                     <RefondBtn>환불신청</RefondBtn>
                   </ATag>

@@ -238,6 +238,12 @@ export const CommonButton = styled(Button)`
   ${(props) =>
     props.kindOf === `grey` &&
     `border : 1px solid ${props.theme.lightGrey2_C};`}
+      ${(props) =>
+    props.kindOf === `darkgrey` && `background : ${props.theme.white_C};`}
+  ${(props) => props.kindOf === `darkgrey` && `color : ${props.theme.black_C};`}
+      ${(props) =>
+    props.kindOf === `darkgrey` &&
+    `border : 1px solid ${props.theme.lightGrey2_C};`}
   ${(props) =>
     props.kindOf === `kakao` && `background : ${props.theme.kakao_C};`}
   ${(props) =>
@@ -276,6 +282,9 @@ export const CommonButton = styled(Button)`
     ${(props) => props.kindOf === `grey` && `color : ${props.theme.black_C};`}
     ${(props) =>
       props.kindOf === `grey` &&
+      `border : 1px solid ${props.theme.basicTheme_C};`}
+    ${(props) =>
+      props.kindOf === `darkgrey` &&
       `border : 1px solid ${props.theme.basicTheme_C};`}
     ${(props) =>
       props.kindOf === `kakao` && `background : ${props.theme.kakao_C};`}
