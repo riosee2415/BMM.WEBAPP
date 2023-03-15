@@ -108,10 +108,14 @@ const Index = () => {
                       </DetailText>
                     </ATag>
                   </Link>
-                  <DetailText dr={`row`} ju={`space-between`}>
-                    <Text>취소 / 환불 내역</Text>
-                    <RightOutlined />
-                  </DetailText>
+                  <Link href={`/mypage/ordercheck`}>
+                    <ATag>
+                      <DetailText dr={`row`} ju={`space-between`}>
+                        <Text>취소 / 환불 내역</Text>
+                        <RightOutlined />
+                      </DetailText>
+                    </ATag>
+                  </Link>
                   <Link href={`/mypage/coupon`}>
                     <ATag>
                       <DetailText dr={`row`} ju={`space-between`}>

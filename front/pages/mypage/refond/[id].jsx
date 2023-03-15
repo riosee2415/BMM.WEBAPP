@@ -293,47 +293,46 @@ const Index = () => {
                     주소<SpanText color={Theme.red_C}>*</SpanText>
                   </Text>
                 </Wrapper>
-                <Wrapper width={`80%`} al={`flex-start`}>
-                  <Wrapper dr={`row`} ju={`flex-start`}>
+
+                <Wrapper
+                  width={width < 1100 ? `100%` : `80%`}
+                  al={`flex-start`}
+                  margin={width < 1100 ? `0 0 16px` : `16px 0 16px`}
+                >
+                  <Wrapper dr={`row`} ju={`flex-start`} margin={`0 0 10px`}>
                     <Wrapper
-                      width={`20%`}
+                      width={width < 1100 ? `74%` : `29%`}
                       height={`46px`}
                       border={`1px solid ${Theme.lightGrey2_C}`}
                       bgColor={Theme.lightGrey3_C}
                       al={`flex-start`}
+                      margin={`0 11px 0 0`}
                       padding={`0 10px`}
-                      margin={width < 1100 ? `0 0 10px` : `16px 0 10px`}
                     >
-                      <Text color={Theme.grey_C}>43243</Text>
-                    </Wrapper>
-
-                    <CommonButton width={`10%`} height={`46px`}>
                       우편번호
-                    </CommonButton>
+                    </Wrapper>
+                    <CommonButton height={`46px`}>우편번호</CommonButton>
                   </Wrapper>
                   <Wrapper
-                    width={`30%`}
+                    width={width < 1100 ? `100%` : `38%`}
                     height={`46px`}
                     border={`1px solid ${Theme.lightGrey2_C}`}
                     bgColor={Theme.lightGrey3_C}
                     al={`flex-start`}
-                    padding={`0 10px`}
                     margin={`0 0 10px`}
+                    padding={`0 10px`}
                   >
-                    <Text color={Theme.grey_C}>
-                      대전광역시 서구 대덕대로 324
-                    </Text>
+                    기본주소
                   </Wrapper>
                   <Wrapper
-                    width={`30%`}
+                    width={width < 1100 ? `100%` : `38%`}
                     height={`46px`}
                     border={`1px solid ${Theme.lightGrey2_C}`}
                     bgColor={Theme.lightGrey3_C}
                     al={`flex-start`}
                     padding={`0 10px`}
-                    margin={`0 0 16px`}
                   >
-                    <Text color={Theme.grey_C}>1043호</Text>
+                    상세주소를 입력해주세요.
                   </Wrapper>
                 </Wrapper>
               </Wrapper>
@@ -344,7 +343,7 @@ const Index = () => {
                 borderBottom={`1px solid ${Theme.lightGrey5_C}`}
               >
                 <Text
-                  width={width < 800 ? `30%` : `20%`}
+                  width={width < 1100 ? `30%` : `20%`}
                   lineHeight={`46px`}
                   fontSize={`16px`}
                 >

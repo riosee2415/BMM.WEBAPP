@@ -1,5 +1,5 @@
 import React from "react";
-import { Wrapper, Text, WholeWrapper, Image , ATag} from "./commonComponents";
+import { Wrapper, Text, WholeWrapper, Image, ATag } from "./commonComponents";
 import Theme from "./Theme";
 import useWidth from "../hooks/useWidth";
 import { useDispatch } from "react-redux";
@@ -18,20 +18,12 @@ const MobileList = styled(Wrapper)`
   margin: 0 0 10px;
   border: 1px solid ${Theme.lightGrey2_C};
   padding: 15px;
-
-  &:last-child {
-    margin: 0;
-  }
-
-  &:nth-child(2n) {
-    background: ${Theme.subTheme_C};
-  }
 `;
 
 const RefondBtn = styled(Wrapper)`
   width: 70%;
   border: 1px solid ${Theme.lightGrey2_C};
-  border-radius: 10%;
+  border-radius: 5px;
   background-color: ${Theme.lightGrey3_C};
 
   cursor: pointer;
@@ -40,8 +32,7 @@ const RefondBtn = styled(Wrapper)`
     transition: 0.2s;
     background-color: ${Theme.lightGrey_C};
   }
-
-  @media (max-width: 800px) {
+  @media (max-width: 1100px) {
     width: 49%;
   }
 `;
@@ -49,7 +40,7 @@ const RefondBtn = styled(Wrapper)`
 const ReviewBtn = styled(Wrapper)`
   width: 70%;
   border: 1px solid ${Theme.basicTheme_C};
-  border-radius: 10%;
+  border-radius: 5px;
   background-color: ${Theme.basicTheme_C};
   margin: 0 0 5px;
 
@@ -60,7 +51,7 @@ const ReviewBtn = styled(Wrapper)`
     background-color: ${Theme.white_C};
   }
 
-  @media (max-width: 800px) {
+  @media (max-width: 1100px) {
     width: 49%;
   }
 `;
@@ -91,7 +82,7 @@ const RefondTop = () => {
           <Wrapper width={`10%`}>배송비</Wrapper>
           <Wrapper width={`10%`}>상태</Wrapper>
         </Wrapper>
-        {width < 700 ? (
+        {width < 1100 ? (
           <Wrapper>
             <MobileList>
               <Wrapper
@@ -126,7 +117,7 @@ const RefondTop = () => {
               <Wrapper dr={`row`} ju={`space-between`}>
                 <ReviewBtn>리뷰 작성</ReviewBtn>
                 <Link href={`/mypage/ordercheck/refond`}>
-                  <ATag>
+                  <ATag widht={`100%`}>
                     <RefondBtn>환불신청</RefondBtn>
                   </ATag>
                 </Link>

@@ -47,7 +47,7 @@ const PictureWrapper = styled(Wrapper)`
     background: ${(props) => props.theme.lightGrey3_C};
   }
 
-  @media (max-width: 600px) {
+  @media (max-width: 1100px) {
     width: 150px;
     height: 150px;
   }
@@ -95,7 +95,7 @@ const Index = () => {
             <Wrapper
               dr={`row`}
               ju={`space-between`}
-              fontSize={width < 700 ? `26px` : `30px`}
+              fontSize={width < 1100 ? `26px` : `30px`}
               fontWeight={`600`}
               margin={`0 0 30px`}
             >
@@ -109,7 +109,7 @@ const Index = () => {
                 borderBottom={`1px solid ${Theme.basicTheme_C}`}
               >
                 <Text
-                  fontSize={width < 800 ? `20px` : `24px`}
+                  fontSize={width < 1100 ? `20px` : `24px`}
                   fontWeight={`600`}
                   margin={`0 0 20px`}
                 >
@@ -124,7 +124,7 @@ const Index = () => {
                 borderBottom={`1px solid ${Theme.lightGrey5_C}`}
               >
                 <Text
-                  width={width < 800 ? `30%` : `20%`}
+                  width={width < 1100 ? `30%` : `20%`}
                   lineHeight={`46px`}
                   fontSize={`16px`}
                   margin={`16px 0 16px`}
@@ -132,7 +132,7 @@ const Index = () => {
                   수령인 이름<SpanText color={Theme.red_C}>*</SpanText>
                 </Text>
                 <TextInput
-                  width={width < 800 ? `100%` : `30%`}
+                  width={width < 1100 ? `100%` : `30%`}
                   border={`1px solid ${Theme.lightGrey2_C}`}
                   al={`flex-start`}
                   placeholder="이름을 입력해주세요."
@@ -144,7 +144,7 @@ const Index = () => {
                 borderBottom={`1px solid ${Theme.lightGrey5_C}`}
               >
                 <Text
-                  width={width < 800 ? `30%` : `20%`}
+                  width={width < 1100 ? `30%` : `20%`}
                   lineHeight={`46px`}
                   fontSize={`16px`}
                   margin={`16px 0 16px`}
@@ -152,7 +152,7 @@ const Index = () => {
                   이메일<SpanText color={Theme.red_C}>*</SpanText>
                 </Text>
                 <TextInput
-                  width={width < 800 ? `100%` : `30%`}
+                  width={width < 1100 ? `100%` : `30%`}
                   border={`1px solid ${Theme.lightGrey2_C}`}
                   al={`flex-start`}
                   placeholder="이메일을 입력해주세요."
@@ -184,7 +184,7 @@ const Index = () => {
                 borderBottom={`1px solid ${Theme.lightGrey5_C}`}
               >
                 <Wrapper
-                  width={width < 800 ? `45%` : `20%`}
+                  width={width < 1100 ? `45%` : `20%`}
                   al={`flex-start`}
                   lineHeight={`46px`}
                   fontSize={`16px`}
@@ -196,24 +196,36 @@ const Index = () => {
                 </Wrapper>
 
                 <Wrapper
-                  width={width < 1100 ? `100%` : `30%`}
-                  height={`46px`}
+                  width={width < 1100 ? `100%` : `80%`}
                   al={`flex-start`}
+                  margin={`16px 0 16px`}
                 >
+                  <Wrapper dr={`row`} ju={`flex-start`} margin={`0 0 10px`}>
+                    <TextInput
+                      width={width < 1100 ? `74%` : `29%`}
+                      height={`46px`}
+                      border={`1px solid ${Theme.lightGrey2_C}`}
+                      al={`flex-start`}
+                      margin={`0 11px 0 0`}
+                      placeholder="우편번호"
+                    />
+                    <CommonButton height={`46px`}>우편번호</CommonButton>
+                  </Wrapper>
+
                   <TextInput
+                    width={width < 1100 ? `100%` : `38%`}
+                    height={`46px`}
                     border={`1px solid ${Theme.lightGrey2_C}`}
                     al={`flex-start`}
-                    placeholder="35555"
+                    margin={`0 0 10px`}
+                    placeholder="기본주소"
                   />
                   <TextInput
+                    width={width < 1100 ? `100%` : `38%`}
+                    height={`46px`}
                     border={`1px solid ${Theme.lightGrey2_C}`}
                     al={`flex-start`}
-                    placeholder="35555"
-                  />
-                  <TextInput
-                    border={`1px solid ${Theme.lightGrey2_C}`}
-                    al={`flex-start`}
-                    placeholder="35555"
+                    placeholder="상세주소를 입력해주세요."
                   />
                 </Wrapper>
               </Wrapper>
@@ -223,7 +235,7 @@ const Index = () => {
                 borderBottom={`1px solid ${Theme.lightGrey5_C}`}
               >
                 <Text
-                  width={width < 800 ? `30%` : `20%`}
+                  width={width < 1100 ? `30%` : `20%`}
                   lineHeight={`46px`}
                   fontSize={`16px`}
                 >
@@ -238,10 +250,10 @@ const Index = () => {
                   <Wrapper
                     margin={`0 11px 10px 0`}
                     position={`relative`}
-                    width={width < 600 ? `150px` : `111px`}
+                    width={width < 1100 ? `150px` : `111px`}
                   >
                     <Image
-                      height={width < 600 ? `150px` : `111px`}
+                      height={width < 1100 ? `150px` : `111px`}
                       alt="리뷰 사진"
                       src={`https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/bmm/assets/images/sample-img/review.png`}
                     />
@@ -250,19 +262,19 @@ const Index = () => {
                     </Circle>
                   </Wrapper>
                   <PictureWrapper>
-                    <Text fontSize={width < 700 ? `14px` : `20px`}>
+                    <Text fontSize={width < 1100 ? `14px` : `20px`}>
                       <PlusOutlined />
                     </Text>
                     <Text>첨부하기</Text>
                   </PictureWrapper>
                   <PictureWrapper>
-                    <Text fontSize={width < 700 ? `14px` : `20px`}>
+                    <Text fontSize={width < 1100 ? `14px` : `20px`}>
                       <PlusOutlined />
                     </Text>
                     <Text>첨부하기</Text>
                   </PictureWrapper>
                   <PictureWrapper>
-                    <Text fontSize={width < 700 ? `14px` : `20px`}>
+                    <Text fontSize={width < 1100 ? `14px` : `20px`}>
                       <PlusOutlined />
                     </Text>
                     <Text>첨부하기</Text>
@@ -284,7 +296,7 @@ const Index = () => {
                   환불 사유<SpanText color={Theme.red_C}>*</SpanText>
                 </Text>
                 <CustomSelect
-                  width={`30%`}
+                  width={width< 1100 ? `100%` : `30%`}
                   height={`46px`}
                   margin={`0 10px 0 0`}
                   radius={`0`}
@@ -308,7 +320,7 @@ const Index = () => {
             <Link href={`/mypage/refond/1`}>
               <ATag>
                 <CommonButton
-                  fontSize={width < 500 ? `16px` : `18px`}
+                  fontSize={width < 1100 ? `16px` : `18px`}
                   fontWeight={`600`}
                   kindOf={`white`}
                   width={`240px`}
