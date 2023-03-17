@@ -97,10 +97,18 @@ const MypageTop = () => {
           </Link>
         </MypageBox>
         <MypageBox>
-          <Text fontSize={width < 700 ? `18px` : `28px`} fontWeight={`bold`}>
-            6
-          </Text>
-          <Text>나의 주문 내역</Text>
+          <Link href={`/mypage/ordercheck`}>
+            <ATag dr={`column`} height={`100%`}>
+              <Text
+                fontSize={width < 700 ? `18px` : `28px`}
+                fontWeight={`bold`}
+                isHover
+              >
+                6
+              </Text>
+              <Text>나의 주문 내역</Text>
+            </ATag>
+          </Link>
         </MypageBox>
       </Wrapper>
     </WholeWrapper>

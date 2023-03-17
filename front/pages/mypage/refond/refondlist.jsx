@@ -62,7 +62,7 @@ const RefondList = () => {
               fontWeight={`600`}
               margin={`0 0 30px`}
             >
-              <Text>주문 / 배송 조회</Text>
+              <Text>취소 / 환불 내역</Text>
             </Wrapper>
             <Wrapper
               height={`54px`}
@@ -90,11 +90,7 @@ const RefondList = () => {
               borderBottom={`1px solid ${Theme.lightGrey2_C}`}
             >
               <ListText>2022.12.21</ListText>
-              <Wrapper
-                width={`60%`}
-                dr={`row`}
-                borderRight={`1px solid ${Theme.lightGrey2_C}`}
-              >
+              <Wrapper width={`60%`} dr={`row`}>
                 <Box>
                   <Wrapper
                     width={`60%`}
@@ -124,6 +120,43 @@ const RefondList = () => {
               <ListText>420g</ListText>
               <ListText>4,000원</ListText>
               <ListText fontWeight={`600`}>환불 신청 완료</ListText>
+            </Wrapper>
+            <Wrapper
+              dr={`row`}
+              ju={`flex-start`}
+              borderBottom={`1px solid ${Theme.lightGrey2_C}`}
+            >
+              <ListText>2022.12.21</ListText>
+              <Wrapper width={`60%`} dr={`row`}>
+                <Box>
+                  <Wrapper
+                    width={`60%`}
+                    borderLeft={`1px solid ${Theme.lightGrey2_C}`}
+                  >
+                    <Wrapper
+                      dr={`row`}
+                      ju={`flex-start`}
+                      fontSize={`18px`}
+                      fontWeight={`600`}
+                      padding={`0 0 0 38px`}
+                      margin={`18px 0 18px`}
+                    >
+                      <Image
+                        alt="샘플사진"
+                        src={`https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/bmm/assets/images/sample-img/review.png`}
+                        width={`64px`}
+                        height={`64px`}
+                      />
+                      <Text padding={`0 0 0 14px`}>오레오 시리즈</Text>
+                    </Wrapper>
+                  </Wrapper>
+                  <ListText width={`20%`}>1</ListText>
+                  <ListText width={`20%`}>28,000원</ListText>
+                </Box>
+              </Wrapper>
+              <ListText>420g</ListText>
+              <ListText>4,000원</ListText>
+              <ListText fontWeight={`600`}>취소 완료</ListText>
             </Wrapper>
 
             <CustomPage />
