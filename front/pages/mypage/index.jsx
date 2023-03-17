@@ -108,7 +108,7 @@ const Index = () => {
                       </DetailText>
                     </ATag>
                   </Link>
-                  <Link href={`/mypage/ordercheck`}>
+                  <Link href={`/mypage/refond/refondlist`}>
                     <ATag>
                       <DetailText dr={`row`} ju={`space-between`}>
                         <Text>취소 / 환불 내역</Text>

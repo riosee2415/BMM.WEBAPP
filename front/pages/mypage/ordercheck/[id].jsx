@@ -24,8 +24,17 @@ import Link from "next/dist/client/link";
 import { CheckCircleOutlined } from "@ant-design/icons";
 import RefondTop from "../../../components/RefondTop";
 
+const BoxText = styled(Wrapper)`
+  flex-direction: row;
+  justify-content: space-between;
+  font-size: 18px;
+`;
 
-
+const SubText = styled(Wrapper)`
+  flex-direction: row;
+  justify-content: space-between;
+  color: ${Theme.lightGrey_C};
+`;
 const Index = () => {
   ////// GLOBAL STATE //////
   ////// HOOKS //////
@@ -74,7 +83,7 @@ const Index = () => {
                   width={width < 1100 ? `80%` : `20%`}
                   height={`30px`}
                   border={`1px solid ${Theme.basicTheme_C}`}
-                  radius={`5%`}
+                  radius={`5px`}
                   margin={width < 1100 ? `10px 0 0` : `0`}
                 >
                   <Text fontSize={`16px`}>우체국 택배</Text>
@@ -485,39 +494,67 @@ const Index = () => {
                   </CommonButton>
                 </Wrapper>
                 <Wrapper
-                  height={`445px`}
                   border={`1px solid ${Theme.lightGrey2_C}`}
                   bgColor={Theme.lightGrey3_C}
-                  borderBottom={`1px soild ${Theme.basicTheme_C}`}
+                  padding={`30px 20px 0`}
                 >
-                  <Wrapper
-                    width={`90%`}
-                    height={`400px`}
-                    dr={`row`}
-                    al={`flex-start`}
-                    ju={`flex-start`}
-                    margin={`0`}
-                  >
-                    <Text fontSize={`20px`} fontWeight={`600`}>
+                  <Wrapper width={`100%`} dr={`row`} ju={`flex-start`}>
+                    <Wrapper
+                      al={`flex-start`}
+                      fontSize={`20px`}
+                      fontWeight={`600`}
+                      borderBottom={`1px soild ${Theme.basicTheme_C}`}
+                      margin={`0 0 16px`}
+                    >
                       총 2개의 상품
-                    </Text>
-                    <Wrapper dr={`row`} ju={`space-between`}>
-                      <Text>총 상품금액</Text>
-                      <Text>18,000원</Text>
                     </Wrapper>
+                  </Wrapper>
 
-                    <Wrapper dr={`row`} ju={`space-between`}>
-                      <Text>총 무게</Text>
-                      <Text>240g</Text>
-                    </Wrapper>
-                    <Wrapper dr={`row`} ju={`space-between`}>
-                      <Text>총 배송비</Text>
-                      <Text>6,000원</Text>
-                    </Wrapper>
-                    <Wrapper dr={`row`} ju={`space-between`}>
-                      <Text>총 할인금액</Text>
-                      <Text>4,000원</Text>
-                    </Wrapper>
+                  <BoxText margin={`0 0 15px`}>
+                    <Text>총 상품금액</Text>
+                    <Text fontWeight={`600`}>18,000원</Text>
+                  </BoxText>
+
+                  <BoxText margin={`0 0 15px`}>
+                    <Text>총 무게</Text>
+                    <Text fontWeight={`600`}>240g</Text>
+                  </BoxText>
+                  <BoxText margin={`0 0 15px`}>
+                    <Text>총 배송비</Text>
+                    <Text fontWeight={`600`}>6,000원</Text>
+                  </BoxText>
+                  <BoxText margin={`0 0 13px`}>
+                    <Text>총 할인금액</Text>
+                    <Text fontWeight={`600`}>4,000원</Text>
+                  </BoxText>
+                  <SubText>
+                    <Text>ㄴ배송 할인금액</Text>
+                    <Text>-2,000원</Text>
+                  </SubText>
+                  <SubText>
+                    <Text>ㄴ회원 할인금액(00%)</Text>
+                    <Text>-2,000원</Text>
+                  </SubText>
+                  <SubText>
+                    <Text>ㄴ쿠폰 사용</Text>
+                    <Text>-0원</Text>
+                  </SubText>
+                  <SubText margin={`0 0 30px`}>
+                    <Text>ㄴ포인트 사용</Text>
+                    <Text>-0원</Text>
+                  </SubText>
+                  <Wrapper
+                    dr={`row`}
+                    ju={`space-between`}
+                    borderTop={`1px solid ${Theme.lightGrey2_C}`}
+                    margin={`0 0 34px`}
+                  >
+                    <Text fontSize={`18px`}>
+                      총 결제금액
+                    </Text>
+                    <Text fontSize={`24px`} fontWeight={`bold`}>
+                      22,000원
+                    </Text>
                   </Wrapper>
                 </Wrapper>
               </Wrapper>
