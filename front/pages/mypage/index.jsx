@@ -78,7 +78,7 @@ const Index = () => {
       </Head>
 
       <ClientLayout>
-        <WholeWrapper padding={`95px 0 0`}>
+        <WholeWrapper padding={`95px 0 100px`}>
           <RsWrapper>
             <MypageTop />
             <Wrapper dr={`row`} ju={`space-between`}>

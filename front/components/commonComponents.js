@@ -233,8 +233,8 @@ export const CommonButton = styled(Button)`
     `border : 1px solid ${props.theme.subTheme_C};`}
    /* kindOf: grey = 배경색-흰색 보더-lightGrey2_C */
   ${(props) =>
-    props.kindOf === `grey` && `background : ${props.theme.white_C};`}
-  ${(props) => props.kindOf === `grey` && `color : ${props.theme.lightGrey_C};`}
+    props.kindOf === `grey` && `background : ${props.theme.lightGrey3_C};`}
+  ${(props) => props.kindOf === `grey` && `color : ${props.theme.grey_C};`}
   ${(props) =>
     props.kindOf === `grey` &&
     `border : 1px solid ${props.theme.lightGrey2_C};`}

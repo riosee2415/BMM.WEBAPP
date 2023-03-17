@@ -20,18 +20,17 @@ import styled from "styled-components";
 import MypageTop from "../../../components/MypageTop";
 import Link from "next/dist/client/link";
 
-
 const ListText = styled(Wrapper)`
+  width: ${(props) => props.width || `10%`};
   font-size: 16px;
 `;
+
 const Box = styled(Wrapper)`
-  font-size: 18px;
-  height: 100%;
-  background: ${Theme.white_C};
-  border-right: 1px solid ${Theme.lightGrey3_C};
+  flex-direction: row;
+  border-bottom: 1px solid ${Theme.lightGrey2_C};
 
   &:last-child {
-    border-right: none;
+    border-bottom: none;
   }
 `;
 
@@ -76,9 +75,11 @@ const RefondList = () => {
               fontWeight={`600`}
             >
               <Wrapper width={`10%`}>주문일자</Wrapper>
-              <Wrapper width={`35%`}>상품명</Wrapper>
-              <Wrapper width={`10%`}>주문수량</Wrapper>
-              <Wrapper width={`15%`}>상품금액</Wrapper>
+              <Wrapper width={`60%`} dr={`row`}>
+                <Wrapper width={`60%`}>상품명</Wrapper>
+                <Wrapper width={`20%`}>주문수량</Wrapper>
+                <Wrapper width={`20%`}>상품금액</Wrapper>
+              </Wrapper>
               <Wrapper width={`10%`}>무게</Wrapper>
               <Wrapper width={`10%`}>배송비</Wrapper>
               <Wrapper width={`10%`}>상태</Wrapper>
@@ -88,35 +89,41 @@ const RefondList = () => {
               ju={`flex-start`}
               borderBottom={`1px solid ${Theme.lightGrey2_C}`}
             >
-              <ListText width={`10%`}>2022.12.21</ListText>
+              <ListText>2022.12.21</ListText>
               <Wrapper
-                width={`35%`}
-                borderLeft={`1px solid ${Theme.lightGrey2_C}`}
+                width={`60%`}
+                dr={`row`}
+                borderRight={`1px solid ${Theme.lightGrey2_C}`}
               >
-                <Wrapper
-                  dr={`row`}
-                  ju={`flex-start`}
-                  fontSize={`18px`}
-                  fontWeight={`600`}
-                  padding={`0 0 0 38px`}
-                  margin={`18px 0 18px`}
-                >
-                  <Image
-                    alt="샘플사진"
-                    src={`https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/bmm/assets/images/sample-img/review.png`}
-                    width={`64px`}
-                    height={`64px`}
-                  />
-                  <Text padding={`0 0 0 14px`}>오레오 시리즈</Text>
-                </Wrapper>
+                <Box>
+                  <Wrapper
+                    width={`60%`}
+                    borderLeft={`1px solid ${Theme.lightGrey2_C}`}
+                  >
+                    <Wrapper
+                      dr={`row`}
+                      ju={`flex-start`}
+                      fontSize={`18px`}
+                      fontWeight={`600`}
+                      padding={`0 0 0 38px`}
+                      margin={`18px 0 18px`}
+                    >
+                      <Image
+                        alt="샘플사진"
+                        src={`https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/bmm/assets/images/sample-img/review.png`}
+                        width={`64px`}
+                        height={`64px`}
+                      />
+                      <Text padding={`0 0 0 14px`}>오레오 시리즈</Text>
+                    </Wrapper>
+                  </Wrapper>
+                  <ListText width={`20%`}>1</ListText>
+                  <ListText width={`20%`}>28,000원</ListText>
+                </Box>
               </Wrapper>
-              <ListText width={`10%`}>1</ListText>
-              <ListText width={`15%`}>28,000원</ListText>
-              <ListText width={`10%`}>420g</ListText>
-              <ListText width={`10%`}>4,000원</ListText>
-              <ListText width={`10%`} fontWeight={`600`}>
-                환불 신청 완료
-              </ListText>
+              <ListText>420g</ListText>
+              <ListText>4,000원</ListText>
+              <ListText fontWeight={`600`}>환불 신청 완료</ListText>
             </Wrapper>
 
             <CustomPage />

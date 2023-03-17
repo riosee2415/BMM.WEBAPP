@@ -21,19 +21,21 @@ import {
 import styled from "styled-components";
 import MypageTop from "../../../components/MypageTop";
 import Link from "next/dist/client/link";
-import { CheckCircleOutlined } from "@ant-design/icons";
 import RefondTop from "../../../components/RefondTop";
+import { Radio } from "antd";
 
 const BoxText = styled(Wrapper)`
   flex-direction: row;
   justify-content: space-between;
   font-size: 18px;
+  margin: ${(props) => props.margin || `0 0 15px`};
 `;
 
 const SubText = styled(Wrapper)`
   flex-direction: row;
   justify-content: space-between;
   color: ${Theme.lightGrey_C};
+  margin: ${(props) => props.margin || `0 0 8px`};
 `;
 const Index = () => {
   ////// GLOBAL STATE //////
@@ -53,7 +55,7 @@ const Index = () => {
       </Head>
 
       <ClientLayout>
-        <WholeWrapper padding={`95px 0 0`}>
+        <WholeWrapper padding={`95px 0`}>
           <RsWrapper>
             <MypageTop />
             <Wrapper
@@ -80,10 +82,12 @@ const Index = () => {
                   수령인 정보입력
                 </Text>
                 <Wrapper
-                  width={width < 1100 ? `80%` : `20%`}
+                  width={`auto`}
                   height={`30px`}
                   border={`1px solid ${Theme.basicTheme_C}`}
                   radius={`5px`}
+                  padding={`0 12px`}
+                  dr={`row`}
                   margin={width < 1100 ? `10px 0 0` : `0`}
                 >
                   <Text fontSize={`16px`}>우체국 택배</Text>
@@ -93,7 +97,7 @@ const Index = () => {
                 </Wrapper>
               </Wrapper>
             </Wrapper>
-            <Wrapper dr={`row`} ju={`space-between`}>
+            <Wrapper dr={`row`} ju={`space-between`} al={`flex-start`}>
               <Wrapper width={width < 800 ? `100%` : `65%`}>
                 <Wrapper
                   dr={`row`}
@@ -424,11 +428,12 @@ const Index = () => {
                     width={width < 800 ? `100%` : `45%`}
                     fontSize={`16px`}
                   >
-                    <Wrapper dr="row" ju={`flex-start`} margin={`30px 0 16px`}>
-                      <SpanText color={Theme.lightGrey_C} padding={`0 5px`}>
-                        <CheckCircleOutlined />
-                      </SpanText>
-                      신용카드
+                    <Wrapper al={`flex-start`} margin={`30px 0 16px`}>
+                      <Radio disabled={true} defaultChecked={true}>
+                        <Text color={Theme.black_C} fontSize={`16px`}>
+                          신용카드
+                        </Text>
+                      </Radio>
                     </Wrapper>
                     <Wrapper
                       height={`46px`}
@@ -453,12 +458,19 @@ const Index = () => {
                 </Wrapper>
               </Wrapper>
 
+              {/* ///////////////////////////////////////////////////////////////////////////// */}
+              {/* ///////////////////////////////////////////////////////////////////////////// */}
+              {/* ////////////////////////////////// 오른쪽 영역 ///////////////////////////////// */}
+              {/* ///////////////////////////////////////////////////////////////////////////// */}
+              {/* ///////////////////////////////////////////////////////////////////////////// */}
+
               <Wrapper width={width < 800 ? `100%` : `30%`}>
                 <Wrapper
-                  height={`255px`}
+                  padding={`30px 20px`}
                   border={`1px solid ${Theme.lightGrey2_C}`}
                   bgColor={Theme.lightGrey3_C}
                   margin={`0 0 30px`}
+                  display={width < 800 ? `none` : `flex`}
                 >
                   <Image
                     alt="check icon"
@@ -470,7 +482,7 @@ const Index = () => {
                   <Text
                     fontSize={`27px`}
                     fontWeight={`bold`}
-                    margin={`0 0 18px`}
+                    margin={`0 0 12px`}
                   >
                     상품은 잘 받아보셨나요?
                   </Text>
@@ -478,7 +490,7 @@ const Index = () => {
                     fontSize={`16px`}
                     fontWeight={`600`}
                     color={Theme.lightGrey_C}
-                    margin={`0 0 30px`}
+                    margin={`0 0 40px`}
                   >
                     리뷰 작성하시고 포인트 받아가세요!
                   </Text>
@@ -486,9 +498,8 @@ const Index = () => {
                     fontSize={width < 500 ? `16px` : `18px`}
                     fontWeight={`600`}
                     kindOf={`white`}
-                    width={`80%`}
+                    width={`100%`}
                     height={`54px`}
-                    margin={`0 0 10px`}
                   >
                     리뷰 작성하기
                   </CommonButton>
@@ -496,30 +507,29 @@ const Index = () => {
                 <Wrapper
                   border={`1px solid ${Theme.lightGrey2_C}`}
                   bgColor={Theme.lightGrey3_C}
-                  padding={`30px 20px 0`}
+                  padding={`30px 20px`}
                 >
-                  <Wrapper width={`100%`} dr={`row`} ju={`flex-start`}>
-                    <Wrapper
-                      al={`flex-start`}
-                      fontSize={`20px`}
-                      fontWeight={`600`}
-                      borderBottom={`1px soild ${Theme.basicTheme_C}`}
-                      margin={`0 0 16px`}
-                    >
-                      총 2개의 상품
-                    </Wrapper>
+                  <Wrapper
+                    al={`flex-start`}
+                    fontSize={`20px`}
+                    fontWeight={`600`}
+                    borderBottom={`1px solid ${Theme.basicTheme_C}`}
+                    margin={`0 0 16px`}
+                    padding={`0 0 16px`}
+                  >
+                    총 2개의 상품
                   </Wrapper>
 
-                  <BoxText margin={`0 0 15px`}>
+                  <BoxText>
                     <Text>총 상품금액</Text>
                     <Text fontWeight={`600`}>18,000원</Text>
                   </BoxText>
 
-                  <BoxText margin={`0 0 15px`}>
+                  <BoxText>
                     <Text>총 무게</Text>
                     <Text fontWeight={`600`}>240g</Text>
                   </BoxText>
-                  <BoxText margin={`0 0 15px`}>
+                  <BoxText>
                     <Text>총 배송비</Text>
                     <Text fontWeight={`600`}>6,000원</Text>
                   </BoxText>
@@ -547,11 +557,9 @@ const Index = () => {
                     dr={`row`}
                     ju={`space-between`}
                     borderTop={`1px solid ${Theme.lightGrey2_C}`}
-                    margin={`0 0 34px`}
+                    padding={`26px 0 0`}
                   >
-                    <Text fontSize={`18px`}>
-                      총 결제금액
-                    </Text>
+                    <Text fontSize={`18px`}>총 결제금액</Text>
                     <Text fontSize={`24px`} fontWeight={`bold`}>
                       22,000원
                     </Text>
@@ -559,7 +567,6 @@ const Index = () => {
                 </Wrapper>
               </Wrapper>
             </Wrapper>
-            <CustomPage />
           </RsWrapper>
         </WholeWrapper>
       </ClientLayout>

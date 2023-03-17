@@ -97,7 +97,7 @@ const Index = () => {
               ju={`space-between`}
               fontSize={width < 1100 ? `26px` : `30px`}
               fontWeight={`600`}
-              margin={`0 0 30px`}
+              margin={width < 700 ? `0 0 15px` : `0 0 30px`}
             >
               <Text>환불 신청하기</Text>
             </Wrapper>
@@ -121,18 +121,19 @@ const Index = () => {
               <Wrapper
                 dr={`row`}
                 ju={`flex-start`}
+                padding={`16px 0`}
                 borderBottom={`1px solid ${Theme.lightGrey5_C}`}
               >
                 <Text
-                  width={width < 1100 ? `30%` : `20%`}
+                  width={width < 1100 ? `100%` : `20%`}
                   lineHeight={`46px`}
                   fontSize={`16px`}
-                  margin={`16px 0 16px`}
                 >
                   수령인 이름<SpanText color={Theme.red_C}>*</SpanText>
                 </Text>
                 <TextInput
                   width={width < 1100 ? `100%` : `30%`}
+                  height={`46px`}
                   border={`1px solid ${Theme.lightGrey2_C}`}
                   al={`flex-start`}
                   placeholder="이름을 입력해주세요."
@@ -142,17 +143,18 @@ const Index = () => {
                 dr={`row`}
                 ju={`flex-start`}
                 borderBottom={`1px solid ${Theme.lightGrey5_C}`}
+                padding={`16px 0`}
               >
                 <Text
-                  width={width < 1100 ? `30%` : `20%`}
+                  width={width < 1100 ? `100%` : `20%`}
                   lineHeight={`46px`}
                   fontSize={`16px`}
-                  margin={`16px 0 16px`}
                 >
                   이메일<SpanText color={Theme.red_C}>*</SpanText>
                 </Text>
                 <TextInput
                   width={width < 1100 ? `100%` : `30%`}
+                  height={`46px`}
                   border={`1px solid ${Theme.lightGrey2_C}`}
                   al={`flex-start`}
                   placeholder="이메일을 입력해주세요."
@@ -162,17 +164,18 @@ const Index = () => {
                 dr={`row`}
                 ju={`flex-start`}
                 borderBottom={`1px solid ${Theme.lightGrey5_C}`}
+                padding={`16px 0`}
               >
                 <Text
-                  width={width < 1100 ? `30%` : `20%`}
+                  width={width < 1100 ? `100%` : `20%`}
                   lineHeight={`46px`}
                   fontSize={`16px`}
-                  margin={`16px 0 16px`}
                 >
                   연락처<SpanText color={Theme.red_C}>*</SpanText>
                 </Text>
                 <TextInput
                   width={width < 1100 ? `100%` : `30%`}
+                  height={`46px`}
                   border={`1px solid ${Theme.lightGrey2_C}`}
                   al={`flex-start`}
                   placeholder="'-' 제외 연락처를 입력해주세요."
@@ -181,14 +184,15 @@ const Index = () => {
               <Wrapper
                 dr={`row`}
                 ju={`flex-start`}
+                al={`flex-start`}
                 borderBottom={`1px solid ${Theme.lightGrey5_C}`}
+                padding={`16px 0`}
               >
                 <Wrapper
                   width={width < 1100 ? `45%` : `20%`}
                   al={`flex-start`}
                   lineHeight={`46px`}
                   fontSize={`16px`}
-                  margin={`16px 0 16px`}
                 >
                   <Text>
                     주소<SpanText color={Theme.red_C}>*</SpanText>
@@ -196,24 +200,30 @@ const Index = () => {
                 </Wrapper>
 
                 <Wrapper
-                  width={width < 1100 ? `100%` : `80%`}
+                  width={width < 1100 ? `100%` : `30%`}
                   al={`flex-start`}
-                  margin={`16px 0 16px`}
                 >
                   <Wrapper dr={`row`} ju={`flex-start`} margin={`0 0 10px`}>
                     <TextInput
-                      width={width < 1100 ? `74%` : `29%`}
+                      width={`calc(100% - 120px)`}
                       height={`46px`}
                       border={`1px solid ${Theme.lightGrey2_C}`}
                       al={`flex-start`}
-                      margin={`0 11px 0 0`}
+                      margin={`0 10px 0 0`}
                       placeholder="우편번호"
                     />
-                    <CommonButton height={`46px`}>우편번호</CommonButton>
+                    <CommonButton
+                      width={`110px`}
+                      height={`46px`}
+                      fontSize={`16px`}
+                      fontWeight={`600`}
+                    >
+                      우편번호
+                    </CommonButton>
                   </Wrapper>
 
                   <TextInput
-                    width={width < 1100 ? `100%` : `38%`}
+                    width={`100%`}
                     height={`46px`}
                     border={`1px solid ${Theme.lightGrey2_C}`}
                     al={`flex-start`}
@@ -221,7 +231,7 @@ const Index = () => {
                     placeholder="기본주소"
                   />
                   <TextInput
-                    width={width < 1100 ? `100%` : `38%`}
+                    width={`100%`}
                     height={`46px`}
                     border={`1px solid ${Theme.lightGrey2_C}`}
                     al={`flex-start`}
@@ -233,19 +243,19 @@ const Index = () => {
                 dr={`row`}
                 ju={`flex-start`}
                 borderBottom={`1px solid ${Theme.lightGrey5_C}`}
+                padding={`16px 0`}
               >
                 <Text
-                  width={width < 1100 ? `30%` : `20%`}
+                  width={width < 1100 ? `100%` : `20%`}
                   lineHeight={`46px`}
                   fontSize={`16px`}
                 >
                   상품 이미지<SpanText color={Theme.red_C}>*</SpanText>
                 </Text>
                 <Wrapper
-                  width={`80%`}
+                  width={width < 1100 ? `100%` : `80%`}
                   dr={`row`}
                   ju={`flex-start`}
-                  margin={`16px 0 16px`}
                 >
                   <Wrapper
                     margin={`0 11px 10px 0`}
@@ -286,22 +296,22 @@ const Index = () => {
                 ju={`flex-start`}
                 margin={`0 0 50px`}
                 borderBottom={`1px solid ${Theme.lightGrey5_C}`}
+                padding={`16px 0`}
               >
                 <Text
-                  width={width < 1100 ? `30%` : `20%`}
+                  width={width < 1100 ? `100%` : `20%`}
                   lineHeight={`46px`}
                   fontSize={`16px`}
-                  margin={width < 1100 ? `16px 0 0` : `16px 0 16px`}
                 >
                   환불 사유<SpanText color={Theme.red_C}>*</SpanText>
                 </Text>
                 <CustomSelect
-                  width={width< 1100 ? `100%` : `30%`}
+                  width={width < 1100 ? `100%` : `30%`}
                   height={`46px`}
                   margin={`0 10px 0 0`}
                   radius={`0`}
                 >
-                  <Select>
+                  <Select placeholder={`환불 사유를 선택해주세요.`}>
                     <Select.Option>전체</Select.Option>
                     <Select.Option>2</Select.Option>
                     <Select.Option>3</Select.Option>
@@ -311,7 +321,7 @@ const Index = () => {
             </Wrapper>
             <Wrapper
               color={Theme.red_C}
-              fontSize={`16px`}
+              fontSize={width < 800 ? `14px` : `16px`}
               fontWeight={`bold`}
               margin={`0 0 21px`}
             >

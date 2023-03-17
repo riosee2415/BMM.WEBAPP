@@ -1,5 +1,12 @@
 import React from "react";
-import { Wrapper, Text, WholeWrapper, Image, ATag } from "./commonComponents";
+import {
+  Wrapper,
+  Text,
+  WholeWrapper,
+  Image,
+  ATag,
+  CommonButton,
+} from "./commonComponents";
 import Theme from "./Theme";
 import useWidth from "../hooks/useWidth";
 import { useDispatch } from "react-redux";
@@ -15,45 +22,9 @@ const List = styled(Wrapper)`
 `;
 
 const MobileList = styled(Wrapper)`
-  margin: 0 0 10px;
+  margin: 0 0 60px;
   border: 1px solid ${Theme.lightGrey2_C};
   padding: 15px;
-`;
-
-const RefondBtn = styled(Wrapper)`
-  width: 70%;
-  border: 1px solid ${Theme.lightGrey2_C};
-  border-radius: 5px;
-  background-color: ${Theme.lightGrey3_C};
-
-  cursor: pointer;
-
-  &:hover {
-    transition: 0.2s;
-    background-color: ${Theme.lightGrey_C};
-  }
-  @media (max-width: 1100px) {
-    width: 49%;
-  }
-`;
-
-const ReviewBtn = styled(Wrapper)`
-  width: 70%;
-  border: 1px solid ${Theme.basicTheme_C};
-  border-radius: 5px;
-  background-color: ${Theme.basicTheme_C};
-  margin: 0 0 5px;
-
-  cursor: pointer;
-
-  &:hover {
-    transition: 0.2s;
-    background-color: ${Theme.white_C};
-  }
-
-  @media (max-width: 1100px) {
-    width: 49%;
-  }
 `;
 
 const RefondTop = () => {
@@ -85,40 +56,58 @@ const RefondTop = () => {
         {width < 1100 ? (
           <Wrapper>
             <MobileList>
+              <Wrapper dr={`row`} ju={`flex-start`} margin={`0 0 5px`}>
+                <Text fontWeight={`600`}>배송 완료</Text>
+                <Text color={Theme.grey_C} margin={`0 0 0 5px`}>
+                  2022.12.21
+                </Text>
+              </Wrapper>
               <Wrapper
                 dr={`row`}
                 ju={`flex-start`}
                 color={Theme.darkGrey_C}
-                fontSize={`16px`}
+                fontSize={`14px`}
                 margin={`0 0 10px`}
               >
+                <Image
+                  alt="샘플사진"
+                  src={`https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/bmm/assets/images/sample-img/review.png`}
+                  width={`70px`}
+                  height={`70px`}
+                />
                 <Wrapper
-                  dr={`row`}
-                  ju={`flex-start`}
-                  fontSize={`18px`}
-                  fontWeight={`600`}
+                  width={`auto`}
+                  al={`flex-start`}
+                  padding={`0 0 0 10px`}
                 >
-                  <Image
-                    alt="샘플사진"
-                    src={`https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/bmm/assets/images/sample-img/review.png`}
-                    width={`64px`}
-                    height={`64px`}
-                  />
-                  <Text padding={`0 0 0 14px`}>오레오 시리즈</Text>
+                  <Text>오레오 시리즈 420g</Text>
+                  <Text>주문수량 : 1</Text>
+                  <Text>상품금액: 28,000원 + 4,000원</Text>
                 </Wrapper>
               </Wrapper>
-              <Wrapper al={`flex-start`}>
-                <Text color={Theme.grey_C}>주문수량 : 1</Text>
-                <Text>상품금액: 28,000원</Text>
-                <Text>무게: 420g</Text>
-                <Text margin={`0 0 10px`}>배송비: 4,000원</Text>
-                <Text fontWeight={`600`}>배송 완료</Text>
-              </Wrapper>
+
               <Wrapper dr={`row`} ju={`space-between`}>
-                <ReviewBtn>리뷰 작성</ReviewBtn>
+                <CommonButton
+                  width={`49%`}
+                  height={`26px`}
+                  padding={`0`}
+                  radius={`3px`}
+                  kindOf={`white`}
+                  margin={`5px 0 8px`}
+                >
+                  리뷰 작성
+                </CommonButton>
                 <Link href={`/mypage/ordercheck/refond`}>
-                  <ATag widht={`100%`}>
-                    <RefondBtn>환불신청</RefondBtn>
+                  <ATag width={`49%`}>
+                    <CommonButton
+                      width={`100%`}
+                      height={`26px`}
+                      padding={`0`}
+                      radius={`3px`}
+                      kindOf={`grey`}
+                    >
+                      환불신청
+                    </CommonButton>
                   </ATag>
                 </Link>
               </Wrapper>
@@ -156,16 +145,31 @@ const RefondTop = () => {
               <Wrapper color={Theme.darkGrey_C} width={`10%`}>
                 4,000원
               </Wrapper>
-              <Wrapper width={`10%`} al={`flex-end`}>
+              <Wrapper width={`10%`}>
                 <Wrapper fontSize={`16px`} fontWeight={`600`}>
                   배송완료
                 </Wrapper>
-                <Wrapper>
-                  <ReviewBtn>리뷰 작성</ReviewBtn>
-                </Wrapper>
+                <CommonButton
+                  width={`70px`}
+                  height={`26px`}
+                  padding={`0`}
+                  radius={`3px`}
+                  kindOf={`white`}
+                  margin={`5px 0 8px`}
+                >
+                  리뷰 작성
+                </CommonButton>
                 <Link href={`/mypage/refond`}>
                   <ATag>
-                    <RefondBtn>환불신청</RefondBtn>
+                    <CommonButton
+                      width={`70px`}
+                      height={`26px`}
+                      padding={`0`}
+                      radius={`3px`}
+                      kindOf={`grey`}
+                    >
+                      환불신청
+                    </CommonButton>
                   </ATag>
                 </Link>
               </Wrapper>

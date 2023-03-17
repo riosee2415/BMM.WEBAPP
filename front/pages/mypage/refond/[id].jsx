@@ -390,7 +390,7 @@ const Index = () => {
                   al={`flex-start`}
                 >
                   <Wrapper
-                    width={width < 1100 ? `50%` : `37%`}
+                    width={width < 1100 ? `100%` : `38%`}
                     height={`46px`}
                     border={`1px solid ${Theme.lightGrey2_C}`}
                     bgColor={Theme.lightGrey3_C}
@@ -401,7 +401,7 @@ const Index = () => {
                     <Text color={Theme.grey_C}>기타 사유 (직접 입력)</Text>
                   </Wrapper>
                   <Wrapper
-                    width={width < 1100 ? `100%` : `80%`}
+                    width={width < 1100 ? `100%` : `90%`}
                     height={`46px`}
                     border={`1px solid ${Theme.lightGrey2_C}`}
                     bgColor={Theme.lightGrey3_C}
