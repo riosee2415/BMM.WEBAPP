@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useCallback } from "react";
 import ClientLayout from "../../components/ClientLayout";
 import Head from "next/head";
 import wrapper from "../../store/configureStore";
@@ -20,8 +20,7 @@ import Theme from "../../components/Theme";
 import { Select } from "antd";
 import { DownOutlined, UpOutlined } from "@ant-design/icons";
 import styled from "styled-components";
-import { useState } from "react";
-import { useCallback } from "react";
+import { useRouter } from "next/router";
 
 const List = styled(Wrapper)`
   padding: 20px 28px;
@@ -50,6 +49,7 @@ const Faq = () => {
   const [isVisible, setIsVisible] = useState(false);
   ////// HOOKS //////
   const width = useWidth();
+  const router = useRouter();
   ////// REDUX //////
   ////// USEEFFECT //////
   ////// TOGGLE //////
@@ -111,7 +111,12 @@ const Faq = () => {
                         찾으시는 답변이 없으신가요?
                       </Wrapper>
                       <Wrapper dr={`row`} ju={`flex-start`} fontSize={`16px`}>
-                        <Text isHover fontWeight={`600`} td={`underline`}>
+                        <Text
+                          onClick={() => router.push(`/customer/contact`)}
+                          isHover
+                          fontWeight={`600`}
+                          td={`underline`}
+                        >
                           1:1
                         </Text>
                         문의를 이용해주세요!
@@ -125,6 +130,7 @@ const Faq = () => {
                     >
                       찾으시는 답변이 없으신가요?
                       <Text
+                        onClick={() => router.push(`/customer/contact`)}
                         isHover
                         fontWeight={`600`}
                         td={`underline`}
