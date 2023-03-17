@@ -70,9 +70,11 @@ const CustomerLeft = () => {
             <Btn isActive={router.pathname === `/customer/faq`}>FAQ</Btn>
           </a>
         </Link>
-        <Link href={`/customer/`}>
+        <Link href={`/customer/contact`}>
           <a>
-            <Btn isActive={router.pathname === `/customer/`}>문의 게시판</Btn>
+            <Btn isActive={router.pathname === `/customer/contact`}>
+              1:1문의
+            </Btn>
           </a>
         </Link>
         <Link href={`/customer/`}>

@@ -7,20 +7,23 @@ import axios from "axios";
 import { END } from "redux-saga";
 import useWidth from "../../hooks/useWidth";
 import {
-  CustomSelect,
+  CommonButton,
   Image,
   RsWrapper,
   SpanText,
   Text,
+  TextArea,
+  TextInput,
   WholeWrapper,
   Wrapper,
 } from "../../components/commonComponents";
 import CustomerLeft from "../../components/CustomerLeft";
 import Theme from "../../components/Theme";
-import { Select } from "antd";
-import { DownOutlined, UpOutlined } from "@ant-design/icons";
+
 import styled from "styled-components";
+
 import { useRouter } from "next/router";
+import { useSelector } from "react-redux";
 
 const List = styled(Wrapper)`
   padding: 20px 28px;
@@ -44,25 +47,23 @@ const List = styled(Wrapper)`
   }
 `;
 
-const Faq = () => {
+const Contact = () => {
   ////// GLOBAL STATE //////
-  const [isVisible, setIsVisible] = useState(false);
+  const { me } = useSelector((state) => state.user);
   ////// HOOKS //////
   const width = useWidth();
   const router = useRouter();
   ////// REDUX //////
   ////// USEEFFECT //////
   ////// TOGGLE //////
-  const faqToggle = useCallback(() => {
-    setIsVisible((prev) => !prev);
-  }, [isVisible]);
+
   ////// HANDLER //////
   ////// DATAVIEW //////
 
   return (
     <>
       <Head>
-        <title>BUY ME MINE | FAQ</title>
+        <title>BUY ME MINE | 1:1문의</title>
       </Head>
 
       <ClientLayout>
@@ -85,12 +86,14 @@ const Faq = () => {
               >
                 <Image
                   alt="icon"
-                  src={`https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/bmm/assets/images/icon/3D_faq.png`}
+                  src={`https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/bmm/assets/images/icon/3D_1vs1-conver.png`}
                   width={width < 900 ? `90px` : `115px`}
                 />
                 <Wrapper
-                  width={width < 900 ? `100%` : `calc(100% - 115px)`}
-                  padding={width < 900 ? `0` : `0 0 0 18px`}
+                  width={
+                    width < 900 ? `calc(100% - 90px)` : `calc(100% - 115px)`
+                  }
+                  padding={width < 900 ? `0 0 0 10px` : `0 0 0 18px`}
                   al={`flex-start`}
                   height={width < 1100 ? `auto` : `115px`}
                   ju={`space-between`}
@@ -99,27 +102,27 @@ const Faq = () => {
                     al={`flex-start`}
                     fontSize={width < 900 ? `14px` : `24px`}
                   >
-                    <Text>무엇을 도와드릴까요?</Text>
+                    <Text>궁금한 사항이 있으신가요?</Text>
                     <Text>
-                      <SpanText fontWeight={`bold`}>Buy Me Mine</SpanText>에
-                      대하여 궁금하신 사항을 알려드립니다.
+                      <SpanText fontWeight={`bold`}>1:1 문의</SpanText>를
+                      이용해보세요!
                     </Text>
                   </Wrapper>
                   {width < 900 ? (
                     <>
                       <Wrapper al={`flex-start`} fontSize={`14px`}>
-                        찾으시는 답변이 없으신가요?
+                        1:1문의는 회원만 이용할 수 있습니다.
                       </Wrapper>
                       <Wrapper dr={`row`} ju={`flex-start`} fontSize={`16px`}>
                         <Text
-                          onClick={() => router.push(`/customer/contact`)}
+                          onClick={() => router.push(`/user/login`)}
                           isHover
                           fontWeight={`600`}
                           td={`underline`}
                         >
-                          1:1
+                          로그인
                         </Text>
-                        문의를 이용해주세요!
+                        을 해주세요!
                       </Wrapper>
                     </>
                   ) : (
@@ -128,91 +131,105 @@ const Faq = () => {
                       ju={`flex-start`}
                       fontSize={width < 900 ? `14px` : `18px`}
                     >
-                      찾으시는 답변이 없으신가요?
+                      1:1문의는 회원만 이용할 수 있습니다.
                       <Text
-                        onClick={() => router.push(`/customer/contact`)}
+                        onClick={() => router.push(`/user/login`)}
                         isHover
                         fontWeight={`600`}
                         td={`underline`}
                         margin={`0 0 0 5px`}
                       >
-                        1:1
+                        로그인
                       </Text>
-                      문의를 이용해주세요!
+                      을 해주세요!
                     </Wrapper>
                   )}
                 </Wrapper>
               </Wrapper>
 
-              <Wrapper dr={`row`} ju={`space-between`} margin={`45px 0 40px`}>
+              <Wrapper al={`flex-start`} margin={`45px 0 40px`}>
                 <Text
                   fontSize={width < 900 ? `22px` : `28px`}
                   fontWeight={`bold`}
                 >
-                  FAQ
+                  1:1 문의
                 </Text>
-                <CustomSelect>
-                  <Select placeholder="전체">
-                    <Select.Option>전체</Select.Option>
-                    <Select.Option>유형1</Select.Option>
-                    <Select.Option>유형2</Select.Option>
-                  </Select>
-                </CustomSelect>
               </Wrapper>
 
-              <Wrapper>
-                <List onClick={faqToggle}>
-                  <Image
-                    alt="Q"
-                    width={`21px`}
-                    src={`https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/bmm/assets/images/icon/Q.png`}
+              <Wrapper dr={`row`} margin={`0 0 32px`}>
+                <Text
+                  fontSize={`16px`}
+                  lineHeight={`45px`}
+                  width={width < 700 ? `100%` : `135px`}
+                >
+                  아이디<SpanText color={Theme.red_C}>*</SpanText>
+                </Text>
+                <TextInput
+                  readOnly
+                  width={width < 700 ? `100%` : `calc(100% - 135px)`}
+                  height={`45px`}
+                  placeholder={!me && `로그인이 필요한 서비스입니다.`}
+                  value={me && me.userId}
+                />
+              </Wrapper>
+              <Wrapper dr={`row`} margin={`0 0 32px`}>
+                <Text
+                  fontSize={`16px`}
+                  lineHeight={`45px`}
+                  width={width < 700 ? `100%` : `135px`}
+                >
+                  이름<SpanText color={Theme.red_C}>*</SpanText>
+                </Text>
+                <TextInput
+                  readOnly
+                  width={width < 700 ? `100%` : `calc(100% - 135px)`}
+                  height={`45px`}
+                  placeholder={!me && `로그인이 필요한 서비스입니다.`}
+                  value={me && me.username}
+                />
+              </Wrapper>
+              <Wrapper dr={`row`} margin={`0 0 32px`}>
+                <Text
+                  fontSize={`16px`}
+                  lineHeight={`45px`}
+                  width={width < 700 ? `100%` : `135px`}
+                >
+                  제목<SpanText color={Theme.red_C}>*</SpanText>
+                </Text>
+                <TextInput
+                  width={width < 700 ? `100%` : `calc(100% - 135px)`}
+                  height={`45px`}
+                  placeholder="제목을 입력해주세요."
+                />
+              </Wrapper>
+              <Wrapper dr={`row`} margin={`0 0 32px`} al={`flex-start`}>
+                <Text
+                  fontSize={`16px`}
+                  lineHeight={`45px`}
+                  width={width < 700 ? `100%` : `135px`}
+                >
+                  내용<SpanText color={Theme.red_C}>*</SpanText>
+                </Text>
+                <Wrapper
+                  width={width < 700 ? `100%` : `calc(100% - 135px)`}
+                  al={`flex-start`}
+                >
+                  <TextArea
+                    width={`100%`}
+                    height={`120px`}
+                    placeholder="내용을 입력해주세요."
                   />
-                  <Wrapper
-                    width={`calc(100% - 21px - 20px)`}
-                    al={`flex-start`}
-                    padding={`0 12px`}
+                  <CommonButton
+                    margin={`40px 0 0`}
+                    width={`240px`}
+                    height={`54px`}
+                    kindOf={`white`}
+                    fontWeight={`600`}
+                    fontSize={`18px`}
                   >
-                    <Text fontSize={width < 900 ? `14px` : `18px`}>
-                      자주묻는질문이 들어올 곳입니다.
-                    </Text>
-                  </Wrapper>
-                  <Text color={Theme.lightGrey_C}>
-                    {isVisible ? <UpOutlined /> : <DownOutlined />}
-                  </Text>
-                </List>
-
-                {isVisible && (
-                  <Wrapper
-                    radius={`30px`}
-                    padding={width < 900 ? `30px 15px` : `40px 26px`}
-                    bgColor={Theme.lightGrey3_C}
-                    dr={`row`}
-                    al={`flex-start`}
-                    margin={`6px 0 0`}
-                  >
-                    <Image
-                      alt="A"
-                      width={`21px`}
-                      src={`https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/bmm/assets/images/icon/A.png`}
-                    />
-                    <Wrapper
-                      width={`calc(100% - 21px)`}
-                      al={`flex-start`}
-                      padding={`0 12px`}
-                      color={Theme.darkGrey_C}
-                    >
-                      <Text fontSize={width < 900 ? `14px` : `16px`}>
-                        답변이 들어올 곳입니다. 답변이 들어올 곳입니다. 답변이
-                        들어올 곳입니다. 답변이 들어올 곳입니다. 답변이 들어올
-                        곳입니다. 답변이 들어올 곳입니다. 답변이 들어올
-                        곳입니다. 답변이 들어올 곳입니다. 답변이 들어올
-                        곳입니다. 답변이 들어올 곳입니다. 답변이 들어올
-                        곳입니다. 답변이 들어올 곳입니다. 답변이 들어올
-                        곳입니다.
-                      </Text>
-                    </Wrapper>
-                  </Wrapper>
-                )}
+                    1:1 문의하기
+                  </CommonButton>
+                </Wrapper>
               </Wrapper>
             </Wrapper>
           </RsWrapper>
@@ -244,4 +261,4 @@ export const getServerSideProps = wrapper.getServerSideProps(
   }
 );
 
-export default Faq;
+export default Contact;
