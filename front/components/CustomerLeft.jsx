@@ -77,9 +77,11 @@ const CustomerLeft = () => {
             </Btn>
           </a>
         </Link>
-        <Link href={`/customer/`}>
+        <Link href={`/customer/request`}>
           <a>
-            <Btn isActive={router.pathname === `/customer/`}>상품 요청</Btn>
+            <Btn isActive={router.pathname.includes(`/customer/request`)}>
+              상품 요청
+            </Btn>
           </a>
         </Link>
       </Wrapper>

@@ -25,28 +25,6 @@ import styled from "styled-components";
 import { useRouter } from "next/router";
 import { useSelector } from "react-redux";
 
-const List = styled(Wrapper)`
-  padding: 20px 28px;
-  flex-direction: row;
-  justify-content: space-between;
-  border-radius: 50px;
-  border: 1px solid ${Theme.lightGrey2_C};
-  margin: 12px 0 0;
-
-  &:first-child {
-    margin: 0;
-  }
-
-  &:hover {
-    cursor: pointer;
-    border: 1px solid ${Theme.basicTheme_C};
-  }
-
-  @media (max-width: 900px) {
-    padding: 20px 15px;
-  }
-`;
-
 const Contact = () => {
   ////// GLOBAL STATE //////
   const { me } = useSelector((state) => state.user);
