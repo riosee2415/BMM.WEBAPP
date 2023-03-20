@@ -16,10 +16,12 @@ import {
   ATag,
   Image,
   CommonButton,
+  CustomSelect,
 } from "../../../components/commonComponents";
 import styled from "styled-components";
 import MypageTop from "../../../components/MypageTop";
 import Link from "next/dist/client/link";
+import { Select } from "antd";
 
 const Box = styled(Wrapper)`
   flex-direction: row;
@@ -59,6 +61,16 @@ const Index = () => {
               margin={`0 0 30px`}
             >
               <Text>주문 / 배송 조회</Text>
+              <CustomSelect
+                width={width < 1100 ? `30%` : `10%`}
+                height={`46px`}
+                margin={`0 10px 0 0`}
+              >
+                <Select placeholder={`전체`}>
+                  <Select.Option>배송 전</Select.Option>
+                  <Select.Option>배송 후</Select.Option>
+                </Select>
+              </CustomSelect>
             </Wrapper>
 
             <Wrapper
@@ -188,23 +200,34 @@ const Index = () => {
                 <Box>
                   <Wrapper
                     width={`60%`}
+                    dr={`row`}
+                    ju={`flex-start`}
                     borderLeft={`1px solid ${Theme.lightGrey2_C}`}
                   >
                     <Wrapper
-                      dr={`row`}
-                      ju={`flex-start`}
-                      fontSize={`18px`}
-                      fontWeight={`600`}
+                      width={`auto`}
+                      al={`flex-start`}
                       padding={`0 0 0 38px`}
                       margin={`18px 0 18px`}
                     >
                       <Image
                         alt="샘플사진"
-                        src={`https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/bmm/assets/images/sample-img/review.png`}
+                        src={`https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/bmm/assets/images/sample-img/related-product.png`}
                         width={`64px`}
                         height={`64px`}
+                        radius={`3px`}
                       />
-                      <Text padding={`0 0 0 14px`}>오레오 시리즈</Text>
+                    </Wrapper>
+
+                    <Wrapper
+                      width={`70%`}
+                      al={`flex-start`}
+                      padding={`0 0 0 14px`}
+                    >
+                      <Text fontSize={`18px`} fontWeight={`600`}>
+                        랩 에센스
+                      </Text>
+                      <Text color={Theme.grey_C}>옵션 : 오레오 핑크</Text>
                     </Wrapper>
                   </Wrapper>
                   <Wrapper width={`20%`} fontSize={`16px`}>
@@ -215,11 +238,21 @@ const Index = () => {
                   </Wrapper>
                 </Box>
               </Wrapper>
-              <Wrapper width={`10%`} fontSize={`16px`}>
-                420g
+              <Wrapper
+                width={`10%`}
+                dr={`row`}
+                fontSize={`16px`}
+                borderRight={`1px solid ${Theme.lightGrey2_C}`}
+              >
+                <Text>840g</Text>
               </Wrapper>
-              <Wrapper width={`10%`} fontSize={`16px`}>
-                4,000원
+              <Wrapper
+                width={`10%`}
+                dr={`row`}
+                fontSize={`16px`}
+                borderRight={`1px solid ${Theme.lightGrey2_C}`}
+              >
+                <Text>9,000원</Text>
               </Wrapper>
               <Wrapper width={`10%`}>
                 <Wrapper fontSize={`16px`} fontWeight={`600`}>
