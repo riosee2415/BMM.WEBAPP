@@ -1206,6 +1206,7 @@ const Index = () => {
           </RsWrapper>
 
           <Wrapper
+            display={width < 900 ? `flex` : `none`}
             position={`fixed`}
             bottom={`0`}
             left={`0`}
