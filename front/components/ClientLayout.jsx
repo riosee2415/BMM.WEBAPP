@@ -7,9 +7,11 @@ import AppFooter from "./AppFooter";
 import { WholeWrapper } from "./commonComponents";
 import useWidth from "../hooks/useWidth";
 import QuickMenu from "./QuickMenu";
+import { useRouter } from "next/router";
 
 const ClientLayout = ({ children }) => {
   const width = useWidth();
+  const router = useRouter();
   return (
     <section>
       {/* HEADER */}
@@ -20,7 +22,7 @@ const ClientLayout = ({ children }) => {
         {children}
       </WholeWrapper>
 
-      {width < 800 && <QuickMenu />}
+      {router.pathname !== `/product/[id]` && width < 800 && <QuickMenu />}
 
       {/* Footer */}
 
