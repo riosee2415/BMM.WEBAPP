@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from "react";
 import Router, { useRouter } from "next/router";
-import { Checkbox, Modal } from "antd";
+import { Checkbox, message, Modal } from "antd";
 import useInput from "../../hooks/useInput";
 import useWidth from "../../hooks/useWidth";
 import { useDispatch, useSelector } from "react-redux";
