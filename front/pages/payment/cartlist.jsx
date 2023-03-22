@@ -90,26 +90,40 @@ const CartList = () => {
                 </Text>
                 <Image
                   alt="next icon"
-                  src={`https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/bmm/assets/images/icon/next.png`}
+                  src={`https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/bmm/assets/images/icon/next_breadcrambs.png`}
                   width={`5px`}
                 />
-                <Text color={Theme.grey_C} margin={`0 6px`}>
+                <Text color={Theme.lightGrey_C} margin={`0 6px`}>
                   주문서작성/결제
                 </Text>
                 <Image
                   alt="next icon"
-                  src={`https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/bmm/assets/images/icon/next.png`}
+                  src={`https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/bmm/assets/images/icon/next_breadcrambs.png`}
                   width={`5px`}
                 />
-                <Text color={Theme.grey_C} margin={`0 0 0 6px`}>
+                <Text color={Theme.lightGrey_C} margin={`0 0 0 6px`}>
                   주문완료
                 </Text>
               </Wrapper>
             </Wrapper>
-            <Wrapper al={`flex-start`} margin={`0 0 15px`}>
-              <Checkbox>
-                <Text color={Theme.grey2_C}>전체 선택</Text>
-              </Checkbox>
+            <Wrapper al={`flex-start`}>
+              <Wrapper
+                width={width < 900 ? `100%` : `65%`}
+                dr={`row`}
+                ju={`space-between`}
+                margin={`0 0 15px`}
+              >
+                <Checkbox>
+                  <Text color={Theme.grey2_C}>전체 선택</Text>
+                </Checkbox>
+                <Wrapper width={`auto`} dr={`row`} color={Theme.grey2_C}>
+                  <Text isHover>전체 삭제</Text>
+                  <Text fontSize={`10px`} margin={`0 8px`}>
+                    |
+                  </Text>
+                  <Text isHover>선택 삭제</Text>
+                </Wrapper>
+              </Wrapper>
             </Wrapper>
 
             <Wrapper dr={`row`} ju={`space-between`} al={`flex-start`}>
@@ -140,10 +154,10 @@ const CartList = () => {
                         ju={`flex-start`}
                         fontSize={`16px`}
                         fontWeight={`600`}
-                        margin={`10px 0 20px`}
+                        margin={`10px 0`}
                       >
                         <Checkbox />
-                        <Text padding={`0 5px`}>오레오 시리즈</Text>
+                        <Text padding={`0 0 0 15px`}>오레오 시리즈</Text>
                       </Wrapper>
                       <Wrapper
                         dr={`row`}
@@ -155,15 +169,18 @@ const CartList = () => {
                         <Image
                           alt="샘플사진"
                           src={`https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/bmm/assets/images/sample-img/review.png`}
-                          width={`70px`}
-                          height={`70px`}
+                          width={`80px`}
+                          height={`80px`}
                         />
                         <Wrapper
                           width={`auto`}
                           al={`flex-start`}
-                          padding={`0 0 0 20px`}
+                          padding={`0 0 0 10px`}
                         >
-                          <Text fontSize={`16px`}>주문수량</Text>
+                          <Text>무게: 420g</Text>
+                          <Text fontWeight={`600`} margin={`2px 0 5px`}>
+                            상품금액: 9,000원
+                          </Text>
                           <Wrapper
                             width={`auto`}
                             dr={`row`}
@@ -174,15 +191,14 @@ const CartList = () => {
                             <Wrapper
                               width={`30px`}
                               cursor={`pointer`}
-                              height={`35px`}
+                              height={`30px`}
                               fontSize={`12px`}
                             >
                               <MinusOutlined />
                             </Wrapper>
                             <Wrapper
-                              width={`43px`}
-                              height={`35px`}
-                              fontSize={width < 900 ? `14px` : `16px`}
+                              width={`50px`}
+                              height={`30px`}
                               fontWeight={`600`}
                               color={Theme.darkGrey_C}
                               borderLeft={`1px solid ${Theme.lightGrey2_C}`}
@@ -193,101 +209,12 @@ const CartList = () => {
                             <Wrapper
                               width={`30px`}
                               cursor={`pointer`}
-                              height={`35px`}
+                              height={`30px`}
                               fontSize={`12px`}
                             >
                               <PlusOutlined />
                             </Wrapper>
                           </Wrapper>
-                          <Text fontSize={`16px`}>무게: 420g</Text>
-                        </Wrapper>
-                        <Wrapper al={`flex-end`} margin={`15px 0 0`}>
-                          <Text fontSize={`16px`} fontWeight={`600`}>
-                            상품금액: 9,000원
-                          </Text>
-                        </Wrapper>
-                      </Wrapper>
-                    </MobileList>
-                    <MobileList>
-                      <Wrapper
-                        dr={`row`}
-                        ju={`flex-start`}
-                        fontSize={`16px`}
-                        fontWeight={`600`}
-                        margin={`10px 0 0`}
-                      >
-                        <Checkbox />
-                        <Text padding={`0 5px`}>랩 에센스</Text>
-                      </Wrapper>
-                      <Wrapper
-                        al={`flex-start`}
-                        color={Theme.grey_C}
-                        padding={`0 20px`}
-                        margin={`0 0 20px`}
-                      >
-                        옵션 : 오레오 핑크
-                      </Wrapper>
-                      <Wrapper
-                        dr={`row`}
-                        ju={`flex-start`}
-                        al={`flex-start`}
-                        color={Theme.darkGrey_C}
-                        fontSize={`14px`}
-                        margin={`0 0 10px`}
-                      >
-                        <Image
-                          alt="샘플사진"
-                          src={`https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/bmm/assets/images/sample-img/related-product.png`}
-                          width={`70px`}
-                          height={`70px`}
-                        />
-                        <Wrapper
-                          width={`auto`}
-                          al={`flex-start`}
-                          padding={`0 0 0 20px`}
-                        >
-                          <Text fontSize={`16px`}>주문수량</Text>
-                          <Wrapper
-                            width={`auto`}
-                            dr={`row`}
-                            border={`1px solid ${Theme.lightGrey2_C}`}
-                            bgColor={Theme.white_C}
-                            margin={`0 0 10px`}
-                          >
-                            <Wrapper
-                              width={`30px`}
-                              cursor={`pointer`}
-                              height={`35px`}
-                              fontSize={`12px`}
-                            >
-                              <MinusOutlined />
-                            </Wrapper>
-                            <Wrapper
-                              width={`43px`}
-                              height={`35px`}
-                              fontSize={width < 900 ? `14px` : `16px`}
-                              fontWeight={`600`}
-                              color={Theme.darkGrey_C}
-                              borderLeft={`1px solid ${Theme.lightGrey2_C}`}
-                              borderRight={`1px solid ${Theme.lightGrey2_C}`}
-                            >
-                              1
-                            </Wrapper>
-                            <Wrapper
-                              width={`30px`}
-                              cursor={`pointer`}
-                              height={`35px`}
-                              fontSize={`12px`}
-                            >
-                              <PlusOutlined />
-                            </Wrapper>
-                          </Wrapper>
-                          <Text fontSize={`16px`}>무게: 420g</Text>
-                        </Wrapper>
-                        <Wrapper al={`flex-end`} margin={`15px 0 0`}>
-                          <Text fontSize={`16px`} fontWeight={`600`}>
-                            상품금액: 9,000원
-                          </Text>
                         </Wrapper>
                       </Wrapper>
                     </MobileList>
@@ -628,14 +555,12 @@ const CartList = () => {
                 </Text>
               </Wrapper>
               <Wrapper
-                margin={width < 900 ? `20PX 0 20PX` : `50px 0 20px`}
-                textAlign={`center`}
+                margin={width < 900 ? `20px 0 20px` : `50px 0 20px`}
+                fontSize={width < 900 ? `16px` : `18px`}
               >
-                <Text fontSize={width < 900 ? `16px` : `18px`}>
-                  배송비를 제외한 총 결제금액이 150$를 초과하면 관부가세가
-                  추가로 발생할 수 있습니다. (관부가세는 개별로 결제를 하셔야
-                  합니다.)
-                </Text>
+                <Text>배송비를 제외한 총 결제금액이 150$를</Text>
+                <Text>초과하면 관부가세가 추가로 발생할 수 있습니다.</Text>
+                <Text>(관부가세는 개별로 결제를 하셔야 합니다.)</Text>
               </Wrapper>
               <Wrapper
                 dr={`row`}
@@ -645,28 +570,28 @@ const CartList = () => {
                 <Checkbox />
                 <Text padding={`0 5px`}>이해했습니다.</Text>
               </Wrapper>
-            </Wrapper>
-            <Wrapper dr={`row`} ju={`space-between`}>
-              <CommonButton
-                width={`49%`}
-                height={`54px`}
-                kindOf={`grey`}
-                fontSize={`18px`}
-                fontWeight={`600`}
-                onClick={isModalToggle}
-              >
-                이전으로
-              </CommonButton>
-              <CommonButton
-                fontSize={width < 500 ? `16px` : `18px`}
-                fontWeight={`600`}
-                kindOf={`white`}
-                width={`49%`}
-                height={`54px`}
-                onClick={isModalToggle}
-              >
-                상품 주문하기
-              </CommonButton>
+              <Wrapper dr={`row`} ju={`space-between`}>
+                <CommonButton
+                  width={`49%`}
+                  height={`54px`}
+                  kindOf={`darkgrey`}
+                  fontSize={`18px`}
+                  fontWeight={`600`}
+                  onClick={isModalToggle}
+                >
+                  이전으로
+                </CommonButton>
+                <CommonButton
+                  fontSize={width < 500 ? `16px` : `18px`}
+                  fontWeight={`600`}
+                  kindOf={`white`}
+                  width={`49%`}
+                  height={`54px`}
+                  onClick={isModalToggle}
+                >
+                  상품 주문하기
+                </CommonButton>
+              </Wrapper>
             </Wrapper>
           </Modal>
         </WholeWrapper>

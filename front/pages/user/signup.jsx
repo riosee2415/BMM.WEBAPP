@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from "react";
 import Router, { useRouter } from "next/router";
-import { Checkbox } from "antd";
+import { Checkbox, message, Modal } from "antd";
 import useInput from "../../hooks/useInput";
 import useWidth from "../../hooks/useWidth";
 import { useDispatch, useSelector } from "react-redux";
@@ -58,6 +58,10 @@ const CheckSpan = styled.span`
   }
 `;
 
+const style = {
+  overflow: "hidden",
+};
+
 const SignUp = () => {
   ////// GLOBAL STATE //////
 
@@ -74,10 +78,71 @@ const SignUp = () => {
   const postCode = useInput("");
   const address = useInput("");
   const detailAddress = useInput("");
+  const isTerm1 = useInput(false);
+  const isTerm2 = useInput(false);
+
+  const [pModal, setPModal] = useState(false); // 주소 모달
 
   ////// USEEFFECT //////
   ////// TOGGLE ////////
+  const postCodeModalToggle = useCallback(() => {
+    setPModal((prev) => !prev);
+  }, [pModal]);
+
   ////// HANDLER ///////
+
+  const signUpHandler = useCallback(() => {
+    if (!userId.value || userId.value.trim() === "") {
+      return message.error("아이디을 입력해주세요.");
+    }
+
+    if (!password.value || password.value.trim() === "") {
+      return message.error("비밀번호를 입력해주세요.");
+    }
+
+    if (password.value !== passCheck.value) {
+      return message.error("비밀번호가 일치하지 않습니다.");
+    }
+
+    if (!mobile.value || mobile.value.trim() === "") {
+      return message.error("연락처를 입력해주세요.");
+    }
+
+    if (!email.value || email.value.trim() === "") {
+      return message.error("이메일을 입력해주세요.");
+    }
+
+    if (!isTerm1.value) {
+      return message.error("개인정보처리방침에 동의해주세요.");
+    }
+
+    if (!isTerm2.value) {
+      return message.error("이용약관에 동의해주세요.");
+    }
+
+    dispatch({
+      type: SIGNUP_REQUEST,
+      data: {
+        userId: userId.value,
+        password: password.value,
+        mobile: mobile.value,
+        email: email.value,
+        terms: isTerm.value,
+      },
+    });
+  }, [
+    userId.value,
+    password.value,
+    passCheck.value,
+    mobile.value,
+    email.value,
+    postCode.value,
+    address.value,
+    detailAddress.value,
+    isTerm1.value,
+    isTerm2.value,
+  ]);
+
   ////// DATAVIEW //////
 
   return (
@@ -128,6 +193,7 @@ const SignUp = () => {
                 type="text"
                 margin={`0 0 20px`}
                 placeholder="아이디"
+                {...userId}
               />
               <SignupLabel>
                 비밀번호 <SpanText color={Theme.red_C}>*</SpanText>
@@ -139,6 +205,7 @@ const SignUp = () => {
                 margin={`0 0 20px`}
                 required
                 placeholder="비밀번호"
+                {...password}
               />
               <SignupLabel>
                 비밀번호 재확인 <SpanText color={Theme.red_C}>*</SpanText>
@@ -149,6 +216,7 @@ const SignUp = () => {
                 type="password"
                 margin={`0 0 20px`}
                 placeholder="비밀번호 재확인"
+                {...passCheck}
               />
               <SignupLabel>연락처</SignupLabel>
               <TextInput
@@ -157,6 +225,7 @@ const SignUp = () => {
                 type="text"
                 margin={`0 0 20px`}
                 placeholder="연락처"
+                {...mobile}
               />
               <SignupLabel>
                 이메일 <SpanText color={Theme.red_C}>*</SpanText>
@@ -167,6 +236,7 @@ const SignUp = () => {
                 type="email"
                 margin={`0 0 20px`}
                 placeholder="이메일"
+                {...email}
               />
               <Wrapper dr={`row`} ju={`space-between`} margin={`0 0 10px`}>
                 <SignupLabel marginBottom={`0`}>주소</SignupLabel>
@@ -178,10 +248,11 @@ const SignUp = () => {
                 <TextInput
                   width={`62%`}
                   height={`46px`}
-                  type="post"
                   placeholder="우편번호"
+                  readOnly
+                  value={postCode.value}
                 />
-                <PostBtn>우편번호</PostBtn>
+                <PostBtn onClick={postCodeModalToggle}>우편번호</PostBtn>
               </Wrapper>
               <TextInput
                 width={`100%`}
@@ -189,6 +260,8 @@ const SignUp = () => {
                 type="text"
                 margin={`0 0 10px`}
                 placeholder="기본주소"
+                readOnly
+                {...address}
               />
               <TextInput
                 width={`100%`}
@@ -196,6 +269,7 @@ const SignUp = () => {
                 type="text"
                 margin={`0 0 30px`}
                 placeholder="상세주소를 입력해주세요."
+                {...detailAddress}
               />
               <Wrapper>
                 <Text
@@ -219,7 +293,12 @@ const SignUp = () => {
                     dr={`coloumn`}
                     ju={`flex-start`}
                   >
-                    <Checkbox>
+                    <Checkbox
+                      checked={isTerm1.value === true && isTerm2.value === true}
+                      onClick={() => {
+                        isTerm1.setValue(true), isTerm2.setValue(true);
+                      }}
+                    >
                       <Text fontSize={width < 500 ? `16px` : `18px`}>
                         모든 약관에 동의합니다.
                       </Text>
@@ -227,7 +306,10 @@ const SignUp = () => {
                   </Wrapper>
                 </Wrapper>
 
-                <Checkbox>
+                <Checkbox
+                  checked={isTerm1.value}
+                  onClick={() => isTerm1.setValue(!isTerm1.value)}
+                >
                   <Text
                     fontSize={width < 500 ? `16px` : `18px`}
                     margin={`0 0 16px`}
@@ -241,7 +323,10 @@ const SignUp = () => {
                   padding={`0 10px`}
                   al={`flex-start`}
                 >
-                  <Checkbox>
+                  <Checkbox
+                    checked={isTerm2.value}
+                    onClick={() => isTerm2.setValue(!isTerm2.value)}
+                  >
                     <Text
                       fontSize={width < 500 ? `16px` : `18px`}
                       margin={`0 0 16px`}
@@ -257,12 +342,38 @@ const SignUp = () => {
                   kindOf={`white`}
                   width={`100%`}
                   height={`54px`}
+                  onClick={signUpHandler}
                 >
                   회원가입
                 </CommonButton>
               </Wrapper>
             </Wrapper>
           </RsWrapper>
+
+          {/* 주소 검색 */}
+          {pModal && (
+            <Modal
+              width={`500px`}
+              style={{ top: 200 }}
+              footer={null}
+              visible={pModal}
+              onCancel={() => postCodeModalToggle()}
+            >
+              <DaumPostcode
+                onComplete={(data) => {
+                  postCode.setValue(data.zonecode);
+                  address.setValue(data.address);
+
+                  setPModal(false);
+                }}
+                width={`600px`}
+                height={`500px`}
+                autoClose
+                animation
+                style={style}
+              />
+            </Modal>
+          )}
         </WholeWrapper>
       </ClientLayout>
     </>
