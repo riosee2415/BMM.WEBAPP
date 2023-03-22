@@ -640,7 +640,7 @@ const CartList = () => {
               <Wrapper
                 dr={`row`}
                 fontSize={`18px`}
-                margin={width < 900 ? `0` : `0 0 50px`}
+                margin={width < 900 ? `0` : `0 0 30px`}
               >
                 <Checkbox />
                 <Text padding={`0 5px`}>이해했습니다.</Text>
