@@ -22,6 +22,7 @@ import {
 } from "../../components/commonComponents";
 import Theme from "../../components/Theme";
 import styled from "styled-components";
+import DaumPostcode from "react-daum-postcode";
 
 const PostBtn = styled.button`
   width: 35%;
