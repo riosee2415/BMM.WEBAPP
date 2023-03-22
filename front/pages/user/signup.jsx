@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from "react";
-import Router from "next/router";
+import Router, { useRouter } from "next/router";
 import { Checkbox } from "antd";
 import useInput from "../../hooks/useInput";
 import useWidth from "../../hooks/useWidth";
@@ -62,9 +62,18 @@ const SignUp = () => {
 
   ////// HOOKS //////
   const width = useWidth();
+  const router = useRouter();
   const dispatch = useDispatch();
 
-  ////// REDUX //////
+  const userId = useInput("");
+  const password = useInput("");
+  const passCheck = useInput("");
+  const mobile = useInput("");
+  const email = useInput("");
+  const postCode = useInput("");
+  const address = useInput("");
+  const detailAddress = useInput("");
+
   ////// USEEFFECT //////
   ////// TOGGLE ////////
   ////// HANDLER ///////
@@ -215,40 +224,31 @@ const SignUp = () => {
                     </Checkbox>
                   </Wrapper>
                 </Wrapper>
-                <Wrapper margin={`0 0 50px`}>
-                  <Wrapper>
-                    <Checkbox>
-                      <Text
-                        fontSize={width < 500 ? `16px` : `18px`}
-                        margin={`0 0 16px`}
-                      >
-                        <CheckSpan>(필수)</CheckSpan> 개인정보처리방침에
-                        동의합니다.
-                      </Text>
-                    </Checkbox>
-                  </Wrapper>
-                  <Wrapper>
-                    <Checkbox>
-                      <Text
-                        fontSize={width < 500 ? `16px` : `18px`}
-                        margin={`0 0 16px`}
-                      >
-                        <CheckSpan>(필수)</CheckSpan> 개인정보처리방침에
-                        동의합니다.
-                      </Text>
-                    </Checkbox>
-                  </Wrapper>
-                  <Wrapper>
-                    <Checkbox>
-                      <Text
-                        fontSize={width < 500 ? `16px` : `18px`}
-                      >
-                        <CheckSpan>(필수)</CheckSpan> 개인정보처리방침에
-                        동의합니다.
-                      </Text>
-                    </Checkbox>
-                  </Wrapper>
+
+                <Checkbox>
+                  <Text
+                    fontSize={width < 500 ? `16px` : `18px`}
+                    margin={`0 0 16px`}
+                  >
+                    <CheckSpan>(필수)</CheckSpan> 개인정보처리방침에 동의합니다.
+                  </Text>
+                </Checkbox>
+
+                <Wrapper
+                  margin={`0 0 50px`}
+                  padding={`0 10px`}
+                  al={`flex-start`}
+                >
+                  <Checkbox>
+                    <Text
+                      fontSize={width < 500 ? `16px` : `18px`}
+                      margin={`0 0 16px`}
+                    >
+                      <CheckSpan>(필수)</CheckSpan> 이용약관에 동의합니다.
+                    </Text>
+                  </Checkbox>
                 </Wrapper>
+
                 <CommonButton
                   fontSize={width < 500 ? `16px` : `18px`}
                   fontWeight={`600`}
