@@ -13,6 +13,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { COMPANY_GET_REQUEST } from "../reducers/company";
 import { LOGO_GET_REQUEST } from "../reducers/logo";
 import { UpOutlined } from "@ant-design/icons";
+import { message } from "antd";
 
 const AppFooter = () => {
   const width = useWidth();

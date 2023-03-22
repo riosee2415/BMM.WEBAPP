@@ -8,10 +8,9 @@ import {
   Table,
   Form,
   Input,
-  Select,
   message,
-  Switch,
-  Modal,
+  Popconfirm,
+  Image,
 } from "antd";
 import { useRouter, withRouter } from "next/router";
 import wrapper from "../../../store/configureStore";
@@ -25,16 +24,17 @@ import {
   OtherMenu,
   GuideUl,
   GuideLi,
+  DelBtn,
+  ModalBtn,
 } from "../../../components/commonComponents";
 import { LOAD_MY_INFO_REQUEST } from "../../../reducers/user";
 import {
-  NOTICE_LIST_REQUEST,
+  ADMIN_NOTICE_LIST_REQUEST,
   NOTICE_UPDATE_REQUEST,
-  NOTICE_UPDATE_TOP_REQUEST,
   NOTICE_FILE_REQUEST,
-  NOTICE_FILE_INFO_REQUEST,
   UPLOAD_PATH_INIT,
   NOTICE_CREATE_REQUEST,
+  NOTICE_DELETE_REQUEST,
 } from "../../../reducers/notice";
 import Theme from "../../../components/Theme";
 import { items } from "../../../components/AdminLayout";
@@ -44,8 +44,9 @@ import {
   EyeOutlined,
   AlertOutlined,
   CheckOutlined,
+  SearchOutlined,
+  UnorderedListOutlined,
 } from "@ant-design/icons";
-import { saveAs } from "file-saver";
 
 const InfoTitle = styled.div`
   font-size: 19px;
@@ -67,21 +68,54 @@ const ViewStatusIcon = styled(EyeOutlined)`
     props.active ? props.theme.subTheme5_C : props.theme.lightGrey_C};
 `;
 
+const SearchForm = styled(Form)`
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  width: auto;
+
+  & .ant-form-item {
+    width: 200px;
+    margin: 0;
+
+    @media (max-width: 900px) {
+      width: 150px;
+      margin: 5px 5px 0 0;
+    }
+  }
+
+  & .ant-form-item,
+  & .ant-form-item-control-input {
+    min-height: 0;
+  }
+
+  @media (max-width: 900px) {
+    width: 100%;
+  }
+`;
+
+const CustomInput = styled(Input)`
+  width: 100%;
+`;
+
 const Notice = ({}) => {
   const { st_loadMyInfoDone, me } = useSelector((state) => state.user);
   const {
-    notices,
+    adminNotices,
+
     st_noticeUpdateDone,
     st_noticeUpdateError,
-    st_noticeUpdateTopDone,
-    st_noticeUpdateTopError,
+
     uploadFilePath,
     st_noticeFileLoading,
     st_noticeFileDone,
-    st_noticeFileInfoDone,
-    st_noticeFileInfoError,
+    st_noticeFileError,
+
     st_noticeCreateDone,
     st_noticeCreateError,
+
+    st_noticeDeleteDone,
+    st_noticeDeleteError,
   } = useSelector((state) => state.notice);
 
   const router = useRouter();
@@ -93,9 +127,6 @@ const Notice = ({}) => {
   const [sameDepth, setSameDepth] = useState([]);
 
   const [currentData, setCurrentData] = useState(null);
-  const [currentTop, setCurrentTop] = useState(false);
-  const [tab, setTab] = useState(0);
-  const [createModal, setCreateModal] = useState(false);
 
   const [infoForm] = Form.useForm();
 
@@ -123,181 +154,11 @@ const Notice = ({}) => {
 
   ////// HOOKS //////
 
+  const [searchForm] = Form.useForm();
+
+  const [noticeTitle, setNoticeTitle] = useState(""); // 공지사항 제목
+
   ////// USEEFFECT //////
-
-  useEffect(() => {
-    if (st_noticeFileDone) {
-      setCurrentData((prev) => {
-        return {
-          ...prev,
-          file: uploadFilePath,
-        };
-      });
-
-      return message.success(
-        "파일이 업로드되었습니다. 적용하기 버튼을 눌러주세요."
-      );
-    }
-  }, [st_noticeFileDone]);
-
-  // ********************** 공지사항 생성 후처리 *************************
-  useEffect(() => {
-    if (st_noticeCreateDone) {
-      message.success("정보가 업데이트 되었습니다.");
-
-      let sendType = "";
-
-      switch (tab) {
-        case 0:
-          sendType = "";
-          break;
-
-        case 1:
-          sendType = "공지사항";
-          break;
-
-        case 2:
-          sendType = "새소식";
-          break;
-
-        default:
-          break;
-      }
-
-      dispatch({
-        type: NOTICE_LIST_REQUEST,
-        data: {
-          type: sendType,
-        },
-      });
-    }
-  }, [st_noticeCreateDone]);
-
-  useEffect(() => {
-    if (st_noticeCreateError) {
-      return message.error(st_noticeCreateError);
-    }
-  }, [st_noticeCreateError]);
-
-  // ********************** 공지사항 수정 *************************
-  useEffect(() => {
-    if (st_noticeUpdateDone) {
-      message.success("정보가 업데이트 되었습니다.");
-
-      let sendType = "";
-
-      switch (tab) {
-        case 0:
-          sendType = "";
-          break;
-
-        case 1:
-          sendType = "공지사항";
-          break;
-
-        case 2:
-          sendType = "새소식";
-          break;
-
-        default:
-          break;
-      }
-
-      dispatch({
-        type: NOTICE_LIST_REQUEST,
-        data: {
-          type: sendType,
-        },
-      });
-    }
-  }, [st_noticeUpdateDone]);
-
-  useEffect(() => {
-    if (st_noticeUpdateError) {
-      return message.error(st_noticeUpdateError);
-    }
-  }, [st_noticeUpdateError]);
-
-  // ********************** 공지사항 상단고정 수정 *************************
-  useEffect(() => {
-    if (st_noticeUpdateTopDone) {
-      let sendType = "";
-
-      switch (tab) {
-        case 0:
-          sendType = "";
-          break;
-
-        case 1:
-          sendType = "공지사항";
-          break;
-
-        case 2:
-          sendType = "새소식";
-          break;
-
-        default:
-          break;
-      }
-
-      dispatch({
-        type: NOTICE_LIST_REQUEST,
-        data: {
-          type: sendType,
-        },
-      });
-
-      return message.success("정보가 업데이트 되었습니다.");
-    }
-  }, [st_noticeUpdateTopDone]);
-
-  useEffect(() => {
-    if (st_noticeFileInfoError) {
-      return message.error(st_noticeFileInfoError);
-    }
-  }, [st_noticeFileInfoError]);
-
-  // ********************** 공지사항 파일정보 적용 *************************
-  useEffect(() => {
-    if (st_noticeFileInfoDone) {
-      return message.success("정보가 업데이트 되었습니다.");
-    }
-  }, [st_noticeFileInfoDone]);
-
-  useEffect(() => {
-    if (st_noticeUpdateTopError) {
-      return message.error(st_noticeUpdateError);
-    }
-  }, [st_noticeUpdateTopError]);
-
-  useEffect(() => {
-    setCurrentData(null);
-    let sendType = "";
-
-    switch (tab) {
-      case 0:
-        sendType = "";
-        break;
-
-      case 1:
-        sendType = "공지사항";
-        break;
-
-      case 2:
-        sendType = "새소식";
-        break;
-
-      default:
-        break;
-    }
-
-    dispatch({
-      type: NOTICE_LIST_REQUEST,
-      data: {
-        type: sendType,
-      },
-    });
-  }, [tab]);
 
   useEffect(() => {
     if (st_loadMyInfoDone) {
@@ -324,22 +185,112 @@ const Notice = ({}) => {
     });
   }, []);
 
-  ////// HANDLER //////
-
-  const createWithTypeHandler = useCallback((typeValue) => {
+  useEffect(() => {
     dispatch({
-      type: NOTICE_CREATE_REQUEST,
+      type: ADMIN_NOTICE_LIST_REQUEST,
       data: {
-        type: typeValue,
+        title: noticeTitle,
       },
     });
+  }, [noticeTitle]);
 
-    createModalToggle();
+  // ********************** 공지사항 생성 후처리 *************************
+  useEffect(() => {
+    if (st_noticeCreateDone) {
+      message.success("공지사항이 생성되었습니다.");
+
+      dispatch({
+        type: ADMIN_NOTICE_LIST_REQUEST,
+        data: {
+          title: noticeTitle,
+        },
+      });
+    }
+  }, [st_noticeCreateDone]);
+
+  useEffect(() => {
+    if (st_noticeCreateError) {
+      return message.error(st_noticeCreateError);
+    }
+  }, [st_noticeCreateError]);
+
+  // ********************** 공지사항 수정 *************************
+  useEffect(() => {
+    if (st_noticeUpdateDone) {
+      message.success("공지사항이 수정되었습니다.");
+
+      dispatch({
+        type: ADMIN_NOTICE_LIST_REQUEST,
+        data: {
+          title: noticeTitle,
+        },
+      });
+    }
+  }, [st_noticeUpdateDone]);
+
+  useEffect(() => {
+    if (st_noticeUpdateError) {
+      return message.error(st_noticeUpdateError);
+    }
+  }, [st_noticeUpdateError]);
+
+  // ********************** 공지사항 삭제 *************************
+  useEffect(() => {
+    if (st_noticeDeleteDone) {
+      message.success("공지사항이 삭제되었습니다.");
+
+      setCurrentData(null);
+
+      dispatch({
+        type: ADMIN_NOTICE_LIST_REQUEST,
+        data: {
+          title: noticeTitle,
+        },
+      });
+    }
+  }, [st_noticeDeleteDone]);
+
+  useEffect(() => {
+    if (st_noticeDeleteError) {
+      return message.error(st_noticeDeleteError);
+    }
+  }, [st_noticeDeleteError]);
+
+  // ********************** 공지사항 이미지 변경 *************************
+
+  useEffect(() => {
+    if (st_noticeFileDone) {
+      return message.success(
+        "공지사항 이미지가 업로드되었습니다. 정보 업데이트 버튼을 눌러주세요."
+      );
+    }
+  }, [st_noticeFileDone]);
+
+  useEffect(() => {
+    if (st_noticeFileError) {
+      return message.error(st_noticeFileError);
+    }
+  }, [st_noticeFileError]);
+
+  ////// HANDLER //////
+
+  const searchHandler = useCallback(
+    (data) => {
+      setNoticeTitle(data.title);
+    },
+    [noticeTitle]
+  );
+
+  const allSearchHandler = useCallback(() => {
+    searchForm.resetFields();
+    setNoticeTitle("");
+  }, [noticeTitle]);
+
+  const createHandler = useCallback(() => {
+    dispatch({
+      type: NOTICE_CREATE_REQUEST,
+    });
   }, []);
-
-  const createModalToggle = useCallback(() => {
-    setCreateModal((prev) => !prev);
-  }, [createModal]);
 
   const clickFileUpload = useCallback(() => {
     fileRef.current.click();
@@ -349,38 +300,18 @@ const Notice = ({}) => {
     const formData = new FormData();
 
     [].forEach.call(e.target.files, (file) => {
-      formData.append("file", file);
+      formData.append("image", file);
     });
+
+    if (e.target.files.length < 1) {
+      return;
+    }
 
     dispatch({
       type: NOTICE_FILE_REQUEST,
       data: formData,
     });
   });
-
-  const fileDownloadHandler = useCallback(async (filepath) => {
-    const filename = "web_notice_file";
-    const ext = filepath.split(".");
-    const _ext = ext[ext.length - 1];
-
-    const finalFilename = `${filename}.${_ext}`;
-
-    let blob = await fetch(filepath).then((r) => r.blob());
-
-    const element = document.createElement("a");
-    const file = new Blob([blob]);
-
-    saveAs(file, finalFilename);
-  }, []);
-
-  const onTypeChange = useCallback(
-    (value) => {
-      infoForm.setFieldsValue({
-        type: value,
-      });
-    },
-    [infoForm]
-  );
 
   const beforeSetDataHandler = useCallback(
     (record) => {
@@ -389,11 +320,9 @@ const Notice = ({}) => {
       });
 
       setCurrentData(record);
-      setCurrentTop(record.isTop);
 
       infoForm.setFieldsValue({
         title: record.title,
-        type: record.type,
         content: record.content,
         hit: record.hit,
         createdAt: record.viewCreatedAt,
@@ -401,50 +330,41 @@ const Notice = ({}) => {
         updator: record.updator,
       });
     },
-    [currentData, infoForm, currentTop]
+    [currentData, infoForm]
   );
 
   const infoFormFinish = useCallback(
     (data) => {
+      if (
+        data.title === currentData.title &&
+        data.content === currentData.content &&
+        !uploadFilePath
+      ) {
+        return message.warning("변경할 데이터가 없습니다.");
+      }
+
       dispatch({
         type: NOTICE_UPDATE_REQUEST,
         data: {
           id: currentData.id,
           title: data.title,
           content: data.content,
-          type: data.type,
+          imagePath: uploadFilePath ? uploadFilePath : currentData.imagePath,
         },
       });
     },
-    [currentData]
+    [currentData, uploadFilePath]
   );
 
-  const applyFileHandler = useCallback(() => {
+  const deleteHandler = useCallback((data) => {
     dispatch({
-      type: NOTICE_FILE_INFO_REQUEST,
+      type: NOTICE_DELETE_REQUEST,
       data: {
-        id: currentData.id,
-        filepath: uploadFilePath,
-        title: currentData.title,
+        id: data.id,
+        title: data.title,
       },
     });
-  }, [uploadFilePath, currentData]);
-
-  const isTopChangeHandler = useCallback(
-    (data) => {
-      setCurrentTop((prev) => !prev);
-
-      dispatch({
-        type: NOTICE_UPDATE_TOP_REQUEST,
-        data: {
-          id: currentData.id,
-          flag: data ? 1 : 0,
-          title: currentData.title,
-        },
-      });
-    },
-    [currentData, currentTop]
-  );
+  }, []);
 
   ////// DATAVIEW //////
 
@@ -454,10 +374,6 @@ const Notice = ({}) => {
     {
       title: "번호",
       dataIndex: "num",
-    },
-    {
-      title: "유형",
-      dataIndex: "type",
     },
     {
       title: "공지사항 제목",
@@ -476,6 +392,20 @@ const Notice = ({}) => {
             parseInt(data.id) === (currentData && parseInt(currentData.id))
           }
         />
+      ),
+    },
+    {
+      title: "삭제",
+      render: (data) => (
+        <Popconfirm
+          placement="topRight"
+          title={"정말 삭제하시겠습니까?"}
+          okText="삭제"
+          cancelText="취소"
+          onConfirm={() => deleteHandler(data)}
+        >
+          <DelBtn />
+        </Popconfirm>
       ),
     },
   ];
@@ -517,37 +447,36 @@ const Notice = ({}) => {
             공지사항을 추가 / 수정 / 삭제 등 관리를 할 수 있습니다.
           </GuideLi>
           <GuideLi isImpo={true}>
+            공지사항이미지는 5MB이하 용량으로 올려주세요.
+          </GuideLi>
+          <GuideLi isImpo={true}>
+            공지사항이미지는 정보 업데이트버튼을 눌러야 적용이 됩니다.
+          </GuideLi>
+          <GuideLi isImpo={true}>
             삭제처리 된 공지사항은 복구가 불가능합니다.
           </GuideLi>
         </GuideUl>
       </Wrapper>
 
-      {/* TAB */}
-      <Wrapper padding={`10px`} dr={`row`} ju="flex-start">
-        <Button
-          type={tab === 0 ? "primary" : "default"}
+      {/* 검색 */}
+      <Wrapper padding={`10px 20px`} dr={`row`} ju="flex-start">
+        <SearchForm form={searchForm} onFinish={searchHandler}>
+          <Form.Item name="title">
+            <CustomInput size="small" placeholder="제목으로 검색해주세요." />
+          </Form.Item>
+
+          <Button icon={<SearchOutlined />} size="small" htmlType="submit">
+            검색
+          </Button>
+        </SearchForm>
+        <ModalBtn
+          icon={<UnorderedListOutlined />}
           size="small"
-          style={{ marginRight: "5px" }}
-          onClick={() => setTab(0)}
+          type="primary"
+          onClick={allSearchHandler}
         >
-          전체
-        </Button>
-        <Button
-          type={tab === 1 ? "primary" : "default"}
-          size="small"
-          style={{ marginRight: "5px" }}
-          onClick={() => setTab(1)}
-        >
-          공지사항
-        </Button>
-        <Button
-          type={tab === 2 ? "primary" : "default"}
-          size="small"
-          style={{ marginRight: "5px" }}
-          onClick={() => setTab(2)}
-        >
-          새소식
-        </Button>
+          전체조회
+        </ModalBtn>
       </Wrapper>
 
       {/* CONTENT */}
@@ -559,13 +488,13 @@ const Notice = ({}) => {
           shadow={`3px 3px 6px ${Theme.lightGrey_C}`}
         >
           <Wrapper al="flex-end">
-            <Button size="small" type="primary" onClick={createModalToggle}>
+            <Button size="small" type="primary" onClick={createHandler}>
               공지사항 생성
             </Button>
           </Wrapper>
           <Table
             size="small"
-            dataSource={notices}
+            dataSource={adminNotices}
             columns={noticeCol}
             rowKey="id"
             style={{ width: "100%" }}
@@ -586,12 +515,34 @@ const Notice = ({}) => {
               <Wrapper margin={`0px 0px 5px 0px`}>
                 <InfoTitle>
                   <CheckOutlined />
-                  상단고정 제어
+                  공지사항 이미지 정보
                 </InfoTitle>
               </Wrapper>
 
-              <Wrapper dr="row" ju="flex-start" al="flex-start" padding="20px">
-                <Switch onChange={isTopChangeHandler} checked={currentTop} />
+              <Wrapper width={`auto`} margin={`0 0 30px`}>
+                <Image
+                  width={`300px`}
+                  height={`300px`}
+                  src={uploadFilePath ? uploadFilePath : currentData.imagePath}
+                  alt={`image`}
+                />
+
+                <input
+                  hidden
+                  type={`file`}
+                  ref={fileRef}
+                  accept={`.jpg, .png`}
+                  onChange={onChangeFiles}
+                />
+                <Button
+                  loading={st_noticeFileLoading}
+                  style={{ width: `300px`, marginTop: `5px` }}
+                  size="small"
+                  type="primary"
+                  onClick={clickFileUpload}
+                >
+                  공지사항 이미지 업로드
+                </Button>
               </Wrapper>
 
               <Wrapper
@@ -623,19 +574,6 @@ const Notice = ({}) => {
                   ]}
                 >
                   <Input size="small" />
-                </Form.Item>
-
-                <Form.Item
-                  label="유형"
-                  name="type"
-                  rules={[
-                    { required: true, message: "유형은 필수 선택사항 입니다." },
-                  ]}
-                >
-                  <Select onChange={onTypeChange} size="small">
-                    <Option value="새소식">새소식</Option>
-                    <Option value="공지사항">공지사항</Option>
-                  </Select>
                 </Form.Item>
 
                 <Form.Item
@@ -693,92 +631,6 @@ const Notice = ({}) => {
                 bgColor={Theme.lightGrey_C}
                 margin={`30px 0px`}
               ></Wrapper>
-
-              <Wrapper margin={`0px 0px 5px 0px`}>
-                <InfoTitle>
-                  <CheckOutlined />
-                  공지사항 파일정보
-                </InfoTitle>
-              </Wrapper>
-
-              <Wrapper padding="0px 20px">
-                {currentData.file ? (
-                  <Wrapper al="flex-start">
-                    <Text>등록된 파일이 1개 있습니다.</Text>
-                    <Wrapper dr="row" ju="flex-start">
-                      <Button
-                        type="defalut"
-                        size="small"
-                        onClick={() => fileDownloadHandler(currentData.file)}
-                      >
-                        다운로드
-                      </Button>
-
-                      <input
-                        type="file"
-                        name="file"
-                        // accept=".png, .jpg"
-                        // multiple
-                        hidden
-                        ref={fileRef}
-                        onChange={onChangeFiles}
-                      />
-
-                      <Button
-                        type="danger"
-                        size="small"
-                        onClick={clickFileUpload}
-                        loading={st_noticeFileLoading}
-                      >
-                        수정하기
-                      </Button>
-
-                      {uploadFilePath && (
-                        <Button
-                          type="primary"
-                          size="small"
-                          style={{ marginLeft: "10px" }}
-                          onClick={applyFileHandler}
-                        >
-                          적용하기
-                        </Button>
-                      )}
-                    </Wrapper>
-                  </Wrapper>
-                ) : (
-                  <Wrapper al="flex-start">
-                    <Text>등록된 파일이 없습니다.</Text>
-
-                    <Wrapper ju="flex-start" dr="row">
-                      <input
-                        type="file"
-                        name="file"
-                        // accept=".png, .jpg"
-                        // multiple
-                        hidden
-                        ref={fileRef}
-                        onChange={onChangeFiles}
-                      />
-
-                      <Button
-                        type="danger"
-                        size="small"
-                        onClick={clickFileUpload}
-                        loading={st_noticeFileLoading}
-                      >
-                        등록하기
-                      </Button>
-                    </Wrapper>
-                  </Wrapper>
-                )}
-              </Wrapper>
-
-              <Wrapper
-                width="100%"
-                height="1px"
-                bgColor={Theme.lightGrey_C}
-                margin={`30px 0px`}
-              ></Wrapper>
             </>
           ) : (
             <Wrapper padding={`50px 0px`} dr="row">
@@ -794,31 +646,6 @@ const Notice = ({}) => {
           )}
         </Wrapper>
       </Wrapper>
-
-      <Modal
-        visible={createModal}
-        title="새로운 공지사항 유형선택"
-        footer={null}
-        width="250px"
-        onCancel={createModalToggle}
-      >
-        <Wrapper dr="row" ju="space-around">
-          <Button
-            type="primary"
-            style={{ margin: "5px" }}
-            onClick={() => createWithTypeHandler("공지사항")}
-          >
-            공지사항
-          </Button>
-          <Button
-            type="primary"
-            style={{ margin: "5px" }}
-            onClick={() => createWithTypeHandler("새소식")}
-          >
-            새소식
-          </Button>
-        </Wrapper>
-      </Modal>
     </AdminLayout>
   );
 };
@@ -839,10 +666,9 @@ export const getServerSideProps = wrapper.getServerSideProps(
     });
 
     context.store.dispatch({
-      type: NOTICE_LIST_REQUEST,
+      type: ADMIN_NOTICE_LIST_REQUEST,
       data: {
         title: "",
-        type: "",
       },
     });
 
