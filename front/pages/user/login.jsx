@@ -214,14 +214,14 @@ const Login = () => {
                 color={Theme.grey_C}
                 margin={`0 0 30px`}
               >
-                <Link href={`/user/findId`}>
+                <Link href={`/user/findid`}>
                   <a>
                     <Text isHover td={`underline`} margin={`0 16px 0 0`}>
                       아이디 찾기
                     </Text>
                   </a>
                 </Link>
-                <Link href={`/user/findPw`}>
+                <Link href={`/user/findpw`}>
                   <a>
                     <Text isHover td={`underline`}>
                       비번 재설정

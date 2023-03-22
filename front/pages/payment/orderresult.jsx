@@ -53,15 +53,6 @@ const OrderResult = () => {
   ////// HOOKS //////
   const width = useWidth();
 
-  const onChange = (e) => {
-    console.log("radio checked", e.target.value);
-    setValue(e.target.value);
-  };
-  const onChangePay = (e) => {
-    console.log("radio checked", e.target.payvalue);
-    setPayValue(e.target.payvalue);
-  };
-
   ////// REDUX //////
   ////// USEEFFECT //////
   ////// TOGGLE //////
@@ -73,21 +64,40 @@ const OrderResult = () => {
       <Head>
         <title>BUY ME MINE | 주문완료</title>
       </Head>
-
       <ClientLayout>
-        <WholeWrapper padding={`95px 0`}>
+        <WholeWrapper padding={width < 900 ? `40px 0 80px` : `95px 0`}>
           <RsWrapper>
-            <Wrapper
-              dr={`row`}
-              ju={`space-between`}
-              fontSize={width < 700 ? `26px` : `30px`}
-              fontWeight={`600`}
-              margin={`0 0 30px`}
-            >
-              <Text>주문완료</Text>
+            <Wrapper dr={`row`} ju={`space-between`} margin={`0 0 30px`}>
+              <Text
+                fontSize={width < 900 ? `22px` : `34px`}
+                fontWeight={`bold`}
+              >
+                주문완료
+              </Text>
+              <Wrapper dr={`row`} width={`auto`}>
+                <Text color={Theme.grey_C} margin={`0 6px`}>
+                  장바구니
+                </Text>
+                <Image
+                  alt="next icon"
+                  src={`https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/bmm/assets/images/icon/next.png`}
+                  width={`5px`}
+                />
+                <Text color={Theme.grey_C} margin={`0 6px`}>
+                  주문서작성/결제
+                </Text>
+                <Image
+                  alt="next icon"
+                  src={`https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/bmm/assets/images/icon/next.png`}
+                  width={`5px`}
+                />
+                <Text color={Theme.black_C} margin={`0 0 0 6px`}>
+                  주문완료
+                </Text>
+              </Wrapper>
             </Wrapper>
             <Wrapper dr={`row`} ju={`space-between`} al={`flex-start`}>
-              <Wrapper width={width < 800 ? `100%` : `65%`}>
+              <Wrapper width={width < 900 ? `100%` : `65%`}>
                 <Wrapper
                   height={`54px`}
                   dr={`row`}
@@ -99,10 +109,10 @@ const OrderResult = () => {
                   fontWeight={`600`}
                   display={width < 800 ? `none` : `flex`}
                 >
-                  <Wrapper width={`55%`}>상품정보</Wrapper>
-                  <Wrapper width={`15%`}>주문수량</Wrapper>
-                  <Wrapper width={`15%`}>상품금액</Wrapper>
-                  <Wrapper width={`15%`}>무게</Wrapper>
+                  <Wrapper width={`334px`}>상품정보</Wrapper>
+                  <Wrapper width={`127px`}>주문수량</Wrapper>
+                  <Wrapper width={`127px`}>상품금액</Wrapper>
+                  <Wrapper width={`127px`}>무게</Wrapper>
                 </Wrapper>
                 {width < 1100 ? (
                   <Wrapper>
@@ -138,7 +148,10 @@ const OrderResult = () => {
                           <Text>상품금액: 9,000원</Text>
                         </Wrapper>
                       </Wrapper>
-                      <Wrapper al={`flex-start`} margin={`0 0 13px`}>
+                      <Wrapper
+                        al={`flex-start`}
+                        margin={width < 1100 ? `10px 0 13px` : `0 0 13px`}
+                      >
                         <Text fontSize={`16px`} fontWeight={`600`}>
                           랩 에센스
                         </Text>
@@ -176,7 +189,7 @@ const OrderResult = () => {
                   <>
                     <List>
                       <Wrapper
-                        width={`55%`}
+                        width={`calc(100% - 127px - 127px - 127px)`}
                         dr={`row`}
                         ju={`flex-start`}
                         fontSize={`18px`}
@@ -191,11 +204,11 @@ const OrderResult = () => {
                         />
                         <Text padding={`0 0 0 14px`}>오레오 시리즈</Text>
                       </Wrapper>
-                      <Wrapper width={`15%`}>1</Wrapper>
-                      <Wrapper color={Theme.darkGrey_C} width={`15%`}>
+                      <Wrapper width={`127px`}>1</Wrapper>
+                      <Wrapper color={Theme.darkGrey_C} width={`127px`}>
                         9,000원
                       </Wrapper>
-                      <Wrapper color={Theme.darkGrey_C} width={`15%`}>
+                      <Wrapper color={Theme.darkGrey_C} width={`127px`}>
                         420g
                       </Wrapper>
                     </List>
@@ -204,6 +217,7 @@ const OrderResult = () => {
                         width={`auto`}
                         al={`flex-start`}
                         margin={`18px 0 18px`}
+                        padding={`0 0 0 14px`}
                       >
                         <Image
                           alt="샘플사진"
@@ -215,7 +229,7 @@ const OrderResult = () => {
                       </Wrapper>
 
                       <Wrapper
-                        width={`45%`}
+                        width={`calc(100% - 78px - 127px - 127px - 127px)`}
                         padding={`0 0 0 14px`}
                         al={`flex-start`}
                       >
@@ -224,27 +238,25 @@ const OrderResult = () => {
                         </Text>
                         <Text color={Theme.grey_C}>옵션 : 오레오 핑크</Text>
                       </Wrapper>
-                      <Wrapper width={`15%`}>1</Wrapper>
-                      <Wrapper color={Theme.darkGrey_C} width={`15%`}>
+                      <Wrapper width={`127px`}>1</Wrapper>
+                      <Wrapper color={Theme.darkGrey_C} width={`127px`}>
                         9,000원
                       </Wrapper>
-                      <Wrapper color={Theme.darkGrey_C} width={`15%`}>
+                      <Wrapper color={Theme.darkGrey_C} width={`127px`}>
                         420g
                       </Wrapper>
                     </List>
                   </>
                 )}
 
-                <Wrapper al={`flesx-start`}>
-                  <Wrapper
-                    dr={`row`}
-                    ju={`flex-start`}
-                    margin={width < 1100 ? `20px 0 20px` : `60px 0 20px`}
-                  >
+                <Wrapper
+                  al={`flesx-start`}
+                  margin={width < 800 ? `0 0 20px` : `60px 0 20px`}
+                >
+                  <Wrapper dr={`row`} ju={`flex-start`}>
                     <Text
                       fontSize={width < 800 ? `20px` : `24px`}
                       fontWeight={`600`}
-                      margin={`0 35px 0 0`}
                     >
                       수령인 정보입력
                     </Text>
@@ -260,7 +272,7 @@ const OrderResult = () => {
                   <Text
                     width={width < 800 ? `100%` : `20%`}
                     lineHeight={`46px`}
-                    fontSize={`16px`}
+                    fontSize={width < 800 ? `14px` : `16px`}
                   >
                     수령인 이름<SpanText color={Theme.red_C}>*</SpanText>
                   </Text>
@@ -284,7 +296,7 @@ const OrderResult = () => {
                   <Text
                     width={width < 800 ? `100%` : `20%`}
                     lineHeight={`46px`}
-                    fontSize={`16px`}
+                    fontSize={width < 800 ? `14px` : `16px`}
                   >
                     수령인 영문이름<SpanText color={Theme.red_C}>*</SpanText>
                   </Text>
@@ -309,7 +321,10 @@ const OrderResult = () => {
                     width={width < 800 ? `100%` : `20%`}
                     al={`flex-start`}
                   >
-                    <Text lineHeight={`46px`} fontSize={`16px`}>
+                    <Text
+                      lineHeight={`46px`}
+                      fontSize={width < 800 ? `14px` : `16px`}
+                    >
                       개인통관고유부호
                       <SpanText color={Theme.red_C}>*</SpanText>
                     </Text>
@@ -359,7 +374,7 @@ const OrderResult = () => {
                   <Text
                     width={width < 800 ? `100%` : `20%`}
                     lineHeight={`46px`}
-                    fontSize={`16px`}
+                    fontSize={width < 800 ? `14px` : `16px`}
                   >
                     이메일<SpanText color={Theme.red_C}>*</SpanText>
                   </Text>
@@ -383,7 +398,7 @@ const OrderResult = () => {
                   <Text
                     width={width < 800 ? `100%` : `20%`}
                     lineHeight={`46px`}
-                    fontSize={`16px`}
+                    fontSize={width < 800 ? `14px` : `16px`}
                   >
                     연락처<SpanText color={Theme.red_C}>*</SpanText>
                   </Text>
@@ -409,7 +424,10 @@ const OrderResult = () => {
                     width={width < 800 ? `100%` : `20%`}
                     al={`flex-start`}
                   >
-                    <Text lineHeight={`46px`} fontSize={`16px`}>
+                    <Text
+                      lineHeight={`46px`}
+                      fontSize={width < 800 ? `14px` : `16px`}
+                    >
                       주소<SpanText color={Theme.red_C}>*</SpanText>
                     </Text>
                   </Wrapper>
@@ -457,7 +475,10 @@ const OrderResult = () => {
                     width={width < 800 ? `100%` : `20%`}
                     al={`flex-start`}
                   >
-                    <Text lineHeight={`46px`} fontSize={`16px`}>
+                    <Text
+                      lineHeight={`46px`}
+                      fontSize={width < 800 ? `14px` : `16px`}
+                    >
                       배송 메시지
                     </Text>
                   </Wrapper>
@@ -504,7 +525,7 @@ const OrderResult = () => {
                   <Text
                     width={width < 1100 ? `100%` : `20%`}
                     lineHeight={`46px`}
-                    fontSize={`16px`}
+                    fontSize={width < 800 ? `14px` : `16px`}
                   >
                     쿠폰
                   </Text>
@@ -574,11 +595,14 @@ const OrderResult = () => {
                   </Text>
                   <Wrapper
                     width={width < 800 ? `100%` : `385px`}
-                    fontSize={`16px`}
+                    fontSize={width < 800 ? `14px` : `16px`}
                   >
                     <Wrapper al={`flex-start`} margin={`0 0 16px`}>
                       <Radio disabled={true} defaultChecked={true}>
-                        <Text color={Theme.black_C} fontSize={`16px`}>
+                        <Text
+                          color={Theme.black_C}
+                          fontSize={width < 800 ? `14px` : `16px`}
+                        >
                           신용카드
                         </Text>
                       </Radio>

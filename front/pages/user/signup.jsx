@@ -158,6 +158,7 @@ const SignUp = () => {
               width={width < 500 ? `100%` : `450px`}
               padding={width < 500 ? `80px 20px` : `80px 60px`}
               al={`flex-start`}
+              border={`1px solid ${Theme.lightGrey3_C}`}
             >
               <Text
                 fontSize={width < 500 ? `25px` : `36px`}
