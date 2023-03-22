@@ -344,12 +344,16 @@ const AppHeader = () => {
                   />
                 </Wrapper>
               </Wrapper>
-              <Image
-                width={`28px`}
-                margin={`0 24px 0 26px`}
-                alt="icon"
-                src={`https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/bmm/assets/images/header/icon_user.png`}
-              />
+              <Link href={me ? `/mypage` : `/user/login`}>
+                <a>
+                  <Image
+                    width={`28px`}
+                    margin={`0 24px 0 26px`}
+                    alt="icon"
+                    src={`https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/bmm/assets/images/header/icon_user.png`}
+                  />
+                </a>
+              </Link>
               <Badge count={5}>
                 <Image
                   width={`28px`}

@@ -171,6 +171,8 @@ const Index = () => {
   ////// GLOBAL STATE //////
   const [reviewModal, setReviewModal] = useState(false);
   const [mobileMenu, setMobileMenu] = useState(false);
+  const [limitModal, setLimitModal] = useState(false);
+  const [cartModal, setCartModal] = useState(false);
   const [currentTab, setCurrentTab] = useState(0);
   const [isModal, setIsModal] = useState(false);
   const [cModal, setCModal] = useState(false);
@@ -196,6 +198,15 @@ const Index = () => {
   const mobileMenuToggle = useCallback(() => {
     setMobileMenu((prev) => !prev);
   }, [mobileMenu]);
+
+  const cartModalToggle = useCallback(() => {
+    setCartModal((prev) => !prev);
+    setMobileMenu(false);
+  }, [cartModal]);
+
+  const limitModalToggle = useCallback(() => {
+    setLimitModal((prev) => !prev);
+  }, [limitModal]);
 
   ////// HANDLER //////
   ////// DATAVIEW //////
@@ -474,6 +485,7 @@ const Index = () => {
                     kindOf={`darkgrey`}
                     fontSize={width < 900 ? `15px` : `18px`}
                     fontWeight={`600`}
+                    onClick={cartModalToggle}
                   >
                     장바구니
                   </CommonButton>
@@ -1198,13 +1210,13 @@ const Index = () => {
                   kindOf={`darkgrey`}
                   fontSize={width < 900 ? `15px` : `18px`}
                   fontWeight={`600`}
+                  onClick={cartModalToggle}
                 >
                   장바구니
                 </CommonButton>
               </Wrapper>
             </Wrapper>
           </RsWrapper>
-
           <Wrapper
             display={width < 900 ? `flex` : `none`}
             position={`fixed`}
@@ -1246,7 +1258,6 @@ const Index = () => {
                     /> */}
             </CommonButton>
           </Wrapper>
-
           <Drawer
             visible={mobileMenu}
             onClose={mobileMenuToggle}
@@ -1362,6 +1373,7 @@ const Index = () => {
                   height={`54px`}
                   kindOf={`darkgrey`}
                   fontWeight={`600`}
+                  onClick={cartModalToggle}
                 >
                   장바구니
                 </CommonButton>
@@ -1502,7 +1514,6 @@ const Index = () => {
               </Wrapper>
             </Wrapper>
           </Modal>
-
           {/* 이 상품을 구매한 회원이 아닐경우 */}
           <Modal
             onCancel={reviewModalToggle}
@@ -1556,6 +1567,131 @@ const Index = () => {
                 onClick={reviewModalToggle}
               >
                 쇼핑 계속하기
+              </CommonButton>
+            </Wrapper>
+          </Modal>
+          <Modal
+            onCancel={cartModalToggle}
+            visible={cartModal}
+            footer={null}
+            closable={null}
+          >
+            <Wrapper padding={width < 600 ? `20px 0px` : `20px`}>
+              <Wrapper
+                dr={`row`}
+                ju={`space-between`}
+                borderBottom={`1px solid ${Theme.lightGrey2_C}`}
+                padding={`0 0 17px`}
+                margin={`0 0 23px`}
+              >
+                <Text
+                  fontSize={width < 700 ? `20px` : `24px`}
+                  fontWeight={`600`}
+                >
+                  장바구니
+                </Text>
+                <Text
+                  color={Theme.grey_C}
+                  isHover
+                  fontSize={width < 900 ? `15px` : `20px`}
+                  onClick={cartModalToggle}
+                >
+                  <CloseOutlined />
+                </Text>
+              </Wrapper>
+
+              <Text
+                fontSize={width < 900 ? `15px` : `18px`}
+                margin={`30px 0 0`}
+              >
+                장바구니에 성공적으로 추가되었습니다.
+              </Text>
+              <Text
+                fontSize={width < 900 ? `15px` : `18px`}
+                margin={`0 0 50px`}
+              >
+                계속 쇼핑하시겠습니까?
+              </Text>
+
+              <Wrapper dr={`row`} ju={`space-between`}>
+                <CommonButton
+                  fontSize={width < 500 ? `16px` : `18px`}
+                  fontWeight={`600`}
+                  kindOf={`darkgrey`}
+                  width={`49%`}
+                  height={`54px`}
+                  onClick={cartModalToggle}
+                >
+                  쇼핑 계속하기
+                </CommonButton>
+
+                <CommonButton
+                  fontSize={width < 500 ? `16px` : `18px`}
+                  fontWeight={`600`}
+                  kindOf={`white`}
+                  width={`49%`}
+                  height={`54px`}
+                  onClick={() => router.push(`/cart`)}
+                >
+                  장바구니 확인
+                </CommonButton>
+              </Wrapper>
+            </Wrapper>
+          </Modal>
+
+          {/* 의약품 구매제한 모달 */}
+          <Modal
+            onCancel={limitModalToggle}
+            visible={limitModal}
+            footer={null}
+            closable={null}
+          >
+            <Wrapper padding={width < 600 ? `20px 0px` : `20px`}>
+              <Wrapper
+                dr={`row`}
+                ju={`space-between`}
+                borderBottom={`1px solid ${Theme.lightGrey2_C}`}
+                padding={`0 0 17px`}
+                margin={`0 0 23px`}
+              >
+                <Text
+                  fontSize={width < 700 ? `20px` : `24px`}
+                  fontWeight={`600`}
+                >
+                  의약품 구매 제한
+                </Text>
+                <Text
+                  color={Theme.grey_C}
+                  isHover
+                  fontSize={width < 900 ? `15px` : `20px`}
+                  onClick={limitModalToggle}
+                >
+                  <CloseOutlined />
+                </Text>
+              </Wrapper>
+
+              <Text
+                fontSize={width < 900 ? `15px` : `18px`}
+                margin={`30px 0 0`}
+              >
+                의약품은 최대 6개로 구매 제한이 있습니다.
+              </Text>
+              <Text
+                fontSize={width < 900 ? `15px` : `18px`}
+                margin={`0 0 50px`}
+              >
+                6개 이하로 구매해주길 바랍니다.
+              </Text>
+
+              <CommonButton
+                fontSize={width < 500 ? `16px` : `18px`}
+                fontWeight={`600`}
+                kindOf={`darkgrey`}
+                width={`240px`}
+                height={`54px`}
+                onClick={limitModalToggle}
+              >
+                확인
               </CommonButton>
             </Wrapper>
           </Modal>

@@ -43,6 +43,7 @@ const FindId = () => {
             <Wrapper
               width={width < 500 ? `100%` : `450px`}
               padding={width < 500 ? `80px 20px` : `80px 60px`}
+              border={`1px solid ${Theme.lightGrey3_C}`}
             >
               <Text
                 fontSize={width < 500 ? `25px` : `36px`}
@@ -80,7 +81,7 @@ const FindId = () => {
                     color={Theme.grey_C}
                     margin={`0 0 30px`}
                   >
-                    <Link href={`/user/findPw`}>
+                    <Link href={`/user/findpw`}>
                       <a>
                         <Text isHover td={`underline`}>
                           비밀번호 재설정
@@ -123,7 +124,7 @@ const FindId = () => {
                     color={Theme.grey_C}
                     margin={`0 0 30px`}
                   >
-                    <Link href={`/user/findPw`}>
+                    <Link href={`/user/findpw`}>
                       <a>
                         <Text isHover td={`underline`}>
                           비밀번호 재설정
@@ -166,7 +167,7 @@ const FindId = () => {
                     color={Theme.grey_C}
                     margin={`0 0 30px`}
                   >
-                    <Link href={`/user/findPw`}>
+                    <Link href={`/user/findpw`}>
                       <a>
                         <Text isHover td={`underline`}>
                           비밀번호 재설정
