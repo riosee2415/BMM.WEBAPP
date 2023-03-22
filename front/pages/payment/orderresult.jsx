@@ -1,12 +1,12 @@
 import React, { useState } from "react";
-import ClientLayout from "../../../components/ClientLayout";
-import Theme from "../../../components/Theme";
+import ClientLayout from "../../components/ClientLayout";
+import Theme from "../../components/Theme";
 import Head from "next/head";
-import wrapper from "../../../store/configureStore";
-import { LOAD_MY_INFO_REQUEST } from "../../../reducers/user";
+import wrapper from "../../store/configureStore";
+import { LOAD_MY_INFO_REQUEST } from "../../reducers/user";
 import axios from "axios";
 import { END } from "redux-saga";
-import useWidth from "../../../hooks/useWidth";
+import useWidth from "../../hooks/useWidth";
 import {
   RsWrapper,
   WholeWrapper,
@@ -15,17 +15,17 @@ import {
   Image,
   CommonButton,
   SpanText,
-  TextInput,
-  CustomSelect,
-} from "../../../components/commonComponents";
+} from "../../components/commonComponents";
 import styled from "styled-components";
-import { Checkbox, Radio, Select } from "antd";
+import { Radio } from "antd";
+
 const List = styled(Wrapper)`
   height: 100px;
   flex-direction: row;
   border-bottom: 1px solid ${Theme.lightGrey2_C};
   font-size: 16px;
 `;
+
 const MobileList = styled(Wrapper)`
   margin: 0 0 30px;
   border: 1px solid ${Theme.lightGrey2_C};
@@ -45,6 +45,7 @@ const SubText = styled(Wrapper)`
   color: ${Theme.lightGrey_C};
   margin: ${(props) => props.margin || `0 0 8px`};
 `;
+
 const OrderResult = () => {
   ////// GLOBAL STATE //////
   const [value, setValue] = useState(1);
