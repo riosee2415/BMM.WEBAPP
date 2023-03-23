@@ -23,6 +23,12 @@ import MypageTop from "../../../components/MypageTop";
 import Link from "next/dist/client/link";
 import { Select } from "antd";
 
+const MobileList = styled(Wrapper)`
+  margin: 0 0 30px;
+  border: 1px solid ${Theme.lightGrey2_C};
+  padding: 15px;
+`;
+
 const Box = styled(Wrapper)`
   flex-direction: row;
   border-bottom: 1px solid ${Theme.lightGrey2_C};
@@ -82,6 +88,7 @@ const Index = () => {
               borderBottom={`1px solid ${Theme.lightGrey2_C}`}
               fontSize={`16px`}
               fontWeight={`600`}
+              display={width < 1100 ? `none` : `flex`}
             >
               <Wrapper width={`10%`}>주문일자</Wrapper>
               <Wrapper width={`60%`} dr={`row`}>
@@ -93,183 +100,412 @@ const Index = () => {
               <Wrapper width={`10%`}>배송비</Wrapper>
               <Wrapper width={`10%`}>상태</Wrapper>
             </Wrapper>
-            <Wrapper
-              dr={`row`}
-              ju={`flex-start`}
-              borderBottom={`1px solid ${Theme.lightGrey2_C}`}
-            >
-              <Wrapper width={`10%`} fontSize={`16px`}>
-                2022.12.21
-              </Wrapper>
-              <Wrapper width={`60%`} dr={`row`}>
-                <Box>
+            {width < 1100 ? (
+              <Wrapper>
+                <MobileList>
+                  <Wrapper dr={`row`} ju={`flex-start`} margin={`0 0 5px`}>
+                    <Text fontWeight={`600`}>리뷰 작성 완료</Text>
+                    <Text color={Theme.grey_C} margin={`0 0 0 5px`}>
+                      2022.12.21
+                    </Text>
+                  </Wrapper>
                   <Wrapper
-                    width={`60%`}
-                    borderLeft={`1px solid ${Theme.lightGrey2_C}`}
-                  >
-                    <Wrapper
-                      dr={`row`}
-                      ju={`flex-start`}
-                      fontSize={`18px`}
-                      fontWeight={`600`}
-                      padding={`0 0 0 38px`}
-                      margin={`18px 0 18px`}
-                    >
-                      <Image
-                        alt="샘플사진"
-                        src={`https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/bmm/assets/images/sample-img/review.png`}
-                        width={`64px`}
-                        height={`64px`}
-                      />
-                      <Text padding={`0 0 0 14px`}>오레오 시리즈</Text>
-                    </Wrapper>
-                  </Wrapper>
-                  <Wrapper width={`20%`} fontSize={`16px`}>
-                    1
-                  </Wrapper>
-                  <Wrapper width={`20%`} fontSize={`16px`}>
-                    28,000원
-                  </Wrapper>
-                </Box>
-              </Wrapper>
-              <Wrapper width={`10%`} fontSize={`16px`}>
-                420g
-              </Wrapper>
-              <Wrapper width={`10%`} fontSize={`16px`}>
-                4,000원
-              </Wrapper>
-              <Wrapper width={`10%`}>
-                <Wrapper fontSize={`16px`} fontWeight={`600`}>
-                  환불 신청 완료
-                </Wrapper>
-                <CommonButton
-                  width={`70px`}
-                  height={`26px`}
-                  padding={`0`}
-                  radius={`3px`}
-                  kindOf={`white`}
-                  margin={`5px 0 8px`}
-                >
-                  리뷰 작성
-                </CommonButton>
-              </Wrapper>
-            </Wrapper>
-
-            <Wrapper
-              dr={`row`}
-              ju={`flex-start`}
-              borderBottom={`1px solid ${Theme.lightGrey2_C}`}
-            >
-              <Wrapper width={`10%`} fontSize={`16px`}>
-                2022.12.21
-              </Wrapper>
-              <Wrapper
-                width={`60%`}
-                dr={`row`}
-                borderRight={`1px solid ${Theme.lightGrey2_C}`}
-              >
-                <Box>
-                  <Wrapper
-                    width={`60%`}
-                    borderLeft={`1px solid ${Theme.lightGrey2_C}`}
-                  >
-                    <Wrapper
-                      dr={`row`}
-                      ju={`flex-start`}
-                      fontSize={`18px`}
-                      fontWeight={`600`}
-                      padding={`0 0 0 38px`}
-                      margin={`18px 0 18px`}
-                    >
-                      <Image
-                        alt="샘플사진"
-                        src={`https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/bmm/assets/images/sample-img/review.png`}
-                        width={`64px`}
-                        height={`64px`}
-                      />
-                      <Text padding={`0 0 0 14px`}>오레오 시리즈</Text>
-                    </Wrapper>
-                  </Wrapper>
-                  <Wrapper width={`20%`} fontSize={`16px`}>
-                    1
-                  </Wrapper>
-                  <Wrapper width={`20%`} fontSize={`16px`}>
-                    28,000원
-                  </Wrapper>
-                </Box>
-                <Box>
-                  <Wrapper
-                    width={`60%`}
                     dr={`row`}
                     ju={`flex-start`}
-                    borderLeft={`1px solid ${Theme.lightGrey2_C}`}
+                    color={Theme.darkGrey_C}
+                    fontSize={`14px`}
+                    margin={`0 0 10px`}
                   >
+                    <Image
+                      alt="샘플사진"
+                      src={`https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/bmm/assets/images/sample-img/review.png`}
+                      width={`70px`}
+                      height={`70px`}
+                    />
                     <Wrapper
                       width={`auto`}
                       al={`flex-start`}
-                      padding={`0 0 0 38px`}
-                      margin={`18px 0 18px`}
+                      padding={`0 0 0 10px`}
+                    >
+                      <Text>오레오 시리즈 420g</Text>
+                      <Text>주문수량 : 1</Text>
+                      <Text>상품금액: 28,000원 + 4,000원</Text>
+                    </Wrapper>
+                  </Wrapper>
+                  <CommonButton
+                    width={`70px`}
+                    height={`26px`}
+                    padding={`0`}
+                    radius={`3px`}
+                    kindOf={`white`}
+                    margin={`5px 0 8px`}
+                  >
+                    리뷰 수정
+                  </CommonButton>
+                </MobileList>
+
+                <MobileList>
+                  <Wrapper dr={`row`} ju={`flex-start`} margin={`0 0 5px`}>
+                    <Text fontWeight={`600`}>배송 완료</Text>
+                    <Text color={Theme.grey_C} margin={`0 0 0 5px`}>
+                      2022.12.21
+                    </Text>
+                    <Wrapper
+                      dr={`row`}
+                      ju={`flex-start`}
+                      color={Theme.darkGrey_C}
+                      fontSize={`14px`}
+                      margin={`0 0 10px`}
+                    >
+                      <Image
+                        alt="샘플사진"
+                        src={`https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/bmm/assets/images/sample-img/review.png`}
+                        width={`70px`}
+                        height={`70px`}
+                      />
+                      <Wrapper
+                        width={`auto`}
+                        al={`flex-start`}
+                        padding={`0 0 0 10px`}
+                      >
+                        <Text>오레오 시리즈 420g</Text>
+                        <Text>주문수량 : 1</Text>
+                        <Text>상품금액: 28,000원</Text>
+                      </Wrapper>
+                    </Wrapper>
+                    <Wrapper
+                      dr={`row`}
+                      ju={`flex-start`}
+                      color={Theme.darkGrey_C}
+                      fontSize={`14px`}
+                      margin={`0 0 10px`}
                     >
                       <Image
                         alt="샘플사진"
                         src={`https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/bmm/assets/images/sample-img/related-product.png`}
-                        width={`64px`}
-                        height={`64px`}
-                        radius={`3px`}
+                        width={`70px`}
+                        height={`70px`}
                       />
+                      <Wrapper
+                        width={`auto`}
+                        al={`flex-start`}
+                        padding={`0 0 0 10px`}
+                      >
+                        <Text>랩 에센스 420g</Text>
+                        <Text>주문수량 : 1</Text>
+                        <Text>상품금액: 28,000원</Text>
+                      </Wrapper>
                     </Wrapper>
-
-                    <Wrapper
-                      width={`70%`}
-                      al={`flex-start`}
-                      padding={`0 0 0 14px`}
+                  </Wrapper>
+                  <Wrapper dr={`row`}>
+                    <CommonButton
+                      width={`70px`}
+                      height={`26px`}
+                      padding={`0`}
+                      radius={`3px`}
+                      kindOf={`white`}
+                      margin={`5px 0 8px`}
                     >
-                      <Text fontSize={`18px`} fontWeight={`600`}>
-                        랩 에센스
-                      </Text>
-                      <Text color={Theme.grey_C}>옵션 : 오레오 핑크</Text>
+                      리뷰 작성
+                    </CommonButton>
+                    <Link href={`/mypage/refond`}>
+                      <ATag>
+                        <CommonButton
+                          width={`70px`}
+                          height={`26px`}
+                          padding={`0`}
+                          radius={`3px`}
+                          kindOf={`grey`}
+                          margin={`5px 0 8px`}
+                        >
+                          리뷰 수정
+                        </CommonButton>
+                      </ATag>
+                    </Link>
+                  </Wrapper>
+                </MobileList>
+                <MobileList>
+                  <Wrapper dr={`row`} ju={`flex-start`} margin={`0 0 5px`}>
+                    <Text fontWeight={`600`}>결제 완료</Text>
+                    <Text color={Theme.grey_C} margin={`0 0 0 5px`}>
+                      2022.12.21
+                    </Text>
+                    <Wrapper
+                      dr={`row`}
+                      ju={`flex-start`}
+                      color={Theme.darkGrey_C}
+                      fontSize={`14px`}
+                      margin={`0 0 10px`}
+                    >
+                      <Image
+                        alt="샘플사진"
+                        src={`https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/bmm/assets/images/sample-img/review.png`}
+                        width={`70px`}
+                        height={`70px`}
+                      />
+                      <Wrapper
+                        width={`auto`}
+                        al={`flex-start`}
+                        padding={`0 0 0 10px`}
+                      >
+                        <Text>오레오 시리즈 420g</Text>
+                        <Text>주문수량 : 1</Text>
+                        <Text>상품금액: 28,000원</Text>
+                      </Wrapper>
                     </Wrapper>
                   </Wrapper>
-                  <Wrapper width={`20%`} fontSize={`16px`}>
-                    1
-                  </Wrapper>
-                  <Wrapper width={`20%`} fontSize={`16px`}>
-                    28,000원
-                  </Wrapper>
-                </Box>
+                  <CommonButton
+                    width={`70px`}
+                    height={`26px`}
+                    padding={`0`}
+                    radius={`3px`}
+                    kindOf={`grey`}
+                  >
+                    주문취소
+                  </CommonButton>
+                </MobileList>
               </Wrapper>
-              <Wrapper
-                width={`10%`}
-                dr={`row`}
-                fontSize={`16px`}
-                borderRight={`1px solid ${Theme.lightGrey2_C}`}
-              >
-                <Text>840g</Text>
-              </Wrapper>
-              <Wrapper
-                width={`10%`}
-                dr={`row`}
-                fontSize={`16px`}
-                borderRight={`1px solid ${Theme.lightGrey2_C}`}
-              >
-                <Text>9,000원</Text>
-              </Wrapper>
-              <Wrapper width={`10%`}>
-                <Wrapper fontSize={`16px`} fontWeight={`600`}>
-                  배송완료
-                </Wrapper>
-                <CommonButton
-                  width={`70px`}
-                  height={`26px`}
-                  padding={`0`}
-                  radius={`3px`}
-                  kindOf={`white`}
-                  margin={`5px 0 8px`}
+            ) : (
+              <>
+                <Wrapper
+                  dr={`row`}
+                  ju={`flex-start`}
+                  borderBottom={`1px solid ${Theme.lightGrey2_C}`}
                 >
-                  리뷰 작성
-                </CommonButton>
-                <Link href={`/mypage/refond`}>
-                  <ATag>
+                  <Wrapper width={`10%`} fontSize={`16px`}>
+                    2022.12.21
+                  </Wrapper>
+                  <Wrapper width={`60%`} dr={`row`}>
+                    <Box>
+                      <Wrapper
+                        width={`60%`}
+                        borderLeft={`1px solid ${Theme.lightGrey2_C}`}
+                      >
+                        <Wrapper
+                          dr={`row`}
+                          ju={`flex-start`}
+                          fontSize={`18px`}
+                          fontWeight={`600`}
+                          padding={`0 0 0 38px`}
+                          margin={`18px 0 18px`}
+                        >
+                          <Image
+                            alt="샘플사진"
+                            src={`https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/bmm/assets/images/sample-img/review.png`}
+                            width={`64px`}
+                            height={`64px`}
+                          />
+                          <Text padding={`0 0 0 14px`}>오레오 시리즈</Text>
+                        </Wrapper>
+                      </Wrapper>
+                      <Wrapper width={`20%`} fontSize={`16px`}>
+                        1
+                      </Wrapper>
+                      <Wrapper width={`20%`} fontSize={`16px`}>
+                        28,000원
+                      </Wrapper>
+                    </Box>
+                  </Wrapper>
+                  <Wrapper width={`10%`} fontSize={`16px`}>
+                    420g
+                  </Wrapper>
+                  <Wrapper width={`10%`} fontSize={`16px`}>
+                    4,000원
+                  </Wrapper>
+                  <Wrapper width={`10%`}>
+                    <Wrapper fontSize={`16px`} fontWeight={`600`}>
+                      환불 신청 완료
+                    </Wrapper>
+                    <CommonButton
+                      width={`70px`}
+                      height={`26px`}
+                      padding={`0`}
+                      radius={`3px`}
+                      kindOf={`white`}
+                      margin={`5px 0 8px`}
+                    >
+                      리뷰 작성
+                    </CommonButton>
+                  </Wrapper>
+                </Wrapper>
+
+                <Wrapper
+                  dr={`row`}
+                  ju={`flex-start`}
+                  borderBottom={`1px solid ${Theme.lightGrey2_C}`}
+                >
+                  <Wrapper width={`10%`} fontSize={`16px`}>
+                    2022.12.21
+                  </Wrapper>
+                  <Wrapper
+                    width={`60%`}
+                    dr={`row`}
+                    borderRight={`1px solid ${Theme.lightGrey2_C}`}
+                  >
+                    <Box>
+                      <Wrapper
+                        width={`60%`}
+                        borderLeft={`1px solid ${Theme.lightGrey2_C}`}
+                      >
+                        <Wrapper
+                          dr={`row`}
+                          ju={`flex-start`}
+                          fontSize={`18px`}
+                          fontWeight={`600`}
+                          padding={`0 0 0 38px`}
+                          margin={`18px 0 18px`}
+                        >
+                          <Image
+                            alt="샘플사진"
+                            src={`https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/bmm/assets/images/sample-img/review.png`}
+                            width={`64px`}
+                            height={`64px`}
+                          />
+                          <Text padding={`0 0 0 14px`}>오레오 시리즈</Text>
+                        </Wrapper>
+                      </Wrapper>
+                      <Wrapper width={`20%`} fontSize={`16px`}>
+                        1
+                      </Wrapper>
+                      <Wrapper width={`20%`} fontSize={`16px`}>
+                        28,000원
+                      </Wrapper>
+                    </Box>
+                    <Box>
+                      <Wrapper
+                        width={`60%`}
+                        dr={`row`}
+                        ju={`flex-start`}
+                        borderLeft={`1px solid ${Theme.lightGrey2_C}`}
+                      >
+                        <Wrapper
+                          width={`auto`}
+                          al={`flex-start`}
+                          padding={`0 0 0 38px`}
+                          margin={`18px 0 18px`}
+                        >
+                          <Image
+                            alt="샘플사진"
+                            src={`https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/bmm/assets/images/sample-img/related-product.png`}
+                            width={`64px`}
+                            height={`64px`}
+                            radius={`3px`}
+                          />
+                        </Wrapper>
+
+                        <Wrapper
+                          width={`70%`}
+                          al={`flex-start`}
+                          padding={`0 0 0 14px`}
+                        >
+                          <Text fontSize={`18px`} fontWeight={`600`}>
+                            랩 에센스
+                          </Text>
+                          <Text color={Theme.grey_C}>옵션 : 오레오 핑크</Text>
+                        </Wrapper>
+                      </Wrapper>
+                      <Wrapper width={`20%`} fontSize={`16px`}>
+                        1
+                      </Wrapper>
+                      <Wrapper width={`20%`} fontSize={`16px`}>
+                        28,000원
+                      </Wrapper>
+                    </Box>
+                  </Wrapper>
+                  <Wrapper
+                    width={`10%`}
+                    dr={`row`}
+                    fontSize={`16px`}
+                    borderRight={`1px solid ${Theme.lightGrey2_C}`}
+                  >
+                    <Text>840g</Text>
+                  </Wrapper>
+                  <Wrapper
+                    width={`10%`}
+                    dr={`row`}
+                    fontSize={`16px`}
+                    borderRight={`1px solid ${Theme.lightGrey2_C}`}
+                  >
+                    <Text>9,000원</Text>
+                  </Wrapper>
+                  <Wrapper width={`10%`}>
+                    <Wrapper fontSize={`16px`} fontWeight={`600`}>
+                      배송완료
+                    </Wrapper>
+                    <CommonButton
+                      width={`70px`}
+                      height={`26px`}
+                      padding={`0`}
+                      radius={`3px`}
+                      kindOf={`white`}
+                      margin={`5px 0 8px`}
+                    >
+                      리뷰 작성
+                    </CommonButton>
+                    <Link href={`/mypage/refond`}>
+                      <ATag>
+                        <CommonButton
+                          width={`70px`}
+                          height={`26px`}
+                          padding={`0`}
+                          radius={`3px`}
+                          kindOf={`grey`}
+                        >
+                          환불신청
+                        </CommonButton>
+                      </ATag>
+                    </Link>
+                  </Wrapper>
+                </Wrapper>
+                <Wrapper
+                  dr={`row`}
+                  ju={`flex-start`}
+                  borderBottom={`1px solid ${Theme.lightGrey2_C}`}
+                >
+                  <Wrapper width={`10%`} fontSize={`16px`}>
+                    2022.12.21
+                  </Wrapper>
+                  <Wrapper width={`60%`} dr={`row`}>
+                    <Box>
+                      <Wrapper
+                        width={`60%`}
+                        borderLeft={`1px solid ${Theme.lightGrey2_C}`}
+                      >
+                        <Wrapper
+                          dr={`row`}
+                          ju={`flex-start`}
+                          fontSize={`18px`}
+                          fontWeight={`600`}
+                          padding={`0 0 0 38px`}
+                          margin={`18px 0 18px`}
+                        >
+                          <Image
+                            alt="샘플사진"
+                            src={`https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/bmm/assets/images/sample-img/review.png`}
+                            width={`64px`}
+                            height={`64px`}
+                          />
+                          <Text padding={`0 0 0 14px`}>오레오 시리즈</Text>
+                        </Wrapper>
+                      </Wrapper>
+                      <Wrapper width={`20%`} fontSize={`16px`}>
+                        1
+                      </Wrapper>
+                      <Wrapper width={`20%`} fontSize={`16px`}>
+                        28,000원
+                      </Wrapper>
+                    </Box>
+                  </Wrapper>
+                  <Wrapper width={`10%`} fontSize={`16px`}>
+                    420g
+                  </Wrapper>
+                  <Wrapper width={`10%`} fontSize={`16px`}>
+                    4,000원
+                  </Wrapper>
+                  <Wrapper width={`10%`}>
+                    <Wrapper fontSize={`16px`} fontWeight={`600`}>
+                      결제완료
+                    </Wrapper>
                     <CommonButton
                       width={`70px`}
                       height={`26px`}
@@ -277,183 +513,124 @@ const Index = () => {
                       radius={`3px`}
                       kindOf={`grey`}
                     >
-                      환불신청
+                      주문취소
                     </CommonButton>
-                  </ATag>
-                </Link>
-              </Wrapper>
-            </Wrapper>
-            <Wrapper
-              dr={`row`}
-              ju={`flex-start`}
-              borderBottom={`1px solid ${Theme.lightGrey2_C}`}
-            >
-              <Wrapper width={`10%`} fontSize={`16px`}>
-                2022.12.21
-              </Wrapper>
-              <Wrapper width={`60%`} dr={`row`}>
-                <Box>
-                  <Wrapper
-                    width={`60%`}
-                    borderLeft={`1px solid ${Theme.lightGrey2_C}`}
-                  >
-                    <Wrapper
-                      dr={`row`}
-                      ju={`flex-start`}
-                      fontSize={`18px`}
-                      fontWeight={`600`}
-                      padding={`0 0 0 38px`}
-                      margin={`18px 0 18px`}
-                    >
-                      <Image
-                        alt="샘플사진"
-                        src={`https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/bmm/assets/images/sample-img/review.png`}
-                        width={`64px`}
-                        height={`64px`}
-                      />
-                      <Text padding={`0 0 0 14px`}>오레오 시리즈</Text>
-                    </Wrapper>
                   </Wrapper>
-                  <Wrapper width={`20%`} fontSize={`16px`}>
-                    1
-                  </Wrapper>
-                  <Wrapper width={`20%`} fontSize={`16px`}>
-                    28,000원
-                  </Wrapper>
-                </Box>
-              </Wrapper>
-              <Wrapper width={`10%`} fontSize={`16px`}>
-                420g
-              </Wrapper>
-              <Wrapper width={`10%`} fontSize={`16px`}>
-                4,000원
-              </Wrapper>
-              <Wrapper width={`10%`}>
-                <Wrapper fontSize={`16px`} fontWeight={`600`}>
-                  결제완료
                 </Wrapper>
-                <CommonButton
-                  width={`70px`}
-                  height={`26px`}
-                  padding={`0`}
-                  radius={`3px`}
-                  kindOf={`grey`}
+                <Wrapper
+                  dr={`row`}
+                  ju={`flex-start`}
+                  borderBottom={`1px solid ${Theme.lightGrey2_C}`}
                 >
-                  주문취소
-                </CommonButton>
-              </Wrapper>
-            </Wrapper>
-            <Wrapper
-              dr={`row`}
-              ju={`flex-start`}
-              borderBottom={`1px solid ${Theme.lightGrey2_C}`}
-            >
-              <Wrapper width={`10%`} fontSize={`16px`}>
-                2022.12.21
-              </Wrapper>
-              <Wrapper width={`60%`} dr={`row`}>
-                <Box>
-                  <Wrapper
-                    width={`60%`}
-                    borderLeft={`1px solid ${Theme.lightGrey2_C}`}
-                  >
-                    <Wrapper
-                      dr={`row`}
-                      ju={`flex-start`}
-                      fontSize={`18px`}
-                      fontWeight={`600`}
-                      padding={`0 0 0 38px`}
-                      margin={`18px 0 18px`}
-                    >
-                      <Image
-                        alt="샘플사진"
-                        src={`https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/bmm/assets/images/sample-img/review.png`}
-                        width={`64px`}
-                        height={`64px`}
-                      />
-                      <Text padding={`0 0 0 14px`}>오레오 시리즈</Text>
+                  <Wrapper width={`10%`} fontSize={`16px`}>
+                    2022.12.21
+                  </Wrapper>
+                  <Wrapper width={`60%`} dr={`row`}>
+                    <Box>
+                      <Wrapper
+                        width={`60%`}
+                        borderLeft={`1px solid ${Theme.lightGrey2_C}`}
+                      >
+                        <Wrapper
+                          dr={`row`}
+                          ju={`flex-start`}
+                          fontSize={`18px`}
+                          fontWeight={`600`}
+                          padding={`0 0 0 38px`}
+                          margin={`18px 0 18px`}
+                        >
+                          <Image
+                            alt="샘플사진"
+                            src={`https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/bmm/assets/images/sample-img/review.png`}
+                            width={`64px`}
+                            height={`64px`}
+                          />
+                          <Text padding={`0 0 0 14px`}>오레오 시리즈</Text>
+                        </Wrapper>
+                      </Wrapper>
+                      <Wrapper width={`20%`} fontSize={`16px`}>
+                        1
+                      </Wrapper>
+                      <Wrapper width={`20%`} fontSize={`16px`}>
+                        28,000원
+                      </Wrapper>
+                    </Box>
+                  </Wrapper>
+                  <Wrapper width={`10%`} fontSize={`16px`}>
+                    420g
+                  </Wrapper>
+                  <Wrapper width={`10%`} fontSize={`16px`}>
+                    4,000원
+                  </Wrapper>
+                  <Wrapper width={`10%`}>
+                    <Wrapper fontSize={`16px`} fontWeight={`600`}>
+                      배송중
                     </Wrapper>
+                    <CommonButton
+                      width={`70px`}
+                      height={`26px`}
+                      padding={`0`}
+                      radius={`3px`}
+                      kindOf={`grey`}
+                    >
+                      배송조회
+                    </CommonButton>
                   </Wrapper>
-                  <Wrapper width={`20%`} fontSize={`16px`}>
-                    1
-                  </Wrapper>
-                  <Wrapper width={`20%`} fontSize={`16px`}>
-                    28,000원
-                  </Wrapper>
-                </Box>
-              </Wrapper>
-              <Wrapper width={`10%`} fontSize={`16px`}>
-                420g
-              </Wrapper>
-              <Wrapper width={`10%`} fontSize={`16px`}>
-                4,000원
-              </Wrapper>
-              <Wrapper width={`10%`}>
-                <Wrapper fontSize={`16px`} fontWeight={`600`}>
-                  배송중
                 </Wrapper>
-                <CommonButton
-                  width={`70px`}
-                  height={`26px`}
-                  padding={`0`}
-                  radius={`3px`}
-                  kindOf={`grey`}
+                <Wrapper
+                  dr={`row`}
+                  ju={`flex-start`}
+                  borderBottom={`1px solid ${Theme.lightGrey2_C}`}
                 >
-                  배송조회
-                </CommonButton>
-              </Wrapper>
-            </Wrapper>
-            <Wrapper
-              dr={`row`}
-              ju={`flex-start`}
-              borderBottom={`1px solid ${Theme.lightGrey2_C}`}
-            >
-              <Wrapper width={`10%`} fontSize={`16px`}>
-                2022.12.21
-              </Wrapper>
-              <Wrapper width={`60%`} dr={`row`}>
-                <Box>
-                  <Wrapper
-                    width={`60%`}
-                    borderLeft={`1px solid ${Theme.lightGrey2_C}`}
-                  >
-                    <Wrapper
-                      dr={`row`}
-                      ju={`flex-start`}
-                      fontSize={`18px`}
-                      fontWeight={`600`}
-                      padding={`0 0 0 38px`}
-                      margin={`18px 0 18px`}
-                    >
-                      <Image
-                        alt="샘플사진"
-                        src={`https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/bmm/assets/images/sample-img/review.png`}
-                        width={`64px`}
-                        height={`64px`}
-                      />
-                      <Text padding={`0 0 0 14px`}>오레오 시리즈</Text>
+                  <Wrapper width={`10%`} fontSize={`16px`}>
+                    2022.12.21
+                  </Wrapper>
+                  <Wrapper width={`60%`} dr={`row`}>
+                    <Box>
+                      <Wrapper
+                        width={`60%`}
+                        borderLeft={`1px solid ${Theme.lightGrey2_C}`}
+                      >
+                        <Wrapper
+                          dr={`row`}
+                          ju={`flex-start`}
+                          fontSize={`18px`}
+                          fontWeight={`600`}
+                          padding={`0 0 0 38px`}
+                          margin={`18px 0 18px`}
+                        >
+                          <Image
+                            alt="샘플사진"
+                            src={`https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/bmm/assets/images/sample-img/review.png`}
+                            width={`64px`}
+                            height={`64px`}
+                          />
+                          <Text padding={`0 0 0 14px`}>오레오 시리즈</Text>
+                        </Wrapper>
+                      </Wrapper>
+                      <Wrapper width={`20%`} fontSize={`16px`}>
+                        1
+                      </Wrapper>
+                      <Wrapper width={`20%`} fontSize={`16px`}>
+                        28,000원
+                      </Wrapper>
+                    </Box>
+                  </Wrapper>
+                  <Wrapper width={`10%`} fontSize={`16px`}>
+                    420g
+                  </Wrapper>
+                  <Wrapper width={`10%`} fontSize={`16px`}>
+                    4,000원
+                  </Wrapper>
+                  <Wrapper width={`10%`}>
+                    <Wrapper fontSize={`16px`} fontWeight={`600`}>
+                      배송 준비 중
                     </Wrapper>
                   </Wrapper>
-                  <Wrapper width={`20%`} fontSize={`16px`}>
-                    1
-                  </Wrapper>
-                  <Wrapper width={`20%`} fontSize={`16px`}>
-                    28,000원
-                  </Wrapper>
-                </Box>
-              </Wrapper>
-              <Wrapper width={`10%`} fontSize={`16px`}>
-                420g
-              </Wrapper>
-              <Wrapper width={`10%`} fontSize={`16px`}>
-                4,000원
-              </Wrapper>
-              <Wrapper width={`10%`}>
-                <Wrapper fontSize={`16px`} fontWeight={`600`}>
-                  배송 준비 중
                 </Wrapper>
-              </Wrapper>
-            </Wrapper>
+              </>
+            )}
+
             <CustomPage />
           </RsWrapper>
         </WholeWrapper>

@@ -8,6 +8,7 @@ import { WholeWrapper } from "./commonComponents";
 import useWidth from "../hooks/useWidth";
 import QuickMenu from "./QuickMenu";
 import { useRouter } from "next/router";
+import FixedNav from "./FixedNav";
 
 const ClientLayout = ({ children }) => {
   const width = useWidth();
@@ -20,6 +21,7 @@ const ClientLayout = ({ children }) => {
       {/* content */}
       <WholeWrapper padding={width < 800 ? `107px 0 0` : `190px 0 0`}>
         {children}
+        <FixedNav />
       </WholeWrapper>
 
       {router.pathname !== `/product/[id]` && width < 800 && <QuickMenu />}
