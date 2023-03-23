@@ -30,6 +30,8 @@ const event = require("./event");
 const eventhistory = require("./eventhistory");
 const advertisebanner = require("./advertisebanner");
 const advertisebannerhistory = require("./advertisebannerhistory");
+const brand = require("./brand");
+const brandhistory = require("./brandhistory");
 
 const env = process.env.NODE_ENV || "development";
 const config = require("../config/config")[env];
@@ -73,6 +75,8 @@ db.Event = event;
 db.EventHistory = eventhistory;
 db.AdvertiseBanner = advertisebanner;
 db.AdvertiseBannerHistory = advertisebannerhistory;
+db.Brand = brand;
+db.BrandHistory = brandhistory;
 
 Object.keys(db).forEach((modelName) => {
   db[modelName].init(sequelize);
