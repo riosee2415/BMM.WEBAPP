@@ -2,7 +2,17 @@ import React, { useCallback, useEffect, useRef, useState } from "react";
 import AdminLayout from "../../../components/AdminLayout";
 import styled from "styled-components";
 import { useDispatch, useSelector } from "react-redux";
-import { Button, Form, Input, Popconfirm, Popover, Table, message } from "antd";
+import {
+  Button,
+  Form,
+  Input,
+  Popconfirm,
+  Popover,
+  Table,
+  message,
+  Image,
+  DatePicker,
+} from "antd";
 import { useRouter, withRouter } from "next/router";
 import wrapper from "../../../store/configureStore";
 import { END } from "redux-saga";
@@ -34,7 +44,13 @@ import {
 import {
   EVENT_ADMIN_LIST_REQUEST,
   EVENT_CREATE_REQUEST,
+  EVENT_DELETE_REQUEST,
+  EVENT_IMAGE_RESET,
+  EVENT_UPDATE_REQUEST,
+  EVENT_UPLOAD1_REQUEST,
+  EVENT_UPLOAD2_REQUEST,
 } from "../../../reducers/event";
+import moment from "moment";
 
 const InfoTitle = styled.div`
   font-size: 19px;
@@ -176,9 +192,64 @@ const Event = ({}) => {
     }
   }, [st_eventCreateDone, st_eventCreateError]);
   // ********************** 이벤트 수정 후처리 *************************
+  useEffect(() => {
+    if (st_eventUpdateDone) {
+      dispatch({
+        type: EVENT_ADMIN_LIST_REQUEST,
+        data: {
+          searchTitle: eventTitle,
+        },
+      });
+
+      return message.success("이벤트가 수정되었습니다.");
+    }
+    if (st_eventUpdateError) {
+      return message.error(st_eventUpdateError);
+    }
+  }, [st_eventUpdateDone, st_eventUpdateError]);
   // ********************** 이벤트 삭제 후처리 *************************
+  useEffect(() => {
+    if (st_eventDeleteDone) {
+      setCurrentData(null);
+
+      dispatch({
+        type: EVENT_ADMIN_LIST_REQUEST,
+        data: {
+          searchTitle: eventTitle,
+        },
+      });
+
+      return message.success("이벤트가 삭제되었습니다.");
+    }
+    if (st_eventDeleteError) {
+      return message.error(st_eventDeleteError);
+    }
+  }, [st_eventDeleteDone, st_eventDeleteError]);
+
   // ********************** 이벤트 이미지1 변경 후처리 *************************
+  useEffect(() => {
+    if (st_eventUpload1Done) {
+      return message.success(
+        "썸네일이 업로드되었습니다. 정보 업데이트 버튼을 눌러 적용시켜주세요."
+      );
+    }
+    if (st_eventUpload1Error) {
+      return message.error(st_eventUpload1Error);
+    }
+  }, [st_eventUpload1Done, st_eventUpload1Error]);
+
   // ********************** 이벤트 이미지2 변경 후처리 *************************
+
+  useEffect(() => {
+    if (st_eventUpload2Done) {
+      return message.success(
+        "내용이미지가 업로드되었습니다. 정보 업데이트 버튼을 눌러 적용시켜주세요."
+      );
+    }
+    if (st_eventUpload2Error) {
+      return message.error(st_eventUpload2Error);
+    }
+  }, [st_eventUpload2Done, st_eventUpload2Error]);
 
   ////// HANDLER //////
 
@@ -198,10 +269,15 @@ const Event = ({}) => {
     (record) => {
       setCurrentData(record);
 
+      dispatch({
+        type: EVENT_IMAGE_RESET,
+      });
+
       infoForm.setFieldsValue({
         title: record.title,
-        typeId: record.NoticeTypeId,
         content: record.content,
+        startDate: moment(record.startDate),
+        endDate: moment(record.endDate),
         hit: record.hit,
         createdAt: record.viewCreatedAt,
         updatedAt: record.viewUpdatedAt,
@@ -211,9 +287,79 @@ const Event = ({}) => {
     [currentData, infoForm]
   );
 
+  const clickImg1Upload = useCallback(() => {
+    img1Ref.current.click();
+  }, [img1Ref.current]);
+
+  const onChangeImg1 = useCallback((e) => {
+    const formData = new FormData();
+
+    [].forEach.call(e.target.files, (file) => {
+      formData.append("image", file);
+    });
+
+    if (e.target.files.length < 1) {
+      return;
+    }
+
+    dispatch({
+      type: EVENT_UPLOAD1_REQUEST,
+      data: formData,
+    });
+  });
+
+  const clickImg2Upload = useCallback(() => {
+    img2Ref.current.click();
+  }, [img2Ref.current]);
+
+  const onChangeImg2 = useCallback((e) => {
+    const formData = new FormData();
+
+    [].forEach.call(e.target.files, (file) => {
+      formData.append("image", file);
+    });
+
+    if (e.target.files.length < 1) {
+      return;
+    }
+
+    dispatch({
+      type: EVENT_UPLOAD2_REQUEST,
+      data: formData,
+    });
+  });
+
   const createHandler = useCallback(() => {
     dispatch({
       type: EVENT_CREATE_REQUEST,
+    });
+  }, []);
+
+  const updateHandler = useCallback(
+    (data) => {
+      dispatch({
+        type: EVENT_UPDATE_REQUEST,
+        data: {
+          id: currentData.id,
+          thumbnail: eventPath1 ? eventPath1 : currentData.thumbnail,
+          imagePath: eventPath2 ? eventPath2 : currentData.imagePath,
+          title: data.title,
+          content: data.content,
+          startDate: moment(data.startDate).format("YYYY-MM-DD"),
+          endDate: moment(data.endDate).format("YYYY-MM-DD"),
+        },
+      });
+    },
+    [currentData, eventPath1, eventPath2]
+  );
+
+  const deleteHandler = useCallback((data) => {
+    dispatch({
+      type: EVENT_DELETE_REQUEST,
+      data: {
+        id: data.id,
+        title: data.title,
+      },
     });
   }, []);
 
@@ -227,10 +373,20 @@ const Event = ({}) => {
       dataIndex: "num",
     },
     {
-      title: "이미지 명칭",
+      title: "썸네일",
+      render: (data) => (
+        <Image style={{ width: `100px` }} src={data.thumbnail} />
+      ),
+    },
+    {
+      title: "이벤트제목",
       dataIndex: "title",
     },
 
+    {
+      title: "이벤트 기간",
+      dataIndex: "viewEventDate",
+    },
     {
       title: "생성일",
       dataIndex: "viewCreatedAt",
@@ -253,7 +409,7 @@ const Event = ({}) => {
       render: (data) => (
         <Popconfirm
           title="정말 삭제하시겠습니까?"
-          onConfirm={() => {}}
+          onConfirm={() => deleteHandler(data)}
           okText="삭제"
           cancelText="취소"
         >
@@ -372,6 +528,74 @@ const Event = ({}) => {
               <Wrapper margin={`0px 0px 5px 0px`}>
                 <InfoTitle>
                   <CheckOutlined />
+                  이벤트 썸네일 및 내용이미지 정보
+                </InfoTitle>
+              </Wrapper>
+
+              <Wrapper dr={`row`} ju={`space-around`} margin={`30px 0`}>
+                <Wrapper width={`300px`}>
+                  <Image
+                    width={`100%`}
+                    height={`150px`}
+                    src={eventPath1 ? eventPath1 : currentData.thumbnail}
+                    alt={`image`}
+                  />
+
+                  <input
+                    hidden
+                    type={`file`}
+                    ref={img1Ref}
+                    accept={`.jpg, .png`}
+                    onChange={onChangeImg1}
+                  />
+                  <Button
+                    loading={st_eventUpload1Loading}
+                    style={{ width: `100%`, marginTop: `5px` }}
+                    size="small"
+                    type="primary"
+                    onClick={clickImg1Upload}
+                  >
+                    이벤트 썸네일 업로드
+                  </Button>
+                </Wrapper>
+
+                <Wrapper width={`300px`}>
+                  <Image
+                    width={`100%`}
+                    height={`400px`}
+                    src={eventPath2 ? eventPath2 : currentData.imagePath}
+                    alt={`image`}
+                  />
+
+                  <input
+                    hidden
+                    type={`file`}
+                    ref={img2Ref}
+                    accept={`.jpg, .png`}
+                    onChange={onChangeImg2}
+                  />
+                  <Button
+                    loading={st_eventUpload2Loading}
+                    style={{ width: `100%`, marginTop: `5px` }}
+                    size="small"
+                    type="primary"
+                    onClick={clickImg2Upload}
+                  >
+                    이벤트 내용이미지 업로드
+                  </Button>
+                </Wrapper>
+              </Wrapper>
+
+              <Wrapper
+                width="100%"
+                height="1px"
+                bgColor={Theme.lightGrey_C}
+                margin={`30px 0px`}
+              ></Wrapper>
+
+              <Wrapper margin={`0px 0px 5px 0px`}>
+                <InfoTitle>
+                  <CheckOutlined />
                   이벤트 기본정보
                 </InfoTitle>
               </Wrapper>
@@ -381,6 +605,7 @@ const Event = ({}) => {
                 style={{ width: `100%` }}
                 labelCol={{ span: 2 }}
                 wrapperCol={{ span: 22 }}
+                onFinish={updateHandler}
               >
                 <Form.Item
                   label="제목"
@@ -400,6 +625,32 @@ const Event = ({}) => {
                   ]}
                 >
                   <Input.TextArea rows={10} />
+                </Form.Item>
+
+                <Form.Item
+                  label="시작일"
+                  name="startDate"
+                  rules={[
+                    {
+                      required: true,
+                      message: "시작일은 필수 선택사항 입니다.",
+                    },
+                  ]}
+                >
+                  <DatePicker size="small" />
+                </Form.Item>
+
+                <Form.Item
+                  label="마감일"
+                  name="endDate"
+                  rules={[
+                    {
+                      required: true,
+                      message: "마감일은 필수 선택사항 입니다.",
+                    },
+                  ]}
+                >
+                  <DatePicker size="small" />
                 </Form.Item>
 
                 <Form.Item label="조회수" name="hit">

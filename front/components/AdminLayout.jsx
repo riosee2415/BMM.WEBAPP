@@ -146,6 +146,11 @@ export const items = {
       link: "/admin/history/notice",
       useYn: true,
     },
+    {
+      name: "이벤트이력관리",
+      link: "/admin/history/event",
+      useYn: true,
+    },
   ],
   서버관리: [],
 };
