@@ -57,7 +57,7 @@ const Detail = () => {
       </Head>
 
       <ClientLayout>
-        <WholeWrapper padding={`95px 0 100px`}>
+        <WholeWrapper padding={width < 900 ? `40px 0 100px` : `95px 0 100px`}>
           <RsWrapper>
             <Wrapper width={width < 1100 ? `100%` : `65%`}>
               <Wrapper dr={`row`} ju={`flex-start`} margin={`0 0 30px`}>

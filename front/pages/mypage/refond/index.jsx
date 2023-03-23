@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import React from "react";
 import ClientLayout from "../../../components/ClientLayout";
 import Theme from "../../../components/Theme";
 import Head from "next/head";
@@ -12,7 +12,6 @@ import {
   WholeWrapper,
   Wrapper,
   Text,
-  CustomPage,
   Image,
   CommonButton,
   SpanText,
@@ -25,6 +24,7 @@ import MypageTop from "../../../components/MypageTop";
 import { CloseOutlined, PlusOutlined } from "@ant-design/icons";
 import { Select } from "antd";
 import Link from "next/dist/client/link";
+
 const List = styled(Wrapper)`
   height: 100px;
   flex-direction: row;
@@ -38,6 +38,7 @@ const MobileList = styled(Wrapper)`
   border: 1px solid ${Theme.lightGrey2_C};
   padding: 15px;
 `;
+
 const PictureWrapper = styled(Wrapper)`
   width: 111px;
   height: 111px;
@@ -103,7 +104,7 @@ const Index = () => {
               dr={`row`}
               ju={`space-between`}
               fontSize={width < 1100 ? `26px` : `30px`}
-              fontWeight={`600`}
+              fontWeight={`bold`}
               margin={width < 700 ? `0 0 15px` : `0 0 30px`}
             >
               <Text>환불 신청하기</Text>
@@ -244,8 +245,8 @@ const Index = () => {
               <Wrapper
                 dr={`row`}
                 ju={`flex-start`}
-                padding={`16px 0`}
                 borderBottom={`1px solid ${Theme.lightGrey5_C}`}
+                padding={`16px 0`}
               >
                 <Text
                   width={width < 1100 ? `100%` : `20%`}

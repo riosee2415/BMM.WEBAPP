@@ -21,6 +21,7 @@ import styled from "styled-components";
 import Link from "next/dist/client/link";
 import { Radio } from "antd";
 import MypageTop from "../../../components/MypageTop";
+
 const List = styled(Wrapper)`
   height: 100px;
   flex-direction: row;
@@ -30,10 +31,11 @@ const List = styled(Wrapper)`
 `;
 
 const MobileList = styled(Wrapper)`
-  margin: 0 0 60px;
+  margin: 0 0 40px;
   border: 1px solid ${Theme.lightGrey2_C};
   padding: 15px;
 `;
+
 const BoxText = styled(Wrapper)`
   flex-direction: row;
   justify-content: space-between;
@@ -47,6 +49,7 @@ const SubText = styled(Wrapper)`
   color: ${Theme.lightGrey_C};
   margin: ${(props) => props.margin || `0 0 8px`};
 `;
+
 const Index = () => {
   ////// GLOBAL STATE //////
   ////// HOOKS //////
@@ -65,9 +68,18 @@ const Index = () => {
       </Head>
 
       <ClientLayout>
-        <WholeWrapper padding={`95px 0`}>
+        <WholeWrapper padding={width < 900 ? `40px 0 0` : `95px 0`}>
           <RsWrapper>
             <MypageTop />
+            <Wrapper
+              dr={`row`}
+              ju={`space-between`}
+              fontSize={width < 700 ? `26px` : `30px`}
+              fontWeight={`bold`}
+              margin={`0 0 30px`}
+            >
+              <Text>주문상세 정보</Text>
+            </Wrapper>
             <Wrapper
               height={`54px`}
               dr={`row`}
@@ -88,16 +100,6 @@ const Index = () => {
               <Wrapper width={`10%`}>상태</Wrapper>
             </Wrapper>
 
-
-            <Wrapper
-              dr={`row`}
-              ju={`space-between`}
-              fontSize={width < 700 ? `26px` : `30px`}
-              fontWeight={`600`}
-              margin={`0 0 30px`}
-            >
-              <Text>주문상세 정보</Text>
-            </Wrapper>
             {width < 1100 ? (
               <Wrapper>
                 <MobileList>
@@ -225,7 +227,7 @@ const Index = () => {
               <Wrapper
                 dr={`row`}
                 ju={`flex-start`}
-                margin={width < 1100 ? `20px 0 20px` : `0 0 20px`}
+                margin={width < 1100 ? `0 0 20px` : `0 0 20px`}
               >
                 <Text
                   fontSize={width < 800 ? `20px` : `24px`}
@@ -257,13 +259,12 @@ const Index = () => {
                   ju={`flex-start`}
                   borderTop={`1px solid ${Theme.basicTheme_C}`}
                   borderBottom={`1px solid ${Theme.lightGrey5_C}`}
-                  margin={`0 0 16px`}
+                  padding={`16px 0`}
                 >
                   <Text
                     width={width < 800 ? `30%` : `20%`}
                     lineHeight={`46px`}
                     fontSize={`16px`}
-                    margin={width < 1100 ? `16px 0 0` : `16px 0 16px`}
                   >
                     수령인 이름<SpanText color={Theme.red_C}>*</SpanText>
                   </Text>
@@ -274,7 +275,6 @@ const Index = () => {
                     bgColor={Theme.lightGrey3_C}
                     al={`flex-start`}
                     padding={`0 10px`}
-                    margin={`16px 0 16px`}
                   >
                     <Text color={Theme.grey_C}>김똑진</Text>
                   </Wrapper>
@@ -283,12 +283,12 @@ const Index = () => {
                   dr={`row`}
                   ju={`flex-start`}
                   borderBottom={`1px solid ${Theme.lightGrey5_C}`}
+                  padding={`16px 0`}
                 >
                   <Text
                     width={width < 800 ? `35%` : `20%`}
                     lineHeight={`46px`}
                     fontSize={`16px`}
-                    margin={`0 0 16px`}
                   >
                     수령인 영어이름<SpanText color={Theme.red_C}>*</SpanText>
                   </Text>
@@ -299,7 +299,6 @@ const Index = () => {
                     bgColor={Theme.lightGrey3_C}
                     al={`flex-start`}
                     padding={`0 10px`}
-                    margin={`0 0 16px`}
                   >
                     <Text color={Theme.grey_C}>Kim mine</Text>
                   </Wrapper>
@@ -308,7 +307,7 @@ const Index = () => {
                   dr={`row`}
                   ju={`flex-start`}
                   borderBottom={`1px solid ${Theme.lightGrey5_C}`}
-                  margin={`0 0 16px`}
+                  padding={`16px 0`}
                 >
                   <Wrapper
                     width={width < 800 ? `45%` : `20%`}
@@ -325,16 +324,12 @@ const Index = () => {
                       border={`1px solid ${Theme.lightGrey2_C}`}
                       bgColor={Theme.lightGrey3_C}
                       al={`flex-start`}
+                      margin={`0 0 16px`}
                       padding={`0 10px`}
-                      margin={`16px 0 0`}
                     >
                       <Text color={Theme.grey_C}>P123456789123</Text>
                     </Wrapper>
-                    <Wrapper
-                      al={`flex-start`}
-                      color={Theme.red_C}
-                      margin={`16px 0 16px`}
-                    >
+                    <Wrapper al={`flex-start`} color={Theme.red_C}>
                       <Text>
                         * 반드시
                         <SpanText fontWeight={`600`}>
@@ -357,13 +352,12 @@ const Index = () => {
                   dr={`row`}
                   ju={`flex-start`}
                   borderBottom={`1px solid ${Theme.lightGrey5_C}`}
-                  margin={`0 0 16px`}
+                  padding={`16px 0`}
                 >
                   <Text
                     width={width < 800 ? `45%` : `20%`}
                     lineHeight={`46px`}
                     fontSize={`16px`}
-                    margin={`0 0 16px`}
                   >
                     이메일<SpanText color={Theme.red_C}>*</SpanText>
                   </Text>
@@ -374,7 +368,6 @@ const Index = () => {
                     bgColor={Theme.lightGrey3_C}
                     al={`flex-start`}
                     padding={`0 10px`}
-                    margin={`0 0 16px`}
                   >
                     <Text color={Theme.grey_C}>mine01@gmail.com</Text>
                   </Wrapper>
@@ -383,13 +376,12 @@ const Index = () => {
                   dr={`row`}
                   ju={`flex-start`}
                   borderBottom={`1px solid ${Theme.lightGrey5_C}`}
-                  margin={`0 0 16px`}
+                  padding={`16px 0`}
                 >
                   <Text
                     width={width < 800 ? `45%` : `20%`}
                     lineHeight={`46px`}
                     fontSize={`16px`}
-                    margin={`0 0 16px`}
                   >
                     연락처<SpanText color={Theme.red_C}>*</SpanText>
                   </Text>
@@ -400,7 +392,6 @@ const Index = () => {
                     bgColor={Theme.lightGrey3_C}
                     al={`flex-start`}
                     padding={`0 10px`}
-                    margin={`0 0 16px`}
                   >
                     <Text color={Theme.grey_C}>010-0000-0000</Text>
                   </Wrapper>
@@ -408,8 +399,9 @@ const Index = () => {
                 <Wrapper
                   dr={`row`}
                   ju={`flex-start`}
+                  al={`flex-start`}
                   borderBottom={`1px solid ${Theme.lightGrey5_C}`}
-                  margin={`0 0 16px`}
+                  padding={`16px 0`}
                 >
                   <Wrapper
                     width={width < 800 ? `45%` : `20%`}
@@ -448,7 +440,6 @@ const Index = () => {
                       bgColor={Theme.lightGrey3_C}
                       al={`flex-start`}
                       padding={`0 10px`}
-                      margin={`0 0 16px`}
                     >
                       <Text color={Theme.grey_C}>1607호</Text>
                     </Wrapper>
@@ -458,6 +449,7 @@ const Index = () => {
                   dr={`row`}
                   ju={`flex-start`}
                   borderBottom={`1px solid ${Theme.lightGrey5_C}`}
+                  padding={`16px 0`}
                 >
                   <Wrapper
                     width={width < 800 ? `45%` : `20%`}
@@ -485,7 +477,6 @@ const Index = () => {
                       bgColor={Theme.lightGrey3_C}
                       al={`flex-start`}
                       padding={`0 10px`}
-                      margin={`0 0 16px`}
                     >
                       <Text color={Theme.grey_C}>
                         부재 시 연락 부탁드립니다.
@@ -506,13 +497,12 @@ const Index = () => {
                   ju={`flex-start`}
                   borderTop={`1px solid ${Theme.basicTheme_C}`}
                   borderBottom={`1px solid ${Theme.lightGrey5_C}`}
-                  margin={`0 0 16px`}
+                  padding={`16px 0`}
                 >
                   <Text
                     width={width < 1100 ? `30%` : `20%`}
                     lineHeight={`46px`}
                     fontSize={`16px`}
-                    margin={width < 1100 ? `16px 0 0` : `16px 0 16px`}
                   >
                     쿠폰
                   </Text>
@@ -523,7 +513,6 @@ const Index = () => {
                     bgColor={Theme.lightGrey3_C}
                     al={`flex-start`}
                     padding={`0 10px`}
-                    margin={`16px 0 16px`}
                   >
                     <Text color={Theme.grey_C}>
                       회원가입 / ~22.12.30 / 만 원 이상 / 1,000원 할인
@@ -534,12 +523,12 @@ const Index = () => {
                   dr={`row`}
                   ju={`flex-start`}
                   borderBottom={`1px solid ${Theme.lightGrey5_C}`}
+                  padding={`16px 0`}
                 >
                   <Text
                     width={width < 1100 ? `35%` : `20%`}
                     lineHeight={`46px`}
                     fontSize={`16px`}
-                    margin={`0 0 16px`}
                   >
                     포인트
                   </Text>
@@ -550,7 +539,6 @@ const Index = () => {
                     bgColor={Theme.lightGrey3_C}
                     al={`flex-start`}
                     padding={`0 10px`}
-                    margin={`0 0 16px`}
                   >
                     <Text color={Theme.grey_C}>2,000P</Text>
                   </Wrapper>
@@ -567,13 +555,12 @@ const Index = () => {
                   dr={`row`}
                   ju={`flex-start`}
                   borderTop={`1px solid ${Theme.basicTheme_C}`}
-                  margin={`0 0 16px`}
+                  padding={`16px 0`}
                 >
                   <Text
                     width={width < 800 ? `30%` : `20%`}
                     lineHeight={`46px`}
                     fontSize={`16px`}
-                    margin={width < 1100 ? `10px 0 0` : `16px 0 16px`}
                   >
                     결제수단
                   </Text>
@@ -581,7 +568,7 @@ const Index = () => {
                     width={width < 800 ? `100%` : `45%`}
                     fontSize={`16px`}
                   >
-                    <Wrapper al={`flex-start`} margin={`30px 0 16px`}>
+                    <Wrapper al={`flex-start`} margin={`14px 0 16px`}>
                       <Radio disabled={true} defaultChecked={true}>
                         <Text color={Theme.black_C} fontSize={`16px`}>
                           신용카드

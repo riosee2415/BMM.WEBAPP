@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import React from "react";
 import ClientLayout from "../../../components/ClientLayout";
 import Theme from "../../../components/Theme";
 import Head from "next/head";
@@ -57,8 +57,8 @@ const Index = () => {
               dr={`row`}
               ju={`space-between`}
               fontSize={width < 700 ? `26px` : `30px`}
-              fontWeight={`600`}
-              margin={`0 0 30px`}
+              fontWeight={`bold`}
+              margin={width < 700 ? `0 0 15px` : `0 0 30px`}
             >
               <Text>주문 / 배송 조회</Text>
               <CustomSelect

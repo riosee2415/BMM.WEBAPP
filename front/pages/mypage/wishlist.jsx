@@ -11,75 +11,44 @@ import {
   Image,
   ProductWrapper,
   RsWrapper,
-  SpanText,
   SquareBox,
   Text,
   WholeWrapper,
   Wrapper,
 } from "../../components/commonComponents";
 import Theme from "../../components/Theme";
-import { Select } from "antd";
 import styled from "styled-components";
 
-const CustomSelect = styled(Wrapper)`
-  width: ${(props) => props.width || `145px`};
-  height: ${(props) => props.height || `34px`};
-
-  .ant-select {
-    width: 100%;
-  }
-
-  .ant-select-single:not(.ant-select-customize-input) .ant-select-selector,
-  .ant-select-single:not(.ant-select-customize-input)
-    .ant-select-selector
-    .ant-select-selection-search-input {
-    width: 100%;
-    height: ${(props) => props.height || `34px`};
-    border: none;
-    border-bottom: 1px solid ${(props) => props.theme.lightGrey2_C};
-  }
-
-  .ant-select-single .ant-select-selector .ant-select-selection-item,
-  .ant-select-single .ant-select-selector .ant-select-selection-placeholder {
-    width: 100%;
-    line-height: ${(props) => props.height || `34px`};
-  }
-
-  .ant-select-selector {
-    align-items: center !important;
-  }
-`;
-
-
 const DBtn = styled(Wrapper)`
-width: 10%;
-height: 33px;
-font-size: 18px;
-font-weight: 600;
-margin: 0 5px 0 0;
-border: 1px solid ${Theme.lightGrey3_C};
-border-radius: 5%;
-background-color: ${Theme.lightGrey3_C};
-color: ${Theme.grey_C};
+  width: 10%;
+  height: 33px;
+  font-size: 18px;
+  font-weight: 600;
+  margin: 0 5px 0 0;
+  border: 1px solid ${Theme.lightGrey3_C};
+  border-radius: 5%;
+  background-color: ${Theme.lightGrey3_C};
+  color: ${Theme.grey_C};
 
-cursor: pointer;
+  cursor: pointer;
 
-&:hover {
+  &:hover {
     transition: 0.2s;
     background-color: ${Theme.lightGrey2_C};
-}
+  }
 
- @media (max-width: 800px) {
+  @media (max-width: 800px) {
     width: 35%;
     font-size: 14px;
     margin: 0;
- }
+  }
 `;
 
 const Index = () => {
   ////// GLOBAL STATE //////
   ////// HOOKS //////
   const width = useWidth();
+
   ////// REDUX //////
   ////// USEEFFECT //////
   ////// TOGGLE //////
@@ -147,7 +116,7 @@ const Index = () => {
           <RsWrapper>
             <Wrapper dr={`row`} ju={`space-between`} margin={`0 0 30px`}>
               <Text
-                fontSize={width < 800 ? `22px` : `34px`}
+                fontSize={width < 800 ? `22px` : `30px`}
                 fontWeight={`bold`}
               >
                 찜목록

@@ -34,30 +34,6 @@ const DetailText = styled(Wrapper)`
   }
 `;
 
-const MypageBox = styled(Wrapper)`
-  position: relative;
-  width: 25%;
-  height: 100%;
-
-  &:before {
-    content: "";
-    width: 1px;
-    height: 60px;
-    background: ${Theme.lightGrey2_C};
-    position: absolute;
-    right: 0;
-    top: 50%;
-    margin: -30px 0 0;
-  }
-
-  &:first-child,
-  &:last-child {
-    &:before {
-      display: none;
-    }
-  }
-`;
-
 const Index = () => {
   ////// GLOBAL STATE //////
 

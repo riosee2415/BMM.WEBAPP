@@ -402,13 +402,13 @@ const Review = () => {
                     </Text>
                     <Text>첨부하기</Text>
                   </PictureWrapper>
-                  <PictureWrapper margin={`10px 0 0`}>
+                  <PictureWrapper margin={width < 700 ? `10px 0 0` : `0`}>
                     <Text fontSize={width < 700 ? `14px` : `20px`}>
                       <PlusOutlined />
                     </Text>
                     <Text>첨부하기</Text>
                   </PictureWrapper>
-                  <PictureWrapper margin={`10px 0 0`}>
+                  <PictureWrapper margin={width < 700 ? `10px 0 0` : `0`}>
                     <Text fontSize={width < 700 ? `14px` : `20px`}>
                       <PlusOutlined />
                     </Text>

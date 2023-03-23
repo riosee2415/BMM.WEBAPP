@@ -87,8 +87,8 @@ const Index = () => {
               dr={`row`}
               ju={`space-between`}
               fontSize={width < 1100 ? `26px` : `30px`}
-              fontWeight={`600`}
-              margin={`0 0 30px`}
+              fontWeight={`bold`}
+              margin={width < 700 ? `0 0 15px` : `0 0 30px`}
             >
               <Text>환불 신청내역</Text>
             </Wrapper>
@@ -116,7 +116,7 @@ const Index = () => {
               <Wrapper>
                 <MobileList>
                   <Wrapper dr={`row`} ju={`flex-start`} margin={`0 0 5px`}>
-                    <Text fontWeight={`600`}>배송 완료</Text>
+                    <Text fontWeight={`600`}>환불 신청 완료</Text>
                     <Text color={Theme.grey_C} margin={`0 0 0 5px`}>
                       2022.12.21
                     </Text>
@@ -144,17 +144,6 @@ const Index = () => {
                       <Text>상품금액: 28,000원 + 4,000원</Text>
                     </Wrapper>
                   </Wrapper>
-
-                  <CommonButton
-                    width={`49%`}
-                    height={`26px`}
-                    padding={`0`}
-                    radius={`3px`}
-                    kindOf={`white`}
-                    margin={`5px 0 8px`}
-                  >
-                    리뷰 작성
-                  </CommonButton>
                 </MobileList>
               </Wrapper>
             ) : (
@@ -191,18 +180,8 @@ const Index = () => {
                   </Wrapper>
                   <Wrapper width={`10%`}>
                     <Wrapper fontSize={`16px`} fontWeight={`600`}>
-                      배송완료
+                      환불 신청 완료
                     </Wrapper>
-                    <CommonButton
-                      width={`70px`}
-                      height={`26px`}
-                      padding={`0`}
-                      radius={`3px`}
-                      kindOf={`white`}
-                      margin={`5px 0 8px`}
-                    >
-                      리뷰 작성
-                    </CommonButton>
                   </Wrapper>
                 </List>
               </>
@@ -216,7 +195,7 @@ const Index = () => {
                 <Text
                   fontSize={width < 1100 ? `20px` : `24px`}
                   fontWeight={`600`}
-                  margin={`15px 0 20px`}
+                  margin={width < 1100 ? `20px 0 20px` : `15px 0 20px`}
                 >
                   환불 주문서
                 </Text>

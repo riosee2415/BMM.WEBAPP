@@ -12,7 +12,6 @@ import {
   WholeWrapper,
   Wrapper,
   Text,
-  ATag,
   SpanText,
 } from "../../../components/commonComponents";
 import styled from "styled-components";

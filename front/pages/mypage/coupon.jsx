@@ -25,7 +25,6 @@ const List = styled(Wrapper)`
   height: 60px;
   flex-direction: row;
   border-bottom: 1px solid ${Theme.lightGrey2_C};
-  font-size: 16px;
 `;
 
 const MobileList = styled(Wrapper)`
@@ -79,8 +78,8 @@ const CheckBtn = styled.button`
   transition: 0.2s;
 
   &:hover {
-    background: ${(props) => props.theme.lightGrey2_C};
-    color: ${(props) => props.theme.darkGrey_C};
+    background: ${(props) => props.theme.basicTheme_C};
+    color: ${(props) => props.theme.black_C};
   }
 
   @media (max-width: 700px) {
@@ -112,7 +111,7 @@ const Coupon = () => {
       </Head>
 
       <ClientLayout>
-        <WholeWrapper padding={`95px 0 0`}>
+        <WholeWrapper padding={width < 900 ? `40px 0 0` : `95px 0 0`}>
           <RsWrapper>
             <MypageTop />
             <Wrapper
@@ -148,11 +147,13 @@ const Coupon = () => {
               fontWeight={`600`}
               display={width < 800 ? `none` : `flex`}
             >
-              <Wrapper width={`10%`}>번호</Wrapper>
-              <Wrapper width={`45%`}>쿠폰명</Wrapper>
-              <Wrapper width={`15%`}>사용 기간</Wrapper>
-              <Wrapper width={`15%`}>조건 금액</Wrapper>
-              <Wrapper width={`15%`}>할인 금액</Wrapper>
+              <Wrapper width={`127px`}>번호</Wrapper>
+              <Wrapper width={`calc(100% - 127px - 192px - 192px - 193px)`}>
+                쿠폰명
+              </Wrapper>
+              <Wrapper width={`192px`}>사용 기간</Wrapper>
+              <Wrapper width={`192px`}>조건 금액</Wrapper>
+              <Wrapper width={`193px`}>할인 금액</Wrapper>
             </Wrapper>
             {width < 800 ? (
               <Wrapper>
@@ -173,19 +174,24 @@ const Coupon = () => {
               </Wrapper>
             ) : (
               <List>
-                <Wrapper width={`10%`} color={Theme.grey_C}>
+                <Wrapper width={`127px`} color={Theme.grey_C}>
                   10
                 </Wrapper>
-                <Wrapper width={`45%`} padding={`0 50px`} al={`flex-start`}>
+                <Wrapper
+                  width={`calc(100% - 127px - 192px - 192px - 193px)`}
+                  fontSize={`18px`}
+                  padding={`0 50px`}
+                  al={`flex-start`}
+                >
                   쿠폰 번호 : AB542354
                 </Wrapper>
-                <Wrapper width={`15%`} color={Theme.grey_C}>
+                <Wrapper width={`192px`} color={Theme.grey_C}>
                   2022.12.01 ~ 2022.01.31
                 </Wrapper>
-                <Wrapper width={`15%`} color={Theme.grey_C}>
+                <Wrapper width={`192px`} color={Theme.grey_C}>
                   최소 20,000원 이상 구매
                 </Wrapper>
-                <Wrapper width={`15%`} fontSize={`16px`} fontWeight={`600`}>
+                <Wrapper width={`193px`} fontSize={`16px`} fontWeight={`600`}>
                   2,000원
                 </Wrapper>
               </List>

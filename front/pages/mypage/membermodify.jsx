@@ -124,14 +124,19 @@ const MemberModify = () => {
               </Text>
 
               <SignupLabel>아이디</SignupLabel>
-
-              <TextInput
+              <Wrapper
                 width={`100%`}
                 height={`46px`}
-                type="text"
+                al={`flex-start`}
+                border={`1px solid ${Theme.lightGrey2_C}`}
+                bgColor={Theme.lightGrey3_C}
+                color={Theme.grey_C}
                 margin={`0 0 20px`}
-                placeholder="아이디"
-              />
+                padding={`0 10px`}
+              >
+                아이디
+              </Wrapper>
+
               <SignupLabel>비밀번호 확인</SignupLabel>
               <TextInput
                 width={`100%`}

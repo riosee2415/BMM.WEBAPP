@@ -82,15 +82,6 @@ const Index = () => {
       <ClientLayout>
         <WholeWrapper padding={width < 900 ? `40px 0 80px` : `95px 0`}>
           <RsWrapper>
-            {/* <Wrapper
-              dr={`row`}
-              ju={`space-between`}
-              fontSize={width < 700 ? `26px` : `30px`}
-              fontWeight={`600`}
-              margin={`0 0 30px`}
-            >
-              <Text>결제하기</Text>
-            </Wrapper> */}
             <Wrapper dr={`row`} ju={`space-between`} margin={`0 0 30px`}>
               <Text
                 fontSize={width < 900 ? `22px` : `34px`}
@@ -99,12 +90,12 @@ const Index = () => {
                 결제하기
               </Text>
               <Wrapper dr={`row`} width={`auto`}>
-                <Text color={Theme.grey_C} margin={`0 6px`}>
+                <Text color={Theme.lightGrey_C} margin={`0 6px`}>
                   장바구니
                 </Text>
                 <Image
                   alt="next icon"
-                  src={`https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/bmm/assets/images/icon/next.png`}
+                  src={`https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/bmm/assets/images/icon/next_breadcrambs.png`}
                   width={`5px`}
                 />
                 <Text color={Theme.black_C} margin={`0 6px`}>
@@ -112,10 +103,10 @@ const Index = () => {
                 </Text>
                 <Image
                   alt="next icon"
-                  src={`https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/bmm/assets/images/icon/next.png`}
+                  src={`https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/bmm/assets/images/icon/next_breadcrambs.png`}
                   width={`5px`}
                 />
-                <Text color={Theme.grey_C} margin={`0 0 0 6px`}>
+                <Text color={Theme.lightGrey_C} margin={`0 0 0 6px`}>
                   주문완료
                 </Text>
               </Wrapper>
