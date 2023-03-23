@@ -4,6 +4,7 @@ export const initailState = {
   notices: [], // 리스트
   lastPage: 1,
   adminNotices: [], // 관리자 리스트
+  noticeDetail: null, // 상세페이지
   uploadFilePath: null,
   noticeHistory: [],
   //
@@ -43,6 +44,9 @@ export const initailState = {
   st_noticeHistoryDone: false,
   st_noticeHistoryError: null,
   //
+  st_noticeDetailLoading: false, // 공지사항 detail
+  st_noticeDetailDone: false,
+  st_noticeDetailError: null,
 };
 
 export const NOTICE_LIST_REQUEST = "NOTICE_LIST_REQUEST";
@@ -80,6 +84,10 @@ export const NOTICE_FILE_INFO_FAILURE = "NOTICE_FILE_INFO_FAILURE";
 export const NOTICE_HISTORY_REQUEST = "NOTICE_HISTORY_REQUEST";
 export const NOTICE_HISTORY_SUCCESS = "NOTICE_HISTORY_SUCCESS";
 export const NOTICE_HISTORY_FAILURE = "NOTICE_HISTORY_FAILURE";
+
+export const NOTICE_DETAIL_REQUEST = "NOTICE_DETAIL_REQUEST";
+export const NOTICE_DETAIL_SUCCESS = "NOTICE_DETAIL_SUCCESS";
+export const NOTICE_DETAIL_FAILURE = "NOTICE_DETAIL_FAILURE";
 
 export const UPLOAD_PATH_INIT = "UPLOAD_PATH_INIT";
 
@@ -272,6 +280,29 @@ const reducer = (state = initailState, action) =>
         draft.st_noticeHistoryLoading = false;
         draft.st_noticeHistoryDone = false;
         draft.st_noticeHistoryError = action.error;
+        break;
+      }
+      ///////////////////////////////////////////////////////
+      ///////////////////////////////////////////////////////
+      ///////////////////////////////////////////////////////
+
+      case NOTICE_DETAIL_REQUEST: {
+        draft.st_noticeDetailLoading = true;
+        draft.st_noticeDetailDone = false;
+        draft.st_noticeDetailError = null;
+        break;
+      }
+      case NOTICE_DETAIL_SUCCESS: {
+        draft.st_noticeDetailLoading = false;
+        draft.st_noticeDetailDone = true;
+        draft.st_noticeDetailError = null;
+        draft.noticeDetail = action.data;
+        break;
+      }
+      case NOTICE_DETAIL_FAILURE: {
+        draft.st_noticeDetailLoading = false;
+        draft.st_noticeDetailDone = false;
+        draft.st_noticeDetailError = action.error;
         break;
       }
       ///////////////////////////////////////////////////////

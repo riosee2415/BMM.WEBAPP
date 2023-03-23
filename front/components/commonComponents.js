@@ -535,7 +535,7 @@ export const CustomPage = styled(Pagination)`
   }
 
   & .ant-pagination-item-active a {
-    color: ${(props) => props.theme.basicTheme_C};
+    color: ${(props) => props.theme.black_C};
   }
 
   & .ant-pagination-item-active {
