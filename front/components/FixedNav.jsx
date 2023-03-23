@@ -8,13 +8,13 @@ import { ArrowUpOutlined } from "@ant-design/icons";
 const Btn = styled(Wrapper)`
   width: 58px;
   height: 58px;
-  border: 1px solid ${Theme.lightGrey2_C};
   border-radius: 100%;
   box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.09);
 
   &:hover {
     cursor: pointer;
     background: ${(props) => props.hoverColor};
+    border: 1px solid ${Theme.lightGrey2_C};
 
     & .hoverIcon {
       display: block;
@@ -27,6 +27,9 @@ const Btn = styled(Wrapper)`
 `;
 
 const FixedNav = () => {
+  ////// HOOKS //////
+  const width = useWidth();
+
   ////// HANDLER //////
   const handleScroll = () => {
     if (!window.scrollY) return;
@@ -38,7 +41,12 @@ const FixedNav = () => {
   };
 
   return (
-    <Wrapper width={`auto`} position={`fixed`} bottom={`20px`} right={`50px`}>
+    <Wrapper
+      width={`auto`}
+      position={`fixed`}
+      bottom={width < 800 ? `80px` : `20px`}
+      right={width < 800 ? `20px` : `50px`}
+    >
       <Btn
         margin={`0 0 12px`}
         bgColor={Theme.kakao_C}
