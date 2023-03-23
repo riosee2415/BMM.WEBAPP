@@ -2,8 +2,9 @@ import React, { useCallback } from "react";
 import styled from "styled-components";
 import useWidth from "../hooks/useWidth";
 import Theme from "./Theme";
-import { Image, Wrapper, Text } from "./commonComponents";
+import { Image, Wrapper, Text, ATag } from "./commonComponents";
 import { ArrowUpOutlined } from "@ant-design/icons";
+import Link from "next/dist/client/link";
 
 const Btn = styled(Wrapper)`
   width: 58px;
@@ -47,17 +48,21 @@ const FixedNav = () => {
       bottom={width < 800 ? `80px` : `20px`}
       right={width < 800 ? `20px` : `50px`}
     >
-      <Btn
-        margin={`0 0 12px`}
-        bgColor={Theme.kakao_C}
-        hoverColor={Theme.white_C}
-      >
-        <Image
-          alt="kakao icon"
-          src={`https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/bmm/assets/images/login/icon_kakao.png`}
-          width={`26px`}
-        />
-      </Btn>
+      <Link href={``}>
+        <ATag>
+          <Btn
+            margin={`0 0 12px`}
+            bgColor={Theme.kakao_C}
+            hoverColor={Theme.white_C}
+          >
+            <Image
+              alt="kakao icon"
+              src={`https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/bmm/assets/images/login/icon_kakao.png`}
+              width={`26px`}
+            />
+          </Btn>
+        </ATag>
+      </Link>
 
       <Btn
         bgColor={Theme.basicTheme_C}

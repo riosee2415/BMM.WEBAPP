@@ -1,9 +1,10 @@
-import React from "react";
+import React, { useEffect } from "react";
 import ClientLayout from "../../components/ClientLayout";
 import Theme from "../../components/Theme";
 import Head from "next/head";
 import wrapper from "../../store/configureStore";
 import { LOAD_MY_INFO_REQUEST } from "../../reducers/user";
+import { EVENT_LIST_REQUEST } from "../../reducers/event";
 import axios from "axios";
 import { END } from "redux-saga";
 import useWidth from "../../hooks/useWidth";
@@ -18,6 +19,7 @@ import {
 } from "../../components/commonComponents";
 import styled from "styled-components";
 import Link from "next/dist/client/link";
+import { useDispatch, useSelector } from "react-redux";
 
 const List = styled(Wrapper)`
   width: 49%;
@@ -40,12 +42,24 @@ const List = styled(Wrapper)`
 
 const Index = () => {
   ////// GLOBAL STATE //////
+  const { eventList } = useSelector((state) => state.event);
+  console.log(eventList);
 
   ////// HOOKS //////
   const width = useWidth();
+  const dispatch = useDispatch();
 
   ////// REDUX //////
   ////// USEEFFECT //////
+  useEffect(() => {
+    dispatch({
+      type: EVENT_LIST_REQUEST,
+      data: {
+        page: 1,
+        searchTitle: "",
+      },
+    });
+  }, []);
   ////// TOGGLE //////
   ////// HANDLER //////
   ////// DATAVIEW //////
@@ -68,27 +82,38 @@ const Index = () => {
                 이벤트
               </Text>
             </Wrapper>
-            <Wrapper dr={`row`} ju={`space-between`} al={`flex-start`}>
-              <Link href={`/event/detail`}>
-                <ATag ju={`space-between`}>
-                  <List>
-                    <Image
-                      alt="thumbnail"
-                      src={`https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/bmm/assets/images/sample-img/event1.png`}
-                    />
-                    <Text
-                      width={`100%`}
-                      isEllipsis
-                      margin={`22px 0 5px`}
-                      fontSize={width < 700 ? `16px` : `20px`}
-                    >
-                      이벤트명이 들어올 곳입니다.
-                    </Text>
-                    <Text color={Theme.grey_C}>2022.12.01~2022.12.31</Text>
-                  </List>
-                </ATag>
-              </Link>
-            </Wrapper>
+            {eventList &&
+              eventList.map((data) => {
+                return (
+                  <Wrapper
+                    key={data.id}
+                    dr={`row`}
+                    ju={`space-between`}
+                    al={`flex-start`}
+                  >
+                    <Link href={`/event/${data.id}`}>
+                      <ATag ju={`space-between`}>
+                        <List>
+                          <Image
+                            alt="thumbnail"
+                            src={eventList && eventList.thumbnail}
+                          />
+                          <Text
+                            width={`100%`}
+                            isEllipsis
+                            margin={`22px 0 5px`}
+                            fontSize={width < 700 ? `16px` : `20px`}
+                          >
+                            {data.title}
+                          </Text>
+                          <Text color={Theme.grey_C}>{data.content}</Text>
+                        </List>
+                      </ATag>
+                    </Link>
+                  </Wrapper>
+                );
+              })}
+
             <CustomPage />
           </RsWrapper>
         </WholeWrapper>
