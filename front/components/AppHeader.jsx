@@ -354,13 +354,17 @@ const AppHeader = () => {
                   />
                 </a>
               </Link>
-              <Badge count={5}>
-                <Image
-                  width={`28px`}
-                  alt="icon"
-                  src={`https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/bmm/assets/images/header/icon_cart.png`}
-                />
-              </Badge>
+              <Link href={`/payment/cartlist`}>
+                <a>
+                  <Badge count={5}>
+                    <Image
+                      width={`28px`}
+                      alt="icon"
+                      src={`https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/bmm/assets/images/header/icon_cart.png`}
+                    />
+                  </Badge>
+                </a>
+              </Link>
             </Wrapper>
           </RsWrapper>
         </Wrapper>
