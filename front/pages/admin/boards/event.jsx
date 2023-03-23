@@ -2,16 +2,7 @@ import React, { useCallback, useEffect, useRef, useState } from "react";
 import AdminLayout from "../../../components/AdminLayout";
 import styled from "styled-components";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  Popover,
-  Button,
-  Table,
-  Form,
-  Input,
-  message,
-  Popconfirm,
-  Image,
-} from "antd";
+import { Button, Form, Input, Popconfirm, Popover, Table, message } from "antd";
 import { useRouter, withRouter } from "next/router";
 import wrapper from "../../../store/configureStore";
 import { END } from "redux-saga";
@@ -25,30 +16,25 @@ import {
   GuideUl,
   GuideLi,
   DelBtn,
-  ModalBtn,
-  SearchFormItem,
   SearchForm,
+  SearchFormItem,
 } from "../../../components/commonComponents";
 import { LOAD_MY_INFO_REQUEST } from "../../../reducers/user";
-import {
-  ADMIN_NOTICE_LIST_REQUEST,
-  NOTICE_UPDATE_REQUEST,
-  NOTICE_FILE_REQUEST,
-  UPLOAD_PATH_INIT,
-  NOTICE_CREATE_REQUEST,
-  NOTICE_DELETE_REQUEST,
-} from "../../../reducers/notice";
 import Theme from "../../../components/Theme";
 import { items } from "../../../components/AdminLayout";
 import {
-  HomeOutlined,
-  RightOutlined,
-  EyeOutlined,
   AlertOutlined,
   CheckOutlined,
+  EyeOutlined,
+  HomeOutlined,
+  RightOutlined,
   SearchOutlined,
   UnorderedListOutlined,
 } from "@ant-design/icons";
+import {
+  EVENT_ADMIN_LIST_REQUEST,
+  EVENT_CREATE_REQUEST,
+} from "../../../reducers/event";
 
 const InfoTitle = styled.div`
   font-size: 19px;
@@ -70,25 +56,31 @@ const ViewStatusIcon = styled(EyeOutlined)`
     props.active ? props.theme.subTheme5_C : props.theme.lightGrey_C};
 `;
 
-const Notice = ({}) => {
+const Event = ({}) => {
   const { st_loadMyInfoDone, me } = useSelector((state) => state.user);
   const {
-    adminNotices,
+    eventAdminList,
 
-    st_noticeUpdateDone,
-    st_noticeUpdateError,
+    eventPath1,
+    eventPath2,
 
-    uploadFilePath,
-    st_noticeFileLoading,
-    st_noticeFileDone,
-    st_noticeFileError,
+    st_eventCreateDone,
+    st_eventCreateError,
 
-    st_noticeCreateDone,
-    st_noticeCreateError,
+    st_eventUpdateDone,
+    st_eventUpdateError,
 
-    st_noticeDeleteDone,
-    st_noticeDeleteError,
-  } = useSelector((state) => state.notice);
+    st_eventDeleteDone,
+    st_eventDeleteError,
+
+    st_eventUpload1Loading,
+    st_eventUpload1Done,
+    st_eventUpload1Error,
+
+    st_eventUpload2Loading,
+    st_eventUpload2Done,
+    st_eventUpload2Error,
+  } = useSelector((state) => state.event);
 
   const router = useRouter();
   const dispatch = useDispatch();
@@ -97,12 +89,9 @@ const Notice = ({}) => {
   const [level1, setLevel1] = useState("게시판관리");
   const [level2, setLevel2] = useState("");
   const [sameDepth, setSameDepth] = useState([]);
-
   const [currentData, setCurrentData] = useState(null);
 
   const [infoForm] = Form.useForm();
-
-  const fileRef = useRef();
 
   const moveLinkHandler = useCallback((link) => {
     router.push(link);
@@ -113,6 +102,7 @@ const Notice = ({}) => {
       {sameDepth.map((data) => {
         if (data.name === level2) return;
         if (!data.useYn) return;
+
         return (
           <OtherMenu key={data.link} onClick={() => moveLinkHandler(data.link)}>
             {data.name}
@@ -126,9 +116,12 @@ const Notice = ({}) => {
 
   ////// HOOKS //////
 
+  const img1Ref = useRef();
+  const img2Ref = useRef();
+
   const [searchForm] = Form.useForm();
 
-  const [noticeTitle, setNoticeTitle] = useState(""); // 공지사항 제목
+  const [eventTitle, setEventTitle] = useState(""); // 이벤트 제목
 
   ////// USEEFFECT //////
 
@@ -159,142 +152,55 @@ const Notice = ({}) => {
 
   useEffect(() => {
     dispatch({
-      type: ADMIN_NOTICE_LIST_REQUEST,
+      type: EVENT_ADMIN_LIST_REQUEST,
       data: {
-        searchTitle: noticeTitle,
+        searchTitle: eventTitle,
       },
     });
-  }, [noticeTitle]);
+  }, [eventTitle]);
 
-  // ********************** 공지사항 생성 후처리 *************************
+  // ********************** 이벤트 생성 후처리 *************************
   useEffect(() => {
-    if (st_noticeCreateDone) {
-      message.success("공지사항이 생성되었습니다.");
-
+    if (st_eventCreateDone) {
       dispatch({
-        type: ADMIN_NOTICE_LIST_REQUEST,
+        type: EVENT_ADMIN_LIST_REQUEST,
         data: {
-          searchTitle: noticeTitle,
+          searchTitle: eventTitle,
         },
       });
+
+      return message.success("이벤트가 생성되었습니다.");
     }
-  }, [st_noticeCreateDone]);
-
-  useEffect(() => {
-    if (st_noticeCreateError) {
-      return message.error(st_noticeCreateError);
+    if (st_eventCreateError) {
+      return message.error(st_eventCreateError);
     }
-  }, [st_noticeCreateError]);
-
-  // ********************** 공지사항 수정 *************************
-  useEffect(() => {
-    if (st_noticeUpdateDone) {
-      message.success("공지사항이 수정되었습니다.");
-
-      dispatch({
-        type: ADMIN_NOTICE_LIST_REQUEST,
-        data: {
-          searchTitle: noticeTitle,
-        },
-      });
-    }
-  }, [st_noticeUpdateDone]);
-
-  useEffect(() => {
-    if (st_noticeUpdateError) {
-      return message.error(st_noticeUpdateError);
-    }
-  }, [st_noticeUpdateError]);
-
-  // ********************** 공지사항 삭제 *************************
-  useEffect(() => {
-    if (st_noticeDeleteDone) {
-      message.success("공지사항이 삭제되었습니다.");
-
-      setCurrentData(null);
-
-      dispatch({
-        type: ADMIN_NOTICE_LIST_REQUEST,
-        data: {
-          searchTitle: noticeTitle,
-        },
-      });
-    }
-  }, [st_noticeDeleteDone]);
-
-  useEffect(() => {
-    if (st_noticeDeleteError) {
-      return message.error(st_noticeDeleteError);
-    }
-  }, [st_noticeDeleteError]);
-
-  // ********************** 공지사항 이미지 변경 *************************
-
-  useEffect(() => {
-    if (st_noticeFileDone) {
-      return message.success(
-        "공지사항 이미지가 업로드되었습니다. 정보 업데이트 버튼을 눌러주세요."
-      );
-    }
-  }, [st_noticeFileDone]);
-
-  useEffect(() => {
-    if (st_noticeFileError) {
-      return message.error(st_noticeFileError);
-    }
-  }, [st_noticeFileError]);
+  }, [st_eventCreateDone, st_eventCreateError]);
+  // ********************** 이벤트 수정 후처리 *************************
+  // ********************** 이벤트 삭제 후처리 *************************
+  // ********************** 이벤트 이미지1 변경 후처리 *************************
+  // ********************** 이벤트 이미지2 변경 후처리 *************************
 
   ////// HANDLER //////
 
   const searchHandler = useCallback(
     (data) => {
-      setNoticeTitle(data.title);
+      setEventTitle(data.title);
     },
-    [noticeTitle]
+    [eventTitle]
   );
 
   const allSearchHandler = useCallback(() => {
     searchForm.resetFields();
-    setNoticeTitle("");
-  }, [noticeTitle]);
-
-  const createHandler = useCallback(() => {
-    dispatch({
-      type: NOTICE_CREATE_REQUEST,
-    });
-  }, []);
-
-  const clickFileUpload = useCallback(() => {
-    fileRef.current.click();
-  }, [fileRef.current]);
-
-  const onChangeFiles = useCallback((e) => {
-    const formData = new FormData();
-
-    [].forEach.call(e.target.files, (file) => {
-      formData.append("image", file);
-    });
-
-    if (e.target.files.length < 1) {
-      return;
-    }
-
-    dispatch({
-      type: NOTICE_FILE_REQUEST,
-      data: formData,
-    });
-  });
+    setEventTitle("");
+  }, [eventTitle]);
 
   const beforeSetDataHandler = useCallback(
     (record) => {
-      dispatch({
-        type: UPLOAD_PATH_INIT,
-      });
-
       setCurrentData(record);
 
       infoForm.setFieldsValue({
         title: record.title,
+        typeId: record.NoticeTypeId,
         content: record.content,
         hit: record.hit,
         createdAt: record.viewCreatedAt,
@@ -305,36 +211,9 @@ const Notice = ({}) => {
     [currentData, infoForm]
   );
 
-  const infoFormFinish = useCallback(
-    (data) => {
-      if (
-        data.title === currentData.title &&
-        data.content === currentData.content &&
-        !uploadFilePath
-      ) {
-        return message.warning("변경할 데이터가 없습니다.");
-      }
-
-      dispatch({
-        type: NOTICE_UPDATE_REQUEST,
-        data: {
-          id: currentData.id,
-          title: data.title,
-          content: data.content,
-          imagePath: uploadFilePath ? uploadFilePath : currentData.imagePath,
-        },
-      });
-    },
-    [currentData, uploadFilePath]
-  );
-
-  const deleteHandler = useCallback((data) => {
+  const createHandler = useCallback(() => {
     dispatch({
-      type: NOTICE_DELETE_REQUEST,
-      data: {
-        id: data.id,
-        title: data.title,
-      },
+      type: EVENT_CREATE_REQUEST,
     });
   }, []);
 
@@ -342,39 +221,41 @@ const Notice = ({}) => {
 
   ////// DATA COLUMNS //////
 
-  const noticeCol = [
+  const col = [
     {
       title: "번호",
       dataIndex: "num",
     },
     {
-      title: "공지사항 제목",
+      title: "이미지 명칭",
       dataIndex: "title",
-      width: "50%",
     },
+
     {
-      title: "작성일",
+      title: "생성일",
       dataIndex: "viewCreatedAt",
     },
     {
       title: "상태창",
       render: (data) => (
-        <ViewStatusIcon
-          active={
-            parseInt(data.id) === (currentData && parseInt(currentData.id))
-          }
-        />
+        <>
+          <ViewStatusIcon
+            active={
+              parseInt(data.id) === (currentData && parseInt(currentData.id))
+            }
+          />
+        </>
       ),
     },
+
     {
       title: "삭제",
       render: (data) => (
         <Popconfirm
-          placement="topRight"
-          title={"정말 삭제하시겠습니까?"}
+          title="정말 삭제하시겠습니까?"
+          onConfirm={() => {}}
           okText="삭제"
           cancelText="취소"
-          onConfirm={() => deleteHandler(data)}
         >
           <DelBtn />
         </Popconfirm>
@@ -407,7 +288,7 @@ const Notice = ({}) => {
         <RightOutlined />
         <Popover content={content}>
           <HomeText cur={true} margin={`3px 20px 0px 20px`}>
-            {level2}
+            {level2}{" "}
           </HomeText>
         </Popover>
       </Wrapper>
@@ -415,17 +296,12 @@ const Notice = ({}) => {
       {/* GUIDE */}
       <Wrapper margin={`10px 0px 0px 0px`}>
         <GuideUl>
-          <GuideLi>
-            공지사항을 추가 / 수정 / 삭제 등 관리를 할 수 있습니다.
+          <GuideLi>이벤트를 추가 / 삭제 등 관리를 할 수 있습니다.</GuideLi>
+          <GuideLi isImpo={true}>
+            썸네일 및 내용 이미지는 5MB이하로 올려주세요.
           </GuideLi>
           <GuideLi isImpo={true}>
-            공지사항이미지는 5MB이하 용량으로 올려주세요.
-          </GuideLi>
-          <GuideLi isImpo={true}>
-            공지사항이미지는 정보 업데이트버튼을 눌러야 적용이 됩니다.
-          </GuideLi>
-          <GuideLi isImpo={true}>
-            삭제처리 된 공지사항은 복구가 불가능합니다.
+            삭제처리 된 이벤트은 복구가 불가능합니다.
           </GuideLi>
         </GuideUl>
       </Wrapper>
@@ -461,92 +337,50 @@ const Notice = ({}) => {
         </SearchForm>
       </Wrapper>
 
-      {/* CONTENT */}
-
-      <Wrapper dr="row" padding="0px 20px" al="flex-start">
+      <Wrapper dr="row" padding="0px 20px" al="flex-start" ju={`space-between`}>
         <Wrapper
           width={`calc(50% - 10px)`}
-          margin="5px"
+          padding="0px 10px"
           shadow={`3px 3px 6px ${Theme.lightGrey_C}`}
         >
-          <Wrapper al="flex-end">
+          <Wrapper al="flex-end" margin={`0px 0px 5px 0px`}>
             <Button size="small" type="primary" onClick={createHandler}>
-              공지사항 생성
+              이벤트 생성
             </Button>
           </Wrapper>
           <Table
-            size="small"
-            dataSource={adminNotices}
-            columns={noticeCol}
-            rowKey="id"
             style={{ width: "100%" }}
+            rowKey="num"
+            columns={col}
+            dataSource={eventAdminList}
+            size="small"
             onRow={(record, index) => {
               return {
                 onClick: (e) => beforeSetDataHandler(record),
               };
             }}
-          ></Table>
+          />
         </Wrapper>
+
         <Wrapper
           width={`calc(50% - 10px)`}
-          margin="5px"
+          padding="5px"
           shadow={`3px 3px 6px ${Theme.lightGrey_C}`}
         >
           {currentData ? (
-            <>
+            <Wrapper>
               <Wrapper margin={`0px 0px 5px 0px`}>
                 <InfoTitle>
                   <CheckOutlined />
-                  공지사항 이미지 정보
-                </InfoTitle>
-              </Wrapper>
-
-              <Wrapper width={`auto`} margin={`0 0 30px`}>
-                <Image
-                  width={`300px`}
-                  height={`300px`}
-                  src={uploadFilePath ? uploadFilePath : currentData.imagePath}
-                  alt={`image`}
-                />
-
-                <input
-                  hidden
-                  type={`file`}
-                  ref={fileRef}
-                  accept={`.jpg, .png`}
-                  onChange={onChangeFiles}
-                />
-                <Button
-                  loading={st_noticeFileLoading}
-                  style={{ width: `300px`, marginTop: `5px` }}
-                  size="small"
-                  type="primary"
-                  onClick={clickFileUpload}
-                >
-                  공지사항 이미지 업로드
-                </Button>
-              </Wrapper>
-
-              <Wrapper
-                width="100%"
-                height="1px"
-                bgColor={Theme.lightGrey_C}
-                margin={`30px 0px`}
-              ></Wrapper>
-
-              <Wrapper margin={`0px 0px 5px 0px`}>
-                <InfoTitle>
-                  <CheckOutlined />
-                  공지사항 기본정보
+                  이벤트 기본정보
                 </InfoTitle>
               </Wrapper>
 
               <Form
                 form={infoForm}
-                labelCol={{ span: 3 }}
-                wrapperCol={{ span: 21 }}
-                style={{ width: "100%", paddingRight: "20px" }}
-                onFinish={infoFormFinish}
+                style={{ width: `100%` }}
+                labelCol={{ span: 2 }}
+                wrapperCol={{ span: 22 }}
               >
                 <Form.Item
                   label="제목"
@@ -613,7 +447,7 @@ const Notice = ({}) => {
                 bgColor={Theme.lightGrey_C}
                 margin={`30px 0px`}
               ></Wrapper>
-            </>
+            </Wrapper>
           ) : (
             <Wrapper padding={`50px 0px`} dr="row">
               <AlertOutlined
@@ -648,7 +482,7 @@ export const getServerSideProps = wrapper.getServerSideProps(
     });
 
     context.store.dispatch({
-      type: ADMIN_NOTICE_LIST_REQUEST,
+      type: EVENT_ADMIN_LIST_REQUEST,
       data: {
         searchTitle: "",
       },
@@ -661,4 +495,4 @@ export const getServerSideProps = wrapper.getServerSideProps(
   }
 );
 
-export default withRouter(Notice);
+export default withRouter(Event);

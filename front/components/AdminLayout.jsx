@@ -71,9 +71,14 @@ export const items = {
       useYn: true,
     },
     {
+      name: "이벤트관리",
+      link: "/admin/boards/event",
+      useYn: true,
+    },
+    {
       name: "겔러리관리",
       link: "/admin/boards/gallery",
-      useYn: true,
+      useYn: false,
     },
   ],
   회원관리: [
