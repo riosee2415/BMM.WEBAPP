@@ -189,7 +189,7 @@ const Notice = ({}) => {
     dispatch({
       type: ADMIN_NOTICE_LIST_REQUEST,
       data: {
-        title: noticeTitle,
+        searchTitle: noticeTitle,
       },
     });
   }, [noticeTitle]);
@@ -202,7 +202,7 @@ const Notice = ({}) => {
       dispatch({
         type: ADMIN_NOTICE_LIST_REQUEST,
         data: {
-          title: noticeTitle,
+          searchTitle: noticeTitle,
         },
       });
     }
@@ -222,7 +222,7 @@ const Notice = ({}) => {
       dispatch({
         type: ADMIN_NOTICE_LIST_REQUEST,
         data: {
-          title: noticeTitle,
+          searchTitle: noticeTitle,
         },
       });
     }
@@ -244,7 +244,7 @@ const Notice = ({}) => {
       dispatch({
         type: ADMIN_NOTICE_LIST_REQUEST,
         data: {
-          title: noticeTitle,
+          searchTitle: noticeTitle,
         },
       });
     }
@@ -668,7 +668,7 @@ export const getServerSideProps = wrapper.getServerSideProps(
     context.store.dispatch({
       type: ADMIN_NOTICE_LIST_REQUEST,
       data: {
-        title: "",
+        searchTitle: "",
       },
     });
 
