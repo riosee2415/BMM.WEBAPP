@@ -14,8 +14,10 @@ import {
   Text,
   CustomPage,
   Image,
+  ATag,
 } from "../../components/commonComponents";
 import styled from "styled-components";
+import Link from "next/dist/client/link";
 
 const List = styled(Wrapper)`
   width: 49%;
@@ -55,33 +57,37 @@ const Index = () => {
       </Head>
 
       <ClientLayout>
-        <WholeWrapper padding={`95px 0 0`}>
+        <WholeWrapper padding={width < 900 ? `40px 0 0` : `95px 0 0`}>
           <RsWrapper>
             <Wrapper al={`flex-start`}>
               <Text
                 fontSize={width < 500 ? `20px` : `34px`}
-                fontWeight={`600`}
+                fontWeight={`bold`}
                 margin={`0 0 30px`}
               >
                 이벤트
               </Text>
             </Wrapper>
             <Wrapper dr={`row`} ju={`space-between`} al={`flex-start`}>
-              <List>
-                <Image
-                  alt="thumbnail"
-                  src={`https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/bmm/assets/images/sample-img/event1.png`}
-                />
-                <Text
-                  width={`100%`}
-                  isEllipsis
-                  margin={`22px 0 5px`}
-                  fontSize={width < 700 ? `16px` : `20px`}
-                >
-                  이벤트명이 들어올 곳입니다.
-                </Text>
-                <Text color={Theme.grey_C}>2022.12.01~2022.12.31</Text>
-              </List>
+              <Link href={`/event/detail`}>
+                <ATag ju={`space-between`}>
+                  <List>
+                    <Image
+                      alt="thumbnail"
+                      src={`https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/bmm/assets/images/sample-img/event1.png`}
+                    />
+                    <Text
+                      width={`100%`}
+                      isEllipsis
+                      margin={`22px 0 5px`}
+                      fontSize={width < 700 ? `16px` : `20px`}
+                    >
+                      이벤트명이 들어올 곳입니다.
+                    </Text>
+                    <Text color={Theme.grey_C}>2022.12.01~2022.12.31</Text>
+                  </List>
+                </ATag>
+              </Link>
             </Wrapper>
             <CustomPage />
           </RsWrapper>

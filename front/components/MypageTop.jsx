@@ -1,8 +1,7 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { Wrapper, Text, WholeWrapper, ATag } from "./commonComponents";
 import Theme from "./Theme";
 import useWidth from "../hooks/useWidth";
-import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
 import Link from "next/dist/client/link";
 
@@ -39,7 +38,6 @@ const MypageBox = styled(Wrapper)`
 
 const MypageTop = () => {
   const width = useWidth();
-  const dispatch = useDispatch();
 
   return (
     <WholeWrapper>

@@ -15,10 +15,12 @@ import {
   CustomSelect,
   CustomPage,
   TextInput,
+  ATag,
 } from "../../components/commonComponents";
 import { Select } from "antd";
 import { SearchOutlined } from "@ant-design/icons";
 import styled from "styled-components";
+import Link from "next/dist/client/link";
 
 const List = styled(Wrapper)`
   height: 60px;
@@ -28,7 +30,7 @@ const List = styled(Wrapper)`
 
   &:hover {
     cursor: pointer;
-    border-bottom: 1px solid ${Theme.basicTheme_C};
+    background: ${Theme.subTheme_C};
   }
 
   @media (max-width: 500px) {
@@ -62,7 +64,7 @@ const Index = () => {
               dr={`row`}
               ju={`space-between`}
               fontSize={width < 500 ? `20px` : `34px`}
-              fontWeight={`600`}
+              fontWeight={`bold`}
               margin={`0 0 33px`}
             >
               <Text margin={width < 700 ? `0 0 20px` : `0`}>공지사항</Text>
@@ -123,21 +125,27 @@ const Index = () => {
               <Wrapper width={width < 900 ? `15%` : `10%`}>조회수</Wrapper>
               <Wrapper width={width < 900 ? `25%` : `10%`}>작성일</Wrapper>
             </Wrapper>
+            <Link href={`/notice/detail`}>
+              <ATag>
+                <List>
+                  <Wrapper width={width < 900 ? `10%` : `6%`}>1</Wrapper>
+                  <Wrapper
+                    width={width < 900 ? `50%` : `74%`}
+                    padding={width < 900 ? `0` : `0 14px`}
+                    al={`flex-start`}
+                  >
+                    <Text width={`100%`} isEllipsis>
+                      공지사항 제목이 들어오는 곳입니다.
+                    </Text>
+                  </Wrapper>
+                  <Wrapper width={width < 900 ? `15%` : `10%`}>456</Wrapper>
+                  <Wrapper width={width < 900 ? `25%` : `10%`}>
+                    2022.12.31
+                  </Wrapper>
+                </List>
+              </ATag>
+            </Link>
 
-            <List>
-              <Wrapper width={width < 900 ? `10%` : `6%`}>1</Wrapper>
-              <Wrapper
-                width={width < 900 ? `50%` : `74%`}
-                padding={width < 900 ? `0` : `0 14px`}
-                al={`flex-start`}
-              >
-                <Text width={`100%`} isEllipsis>
-                  공지사항 제목이 들어오는 곳입니다.
-                </Text>
-              </Wrapper>
-              <Wrapper width={width < 900 ? `15%` : `10%`}>456</Wrapper>
-              <Wrapper width={width < 900 ? `25%` : `10%`}>2022.12.31</Wrapper>
-            </List>
             <CustomPage />
           </RsWrapper>
         </WholeWrapper>

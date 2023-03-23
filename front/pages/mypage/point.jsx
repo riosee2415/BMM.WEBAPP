@@ -27,6 +27,7 @@ const List = styled(Wrapper)`
     font-size: 14px;
   }
 `;
+
 const Point = () => {
   ////// GLOBAL STATE //////
 
@@ -74,7 +75,9 @@ const Point = () => {
               <Wrapper width={width < 700 ? `15%` : `25%`}>내역</Wrapper>
             </Wrapper>
             <List>
-              <Wrapper width={width < 700 ? `15%` : `10%`}>1</Wrapper>
+              <Wrapper width={width < 700 ? `15%` : `10%`} color={Theme.grey_C}>
+                1
+              </Wrapper>
               <Wrapper
                 width={width < 700 ? `70%` : `65%`}
                 padding={width < 700 ? `0 10px` : `0 50px`}
@@ -82,7 +85,9 @@ const Point = () => {
               >
                 상품 구매 - 포인트 적립
               </Wrapper>
-              <Wrapper width={width < 700 ? `15%` : `25%`}>+123</Wrapper>
+              <Wrapper width={width < 700 ? `15%` : `25%`} fontWeight={`600`}>
+                +123
+              </Wrapper>
             </List>
             <CustomPage />
           </RsWrapper>

@@ -49,7 +49,7 @@ const Question = () => {
       </Head>
 
       <ClientLayout>
-        <WholeWrapper padding={`95px 0 0`}>
+        <WholeWrapper padding={width < 900 ? `40px 0 0` : `95px 0 0`}>
           <RsWrapper>
             <MypageTop />
             <Wrapper
@@ -94,11 +94,7 @@ const Question = () => {
                     color={Theme.darkGrey_C}
                   >
                     <Wrapper dr={`row`} ju={`flex-start`}>
-                      <Text
-                        width={width < 800 ? `100%` : `75%`}
-                        isEllipsis
-                        isHover
-                      >
+                      <Text width={width < 800 ? `100%` : `75%`} isEllipsis>
                         제목이 들어올 곳입니다.
                       </Text>
                     </Wrapper>

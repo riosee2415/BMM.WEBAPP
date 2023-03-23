@@ -48,8 +48,6 @@ const SubText = styled(Wrapper)`
 
 const OrderResult = () => {
   ////// GLOBAL STATE //////
-  const [value, setValue] = useState(1);
-  const [payvalue, setPayValue] = useState(1);
   ////// HOOKS //////
   const width = useWidth();
 
@@ -75,20 +73,20 @@ const OrderResult = () => {
                 주문완료
               </Text>
               <Wrapper dr={`row`} width={`auto`}>
-                <Text color={Theme.grey_C} margin={`0 6px`}>
+                <Text color={Theme.lightGrey_C} margin={`0 6px`}>
                   장바구니
                 </Text>
                 <Image
                   alt="next icon"
-                  src={`https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/bmm/assets/images/icon/next.png`}
+                  src={`https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/bmm/assets/images/icon/next_breadcrambs.png`}
                   width={`5px`}
                 />
-                <Text color={Theme.grey_C} margin={`0 6px`}>
+                <Text color={Theme.lightGrey_C} margin={`0 6px`}>
                   주문서작성/결제
                 </Text>
                 <Image
                   alt="next icon"
-                  src={`https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/bmm/assets/images/icon/next.png`}
+                  src={`https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/bmm/assets/images/icon/next_breadcrambs.png`}
                   width={`5px`}
                 />
                 <Text color={Theme.black_C} margin={`0 0 0 6px`}>
