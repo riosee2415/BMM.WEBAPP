@@ -156,6 +156,11 @@ export const items = {
       link: "/admin/history/event",
       useYn: true,
     },
+    {
+      name: "광고배너이력관리",
+      link: "/admin/history/advertise",
+      useYn: true,
+    },
   ],
   서버관리: [],
 };
