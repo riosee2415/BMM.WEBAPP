@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import ClientLayout from "../../components/ClientLayout";
 import Theme from "../../components/Theme";
 import Head from "next/head";
@@ -42,8 +42,8 @@ const List = styled(Wrapper)`
 
 const Index = () => {
   ////// GLOBAL STATE //////
-  const { eventList } = useSelector((state) => state.event);
-  console.log(eventList);
+  const { eventList, eventPage } = useSelector((state) => state.event);
+  const [pageTab, setPageTab] = useState(1);
 
   ////// HOOKS //////
   const width = useWidth();
@@ -55,13 +55,20 @@ const Index = () => {
     dispatch({
       type: EVENT_LIST_REQUEST,
       data: {
-        page: 1,
         searchTitle: "",
+        page: pageTab,
       },
     });
-  }, []);
+  }, [pageTab]);
+
   ////// TOGGLE //////
   ////// HANDLER //////
+  const changPageCall = useCallback(
+    (changePage) => {
+      setPageTab(changePage);
+    },
+    [pageTab]
+  );
   ////// DATAVIEW //////
 
   return (
@@ -91,13 +98,10 @@ const Index = () => {
                     ju={`space-between`}
                     al={`flex-start`}
                   >
-                    <Link href={`/event/${data.id}`}>
-                      <ATag ju={`space-between`}>
-                        <List>
-                          <Image
-                            alt="thumbnail"
-                            src={eventList && eventList.thumbnail}
-                          />
+                    <List>
+                      <Link href={`/event/${data.id}`}>
+                        <ATag dr={`row`} ju={`space-between`}>
+                          <Image alt="thumbnail" src={data.thumbnail} />
                           <Text
                             width={`100%`}
                             isEllipsis
@@ -107,14 +111,20 @@ const Index = () => {
                             {data.title}
                           </Text>
                           <Text color={Theme.grey_C}>{data.content}</Text>
-                        </List>
-                      </ATag>
-                    </Link>
+                        </ATag>
+                      </Link>
+                    </List>
                   </Wrapper>
                 );
               })}
 
-            <CustomPage />
+            <CustomPage
+              defaultCurrent={1}
+              current={parseInt(pageTab)}
+              pageSize={10}
+              total={eventPage * 10}
+              onChange={(page) => changPageCall(page)}
+            />
           </RsWrapper>
         </WholeWrapper>
       </ClientLayout>

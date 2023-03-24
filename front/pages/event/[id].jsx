@@ -45,7 +45,6 @@ const Detail = () => {
   ////// GLOBAL STATE //////
   const { eventDetail } = useSelector((state) => state.event);
 
-  console.log(eventDetail);
   ////// HOOKS //////
   const width = useWidth();
   const router = useRouter();
@@ -126,7 +125,7 @@ const Detail = () => {
               </Wrapper>
 
               <Wrapper margin={`60px 0 0`}>
-                <Link href={`/event/`}>
+                <Link href={`/event`}>
                   <a>
                     <ListBtn>목록으로</ListBtn>
                   </a>
