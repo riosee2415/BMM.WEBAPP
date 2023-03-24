@@ -79,7 +79,7 @@ const Index = () => {
 
       <ClientLayout>
         <WholeWrapper padding={width < 900 ? `40px 0 0` : `95px 0 0`}>
-          <RsWrapper>
+          <RsWrapper dr={`row`} ju={`space-between`}>
             <Wrapper al={`flex-start`}>
               <Text
                 fontSize={width < 500 ? `20px` : `34px`}
@@ -92,15 +92,10 @@ const Index = () => {
             {eventList &&
               eventList.map((data) => {
                 return (
-                  <Wrapper
-                    key={data.id}
-                    dr={`row`}
-                    ju={`space-between`}
-                    al={`flex-start`}
-                  >
-                    <List>
-                      <Link href={`/event/${data.id}`}>
-                        <ATag dr={`row`} ju={`space-between`}>
+                  <List>
+                    <Link href={`/event/${data.id}`}>
+                      <ATag>
+                        <Wrapper key={data.id} al={`flex-start`}>
                           <Image alt="thumbnail" src={data.thumbnail} />
                           <Text
                             width={`100%`}
@@ -111,10 +106,10 @@ const Index = () => {
                             {data.title}
                           </Text>
                           <Text color={Theme.grey_C}>{data.content}</Text>
-                        </ATag>
-                      </Link>
-                    </List>
-                  </Wrapper>
+                        </Wrapper>
+                      </ATag>
+                    </Link>
+                  </List>
                 );
               })}
 
