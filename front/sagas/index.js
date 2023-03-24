@@ -11,6 +11,7 @@ import editSaga from "./editor";
 import logoSaga from "./logo";
 import faqSaga from "./faq";
 import eventSaga from "./event";
+import advertiseSaga from "./advertise";
 //
 import axios from "axios";
 import backURL from "../config/config";
@@ -32,6 +33,7 @@ export default function* rootSaga() {
     fork(logoSaga),
     fork(faqSaga),
     fork(eventSaga),
+    fork(advertiseSaga),
     //
   ]);
 }
