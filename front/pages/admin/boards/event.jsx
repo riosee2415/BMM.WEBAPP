@@ -533,10 +533,10 @@ const Event = ({}) => {
               </Wrapper>
 
               <Wrapper dr={`row`} ju={`space-around`} margin={`30px 0`}>
-                <Wrapper width={`300px`}>
+                <Wrapper>
                   <Image
-                    width={`100%`}
-                    height={`150px`}
+                    width={`630px`}
+                    height={`260px`}
                     src={eventPath1 ? eventPath1 : currentData.thumbnail}
                     alt={`image`}
                   />
@@ -550,7 +550,7 @@ const Event = ({}) => {
                   />
                   <Button
                     loading={st_eventUpload1Loading}
-                    style={{ width: `100%`, marginTop: `5px` }}
+                    style={{ width: `630px`, marginBottom: `5px` }}
                     size="small"
                     type="primary"
                     onClick={clickImg1Upload}
@@ -559,7 +559,7 @@ const Event = ({}) => {
                   </Button>
                 </Wrapper>
 
-                <Wrapper width={`300px`}>
+                <Wrapper>
                   <Image
                     width={`100%`}
                     height={`400px`}

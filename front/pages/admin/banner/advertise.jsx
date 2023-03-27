@@ -380,7 +380,7 @@ const Advertise = ({}) => {
         >
           <Wrapper al="flex-end" margin={`0px 0px 5px 0px`}>
             <Button size="small" type="primary" onClick={createHandler}>
-              이벤트 생성
+              광고배너 생성
             </Button>
           </Wrapper>
           <Table
@@ -411,7 +411,7 @@ const Advertise = ({}) => {
                 </InfoTitle>
               </Wrapper>
 
-              <Wrapper width={`300px`} margin={`30px 0`}>
+              <Wrapper margin={`30px 0`}>
                 <Image
                   width={`100%`}
                   height={`150px`}
@@ -454,8 +454,8 @@ const Advertise = ({}) => {
               <Form
                 form={infoForm}
                 style={{ width: `100%` }}
-                labelCol={{ span: 2 }}
-                wrapperCol={{ span: 22 }}
+                labelCol={{ span: 4 }}
+                wrapperCol={{ span: 20 }}
                 onFinish={updateHandler}
               >
                 <Form.Item
@@ -471,7 +471,7 @@ const Advertise = ({}) => {
                 <Form.Item label="작성일" name="createdAt">
                   <Input
                     size="small"
-                    style={{ background: Theme.lightGrey_C, border: "none" }}
+                    style={{ background: Theme.lightGrey3_C, border: "none" }}
                     readOnly
                   />
                 </Form.Item>
@@ -479,7 +479,7 @@ const Advertise = ({}) => {
                 <Form.Item label="수정일" name="updatedAt">
                   <Input
                     size="small"
-                    style={{ background: Theme.lightGrey_C, border: "none" }}
+                    style={{ background: Theme.lightGrey3_C, border: "none" }}
                     readOnly
                   />
                 </Form.Item>
@@ -487,7 +487,7 @@ const Advertise = ({}) => {
                 <Form.Item label="최근작업자" name="updator">
                   <Input
                     size="small"
-                    style={{ background: Theme.lightGrey_C, border: "none" }}
+                    style={{ background: Theme.lightGrey3_C, border: "none" }}
                     readOnly
                   />
                 </Form.Item>

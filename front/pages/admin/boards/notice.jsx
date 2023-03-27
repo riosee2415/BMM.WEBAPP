@@ -422,6 +422,9 @@ const Notice = ({}) => {
             공지사항이미지는 5MB이하 용량으로 올려주세요.
           </GuideLi>
           <GuideLi isImpo={true}>
+            공지사항이미지사이즈는 420px X 400px입니다.
+          </GuideLi>
+          <GuideLi isImpo={true}>
             공지사항이미지는 정보 업데이트버튼을 눌러야 적용이 됩니다.
           </GuideLi>
           <GuideLi isImpo={true}>
@@ -503,8 +506,8 @@ const Notice = ({}) => {
 
               <Wrapper width={`auto`} margin={`0 0 30px`}>
                 <Image
-                  width={`300px`}
-                  height={`300px`}
+                  width={`420px`}
+                  height={`400px`}
                   src={uploadFilePath ? uploadFilePath : currentData.imagePath}
                   alt={`image`}
                 />
@@ -518,7 +521,7 @@ const Notice = ({}) => {
                 />
                 <Button
                   loading={st_noticeFileLoading}
-                  style={{ width: `300px`, marginTop: `5px` }}
+                  style={{ width: `420px`, marginTop: `5px` }}
                   size="small"
                   type="primary"
                   onClick={clickFileUpload}
@@ -571,7 +574,7 @@ const Notice = ({}) => {
                 <Form.Item label="조회수" name="hit">
                   <Input
                     size="small"
-                    style={{ background: Theme.lightGrey_C, border: "none" }}
+                    style={{ background: Theme.lightGrey3_C, border: "none" }}
                     readOnly
                   />
                 </Form.Item>
@@ -579,7 +582,7 @@ const Notice = ({}) => {
                 <Form.Item label="작성일" name="createdAt">
                   <Input
                     size="small"
-                    style={{ background: Theme.lightGrey_C, border: "none" }}
+                    style={{ background: Theme.lightGrey3_C, border: "none" }}
                     readOnly
                   />
                 </Form.Item>
@@ -587,7 +590,7 @@ const Notice = ({}) => {
                 <Form.Item label="수정일" name="updatedAt">
                   <Input
                     size="small"
-                    style={{ background: Theme.lightGrey_C, border: "none" }}
+                    style={{ background: Theme.lightGrey3_C, border: "none" }}
                     readOnly
                   />
                 </Form.Item>
@@ -595,7 +598,7 @@ const Notice = ({}) => {
                 <Form.Item label="최근작업자" name="updator">
                   <Input
                     size="small"
-                    style={{ background: Theme.lightGrey_C, border: "none" }}
+                    style={{ background: Theme.lightGrey3_C, border: "none" }}
                     readOnly
                   />
                 </Form.Item>
