@@ -81,6 +81,11 @@ export const items = {
       useYn: true,
     },
     {
+      name: "상품요청관리",
+      link: "/admin/boards/request",
+      useYn: true,
+    },
+    {
       name: "겔러리관리",
       link: "/admin/boards/gallery",
       useYn: false,
@@ -159,11 +164,6 @@ export const items = {
     {
       name: "광고배너이력관리",
       link: "/admin/history/advertise",
-      useYn: true,
-    },
-    {
-      name: "자주묻는질문이력관리",
-      link: "/admin/history/faq",
       useYn: true,
     },
   ],
