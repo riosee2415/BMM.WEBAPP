@@ -161,6 +161,11 @@ export const items = {
       link: "/admin/history/advertise",
       useYn: true,
     },
+    {
+      name: "자주묻는질문이력관리",
+      link: "/admin/history/faq",
+      useYn: true,
+    },
   ],
   서버관리: [],
 };
