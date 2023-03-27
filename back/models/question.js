@@ -5,13 +5,20 @@ module.exports = class Question extends Model {
   static init(sequelize) {
     return super.init(
       {
-        // id가 기본적으로 들어있다.
+        userLoginId: {
+          type: DataTypes.STRING(50), // 아이디
+          allowNull: false,
+        },
+        username: {
+          type: DataTypes.STRING(50), // 이름
+          allowNull: false,
+        },
         title: {
-          type: DataTypes.STRING(200), // STRING, TEXT, BOOLEAN, INTEGER, FLOAT, DATETIME
-          allowNull: false, // 필수
+          type: DataTypes.STRING(200), // 제목
+          allowNull: false,
         },
         content: {
-          type: DataTypes.TEXT,
+          type: DataTypes.TEXT, // 내용
           allowNull: false,
         },
         isCompleted: {
@@ -19,8 +26,12 @@ module.exports = class Question extends Model {
           allowNull: false,
           defaultValue: false,
         },
+        completedAt: {
+          type: DataTypes.DATE,
+          allowNull: true,
+        },
         answer: {
-          type: DataTypes.TEXT, // STRING, TEXT, BOOLEAN, INTEGER, FLOAT, DATETIME
+          type: DataTypes.TEXT,
           allowNull: true,
         },
         answerdAt: {
@@ -38,7 +49,6 @@ module.exports = class Question extends Model {
     );
   }
   static associate(db) {
-    db.Question.belongsTo(db.QuestionType);
     db.Question.belongsTo(db.User);
   }
 };

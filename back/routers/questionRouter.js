@@ -1,274 +1,290 @@
 const express = require("express");
 const isAdminCheck = require("../middlewares/isAdminCheck");
 const isLoggedIn = require("../middlewares/isLoggedIn");
-const { Question, QuestionType, User } = require("../models");
+const models = require("../models");
 
 const router = express.Router();
 
-// QUESTION TYPE
-router.get("/type/list/", async (req, res, next) => {
-  try {
-    const types = await QuestionType.findAll({
-      where: { isDelete: false },
-      order: [["value", "ASC"]],
-    });
+/**
+ * SUBJECT : 나의 1대1문의 목록
+ * PARAMETERS : page
+ * ORDER BY : -
+ * STATEMENT : -
+ * DEVELOPMENT : 신태섭
+ * DEV DATE : 2023/03/27
+ */
+router.post("/my/list", async (req, res, next) => {
+  const { page } = req.body;
 
-    return res.status(200).json(types);
+  const LIMIT = 10;
+
+  const _page = page ? page : 1;
+
+  const __page = _page - 1;
+  const OFFSET = __page * 10;
+
+  const lengthQuery = `
+  SELECT  ROW_NUMBER()  OVER(ORDER  BY A.createdAt)   AS num,
+          A.id,
+          A.userLoginId,
+          A.username,
+          A.title,
+          A.content,
+          A.isCompleted,
+          A.completedAt,
+          DATE_FORMAT(A.completedAt, "%Y년 %m월 %d일")    AS viewCompletedAt,
+          A.answer,
+          A.answerdAt,
+          A.createdAt,
+          A.updatedAt,
+          DATE_FORMAT(A.answerdAt, "%Y년 %m월 %d일")      AS viewAnswerdAt,
+          DATE_FORMAT(A.createdAt, "%Y년 %m월 %d일")      AS viewCreatedAt,
+          DATE_FORMAT(A.updatedAt, "%Y년 %m월 %d일")       AS viewUpdatedAt
+    FROM  questions   A
+   WHERE  1 = 1
+     AND  A.UserId = ${req.user.id}
+  `;
+
+  const selectQuery = `
+  SELECT  ROW_NUMBER()  OVER(ORDER  BY A.createdAt)   AS num,
+          A.id,
+          A.userLoginId,
+          A.username,
+          A.title,
+          A.content,
+          A.isCompleted,
+          A.completedAt,
+          DATE_FORMAT(A.completedAt, "%Y년 %m월 %d일")    AS viewCompletedAt,
+          A.answer,
+          A.answerdAt,
+          A.createdAt,
+          A.updatedAt,
+          DATE_FORMAT(A.answerdAt, "%Y년 %m월 %d일")      AS viewAnswerdAt,
+          DATE_FORMAT(A.createdAt, "%Y년 %m월 %d일")      AS viewCreatedAt,
+          DATE_FORMAT(A.updatedAt, "%Y년 %m월 %d일")       AS viewUpdatedAt
+    FROM  questions   A
+   WHERE  1 = 1
+     AND  A.UserId = ${req.user.id}
+   ORDER  BY num DESC
+   LIMIT  ${LIMIT}
+  OFFSET  ${OFFSET}
+  `;
+
+  try {
+    const lengths = await models.sequelize.query(lengthQuery);
+    const questions = await models.sequelize.query(selectQuery);
+
+    const questionsLen = lengths[0].length;
+
+    const lastPage =
+      questionsLen % LIMIT > 0
+        ? questionsLen / LIMIT + 1
+        : questionsLen / LIMIT;
+
+    return res.status(200).json({
+      questions: questions[0],
+      lastPage: parseInt(lastPage),
+    });
   } catch (error) {
     console.error(error);
-    return res.status(401).send("문의 유형을 불러올 수 없습니다.");
+    return res.status(401).send("문의 데이터를 조회할 수 없습니다.");
   }
 });
 
-router.post("/type/create", isAdminCheck, async (req, res, next) => {
-  const { value } = req.body;
+/**
+ * SUBJECT : 1대1문의 목록
+ * PARAMETERS : userLoginId, username, title, findType
+ * ORDER BY : -
+ * STATEMENT : -
+ * DEVELOPMENT : 신태섭
+ * DEV DATE : 2023/03/27
+ */
+router.post("/list", isAdminCheck, async (req, res, next) => {
+  const { userLoginId, username, title, findType } = req.body;
+
+  const _userLoginId = userLoginId ? userLoginId : ``;
+  const _username = username ? username : ``;
+  const _title = title ? title : ``;
+
+  const _findType = parseInt(findType) || 3;
+
+  const selectQuery = `
+  SELECT  ROW_NUMBER()  OVER(ORDER  BY A.createdAt)   AS num,
+          A.id,
+          A.userLoginId,
+          A.username,
+          A.title,
+          A.content,
+          A.isCompleted,
+          A.completedAt,
+          DATE_FORMAT(A.completedAt, "%Y년 %m월 %d일")    AS viewCompletedAt,
+          A.answer,
+          A.answerdAt,
+          A.createdAt,
+          A.updatedAt,
+          DATE_FORMAT(A.answerdAt, "%Y년 %m월 %d일")      AS viewAnswerdAt,
+          DATE_FORMAT(A.createdAt, "%Y년 %m월 %d일")      AS viewCreatedAt,
+          DATE_FORMAT(A.updatedAt, "%Y년 %m월 %d일")       AS viewUpdatedAt
+    FROM  questions   A
+   WHERE  1 = 1
+     AND  A.userLoginId LIKE "%${_userLoginId}%"
+     AND  A.username LIKE "%${_username}%"
+     AND  A.title LIKE "%${_title}%"
+          ${
+            _findType === 1
+              ? `AND A.isCompleted = 0`
+              : _findType === 2
+              ? `AND A.isCompleted = 1`
+              : _findType === 3
+              ? ``
+              : ``
+          }
+   ORDER  BY num DESC
+  `;
 
   try {
-    await QuestionType.create({
-      value,
-    });
+    const list = await models.sequelize.query(selectQuery);
 
-    return res.status(201).json({ result: true });
+    return res.status(200).json(list[0]);
   } catch (error) {
     console.error(error);
-    return res.status(401).send("새로운 유형을 등록할 수 없습니다.");
+    return res.status(401).send("문의 데이터를 조회할 수 없습니다.");
   }
 });
 
-router.patch("/type/update", isAdminCheck, async (req, res, next) => {
-  const { id, value } = req.body;
-
-  try {
-    const exQuestionType = await QuestionType.findOne({
-      where: { id: parseInt(id) },
-    });
-
-    if (!exQuestionType) {
-      return res.status(401).send("존재하지 않는 유형 입니다.");
-    }
-
-    const updateResult = await QuestionType.update(
-      {
-        value,
-      },
-      {
-        where: { id: parseInt(id) },
-      }
-    );
-
-    if (updateResult[0] > 0) {
-      return res.status(200).json({ result: true });
-    } else {
-      return res.status(200).json({ result: false });
-    }
-  } catch (error) {
-    console.error(error);
-    return res
-      .status(401)
-      .send(
-        "유형 데이터를 수정할 수 없습니다. 개발사에 문의해주세요. [CODE 065]"
-      );
-  }
-});
-
-router.delete(
-  "/type/delete/:questionTypeId",
-  isAdminCheck,
-  async (req, res, next) => {
-    const { questionTypeId } = req.params;
-
-    try {
-      const exQuestionType = await QuestionType.findOne({
-        where: { id: parseInt(questionTypeId) },
-      });
-
-      if (!exQuestionType) {
-        return res.status(401).send("존재하지 않는 유형 입니다.");
-      }
-
-      const updateResult = await QuestionType.update(
-        {
-          isDelete: true,
-        },
-        {
-          where: { id: parseInt(questionTypeId) },
-        }
-      );
-
-      if (updateResult[0] > 0) {
-        return res.status(200).json({ result: true });
-      } else {
-        return res.status(200).json({ result: false });
-      }
-    } catch (error) {
-      console.error(error);
-      return res
-        .status(401)
-        .send(
-          "유형 데이터를 삭제할 수 없습니다. 개발사에 문의해주세요. [CODE 066]"
-        );
-    }
-  }
-);
-
-// QUESTION
-router.get(
-  ["/list/:listType", "/list"],
-  isAdminCheck,
-  async (req, res, next) => {
-    const { listType } = req.params;
-
-    let nanFlag = isNaN(listType);
-
-    if (!listType) {
-      nanFlag = false;
-    }
-
-    if (nanFlag) {
-      return res.status(400).send("잘못된 요청 입니다.");
-    }
-
-    let _listType = Number(listType);
-
-    if (_listType > 3 || !listType) {
-      _listType = 3;
-    }
-
-    try {
-      let questions = [];
-
-      switch (_listType) {
-        case 1:
-          questions = await Question.findAll({
-            where: { isCompleted: false },
-            include: [
-              {
-                model: User,
-                attributes: ["id", "email", "nickname"],
-              },
-              {
-                model: QuestionType,
-              },
-            ],
-            //
-          });
-          break;
-        case 2:
-          questions = await Question.findAll({
-            where: { isCompleted: true },
-            include: [
-              {
-                model: User,
-                attributes: ["id", "email", "nickname"],
-              },
-              {
-                model: QuestionType,
-              },
-            ],
-            //
-          });
-          break;
-        case 3:
-          questions = await Question.findAll({
-            include: [
-              {
-                model: User,
-                attributes: ["id", "email", "nickname"],
-              },
-              {
-                model: QuestionType,
-              },
-            ],
-          });
-          break;
-        default:
-          break;
-      }
-
-      return res.status(200).json(questions);
-    } catch (error) {
-      console.error(error);
-      return res
-        .status(401)
-        .send("문의 데이터를 가져올 수 없습니다. [CODE 036]");
-    }
-  }
-);
-
+/**
+ * SUBJECT : 1대1문의 등록
+ * PARAMETERS : userLoginId, username, title, content
+ * ORDER BY : -
+ * STATEMENT : -
+ * DEVELOPMENT : 신태섭
+ * DEV DATE : 2023/03/27
+ */
 router.post("/create", isLoggedIn, async (req, res, next) => {
-  const { title, type, content } = req.body;
+  const { userLoginId, username, title, content } = req.body;
+
+  const insertQuery = `
+  INSERT  INTO  questions
+  (
+    userLoginId,
+    username,
+    title,
+    content,
+    UserId,
+    createdAt,
+    updatedAt
+  )
+  VALUES
+  (
+    "${userLoginId}",
+    "${username}",
+    "${title}",
+    "${content}",
+    ${req.user.id},
+    NOW(),
+    NOW()
+  )
+  `;
 
   try {
-    const createResult = await Question.create({
-      title,
-      content,
-      QuestionTypeId: parseInt(type),
-      UserId: req.user.id,
-    });
+    await models.sequelize.query(insertQuery);
 
     return res.status(201).json({ result: true });
   } catch (error) {
     console.error(error);
-    return res.status(401).send("문의 데이터를 생성할 수 없습니다. [CODE 037]");
+    return res.status(401).send("문의를 작성할 수 없습니다.");
   }
 });
 
-router.delete("/delete/:questionId", isAdminCheck, async (req, res, next) => {
-  const { questionId } = req.params;
+/**
+ * SUBJECT : 1대1문의 등록
+ * PARAMETERS : id, answer
+ * ORDER BY : -
+ * STATEMENT : -
+ * DEVELOPMENT : 신태섭
+ * DEV DATE : 2023/03/27
+ */
+router.post("/answer", isAdminCheck, async (req, res, next) => {
+  const { id, title, answer } = req.body;
+
+  const updateQuery = `
+  UPDATE  questions
+     SET  isCompleted = 1,
+          completedAt = NOW(),
+          answer = "${answer}",
+          answerdAt = NOW()
+   WHERE  id = ${id}
+  `;
+
+  const historyInsertQuery = `
+    INSERT  INTO    questionHistory
+    (
+        content,
+        value,
+        updator,
+        createdAt,
+        updatedAt
+    )
+    VALUES
+    (
+        "답변 작성",
+        "${title}",
+        ${req.user.id},
+        NOW(),
+        NOW()
+    )
+    `;
 
   try {
-    const exQuestion = await Question.findOne({
-      where: { id: parseInt(questionId) },
-    });
-
-    if (!exQuestion) {
-      return res.status(401).send("존재하지 않는 문의 입니다.");
-    }
-
-    await Question.destroy({
-      where: { id: parseInt(questionId) },
-    });
+    await models.sequelize.query(updateQuery);
+    await models.sequelize.query(historyInsertQuery);
 
     return res.status(200).json({ result: true });
   } catch (error) {
     console.error(error);
-    return res.status(401).send("문의내용을 삭제할 수 없습니다. [CODE 036]");
+    return res.status(401).send("문의 답변을 작성/수정 할 수 없습니다.");
   }
 });
 
-router.patch("/update", isAdminCheck, async (req, res, next) => {
-  const { id, title, content, answer } = req.body;
+/**
+ * SUBJECT : 문의 관리 이력
+ * PARAMETERS : datePick
+ * ORDER BY : -
+ * STATEMENT : -
+ * DEVELOPMENT : 신태섭
+ * DEV DATE : 2023/03/27
+ */
+router.post("/history/list", isAdminCheck, async (req, res, next) => {
+  const { datePick } = req.body;
+
+  const _datePick = datePick ? datePick : null;
+
+  const selectQuery = `
+    SELECT 	A.id,
+            A.content,
+            A.value,
+            B.username,
+            DATE_FORMAT(A.createdAt, "%Y년 %m월 %d일 %H:%i:%s")	AS  createdAt
+      FROM 	questionHistory		A
+     INNER
+      JOIN	users 			      B
+        ON	A.updator = B.id  
+     WHERE  1=1
+      ${
+        _datePick
+          ? `AND  DATE_FORMAT(A.createdAt, "%Y%m%d") = DATE_FORMAT("${datePick}", "%Y%m%d")`
+          : ""
+      }
+     ORDER  BY  A.createdAt  DESC
+    `;
 
   try {
-    const exQuestion = await Question.findOne({
-      where: { id: parseInt(id) },
-    });
+    const result = await models.sequelize.query(selectQuery);
 
-    if (!exQuestion) {
-      return res.status(401).send("존재하지 않는 문의 입니다.");
-    }
-
-    const updateResult = await Question.update(
-      {
-        title,
-        content,
-        answer,
-        answerdAt: new Date(),
-        isCompleted: true,
-      },
-      {
-        where: { id: parseInt(id) },
-      }
-    );
-
-    if (updateResult[0] > 0) {
-      return res.status(200).json({ result: true });
-    } else {
-      return res.status(200).json({ result: false });
-    }
+    return res.status(200).json(result[0]);
   } catch (error) {
     console.error(error);
-    return res.status(401).send("문의내용을 수정할 수 없습니다. [CODE 035]");
+    return res.status(400).send("데이터를 불러올 수 없습니다.");
   }
 });
 

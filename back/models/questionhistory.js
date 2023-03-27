@@ -9,8 +9,8 @@ module.exports = class QuestionHistory extends Model {
           type: DataTypes.STRING(50),
           allowNull: false, // 필수
         },
-        questionId: {
-          type: DataTypes.INTEGER,
+        value: {
+          type: DataTypes.STRING(200),
           allowNull: false, // 필수
         },
         updator: {
