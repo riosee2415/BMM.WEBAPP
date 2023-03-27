@@ -116,7 +116,7 @@ router.post("/admin/list", isAdminCheck, async (req, res, next) => {
               A.answerdAt,
               A.createdAt,
               A.updatedAt,
-              A.UserId,
+              A.UserId
         FROM  productQuestions       A
        WHERE  1 = 1
         ${

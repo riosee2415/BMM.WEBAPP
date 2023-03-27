@@ -2,16 +2,7 @@ import React, { useCallback, useEffect, useRef, useState } from "react";
 import AdminLayout from "../../../components/AdminLayout";
 import styled from "styled-components";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  Button,
-  Form,
-  Input,
-  Popconfirm,
-  Popover,
-  Table,
-  message,
-  DatePicker,
-} from "antd";
+import { Button, Form, Input, Popover, Table, message } from "antd";
 import { useRouter, withRouter } from "next/router";
 import wrapper from "../../../store/configureStore";
 import { END } from "redux-saga";
@@ -35,17 +26,13 @@ import {
   AlertOutlined,
   CheckOutlined,
   CloseOutlined,
-  EyeOutlined,
   HomeOutlined,
   RightOutlined,
-  SearchOutlined,
-  UnorderedListOutlined,
 } from "@ant-design/icons";
 import {
   REQUEST_ADMIN_LIST_REQUEST,
   REQUEST_ANSWER_UPDATE_REQUEST,
 } from "../../../reducers/request";
-import moment from "moment";
 
 const InfoTitle = styled.div`
   font-size: 19px;
@@ -65,13 +52,10 @@ const Request = ({}) => {
   const { st_loadMyInfoDone, me } = useSelector((state) => state.user);
   const {
     requestAdminList,
-    requestAnswerUpdateId,
-    requestAnswerUpdateAnswer,
 
     st_requestAnswerUpdateDone,
     st_requestAnswerUpdateError,
   } = useSelector((state) => state.request);
-  console.log(requestAdminList);
 
   const router = useRouter();
   const dispatch = useDispatch();
@@ -109,7 +93,7 @@ const Request = ({}) => {
 
   const [searchForm] = Form.useForm();
 
-  const [nanFlag, setNanFlag] = useState("");
+  const [isCom, setIsCom] = useState(2);
 
   ////// USEEFFECT //////
 
@@ -141,8 +125,11 @@ const Request = ({}) => {
   useEffect(() => {
     dispatch({
       type: REQUEST_ADMIN_LIST_REQUEST,
+      data: {
+        listType: isCom,
+      },
     });
-  }, []);
+  }, [isCom]);
 
   //   // ********************** 답변 생성 후처리 *************************
   useEffect(() => {
@@ -174,17 +161,17 @@ const Request = ({}) => {
 
   ////// HANDLER //////
 
-  const searchHandler = useCallback(
-    (listType) => {
-      setNanFlag(listType.productQuestions.productName);
+  const listTypeHandler = useCallback(
+    (data) => {
+      setIsCom(data);
     },
-    [nanFlag]
+    [isCom]
   );
 
   const allSearchHandler = useCallback(() => {
     searchForm.resetFields();
-    setNanFlag("");
-  }, [nanFlag]);
+    setIsCom("");
+  }, [isCom]);
 
   const beforeSetDataHandler = useCallback(
     (record) => {
@@ -203,12 +190,6 @@ const Request = ({}) => {
     },
     [currentData, infoForm]
   );
-
-  //   const createHandler = useCallback(() => {
-  //     dispatch({
-  //       type: REQUEST_CREATE_REQUEST,
-  //     });
-  //   }, []);
 
   const updateHandler = useCallback(
     (data) => {
@@ -266,7 +247,6 @@ const Request = ({}) => {
         al={`center`}
         padding={`0px 15px`}
         color={Theme.grey_C}
-        // shadow={`2px 2px 6px  ${Theme.adminTheme_2}`}
       >
         <HomeText
           margin={`3px 20px 0px 20px`}
@@ -289,29 +269,26 @@ const Request = ({}) => {
       <Wrapper margin={`10px 0px 0px 0px`}>
         <GuideUl>
           <GuideLi>상품요청 조회 및 답변 관리를 할 수 있습니다.</GuideLi>
-          {/* <GuideLi isImpo={true}>
-            썸네일 및 내용 이미지는 5MB이하로 올려주세요.
-          </GuideLi> */}
-          {/* <GuideLi isImpo={true}>삭제처리 된 게시글은 복구가 불가능합니다.</GuideLi> */}
+          <GuideLi isImpo={true}>
+            초기데이터는 미완료된 데이터로 조회됩니다.
+          </GuideLi>
         </GuideUl>
       </Wrapper>
 
       {/* 검색 */}
-      <Wrapper padding={`10px 20px`}>
-        <SearchForm
-          form={searchForm}
-          onFinish={searchHandler}
-          layout="inline"
-          style={{ width: "100%" }}
-        >
+      <Wrapper padding={`10px 20px`} dr={`row`} ju={`flex-start`}>
+        {/* <SearchForm form={searchForm} layout="inline" style={{ width: "100%" }}>
           <SearchFormItem name="title">
-            <Input size="small" placeholder="제목으로 검색해주세요." />
-          </SearchFormItem>
-
-          <SearchFormItem>
-            <Button icon={<SearchOutlined />} size="small" htmlType="submit">
-              검색
-            </Button>
+            <Select
+              value={isCom}
+              onChange={listTypeHandler}
+              style={{ width: `200px` }}
+              size="small"
+            >
+              <Select.Option value={1}>완료</Select.Option>
+              <Select.Option value={2}>미완료</Select.Option>
+              <Select.Option value={3}>전체</Select.Option>
+            </Select>
           </SearchFormItem>
 
           <SearchFormItem>
@@ -324,7 +301,30 @@ const Request = ({}) => {
               전체조회
             </Button>
           </SearchFormItem>
-        </SearchForm>
+        </SearchForm> */}
+
+        <Button
+          type={isCom === 2 ? "primary" : "default"}
+          onClick={() => setIsCom(2)}
+          size="small"
+        >
+          미완료
+        </Button>
+        <Button
+          type={isCom === 1 ? "primary" : "default"}
+          onClick={() => setIsCom(1)}
+          size="small"
+          style={{ margin: `0 5px` }}
+        >
+          완료
+        </Button>
+        <Button
+          type={isCom === 3 ? "primary" : "default"}
+          onClick={() => setIsCom(3)}
+          size="small"
+        >
+          전체
+        </Button>
       </Wrapper>
 
       <Wrapper dr="row" padding="0px 20px" al="flex-start" ju={`space-between`}>
@@ -370,7 +370,7 @@ const Request = ({}) => {
               >
                 <Form.Item label="상품명" name="productName">
                   <Input
-                    style={{ background: Theme.lightGrey_C, border: "none" }}
+                    style={{ background: Theme.lightGrey3_C, border: "none" }}
                     size="small"
                     readOnly
                   />
@@ -378,7 +378,7 @@ const Request = ({}) => {
 
                 <Form.Item label="내용" name="content">
                   <Input.TextArea
-                    style={{ background: Theme.lightGrey_C, border: "none" }}
+                    style={{ background: Theme.lightGrey3_C, border: "none" }}
                     rows={5}
                     readOnly
                   />
@@ -387,7 +387,7 @@ const Request = ({}) => {
                 <Form.Item label="이름" name="name">
                   <Input
                     size="small"
-                    style={{ background: Theme.lightGrey_C, border: "none" }}
+                    style={{ background: Theme.lightGrey3_C, border: "none" }}
                     readOnly
                   />
                 </Form.Item>
@@ -395,7 +395,7 @@ const Request = ({}) => {
                 <Form.Item label="연락처" name="mobile">
                   <Input
                     size="small"
-                    style={{ background: Theme.lightGrey_C, border: "none" }}
+                    style={{ background: Theme.lightGrey3_C, border: "none" }}
                     readOnly
                   />
                 </Form.Item>
@@ -403,7 +403,7 @@ const Request = ({}) => {
                 <Form.Item label="이메일" name="email">
                   <Input
                     size="small"
-                    style={{ background: Theme.lightGrey_C, border: "none" }}
+                    style={{ background: Theme.lightGrey3_C, border: "none" }}
                     readOnly
                   />
                 </Form.Item>
@@ -411,7 +411,7 @@ const Request = ({}) => {
                 <Form.Item label="상품URL" name="productUrl">
                   <Input
                     size="small"
-                    style={{ background: Theme.lightGrey_C, border: "none" }}
+                    style={{ background: Theme.lightGrey3_C, border: "none" }}
                     readOnly
                   />
                 </Form.Item>
@@ -419,7 +419,7 @@ const Request = ({}) => {
                 <Form.Item label="비밀번호" name="password">
                   <Input
                     size="small"
-                    style={{ background: Theme.lightGrey_C, border: "none" }}
+                    style={{ background: Theme.lightGrey3_C, border: "none" }}
                     readOnly
                   />
                 </Form.Item>
