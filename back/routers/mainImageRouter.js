@@ -41,12 +41,12 @@ const upload = multer({
 });
 
 /**
- * SUBJECT : 브랜드 이미지
+ * SUBJECT : 메인 이미지 이미지등록
  * PARAMETERS : -
  * ORDER BY : -
  * STATEMENT : -
  * DEVELOPMENT : 신태섭
- * DEV DATE : 2023/03/23
+ * DEV DATE : 2023/03/27
  */
 router.post("/image", isAdminCheck, async (req, res, next) => {
   const uploadImage = upload.single("image");
@@ -65,31 +65,30 @@ router.post("/image", isAdminCheck, async (req, res, next) => {
 });
 
 /**
- * SUBJECT : 브랜드 목록
+ * SUBJECT : 메인 이미지 목록
  * PARAMETERS :
  * ORDER BY : -
  * STATEMENT : -
  * DEVELOPMENT : 신태섭
- * DEV DATE : 2023/03/23
+ * DEV DATE : 2023/03/27
  */
 router.post("/list", async (req, res, next) => {
   const selectQuery = `
   SELECT    ROW_NUMBER()    OVER(ORDER  BY A.createdAt)     AS num,
             A.id,
             A.imagePath,
-            A.name,
-            A.subDesc,
+            A.link,
             A.createdAt,
             A.updatedAt,
             DATE_FORMAT(A.createdAt, "%Y년 %m월 %d일")        AS viewCreatedAt,
             DATE_FORMAT(A.updatedAt, "%Y년 %m월 %d일")        AS viewUpdatedAt,
             B.username                                      AS updator
-    FROM    brand               A
+    FROM    mainImage               A
     LEFT
    OUTER
-    JOIN    users               B
+    JOIN    users                   B
       ON    A.updator = B.id
-   WHERE    A.isDelete = 0
+   WHERE    1 = 1
    ORDER    BY num DESC 
   `;
 
@@ -99,34 +98,32 @@ router.post("/list", async (req, res, next) => {
     return res.status(200).json(list[0]);
   } catch (error) {
     console.error(error);
-    return res.status(401).send("브랜드 목록을 조회할 수 없습니다.");
+    return res.status(401).send("메인 이미지 목록을 조회할 수 없습니다.");
   }
 });
 
 /**
- * SUBJECT : 브랜드 등록
+ * SUBJECT : 메인 이미지 등록
  * PARAMETERS : -
  * ORDER BY : -
  * STATEMENT : -
  * DEVELOPMENT : 신태섭
- * DEV DATE : 2023/03/23
+ * DEV DATE : 2023/03/27
  */
 router.post("/create", isAdminCheck, async (req, res, next) => {
   const insertQuery = `
-    INSERT  INTO   brand
+    INSERT  INTO   mainImage
     (
         imagePath,
-        name,
-        subDesc,
+        link,
         updator,
         createdAt,
         updatedAt
     ) 
     VALUES
     (
-        "http://via.placeholder.com/426",
-        "임시 브랜드",
-        "임시 서브 설명",
+        "http://via.placeholder.com/620x260",
+        "/",
         ${req.user.id},
         NOW(),
         NOW()
@@ -134,10 +131,9 @@ router.post("/create", isAdminCheck, async (req, res, next) => {
     `;
 
   const historyInsertQuery = `
-    INSERT  INTO    brandHistory
+    INSERT  INTO    mainImageHistory
     (
         content,
-        value,
         updator,
         createdAt,
         updatedAt
@@ -145,7 +141,6 @@ router.post("/create", isAdminCheck, async (req, res, next) => {
     VALUES
     (
         "데이터 생성",
-        "임시 브랜드",
         ${req.user.id},
         NOW(),
         NOW()
@@ -159,39 +154,36 @@ router.post("/create", isAdminCheck, async (req, res, next) => {
     return res.status(201).json({ result: true });
   } catch (error) {
     console.error(error);
-    return res.status(401).send("브랜드를 등록할 수 없습니다.");
+    return res.status(401).send("메인 이미지를 등록할 수 없습니다.");
   }
 });
 
 /**
- * SUBJECT : 브랜드 수정
+ * SUBJECT : 메인 이미지 수정
  * PARAMETERS : id,
                 imagePath,
-                name,
-                subDesc
+                link
  * ORDER BY : -
  * STATEMENT : -
  * DEVELOPMENT : 신태섭
- * DEV DATE : 2023/03/23
+ * DEV DATE : 2023/03/27
  */
 router.post("/update", isAdminCheck, async (req, res, next) => {
-  const { id, imagePath, name, subDesc } = req.body;
+  const { id, imagePath, link } = req.body;
 
   const updateQuery = `
-  UPDATE    brand
+  UPDATE    mainImage
      SET    imagePath = "${imagePath}",
-            name = "${name}",
-            subDesc = "${subDesc}",
+            link = "${link}",
             updator = ${req.user.id},
             updatedAt = NOW()
    WHERE    id = ${id}
   `;
 
   const historyInsertQuery = `
-    INSERT  INTO    brandHistory
+    INSERT  INTO    mainImageHistory
     (
         content,
-        value,
         updator,
         createdAt,
         updatedAt
@@ -199,7 +191,6 @@ router.post("/update", isAdminCheck, async (req, res, next) => {
     VALUES
     (
         "데이터 수정",
-        "${name}",
         ${req.user.id},
         NOW(),
         NOW()
@@ -213,90 +204,32 @@ router.post("/update", isAdminCheck, async (req, res, next) => {
     return res.status(200).json({ result: true });
   } catch (error) {
     console.error(error);
-    return res.status(401).send("브랜드를 수정할 수 없습니다.");
+    return res.status(401).send("메인 이미지를 수정할 수 없습니다.");
   }
 });
 
 /**
- * SUBJECT : 브랜드 수정
- * PARAMETERS : id,
-                imagePath,
-                name,
-                subDesc
- * ORDER BY : -
- * STATEMENT : -
- * DEVELOPMENT : 신태섭
- * DEV DATE : 2023/03/23
- */
-router.post("/update", isAdminCheck, async (req, res, next) => {
-  const { id, imagePath, name, subDesc } = req.body;
-
-  const updateQuery = `
-    UPDATE    brand
-       SET    imagePath = "${imagePath}",
-              name = "${name}",
-              subDesc = "${subDesc}",
-              updator = ${req.user.id},
-              updatedAt = NOW()
-     WHERE    id = ${id}
-    `;
-
-  const historyInsertQuery = `
-    INSERT  INTO    brandHistory
-    (
-        content,
-        value,
-        updator,
-        createdAt,
-        updatedAt
-    )
-    VALUES
-    (
-        "데이터 수정",
-        "${name}",
-        ${req.user.id},
-        NOW(),
-        NOW()
-    )
-    `;
-
-  try {
-    await models.sequelize.query(updateQuery);
-    await models.sequelize.query(historyInsertQuery);
-
-    return res.status(200).json({ result: true });
-  } catch (error) {
-    console.error(error);
-    return res.status(401).send("브랜드를 수정할 수 없습니다.");
-  }
-});
-
-/**
- * SUBJECT : 브랜드 삭제
+ * SUBJECT : 메인 이미지 삭제
  * PARAMETERS : id,
                 name
  * ORDER BY : -
  * STATEMENT : -
  * DEVELOPMENT : 신태섭
- * DEV DATE : 2023/03/23
+ * DEV DATE : 2023/03/27
  */
 router.post("/delete", isAdminCheck, async (req, res, next) => {
-  const { id, name } = req.body;
+  const { id } = req.body;
 
   const deleteQuery = `
-  UPDATE    brand
-     SET    isDelete = 1,
-            deletedAt = NOW(),
-            updator = ${req.user.id},
-            updatedAt = NOW()
+  DELETE
+    FROM    mainImage
    WHERE    id = ${id}
   `;
 
   const historyInsertQuery = `
-    INSERT  INTO    brandHistory
+    INSERT  INTO    mainImageHistory
     (
         content,
-        value,
         updator,
         createdAt,
         updatedAt
@@ -304,7 +237,6 @@ router.post("/delete", isAdminCheck, async (req, res, next) => {
     VALUES
     (
         "데이터 삭제",
-        "${name}",
         ${req.user.id},
         NOW(),
         NOW()
@@ -318,17 +250,17 @@ router.post("/delete", isAdminCheck, async (req, res, next) => {
     return res.status(200).json({ result: true });
   } catch (error) {
     console.error(error);
-    return res.status(401).send("브랜드를 삭제할 수 없습니다.");
+    return res.status(401).send("메인 이미지를 삭제할 수 없습니다.");
   }
 });
 
 /**
- * SUBJECT : 브랜드 관리 이력
+ * SUBJECT : 메인 이미지 관리 이력
  * PARAMETERS : datePick
  * ORDER BY : -
  * STATEMENT : -
  * DEVELOPMENT : 신태섭
- * DEV DATE : 2023/03/23
+ * DEV DATE : 2023/03/27
  */
 router.post("/history/list", isAdminCheck, async (req, res, next) => {
   const { datePick } = req.body;
@@ -338,10 +270,9 @@ router.post("/history/list", isAdminCheck, async (req, res, next) => {
   const selectQuery = `
     SELECT 	A.id,
             A.content,
-            A.value,
             B.username,
             DATE_FORMAT(A.createdAt, "%Y년 %m월 %d일 %H:%i:%s")	AS  createdAt
-      FROM 	brandHistory		A
+      FROM 	mainImageHistory		A
      INNER
       JOIN	users 			    B
         ON	A.updator = B.id
