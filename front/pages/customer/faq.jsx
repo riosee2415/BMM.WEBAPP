@@ -17,10 +17,13 @@ import {
 } from "../../components/commonComponents";
 import CustomerLeft from "../../components/CustomerLeft";
 import Theme from "../../components/Theme";
-import { Select } from "antd";
+import { Empty, Select } from "antd";
 import { DownOutlined, UpOutlined } from "@ant-design/icons";
 import styled from "styled-components";
 import { useRouter } from "next/router";
+import { useDispatch, useSelector } from "react-redux";
+import { FAQTYPE_LIST_REQUEST, FAQ_LIST_REQUEST } from "../../reducers/faq";
+import { useEffect } from "react";
 
 const List = styled(Wrapper)`
   padding: 20px 28px;
@@ -46,17 +49,53 @@ const List = styled(Wrapper)`
 
 const Faq = () => {
   ////// GLOBAL STATE //////
+  const { typeList, faqList } = useSelector((state) => state.faq);
+
   const [isVisible, setIsVisible] = useState(false);
+  const [visibleId, setVisibleId] = useState(null);
+  const [searchType, setSearchType] = useState("전체");
   ////// HOOKS //////
   const width = useWidth();
   const router = useRouter();
+  const dispatch = useDispatch();
+
   ////// REDUX //////
   ////// USEEFFECT //////
+  useEffect(() => {
+    dispatch({
+      type: FAQ_LIST_REQUEST,
+      data: {
+        FaqTypeId: searchType,
+      },
+    });
+  }, [searchType]);
+
   ////// TOGGLE //////
-  const faqToggle = useCallback(() => {
-    setIsVisible((prev) => !prev);
-  }, [isVisible]);
+  const faqToggle = useCallback(
+    (data) => {
+      if (data.id === visibleId) {
+        setIsVisible(false);
+        setVisibleId(null);
+
+        return;
+      }
+
+      if (data) {
+        setVisibleId(data.id);
+        setIsVisible(true);
+      }
+    },
+    [isVisible, visibleId]
+  );
+
   ////// HANDLER //////
+  const searchTypeHandler = useCallback(
+    (data) => {
+      setSearchType(data === "전체" ? null : data);
+    },
+    [searchType]
+  );
+
   ////// DATAVIEW //////
 
   return (
@@ -152,66 +191,77 @@ const Faq = () => {
                   FAQ
                 </Text>
                 <CustomSelect>
-                  <Select placeholder="전체">
-                    <Select.Option>전체</Select.Option>
-                    <Select.Option>유형1</Select.Option>
-                    <Select.Option>유형2</Select.Option>
+                  <Select onChange={searchTypeHandler} placeholder="유형 선택">
+                    <Select.Option value={"전체"}>전체</Select.Option>
+                    {typeList &&
+                      typeList.map((data) => {
+                        return (
+                          <Select.Option key={data.id} value={data.id}>
+                            {data.value}
+                          </Select.Option>
+                        );
+                      })}
                   </Select>
                 </CustomSelect>
               </Wrapper>
 
               <Wrapper>
-                <List onClick={faqToggle}>
-                  <Image
-                    alt="Q"
-                    width={`21px`}
-                    src={`https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/bmm/assets/images/icon/Q.png`}
-                  />
-                  <Wrapper
-                    width={`calc(100% - 21px - 20px)`}
-                    al={`flex-start`}
-                    padding={`0 12px`}
-                  >
-                    <Text fontSize={width < 900 ? `14px` : `18px`}>
-                      자주묻는질문이 들어올 곳입니다.
-                    </Text>
+                {faqList && faqList.length === 0 ? (
+                  <Wrapper padding={`50px 0`}>
+                    <Empty description="조회된 FAQ가 없습니다." />
                   </Wrapper>
-                  <Text color={Theme.lightGrey_C}>
-                    {isVisible ? <UpOutlined /> : <DownOutlined />}
-                  </Text>
-                </List>
-
-                {isVisible && (
-                  <Wrapper
-                    radius={`30px`}
-                    padding={width < 900 ? `30px 15px` : `40px 26px`}
-                    bgColor={Theme.lightGrey3_C}
-                    dr={`row`}
-                    al={`flex-start`}
-                    margin={`6px 0 0`}
-                  >
-                    <Image
-                      alt="A"
-                      width={`21px`}
-                      src={`https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/bmm/assets/images/icon/A.png`}
-                    />
-                    <Wrapper
-                      width={`calc(100% - 21px)`}
-                      al={`flex-start`}
-                      padding={`0 12px`}
-                      color={Theme.darkGrey_C}
-                    >
-                      <Text fontSize={width < 900 ? `14px` : `16px`}>
-                        답변이 들어올 곳입니다. 답변이 들어올 곳입니다. 답변이
-                        들어올 곳입니다. 답변이 들어올 곳입니다. 답변이 들어올
-                        곳입니다. 답변이 들어올 곳입니다. 답변이 들어올
-                        곳입니다. 답변이 들어올 곳입니다. 답변이 들어올
-                        곳입니다. 답변이 들어올 곳입니다. 답변이 들어올
-                        곳입니다. 답변이 들어올 곳입니다. 답변이 들어올
-                        곳입니다.
-                      </Text>
-                    </Wrapper>
-                  </Wrapper>
+                ) : (
+                  faqList.map((data) => {
+                    return (
+                      <>
+                        <List onClick={() => faqToggle(data)} key={data.id}>
+                          <Image
+                            alt="Q"
+                            width={`21px`}
+                            src={`https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/bmm/assets/images/icon/Q.png`}
+                          />
+                          <Wrapper
+                            width={`calc(100% - 21px - 20px)`}
+                            al={`flex-start`}
+                            padding={`0 12px`}
+                          >
+                            <Text fontSize={width < 900 ? `14px` : `18px`}>
+                              {data.question}
+                            </Text>
+                          </Wrapper>
+                          <Text color={Theme.lightGrey_C}>
+                            {isVisible ? <UpOutlined /> : <DownOutlined />}
+                          </Text>
+                        </List>
+                        {visibleId === data.id && isVisible && (
+                          <Wrapper
+                            radius={`30px`}
+                            padding={width < 900 ? `30px 15px` : `40px 26px`}
+                            bgColor={Theme.lightGrey3_C}
+                            dr={`row`}
+                            al={`flex-start`}
+                            margin={`6px 0 0`}
+                          >
+                            <Image
+                              alt="A"
+                              width={`21px`}
+                              src={`https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/bmm/assets/images/icon/A.png`}
+                            />
+                            <Wrapper
+                              width={`calc(100% - 21px)`}
+                              al={`flex-start`}
+                              padding={`0 12px`}
+                              color={Theme.darkGrey_C}
+                            >
+                              <Text fontSize={width < 900 ? `14px` : `16px`}>
+                                {data.answer}
+                              </Text>
+                            </Wrapper>
+                          </Wrapper>
+                        )}
+                      </>
+                    );
+                  })
                 )}
               </Wrapper>
             </Wrapper>
@@ -235,6 +285,14 @@ export const getServerSideProps = wrapper.getServerSideProps(
 
     context.store.dispatch({
       type: LOAD_MY_INFO_REQUEST,
+    });
+
+    context.store.dispatch({
+      type: FAQTYPE_LIST_REQUEST,
+    });
+
+    context.store.dispatch({
+      type: FAQ_LIST_REQUEST,
     });
 
     // 구현부 종료
