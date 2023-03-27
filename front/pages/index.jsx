@@ -26,7 +26,8 @@ import MainEventSlider from "../components/slide/MainEventSlider";
 import MainNewSlider from "../components/slide/MainNewSlider";
 import MainBrandSlider from "../components/slide/MainBrandSlider";
 import MainRecommandSlider from "../components/slide/MainRecommandSlider";
-import { RightOutlined } from "@ant-design/icons";
+import { ConsoleSqlOutlined, RightOutlined } from "@ant-design/icons";
+import { ADVERTISE_LIST_REQUEST } from "../reducers/advertise";
 
 const Btn = styled(Wrapper)`
   width: auto;
@@ -92,6 +93,7 @@ const EventBox = styled(Wrapper)`
 
 const Home = ({}) => {
   ////// GLOBAL STATE //////
+  const { advertiseList } = useSelector((state) => state.advertise);
 
   ////// HOOKS //////
   const width = useWidth();
@@ -174,16 +176,18 @@ const Home = ({}) => {
               </Wrapper>
             </Wrapper>
 
-            <Image
-              alt="banner"
-              margin={`0 0 30px`}
-              src={`https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/bmm/assets/images/main/img_4nd_banner1.png`}
-            />
-            <Image
-              alt="banner"
-              margin={`0 0 30px`}
-              src={`https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/bmm/assets/images/main/img_4nd_banner2.png`}
-            />
+            {advertiseList &&
+              advertiseList.map((data) => {
+                return (
+                  <a href={data.link} target={`_blank`} key={data.id}>
+                    <Image
+                      alt="banner"
+                      margin={`0 0 30px`}
+                      src={data.imagePath}
+                    />
+                  </a>
+                );
+              })}
 
             <Text
               margin={width < 800 ? `30px 0 20px` : `60px 0 40px`}
@@ -368,6 +372,10 @@ export const getServerSideProps = wrapper.getServerSideProps(
 
     context.store.dispatch({
       type: LOAD_MY_INFO_REQUEST,
+    });
+
+    context.store.dispatch({
+      type: ADVERTISE_LIST_REQUEST,
     });
 
     // 구현부 종료
