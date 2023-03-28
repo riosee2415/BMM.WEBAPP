@@ -20,6 +20,7 @@ import {
 import styled from "styled-components";
 import Link from "next/dist/client/link";
 import { useDispatch, useSelector } from "react-redux";
+import { Empty } from "antd";
 
 const List = styled(Wrapper)`
   width: 49%;

@@ -52,6 +52,7 @@ const reducer = (state = initailState, action) =>
         draft.st_requestListLoading = false;
         draft.st_requestListDone = true;
         draft.st_requestListError = null;
+        draft.requestList = action.data.prodQue;
         draft.requestPage = action.data.lastPage;
         break;
       }

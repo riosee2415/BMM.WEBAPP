@@ -1,8 +1,9 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import ClientLayout from "../../../components/ClientLayout";
 import Head from "next/head";
 import wrapper from "../../../store/configureStore";
 import { LOAD_MY_INFO_REQUEST } from "../../../reducers/user";
+import { REQUEST_LIST_REQUEST } from "../../../reducers/request";
 import axios from "axios";
 import { END } from "redux-saga";
 import useWidth from "../../../hooks/useWidth";
@@ -25,8 +26,8 @@ import Theme from "../../../components/Theme";
 import styled from "styled-components";
 
 import { useRouter } from "next/router";
-import { useSelector } from "react-redux";
-import { Select } from "antd";
+import { useDispatch, useSelector } from "react-redux";
+import { Empty, Select } from "antd";
 import { LockFilled } from "@ant-design/icons";
 
 const List = styled(Wrapper)`
@@ -56,14 +57,34 @@ const List = styled(Wrapper)`
 
 const Index = () => {
   ////// GLOBAL STATE //////
+  const { requestList, requestPage } = useSelector((state) => state.request);
+  const { pageTab, setPageTab } = useState(1);
+
   ////// HOOKS //////
   const width = useWidth();
+  const dispatch = useDispatch();
   const router = useRouter();
+
   ////// REDUX //////
   ////// USEEFFECT //////
-  ////// TOGGLE //////
+  useEffect(() => {
+    dispatch({
+      type: REQUEST_LIST_REQUEST,
+      data: {
+        page: pageTab,
+      },
+    });
+  }, [pageTab]);
 
+  ////// TOGGLE //////
   ////// HANDLER //////
+  const changPageCall = useCallback(
+    (changePage) => {
+      setPageTab(changePage);
+    },
+    [pageTab]
+  );
+
   ////// DATAVIEW //////
 
   return (
@@ -146,8 +167,8 @@ const Index = () => {
                   <CustomSelect>
                     <Select placeholder="전체">
                       <Select.Option>전체</Select.Option>
-                      <Select.Option>유형1</Select.Option>
-                      <Select.Option>유형2</Select.Option>
+                      <Select.Option>답변대기</Select.Option>
+                      <Select.Option>답변완료</Select.Option>
                     </Select>
                   </CustomSelect>
                   <Wrapper
@@ -197,45 +218,63 @@ const Index = () => {
                 <Wrapper width={`12%`}>작성일</Wrapper>
                 <Wrapper width={`12%`}>답변상태</Wrapper>
               </Wrapper>
-              <List onClick={() => router.push(`/customer/request/secret`)}>
-                <Wrapper
-                  display={width < 700 ? `none` : `flex`}
-                  width={`8%`}
-                  color={Theme.grey_C}
-                >
-                  10
+              {requestList && requestList.length === 0 ? (
+                <Wrapper padding={`50px 0`}>
+                  <Empty description="조회된 상품요청 내역이 없습니다." />
                 </Wrapper>
-                <Wrapper
-                  width={width < 700 ? `100%` : `56%`}
-                  dr={`row`}
-                  padding={width < 700 ? `0 0 10px` : `0 14px`}
-                  ju={`flex-start`}
-                >
-                  <Text maxWidth={`90%`} isEllipsis margin={`0 6px 0 0`}>
-                    상품 요청
-                  </Text>
-                  <LockFilled />
-                </Wrapper>
-                <Wrapper
-                  color={Theme.grey_C}
-                  width={width < 700 ? `calc(100% / 3)` : `12%`}
-                >
-                  김**
-                </Wrapper>
-                <Wrapper width={width < 700 ? `calc(100% / 3)` : `12%`}>
-                  2022.12.31
-                </Wrapper>
-                <Wrapper
-                  width={width < 700 ? `calc(100% / 3)` : `12%`}
-                  fontSize={width < 700 ? `15px` : `18px`}
-                  fontWeight={`600`}
-                >
-                  <Text color={Theme.grey_C}>답변대기</Text>
-                  {/* <Text>답변완료</Text> */}
-                </Wrapper>
-              </List>
-
-              <CustomPage />
+              ) : (
+                requestList.map((data) => {
+                  return (
+                    <List
+                      onClick={() => router.push(`/customer/request/secret`)}
+                      key={`data.req.user.id`}
+                    >
+                      <Wrapper
+                        display={width < 700 ? `none` : `flex`}
+                        width={`8%`}
+                        color={Theme.grey_C}
+                      >
+                        {data.id}
+                      </Wrapper>
+                      <Wrapper
+                        width={width < 700 ? `100%` : `56%`}
+                        dr={`row`}
+                        padding={width < 700 ? `0 0 10px` : `0 14px`}
+                        ju={`flex-start`}
+                      >
+                        <Text maxWidth={`90%`} isEllipsis margin={`0 6px 0 0`}>
+                          {data.productName}
+                        </Text>
+                        <LockFilled />
+                      </Wrapper>
+                      <Wrapper
+                        color={Theme.grey_C}
+                        width={width < 700 ? `calc(100% / 3)` : `12%`}
+                      >
+                        {data.name}
+                      </Wrapper>
+                      <Wrapper width={width < 700 ? `calc(100% / 3)` : `12%`}>
+                        {data.createAt}
+                      </Wrapper>
+                      <Wrapper
+                        width={width < 700 ? `calc(100% / 3)` : `12%`}
+                        fontSize={width < 700 ? `15px` : `18px`}
+                        fontWeight={`600`}
+                      >
+                        <Text color={Theme.grey_C}>{data.isCompleted}</Text>
+                        {/* <Text>답변완료</Text> */}
+                      </Wrapper>
+                    </List>
+                  );
+                })
+              )}
+              <CustomPage
+                defaultCurrent={1}
+                current={parseInt(pageTab)}
+                pageSize={10}
+                total={requestPage * 10}
+                onChange={(page) => changPageCall(page)}
+              />
             </Wrapper>
           </RsWrapper>
         </WholeWrapper>
