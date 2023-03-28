@@ -89,13 +89,17 @@ const Index = () => {
                 이벤트
               </Text>
             </Wrapper>
-            {eventList &&
+            {eventList && eventList.length === 0 ? (
+              <Wrapper padding={`50px 0`}>
+                <Empty description="조회된 이벤트가 없습니다." />
+              </Wrapper>
+            ) : (
               eventList.map((data) => {
                 return (
-                  <List>
+                  <List key={data.id}>
                     <Link href={`/event/${data.id}`}>
                       <ATag>
-                        <Wrapper key={data.id} al={`flex-start`}>
+                        <Wrapper al={`flex-start`}>
                           <Image alt="thumbnail" src={data.thumbnail} />
                           <Text
                             width={`100%`}
@@ -111,7 +115,8 @@ const Index = () => {
                     </Link>
                   </List>
                 );
-              })}
+              })
+            )}
 
             <CustomPage
               defaultCurrent={1}

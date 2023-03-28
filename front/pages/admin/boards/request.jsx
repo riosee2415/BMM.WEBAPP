@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import AdminLayout from "../../../components/AdminLayout";
 import styled from "styled-components";
 import { useDispatch, useSelector } from "react-redux";
@@ -15,9 +15,6 @@ import {
   OtherMenu,
   GuideUl,
   GuideLi,
-  DelBtn,
-  SearchForm,
-  SearchFormItem,
 } from "../../../components/commonComponents";
 import { LOAD_MY_INFO_REQUEST } from "../../../reducers/user";
 import Theme from "../../../components/Theme";
@@ -91,7 +88,7 @@ const Request = ({}) => {
 
   ////// HOOKS //////
 
-  const [searchForm] = Form.useForm();
+  // const [searchForm] = Form.useForm();
 
   const [isCom, setIsCom] = useState(2);
 
@@ -145,33 +142,19 @@ const Request = ({}) => {
     }
   }, [st_requestAnswerUpdateDone, st_requestAnswerUpdateError]);
 
-  // ********************** 답변 수정 후처리 *************************
-  // useEffect(() => {
-  //   if (st_requestAnswerUpdateDone) {
-  //     dispatch({
-  //       type: REQUEST_ADMIN_LIST_REQUEST,
-  //     });
-
-  //     return message.success("답변이 수정되었습니다.");
-  //   }
-  //   if (st_requestAnswerUpdateError) {
-  //     return message.error(st_requestAnswerUpdateError);
-  //   }
-  // }, [st_requestAnswerUpdateDone, st_requestAnswerUpdateError]);
-
   ////// HANDLER //////
 
-  const listTypeHandler = useCallback(
-    (data) => {
-      setIsCom(data);
-    },
-    [isCom]
-  );
+  // const listTypeHandler = useCallback(
+  //   (data) => {
+  //     setIsCom(data);
+  //   },
+  //   [isCom]
+  // );
 
-  const allSearchHandler = useCallback(() => {
-    searchForm.resetFields();
-    setIsCom("");
-  }, [isCom]);
+  // const allSearchHandler = useCallback(() => {
+  //   searchForm.resetFields();
+  //   setIsCom("");
+  // }, [isCom]);
 
   const beforeSetDataHandler = useCallback(
     (record) => {

@@ -457,6 +457,10 @@ const Event = ({}) => {
             썸네일 및 내용 이미지는 5MB이하로 올려주세요.
           </GuideLi>
           <GuideLi isImpo={true}>
+            썸네일 이미지 사이즈는 630 X 260입니다.
+          </GuideLi>
+          <GuideLi isImpo={true}>내용 이미지 사이즈는 840 X 980입니다.</GuideLi>
+          <GuideLi isImpo={true}>
             삭제처리 된 이벤트은 복구가 불가능합니다.
           </GuideLi>
         </GuideUl>
@@ -535,8 +539,8 @@ const Event = ({}) => {
               <Wrapper dr={`row`} ju={`space-around`} margin={`30px 0`}>
                 <Wrapper>
                   <Image
-                    width={`630px`}
-                    height={`260px`}
+                    width={`100%`}
+                    height={`150px`}
                     src={eventPath1 ? eventPath1 : currentData.thumbnail}
                     alt={`image`}
                   />
@@ -550,7 +554,7 @@ const Event = ({}) => {
                   />
                   <Button
                     loading={st_eventUpload1Loading}
-                    style={{ width: `630px`, marginBottom: `5px` }}
+                    style={{ width: `100%`, margin: `5px 0 10px` }}
                     size="small"
                     type="primary"
                     onClick={clickImg1Upload}
@@ -656,7 +660,7 @@ const Event = ({}) => {
                 <Form.Item label="조회수" name="hit">
                   <Input
                     size="small"
-                    style={{ background: Theme.lightGrey_C, border: "none" }}
+                    style={{ background: Theme.lightGrey3_C, border: "none" }}
                     readOnly
                   />
                 </Form.Item>
@@ -664,7 +668,7 @@ const Event = ({}) => {
                 <Form.Item label="작성일" name="createdAt">
                   <Input
                     size="small"
-                    style={{ background: Theme.lightGrey_C, border: "none" }}
+                    style={{ background: Theme.lightGrey3_C, border: "none" }}
                     readOnly
                   />
                 </Form.Item>
@@ -672,7 +676,7 @@ const Event = ({}) => {
                 <Form.Item label="수정일" name="updatedAt">
                   <Input
                     size="small"
-                    style={{ background: Theme.lightGrey_C, border: "none" }}
+                    style={{ background: Theme.lightGrey3_C, border: "none" }}
                     readOnly
                   />
                 </Form.Item>
@@ -680,7 +684,7 @@ const Event = ({}) => {
                 <Form.Item label="최근작업자" name="updator">
                   <Input
                     size="small"
-                    style={{ background: Theme.lightGrey_C, border: "none" }}
+                    style={{ background: Theme.lightGrey3_C, border: "none" }}
                     readOnly
                   />
                 </Form.Item>
