@@ -5,7 +5,15 @@ const models = require("../models");
 
 const router = express.Router();
 
-router.get("/my/list", isLoggedIn, async (req, res, next) => {
+/**
+ * SUBJECT : 나의 상품문의 목록
+ * PARAMETERS : page
+ * ORDER BY : -
+ * STATEMENT : -
+ * DEVELOPMENT : 신태섭
+ * DEV DATE : 2023/03/27
+ */
+router.post("/my/list", isLoggedIn, async (req, res, next) => {
   const { page } = req.query;
 
   if (!req.user) {
@@ -81,9 +89,58 @@ router.get("/my/list", isLoggedIn, async (req, res, next) => {
   }
 });
 
-// QUESTION
-router.post("/admin/list", isAdminCheck, async (req, res, next) => {
-  const { listType } = req.body;
+/**
+ * SUBJECT : 상품문의 상세
+ * PARAMETERS : id
+ * ORDER BY : -
+ * STATEMENT : -
+ * DEVELOPMENT : 신태섭
+ * DEV DATE : 2023/03/28
+ */
+router.post("/detail", async (req, res, next) => {
+  const { id } = req.body;
+
+  const detailQuery = `
+  SELECT  A.id,
+          A.name,
+          A.mobile,
+          A.email,
+          A.productName,
+          A.productUrl,
+          A.content,
+          A.password,
+          A.isCompleted,
+          A.answer,
+          A.answerdAt,
+          A.createdAt,
+          A.updatedAt,
+          A.UserId,
+          CASE
+              WHEN  A.UserId IS NOT NULL THEN "회원 작성"
+              ELSE  "비회원 작성"
+          END                    AS questionType
+    FROM  productQuestions       A
+   WHERE  1 = 1
+     AND  A.id = ${id}
+  `;
+
+  try {
+    const detailData = await models.sequelize.query(detailQuery);
+
+    if (detailData[0].length === 0) {
+      return res.status(401).send("존재하지 않는 게시글 정보입니다.");
+    }
+
+    return res.status(200).json(detailData[0][0]);
+  } catch (error) {
+    console.error(error);
+    return res.status(401).send("상품문의 데이터를 가져올 수 없습니다.");
+  }
+});
+
+// 상품문의 상세
+router.post("/detail", isAdminCheck, async (req, res, next) => {
+  const { id } = req.body;
 
   const _listType = parseInt(listType) || 3;
 
