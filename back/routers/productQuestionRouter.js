@@ -85,25 +85,12 @@ router.get("/my/list", isLoggedIn, async (req, res, next) => {
 router.post("/admin/list", isAdminCheck, async (req, res, next) => {
   const { listType } = req.body;
 
-  let nanFlag = isNaN(listType);
-
-  if (!listType) {
-    nanFlag = false;
-  }
-
-  if (nanFlag) {
-    return res.status(400).send("잘못된 요청 입니다.");
-  }
-
-  let _listType = Number(listType);
-
-  if (_listType > 3 || !listType) {
-    _listType = 3;
-  }
+  const _listType = parseInt(listType) || 3;
 
   try {
     const selectQuery = `
-      SELECT  A.id,
+      SELECT  ROW_NUMBER()  OVER(ORDER  BY A.createdAt)   AS num,
+              A.id,
               A.name,
               A.mobile,
               A.email,
@@ -116,18 +103,22 @@ router.post("/admin/list", isAdminCheck, async (req, res, next) => {
               A.answerdAt,
               A.createdAt,
               A.updatedAt,
-              A.UserId
+              A.UserId,
+              CASE
+                  WHEN  A.UserId IS NOT NULL THEN "회원 작성"
+                  ELSE  "비회원 작성"
+              END                    AS questionType
         FROM  productQuestions       A
        WHERE  1 = 1
-        ${
-          _listType === 1
-            ? `AND A.isCompleted = TRUE`
-            : _listType === 2
-            ? `AND A.isCompleted = FALSE`
-            : _listType === 3
-            ? ``
-            : ``
-        }
+              ${
+                _listType === 1
+                  ? `AND A.isCompleted = TRUE`
+                  : _listType === 2
+                  ? `AND A.isCompleted = FALSE`
+                  : _listType === 3
+                  ? ``
+                  : ``
+              }
       `;
 
     const productQuestions = await models.sequelize.query(selectQuery);
@@ -141,11 +132,13 @@ router.post("/admin/list", isAdminCheck, async (req, res, next) => {
 
 // CREATE
 
-router.post("/create", isLoggedIn, async (req, res, next) => {
+router.post("/create", async (req, res, next) => {
   const { name, mobile, email, productName, productUrl, content, password } =
     req.body;
 
-  const insertQuery = `
+  try {
+    if (req.user) {
+      const insertQuery = `
   INSERT    INTO    productQuestions
   (
     name,
@@ -174,7 +167,40 @@ router.post("/create", isLoggedIn, async (req, res, next) => {
   )
   `;
 
-  try {
+      await models.sequelize.query(insertQuery);
+
+      return res.status(201).json({ result: true });
+    }
+
+    const insertQuery = `
+ INSERT    INTO    productQuestions
+ (
+   name,
+   mobile,
+   email,
+   productName,
+   productUrl,
+   content,
+   password,
+   UserId,
+   createdAt,
+   updatedAt
+ )
+ VALUES
+ (
+   "${name}",
+   "${mobile}",
+   "${email}",
+   "${productName}",
+   "${productUrl}",
+   "${content}",
+   "${password}",
+   NULL,
+   NOW(),
+   NOW()
+ )
+ `;
+
     await models.sequelize.query(insertQuery);
 
     return res.status(201).json({ result: true });
