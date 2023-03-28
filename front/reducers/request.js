@@ -6,19 +6,19 @@ export const initailState = {
   requestAdminList: [],
 
   //
-  st_requestListLoading: false, // request 가져오기
+  st_requestListLoading: false, // 상품요청 가져오기
   st_requestListDone: false,
   st_requestListError: null,
   //
-  st_requestAdminListLoading: false, // request 관리자 가져오기
+  st_requestAdminListLoading: false, // 상품요청 관리자 가져오기
   st_requestAdminListDone: false,
   st_requestAdminListError: null,
   //
-  st_requestCreateLoading: false, // request 생성하기
+  st_requestCreateLoading: false, // 상품요청 생성하기
   st_requestCreateDone: false,
   st_requestCreateError: null,
   //
-  st_requestAnswerUpdateLoading: false, // request 수정하기
+  st_requestAnswerUpdateLoading: false, // 상품요청 수정하기
   st_requestAnswerUpdateDone: false,
   st_requestAnswerUpdateError: null,
 };

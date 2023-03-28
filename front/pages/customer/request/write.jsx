@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import ClientLayout from "../../../components/ClientLayout";
 import Head from "next/head";
 import wrapper from "../../../store/configureStore";
@@ -22,20 +22,103 @@ import Theme from "../../../components/Theme";
 import styled from "styled-components";
 import QuillEditor from "../../../components/editor/ReactQuill";
 import { useRouter } from "next/router";
-import { useSelector } from "react-redux";
-import { Checkbox } from "antd";
+import { useDispatch, useSelector } from "react-redux";
+import { Checkbox, message } from "antd";
+import useInput from "../../../hooks/useInput";
+import { REQUEST_CREATE_REQUEST } from "../../../reducers/request";
 
 const Index = () => {
   ////// GLOBAL STATE //////
   const { me } = useSelector((state) => state.user);
+  const { st_requestCreateDone, st_requestCreateError } = useSelector(
+    (state) => state.request
+  );
+
   ////// HOOKS //////
   const width = useWidth();
   const router = useRouter();
+  const dispatch = useDispatch();
+
+  const name = useInput(me && me.username);
+  const mobile = useInput(me && me.userId);
+  const email = useInput(me && me.email);
+  const productName = useInput(``);
+  const productUrl = useInput(``);
+  const secret = useInput(``);
+
+  const [isTerm, setIsTerm] = useState(false); //개인정보처리방침
+  const [queContent, setQueContent] = useState(""); // 내용
+
   ////// REDUX //////
   ////// USEEFFECT //////
-  ////// TOGGLE //////
 
+  // ********************** 상품요청 생성 후처리 *************************
+  useEffect(() => {
+    if (st_requestCreateDone) {
+      name.value("");
+      mobile.value("");
+      email.value("");
+      productName.value("");
+      productUrl.value("");
+      secret.value("");
+      setIsTerm(false);
+
+      return message.success("상품요청이 작성되었습니다.");
+    }
+
+    if (st_requestCreateError) {
+      return message.error(st_requestCreateError);
+    }
+  }, [st_requestCreateDone, st_requestCreateError]);
+
+  ////// TOGGLE //////
   ////// HANDLER //////
+  const questionCreateHandler = useCallback(() => {
+    if (!name.value || name.value.trim().length === "") {
+      return message.error("이름을 입력해주세요.");
+    }
+
+    if (!mobile.value || mobile.value.trim().length === "") {
+      return message.error("연락처를 입력해주세요.");
+    }
+
+    if (!email.value || email.value.trim().length === "") {
+      return message.error("이메일을 입력해주세요.");
+    }
+
+    if (!productName.value || productName.value.trim().length === "") {
+      return message.error("상품이름을 입력해주세요.");
+    }
+
+    if (!productUrl.value || productUrl.value.trim().length === "") {
+      return message.error("상품URL을 입력해주세요.");
+    }
+
+    if (queContent === "") {
+      return message.error("내용을 입력해주세요.");
+    }
+
+    if (!secret.value || secret.value.trim().length === "") {
+      return message.error("비밀번호를 입력해주세요.");
+    }
+
+    if (!isTerm) {
+      return message.error("개인정보처리방침에 동의해주세요.");
+    }
+
+    dispatch({
+      type: REQUEST_CREATE_REQUEST,
+      data: {
+        name: name.value,
+        mobile: mobile.value,
+        email: email.value,
+        productName: productName.value,
+        productUrl: productUrl.value,
+        content: queContent,
+      },
+    });
+  }, [name, mobile, email, productName, productUrl, queContent, secret]);
+
   ////// DATAVIEW //////
 
   return (
@@ -125,10 +208,10 @@ const Index = () => {
                   이름<SpanText color={Theme.red_C}>*</SpanText>
                 </Text>
                 <TextInput
+                  {...name}
                   width={width < 700 ? `100%` : `calc(100% - 135px)`}
                   height={`45px`}
                   placeholder={`이름을 입력해주세요.`}
-                  value={me && me.username}
                 />
               </Wrapper>
               <Wrapper dr={`row`} margin={`0 0 32px`}>
@@ -140,10 +223,10 @@ const Index = () => {
                   연락처<SpanText color={Theme.red_C}>*</SpanText>
                 </Text>
                 <TextInput
+                  {...mobile}
                   width={width < 700 ? `100%` : `calc(100% - 135px)`}
                   height={`45px`}
                   placeholder={`'-' 제외 연락처를 입력해주세요.`}
-                  value={me && me.userId}
                   type="number"
                 />
               </Wrapper>
@@ -156,6 +239,7 @@ const Index = () => {
                   이메일<SpanText color={Theme.red_C}>*</SpanText>
                 </Text>
                 <TextInput
+                  {...email}
                   width={width < 700 ? `100%` : `calc(100% - 135px)`}
                   height={`45px`}
                   placeholder="이메일을 입력해주세요."
@@ -170,6 +254,7 @@ const Index = () => {
                   상품명<SpanText color={Theme.red_C}>*</SpanText>
                 </Text>
                 <TextInput
+                  {...productName}
                   width={width < 700 ? `100%` : `calc(100% - 135px)`}
                   height={`45px`}
                   placeholder="상품명을 입력해주세요."
@@ -184,13 +269,18 @@ const Index = () => {
                   상품URL<SpanText color={Theme.red_C}>*</SpanText>
                 </Text>
                 <TextInput
+                  {...productUrl}
                   width={width < 700 ? `100%` : `calc(100% - 135px)`}
                   height={`45px`}
                   placeholder="상품의 링크를 입력해주세요."
                 />
               </Wrapper>
               <Wrapper height={`480px`}>
-                <QuillEditor />
+                <QuillEditor
+                  value={queContent}
+                  setValue={setQueContent}
+                  placeholder={"내용을 입력해주세요."}
+                />
               </Wrapper>
               <Wrapper dr={`row`} margin={`32px 0 24px`} al={`flex-start`}>
                 <Text
@@ -201,13 +291,15 @@ const Index = () => {
                   비밀글 작성<SpanText color={Theme.red_C}>*</SpanText>
                 </Text>
                 <TextInput
+                  type="password"
+                  {...secret}
                   width={width < 700 ? `100%` : `calc(100% - 135px)`}
                   height={`45px`}
                   placeholder="해당 글의 비밀번호를 입력해주세요."
                 />
               </Wrapper>
               <Wrapper dr={`row`} ju={`flex-start`}>
-                <Checkbox>
+                <Checkbox checked={isTerm} onClick={() => setIsTerm(!isTerm)}>
                   <Text fontSize={width < 700 ? `15px` : `18px`}>
                     <SpanText fontWeight={`600`} margin={`0 5px 0 0`}>
                       (필수)
@@ -232,6 +324,7 @@ const Index = () => {
                   kindOf={`white`}
                   fontWeight={`600`}
                   fontSize={`18px`}
+                  onClick={questionCreateHandler}
                 >
                   상품 요청하기
                 </CommonButton>
