@@ -1,21 +1,18 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import ClientLayout from "../../../components/ClientLayout";
 import Head from "next/head";
 import wrapper from "../../../store/configureStore";
 import { LOAD_MY_INFO_REQUEST } from "../../../reducers/user";
+import { REQUEST_LIST_DETAIL_REQUEST } from " ../../../reducers/request";
 import axios from "axios";
 import { END } from "redux-saga";
 import useWidth from "../../../hooks/useWidth";
 import {
   CommonButton,
-  CustomPage,
-  CustomSelect,
   Image,
   RsWrapper,
   SpanText,
   Text,
-  TextArea,
-  TextInput,
   WholeWrapper,
   Wrapper,
 } from "../../../components/commonComponents";
@@ -25,7 +22,7 @@ import Theme from "../../../components/Theme";
 import styled from "styled-components";
 
 import { useRouter } from "next/router";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Select } from "antd";
 import { LockFilled } from "@ant-design/icons";
 import Link from "next/dist/client/link";
@@ -66,11 +63,26 @@ const EditorWrapper = styled(Wrapper)`
 const Index = () => {
   ////// GLOBAL STATE //////
   const { me } = useSelector((state) => state.user);
+  const { requestDetail } = useSelector((state) => state.request);
+
   ////// HOOKS //////
   const width = useWidth();
   const router = useRouter();
+  const dispatch = useDispatch();
+
   ////// REDUX //////
   ////// USEEFFECT //////
+  useEffect(() => {
+    if (router.query) {
+      dispatch({
+        type: REQUEST_LIST_DETAIL_REQUEST,
+        data: {
+          id: router.query.id,
+        },
+      });
+    }
+  }, [router.query]);
+
   ////// TOGGLE //////
 
   ////// HANDLER //////
@@ -166,11 +178,13 @@ const Index = () => {
                     fontWeight={`600`}
                     margin={`0 0 12px`}
                   >
-                    공지사항 제목이 들어오는 곳입니다.
+                    {requestDetail && requestDetail.productName}
                   </Text>
                   <Text color={Theme.darkGrey_C} fontSize={`16px`}>
-                    작성자명
-                    <SpanText margin={`0 0 0 18px`}>2022.12.31</SpanText>
+                    {requestDetail && requestDetail.name}
+                    <SpanText margin={`0 0 0 18px`}>
+                      {requestDetail && requestDetail.updatedAt}
+                    </SpanText>
                   </Text>
                 </Wrapper>
                 <Wrapper
@@ -183,7 +197,7 @@ const Index = () => {
                   fontWeight={`600`}
                   color={Theme.lightGrey_C}
                 >
-                  답변대기
+                  {requestDetail && requestDetail.isCompleted}
                 </Wrapper>
                 {/* <Wrapper
                   width={width < 800 ? `100%` : `auto`}
@@ -212,7 +226,7 @@ const Index = () => {
                     color={Theme.grey_C}
                     width={width < 800 ? `100%` : `calc(100% - 150px)`}
                   >
-                    김똑진
+                    {requestDetail && requestDetail.name}
                   </Wrapper>
                 </Wrapper>
                 <Wrapper dr={`row`} fontSize={`16px`} margin={`0 0 24px`}>
@@ -227,7 +241,7 @@ const Index = () => {
                     color={Theme.grey_C}
                     width={width < 800 ? `100%` : `calc(100% - 150px)`}
                   >
-                    01000000000
+                    {requestDetail && requestDetail.mobile}
                   </Wrapper>
                 </Wrapper>
                 <Wrapper dr={`row`} fontSize={`16px`} margin={`0 0 24px`}>
@@ -242,7 +256,7 @@ const Index = () => {
                     color={Theme.grey_C}
                     width={width < 800 ? `100%` : `calc(100% - 150px)`}
                   >
-                    이메일
+                    {requestDetail && requestDetail.mobile}
                   </Wrapper>
                 </Wrapper>
                 <Wrapper dr={`row`} fontSize={`16px`} margin={`0 0 24px`}>
@@ -257,7 +271,7 @@ const Index = () => {
                     color={Theme.grey_C}
                     width={width < 800 ? `100%` : `calc(100% - 150px)`}
                   >
-                    로이히츠보코 동전파스
+                    {requestDetail && requestDetail.mobile}
                   </Wrapper>
                 </Wrapper>
                 <Wrapper dr={`row`} fontSize={`16px`} margin={`0 0 24px`}>
@@ -272,7 +286,7 @@ const Index = () => {
                     color={Theme.grey_C}
                     width={width < 800 ? `100%` : `calc(100% - 150px)`}
                   >
-                    https://www.osakaman.com/shop/item.php?it_id=1531293660
+                    {requestDetail && requestDetail.email}
                   </Wrapper>
                 </Wrapper>
 
@@ -293,14 +307,7 @@ const Index = () => {
                 radius={`30px`}
                 padding={width < 800 ? `20px 15px` : `40px 26px`}
               >
-                <Text>
-                  비회원인 경우, 임의로 회원가입이 된 아이디와 비번을 답변에서
-                  전달합니다. 답변이 들어올 곳입니다. 답변이 들어올 곳입니다.
-                  답변이 들어올 곳입니다. 답변이 들어올 곳입니다. 답변이 들어올
-                  곳입니다. 답변이 들어올 곳입니다. 답변이 들어올 곳입니다.
-                  답변이 들어올 곳입니다. 답변이 들어올 곳입니다. 답변이 들어올
-                  곳입니다. 답변이 들어올 곳입니다. 답변이 들어올 곳입니다.
-                </Text>
+                <Text>{requestDetail && requestDetail.answer}</Text>
               </Wrapper>
 
               <Wrapper dr={`row`} margin={`36px 0 0`}>

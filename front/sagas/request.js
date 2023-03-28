@@ -16,6 +16,10 @@ import {
   REQUEST_ANSWER_UPDATE_REQUEST,
   REQUEST_ANSWER_UPDATE_SUCCESS,
   REQUEST_ANSWER_UPDATE_FAILURE,
+  //
+  REQUEST_LIST_DETAIL_REQUEST,
+  REQUEST_LIST_DETAIL_SUCCESS,
+  REQUEST_LIST_DETAIL_FAILURE,
 } from "../reducers/request";
 
 // ******************************************************************************************************************
@@ -37,6 +41,33 @@ function* requestList(action) {
     console.error(err);
     yield put({
       type: REQUEST_LIST_FAILURE,
+      error: err.response.data,
+    });
+  }
+}
+// ******************************************************************************************************************
+// ******************************************************************************************************************
+// ******************************************************************************************************************
+
+// ******************************************************************************************************************
+// SAGA AREA ********************************************************************************************************
+// ******************************************************************************************************************
+async function requestListDetailAPI(data) {
+  return await axios.post(`/api/productQuestion/detail`, data);
+}
+
+function* requestListDetail(action) {
+  try {
+    const result = yield call(requestListDetailAPI, action.data);
+
+    yield put({
+      type: REQUEST_LIST_DETAIL_SUCCESS,
+      data: result.data,
+    });
+  } catch (err) {
+    console.error(err);
+    yield put({
+      type: REQUEST_LIST_DETAIL_FAILURE,
       error: err.response.data,
     });
   }
@@ -131,6 +162,9 @@ function* answerUpdate(action) {
 function* watchrequestList() {
   yield takeLatest(REQUEST_LIST_REQUEST, requestList);
 }
+function* watchrequestListDetail() {
+  yield takeLatest(REQUEST_LIST_DETAIL_REQUEST, requestListDetail);
+}
 function* watchrequestAdminList() {
   yield takeLatest(REQUEST_ADMIN_LIST_REQUEST, requestAdminList);
 }
@@ -145,6 +179,7 @@ function* watchrequestAnswerUpdate() {
 export default function* requestSaga() {
   yield all([
     fork(watchrequestList),
+    fork(watchrequestListDetail),
     fork(watchrequestAdminList),
     fork(watchrequestCreate),
     fork(watchrequestAnswerUpdate),

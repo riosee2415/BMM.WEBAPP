@@ -1,14 +1,19 @@
 import produce from "../util/produce";
 
 export const initailState = {
-  requestList: [],
-  requestPage: 1,
-  requestAdminList: [],
+  requestList: [], //상품요청리스트
+  lastPage: 1,
+  requestAdminList: [], //관리자리스트
+  reqyestDetail: null,
 
   //
   st_requestListLoading: false, // 상품요청 가져오기
   st_requestListDone: false,
   st_requestListError: null,
+  //
+  st_requestListDetailLoading: false, // 상품요청 상세목록 가져오기
+  st_requestListDetailDone: false,
+  st_requestListDetailError: null,
   //
   st_requestAdminListLoading: false, // 상품요청 관리자 가져오기
   st_requestAdminListDone: false,
@@ -26,6 +31,10 @@ export const initailState = {
 export const REQUEST_LIST_REQUEST = "REQUEST_LIST_REQUEST";
 export const REQUEST_LIST_SUCCESS = "REQUEST_LIST_SUCCESS";
 export const REQUEST_LIST_FAILURE = "REQUEST_LIST_FAILURE";
+
+export const REQUEST_LIST_DETAIL_REQUEST = "REQUEST_LIST_DETAIL_REQUEST";
+export const REQUEST_LIST_DETAIL_SUCCESS = "REQUEST_LIST_DETAIL_SUCCESS";
+export const REQUEST_LIST_DETAIL_FAILURE = "REQUEST_LIST_DETAIL_FAILURE";
 
 export const REQUEST_ADMIN_LIST_REQUEST = "REQUEST_ADMIN_LIST_REQUEST";
 export const REQUEST_ADMIN_LIST_SUCCESS = "REQUEST_ADMIN_LIST_SUCCESS";
@@ -52,14 +61,34 @@ const reducer = (state = initailState, action) =>
         draft.st_requestListLoading = false;
         draft.st_requestListDone = true;
         draft.st_requestListError = null;
-        draft.requestList = action.data.prodQue;
-        draft.requestPage = action.data.lastPage;
         break;
       }
       case REQUEST_LIST_FAILURE: {
         draft.st_requestListLoading = false;
         draft.st_requestListDone = false;
         draft.st_requestListError = action.error;
+        break;
+      }
+
+      //////////////////////////////////////////////
+
+      case REQUEST_LIST_DETAIL_REQUEST: {
+        draft.st_requestListDetailLoading = true;
+        draft.st_requestListDetailDone = false;
+        draft.st_requestListDetailError = null;
+        break;
+      }
+      case REQUEST_LIST_DETAIL_SUCCESS: {
+        draft.st_requestListDetailLoading = false;
+        draft.st_requestListDetailDone = true;
+        draft.st_requestListDetailError = null;
+        draft.requestDetail = action.data;
+        break;
+      }
+      case REQUEST_LIST_DETAIL_FAILURE: {
+        draft.st_requestListDetailLoading = false;
+        draft.st_requestListDetailDone = false;
+        draft.st_requestListDetailError = action.error;
         break;
       }
 

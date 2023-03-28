@@ -57,8 +57,8 @@ const List = styled(Wrapper)`
 
 const Index = () => {
   ////// GLOBAL STATE //////
-  const { requestList, requestPage } = useSelector((state) => state.request);
-  const { pageTab, setPageTab } = useState(1);
+  const { requestList, lastPage } = useSelector((state) => state.request);
+  const [currentTap, setCurrentTab] = useState(1);
 
   ////// HOOKS //////
   const width = useWidth();
@@ -71,18 +71,18 @@ const Index = () => {
     dispatch({
       type: REQUEST_LIST_REQUEST,
       data: {
-        page: pageTab,
+        page: currentTap,
       },
     });
-  }, [pageTab]);
+  }, [currentTap]);
 
   ////// TOGGLE //////
   ////// HANDLER //////
-  const changPageCall = useCallback(
+  const nextPageCall = useCallback(
     (changePage) => {
-      setPageTab(changePage);
+      setCurrentTab(changePage);
     },
-    [pageTab]
+    [currentTap]
   );
 
   ////// DATAVIEW //////
@@ -220,7 +220,7 @@ const Index = () => {
               </Wrapper>
               {requestList && requestList.length === 0 ? (
                 <Wrapper padding={`50px 0`}>
-                  <Empty description="조회된 상품요청 내역이 없습니다." />
+                  <Empty description="조회 된 상품요청 내역이 없습니다." />
                 </Wrapper>
               ) : (
                 requestList.map((data) => {
@@ -270,10 +270,10 @@ const Index = () => {
               )}
               <CustomPage
                 defaultCurrent={1}
-                current={parseInt(pageTab)}
+                current={parseInt(currentTap)}
+                total={lastPage * 10}
                 pageSize={10}
-                total={requestPage * 10}
-                onChange={(page) => changPageCall(page)}
+                onChange={(page) => nextPageCall(page)}
               />
             </Wrapper>
           </RsWrapper>
