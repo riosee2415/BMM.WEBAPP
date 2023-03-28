@@ -5,28 +5,44 @@ module.exports = class User extends Model {
   static init(sequelize) {
     return super.init(
       {
-        // id가 기본적으로 들어있다.
-        email: {
-          type: DataTypes.STRING(60), // STRING, TEXT, BOOLEAN, INTEGER, FLOAT, DATETIME
-          allowNull: false, // 필수
+        userId: {
+          type: DataTypes.STRING(50), // 사용자 아이디
+          allowNull: false,
           unique: true, // 고유한 값
-        },
-        username: {
-          type: DataTypes.STRING(30), // STRING, TEXT, BOOLEAN, INTEGER, FLOAT, DATETIME
-          allowNull: false, // 필수
-        },
-        nickname: {
-          type: DataTypes.STRING(30),
-          allowNull: false, // 필수
-          unique: true, // 고유한 값
-        },
-        mobile: {
-          type: DataTypes.STRING(30),
-          allowNull: false, // 필수
         },
         password: {
-          type: DataTypes.STRING(100),
-          allowNull: false, // 필수
+          type: DataTypes.STRING(100), // 비밀번호
+          allowNull: false,
+        },
+        mobile: {
+          type: DataTypes.STRING(50), // 전화번호
+          allowNull: false,
+        },
+        email: {
+          type: DataTypes.STRING(60), // 이메일
+          allowNull: false,
+          unique: true, // 고유한 값
+        },
+        postCode: {
+          type: DataTypes.STRING(10), // 우편번호
+          allowNull: true,
+        },
+        address: {
+          type: DataTypes.STRING(300), // 주소
+          allowNull: true,
+        },
+        detailAddress: {
+          type: DataTypes.STRING(500), // 상세주소
+          allowNull: true,
+        },
+        point: {
+          type: DataTypes.INTEGER, // 포인트
+          allowNull: false,
+          defaultValue: 0,
+        },
+        recommId: {
+          type: DataTypes.STRING(50), // 추천인 아이디
+          allowNull: true,
         },
         level: {
           // 사용자 권한 [1 : 일반회원, 2 : 비어있음, 3: 운영자, 4: 최고관리자, 5: 개발사]
