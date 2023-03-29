@@ -7,6 +7,7 @@ import axios from "axios";
 import wrapper from "../store/configureStore";
 import { END } from "redux-saga";
 import {
+  ATag,
   CommonButton,
   Image,
   ProductWrapper,
@@ -28,6 +29,8 @@ import MainBrandSlider from "../components/slide/MainBrandSlider";
 import MainRecommandSlider from "../components/slide/MainRecommandSlider";
 import { ConsoleSqlOutlined, RightOutlined } from "@ant-design/icons";
 import { ADVERTISE_LIST_REQUEST } from "../reducers/advertise";
+import { EVENT_LIST_REQUEST } from "../reducers/event";
+import Link from "next/dist/client/link";
 
 const Btn = styled(Wrapper)`
   width: auto;
@@ -94,9 +97,11 @@ const EventBox = styled(Wrapper)`
 const Home = ({}) => {
   ////// GLOBAL STATE //////
   const { advertiseList } = useSelector((state) => state.advertise);
+  const { eventList } = useSelector((state) => state.event);
 
   ////// HOOKS //////
   const width = useWidth();
+
   ////// REDUX //////
   ////// USEEFFECT //////
   ////// TOGGLE //////
@@ -313,44 +318,31 @@ const Home = ({}) => {
             ju={`space-between`}
             margin={width < 800 ? `60px 0` : `100px 0`}
           >
-            <EventBox
-              width={width < 800 ? `100%` : `49%`}
-              al={`flex-end`}
-              ju={`flex-end`}
-              padding={width < 800 ? `20px` : `0 50px 40px 0`}
-              margin={width < 800 ? `0 0 15px` : `0`}
-            >
-              <Image
-                alt="thumbnail"
-                src={`https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/bmm/assets/images/main/img_6nd_banner1.png`}
-              />
-              <Text
-                isHover
-                fontSize={width < 800 ? `16px` : `18px`}
-                fontWeight={`600`}
-              >
-                자세히 보기 <RightOutlined />
-              </Text>
-            </EventBox>
-            <EventBox
-              width={width < 800 ? `100%` : `49%`}
-              al={`flex-end`}
-              ju={`flex-end`}
-              padding={width < 800 ? `20px` : `0 50px 40px 0`}
-            >
-              <Image
-                alt="thumbnail"
-                src={`https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/bmm/assets/images/main/img_6nd_banner2.png`}
-              />
-
-              <Text
-                isHover
-                fontSize={width < 800 ? `16px` : `18px`}
-                fontWeight={`600`}
-              >
-                자세히 보기 <RightOutlined />
-              </Text>
-            </EventBox>
+            {eventList &&
+              eventList.map((data) => {
+                return (
+                  <EventBox
+                    width={width < 800 ? `100%` : `49%`}
+                    al={`flex-end`}
+                    ju={`flex-end`}
+                    padding={width < 800 ? `20px` : `0 50px 40px 0`}
+                    margin={width < 800 ? `0 0 15px` : `0`}
+                  >
+                    <Image alt="thumbnail" src={data.thumbnail} />
+                    <Link href={`/event/${data.id}`}>
+                      <ATag dr={`row`} ju={`flex-end`}>
+                        <Text
+                          isHover
+                          fontSize={width < 800 ? `16px` : `18px`}
+                          fontWeight={`600`}
+                        >
+                          자세히 보기 <RightOutlined />
+                        </Text>
+                      </ATag>
+                    </Link>
+                  </EventBox>
+                );
+              })}
           </RsWrapper>
           <Popup />
         </WholeWrapper>
@@ -376,6 +368,10 @@ export const getServerSideProps = wrapper.getServerSideProps(
 
     context.store.dispatch({
       type: ADVERTISE_LIST_REQUEST,
+    });
+
+    context.store.dispatch({
+      type: EVENT_LIST_REQUEST,
     });
 
     // 구현부 종료
