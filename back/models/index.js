@@ -34,6 +34,7 @@ const brand = require("./brand");
 const brandhistory = require("./brandhistory");
 const mainimage = require("./mainimage");
 const mainimagehistory = require("./mainimagehistory");
+const cupon = require("./cupon");
 
 const env = process.env.NODE_ENV || "development";
 const config = require("../config/config")[env];
@@ -81,6 +82,7 @@ db.Brand = brand;
 db.BrandHistory = brandhistory;
 db.MainImage = mainimage;
 db.MainImageHistory = mainimagehistory;
+db.Cupon = cupon;
 
 Object.keys(db).forEach((modelName) => {
   db[modelName].init(sequelize);
