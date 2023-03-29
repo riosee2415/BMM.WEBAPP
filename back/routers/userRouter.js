@@ -22,9 +22,9 @@ router.post("/list", isAdminCheck, async (req, res, next) => {
   const selectQuery = `
   SELECT	ROW_NUMBER() OVER(ORDER	BY createdAt)		AS num,
           id,
+          userId,
           email,
           username,
-          nickname,
           mobile,
           level,
           isExit,
@@ -315,7 +315,7 @@ router.get("/signin", async (req, res, next) => {
         where: { id: req.user.id },
         attributes: [
           "id",
-          "nickname",
+          "username",
           "email",
           "level",
           "menuRight1",
@@ -368,10 +368,9 @@ router.post("/signin", (req, res, next) => {
         where: { id: user.id },
         attributes: [
           "id",
-          "nickname",
+          "username",
           "email",
           "level",
-          "username",
           "menuRight1",
           "menuRight2",
           "menuRight3",
@@ -419,10 +418,9 @@ router.post("/signin/admin", (req, res, next) => {
         where: { id: user.id },
         attributes: [
           "id",
-          "nickname",
+          "username",
           "email",
           "level",
-          "username",
           "menuRight1",
           "menuRight2",
           "menuRight3",
@@ -444,7 +442,7 @@ router.post("/signin/admin", (req, res, next) => {
 });
 
 router.post("/signup", async (req, res, next) => {
-  const { email, username, nickname, mobile, password, terms } = req.body;
+  const { email, username, mobile, password, terms } = req.body;
 
   if (!terms) {
     return res.status(401).send("이용약관에 동의해주세요.");
@@ -464,7 +462,6 @@ router.post("/signup", async (req, res, next) => {
     const result = await User.create({
       email,
       username,
-      nickname,
       mobile,
       terms,
       password: hashedPassword,
@@ -487,7 +484,7 @@ router.get("/me", isLoggedIn, async (req, res, next) => {
 });
 
 router.post("/me/update", isLoggedIn, async (req, res, next) => {
-  const { id, nickname, mobile } = req.body;
+  const { id, mobile } = req.body;
 
   try {
     const exUser = await User.findOne({ where: { id: parseInt(id) } });
@@ -497,7 +494,7 @@ router.post("/me/update", isLoggedIn, async (req, res, next) => {
     }
 
     const updateUser = await User.update(
-      { nickname, mobile },
+      { mobile },
       {
         where: { id: parseInt(id) },
       }

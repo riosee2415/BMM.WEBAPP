@@ -10,6 +10,10 @@ module.exports = class User extends Model {
           allowNull: false,
           unique: true, // 고유한 값
         },
+        username: {
+          type: DataTypes.STRING(50), // 이름
+          allowNull: false,
+        },
         password: {
           type: DataTypes.STRING(100), // 비밀번호
           allowNull: false,
