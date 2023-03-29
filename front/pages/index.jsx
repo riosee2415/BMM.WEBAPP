@@ -31,6 +31,7 @@ import { ConsoleSqlOutlined, RightOutlined } from "@ant-design/icons";
 import { ADVERTISE_LIST_REQUEST } from "../reducers/advertise";
 import { EVENT_LIST_REQUEST } from "../reducers/event";
 import Link from "next/dist/client/link";
+import { Empty } from "antd";
 
 const Btn = styled(Wrapper)`
   width: auto;
@@ -318,15 +319,20 @@ const Home = ({}) => {
             ju={`space-between`}
             margin={width < 800 ? `60px 0` : `100px 0`}
           >
-            {eventList &&
+            {eventList && eventList.length === 0 ? (
+              <Wrapper padding={`50px 0`}>
+                <Empty description="조회된 이벤트가 없습니다." />
+              </Wrapper>
+            ) : (
               eventList.map((data) => {
                 return (
                   <EventBox
+                    key={`data.id`}
                     width={width < 800 ? `100%` : `49%`}
                     al={`flex-end`}
                     ju={`flex-end`}
                     padding={width < 800 ? `20px` : `0 50px 40px 0`}
-                    margin={width < 800 ? `0 0 15px` : `0`}
+                    margin={width < 800 ? `0 0 15px` : `0 0 30px`}
                   >
                     <Image alt="thumbnail" src={data.thumbnail} />
                     <Link href={`/event/${data.id}`}>
@@ -342,7 +348,8 @@ const Home = ({}) => {
                     </Link>
                   </EventBox>
                 );
-              })}
+              })
+            )}
           </RsWrapper>
           <Popup />
         </WholeWrapper>
