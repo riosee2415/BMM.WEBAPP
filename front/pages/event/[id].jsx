@@ -116,7 +116,7 @@ const Detail = () => {
                 <Image
                   alt="이벤트 사진"
                   src={eventDetail && eventDetail.imagePath}
-                  width={width < 500 ? `100%` : `840px`}
+                  width={width < 900 ? `100%` : `840px`}
                   margin={`0 0 30px`}
                 />
                 <Text fontSize={`16px`}>

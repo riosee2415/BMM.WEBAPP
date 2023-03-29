@@ -55,12 +55,12 @@ const Index = () => {
   // ********************** 상품요청 생성 후처리 *************************
   useEffect(() => {
     if (st_requestCreateDone) {
-      name.value("");
-      mobile.value("");
-      email.value("");
-      productName.value("");
-      productUrl.value("");
-      secret.value("");
+      name.setValue("");
+      mobile.setValue("");
+      email.setValue("");
+      productName.setValue("");
+      productUrl.setValue("");
+      secret.setValue("");
       setIsTerm(false);
 
       return message.success("상품요청이 작성되었습니다.");
