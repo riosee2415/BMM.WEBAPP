@@ -175,6 +175,7 @@ export const KAKAOCH_HISTORY_FAILURE = "KAKAOCH_HISTORY_FAILURE";
 
 export const COMPANY_CREATE_MODAL_TOGGLE = "COMPANY_CREATE_MODAL_TOGGLE";
 export const SET_IMAGE_PATH = "SET_IMAGE_PATH";
+export const SET_IMAGE_RESET = "SET_IMAGE_RESET";
 
 const reducer = (state = initailState, action) =>
   produce(state, (draft) => {
@@ -614,6 +615,12 @@ const reducer = (state = initailState, action) =>
 
       case SET_IMAGE_PATH: {
         draft.snsImagePath = action.data.value;
+        break;
+      }
+      ///////////////////////////////////////////////////////
+
+      case SET_IMAGE_RESET: {
+        draft.snsImagePath = null;
         break;
       }
       ///////////////////////////////////////////////////////

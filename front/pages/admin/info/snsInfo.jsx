@@ -45,6 +45,7 @@ import {
   SET_IMAGE_PATH,
   SNS_UPDATE_REQUEST,
   SNS_DELETE_REQUEST,
+  SET_IMAGE_RESET,
 } from "../../../reducers/company";
 
 const SnsImage = styled(Image)`
@@ -146,6 +147,10 @@ const SnsInfo = ({}) => {
     if (st_snsNewDone) {
       dispatch({
         type: SNS_INFO_LIST_REQUEST,
+      });
+
+      dispatch({
+        type: SET_IMAGE_RESET,
       });
 
       createModalToggleHandler();
@@ -327,6 +332,10 @@ const SnsInfo = ({}) => {
           data: {
             value: data.imageURL,
           },
+        });
+      } else {
+        dispatch({
+          type: SET_IMAGE_RESET,
         });
       }
 
