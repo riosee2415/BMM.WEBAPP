@@ -68,6 +68,11 @@ export const items = {
       link: "/admin/banner/advertise",
       useYn: true,
     },
+    {
+      name: "메인사진관리",
+      link: "/admin/banner/mainImage",
+      useYn: true,
+    },
   ],
   게시판관리: [
     {
@@ -164,6 +169,11 @@ export const items = {
     {
       name: "광고배너이력관리",
       link: "/admin/history/advertise",
+      useYn: true,
+    },
+    {
+      name: "메인사진이력관리",
+      link: "/admin/history/mainImage",
       useYn: true,
     },
   ],

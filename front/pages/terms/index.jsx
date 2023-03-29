@@ -90,7 +90,7 @@ const Index = () => {
             <Wrapper>
               <Wrapper
                 al={`flex-start`}
-                margin={`10px 0 10px`}
+                margin={`30px 0 10px`}
                 fontWeight={`600`}
               >
                 제1조 목적
@@ -107,7 +107,7 @@ const Index = () => {
               </Wrapper>
               <Wrapper
                 al={`flex-start`}
-                margin={`10px 0 10px`}
+                margin={`30px 0 10px`}
                 fontWeight={`600`}
               >
                 제2조 정의
@@ -132,7 +132,7 @@ const Index = () => {
               </Wrapper>
               <Wrapper
                 al={`flex-start`}
-                margin={`10px 0 10px`}
+                margin={`30px 0 10px`}
                 fontWeight={`600`}
               >
                 제3조 약관 등의 명시와 설명 및 개정
@@ -184,7 +184,7 @@ const Index = () => {
               </Wrapper>
               <Wrapper
                 al={`flex-start`}
-                margin={`10px 0 10px`}
+                margin={`30px 0 10px`}
                 fontWeight={`600`}
               >
                 제4조 서비스의 제공 및 변경
@@ -193,12 +193,12 @@ const Index = () => {
                 ① "몰"은 다음과 같은 업무를 수행합니다.
               </Wrapper>
               <Wrapper al={`flex-start`}>
-                • 재화 또는 용역에 대한 정보 제공 및 구매계약의 체결
+                　• 재화 또는 용역에 대한 정보 제공 및 구매계약의 체결
               </Wrapper>
               <Wrapper al={`flex-start`}>
-                • 구매계약이 체결된 재화 또는 용역의 배송
+                　• 구매계약이 체결된 재화 또는 용역의 배송
               </Wrapper>
-              <Wrapper al={`flex-start`}>• 기타 "몰"이 정하는 업무</Wrapper>
+              <Wrapper al={`flex-start`}>　• 기타 "몰"이 정하는 업무</Wrapper>
               <Wrapper al={`flex-start`}>
                 ② "몰"은 재화 또는 용역의 품절 또는 기술적 사양의 변경 등의
                 경우에는 장차 체결되는 계약에 의해 제공할 재화 또는 용역의
@@ -218,7 +218,7 @@ const Index = () => {
               </Wrapper>
               <Wrapper
                 al={`flex-start`}
-                margin={`10px 0 10px`}
+                margin={`30px 0 10px`}
                 fontWeight={`600`}
               >
                 제5조 서비스의 중단
@@ -245,7 +245,7 @@ const Index = () => {
               </Wrapper>
               <Wrapper
                 al={`flex-start`}
-                margin={`10px 0 10px`}
+                margin={`30px 0 10px`}
                 fontWeight={`600`}
               >
                 제6조 회원가입
@@ -259,17 +259,17 @@ const Index = () => {
                 각호에 해당하지 않는 한 회원으로 등록합니다.
               </Wrapper>
               <Wrapper al={`flex-start`}>
-                • 가입신청자가 이 약관 제7조제3항에 의하여 이전에 회원자격을
+                　• 가입신청자가 이 약관 제7조제3항에 의하여 이전에 회원자격을
                 상실한 적이 있는 경우, 다만 제7조제3항에 의한 회원자격 상실 후
                 3년이 경과한 자로서 "몰"의 회원재가입 승낙을 얻은 경우에는
                 예외로 한다.
               </Wrapper>
               <Wrapper al={`flex-start`}>
-                • 등록 내용에 허위, 기재누락, 오기가 있는 경우
+                　• 등록 내용에 허위, 기재누락, 오기가 있는 경우
               </Wrapper>
               <Wrapper al={`flex-start`}>
-                • 기타 회원으로 등록하는 것이 "몰"의 기술상 현저히 지장이 있다고
-                판단되는 경우
+                　• 기타 회원으로 등록하는 것이 "몰"의 기술상 현저히 지장이
+                있다고 판단되는 경우
               </Wrapper>
               <Wrapper al={`flex-start`}>
                 ③ 회원가입계약의 성립시기는 "몰"의 승낙이 회원에게 도달한
@@ -282,7 +282,7 @@ const Index = () => {
               </Wrapper>
               <Wrapper
                 al={`flex-start`}
-                margin={`10px 0 10px`}
+                margin={`30px 0 10px`}
                 fontWeight={`600`}
               >
                 제7조 회원 탈퇴 및 자격 상실 등
@@ -296,18 +296,18 @@ const Index = () => {
                 제한 및 정지시킬 수 있습니다.
               </Wrapper>
               <Wrapper al={`flex-start`}>
-                • 가입 신청시에 허위 내용을 등록한 경우
+              　• 가입 신청시에 허위 내용을 등록한 경우
               </Wrapper>
               <Wrapper al={`flex-start`}>
-                • "몰"을 이용하여 구입한 재화 등의 대금, 기타 "몰"이용에
+              　• "몰"을 이용하여 구입한 재화 등의 대금, 기타 "몰"이용에
                 관련하여 회원이 부담하는 채무를 기일에 지급하지 않는 경우
               </Wrapper>
               <Wrapper al={`flex-start`}>
-                • 다른 사람의 "몰" 이용을 방해하거나 그 정보를 도용하는 등
+              　• 다른 사람의 "몰" 이용을 방해하거나 그 정보를 도용하는 등
                 전자상거래 질서를 위협하는 경우
               </Wrapper>
               <Wrapper al={`flex-start`}>
-                • "몰"을 이용하여 법령 또는 이 약관이 금지하거나 공서양속에
+              　• "몰"을 이용하여 법령 또는 이 약관이 금지하거나 공서양속에
                 반하는 행위를 하는 경우
               </Wrapper>
               <Wrapper al={`flex-start`}>
@@ -322,7 +322,7 @@ const Index = () => {
               </Wrapper>
               <Wrapper
                 al={`flex-start`}
-                margin={`10px 0 10px`}
+                margin={`30px 0 10px`}
                 fontWeight={`600`}
               >
                 제8조 회원에 대한 통지
@@ -339,7 +339,7 @@ const Index = () => {
               </Wrapper>
               <Wrapper
                 al={`flex-start`}
-                margin={`10px 0 10px`}
+                margin={`30px 0 10px`}
                 fontWeight={`600`}
               >
                 제9조 구매신청
@@ -351,19 +351,19 @@ const Index = () => {
               </Wrapper>
               <Wrapper al={`flex-start`}>A. 재화 등의 검색 및 선택</Wrapper>
               <Wrapper al={`flex-start`}>
-                • 받는 사람의 성명, 주소, 전화번호, 전자우편주소(또는
+              　• 받는 사람의 성명, 주소, 전화번호, 전자우편주소(또는
                 이동전화번호) 등의 입력
               </Wrapper>
               <Wrapper al={`flex-start`}>
-                • 약관내용, 청약철회권이 제한되는 서비스, 배송료ㆍ설치비 등의
+              　• 약관내용, 청약철회권이 제한되는 서비스, 배송료ㆍ설치비 등의
                 비용부담과 관련한 내용에 대한 확인
               </Wrapper>
               <Wrapper al={`flex-start`}>
-                • 이 약관에 동의하고 위 3.호의 사항을 확인하거나 거부하는 표시
+              　• 이 약관에 동의하고 위 3.호의 사항을 확인하거나 거부하는 표시
                 (예, 마우스 클릭)
               </Wrapper>
               <Wrapper al={`flex-start`}>
-                • 재화 등의 구매신청 및 이에 관한 확인 또는 “몰”의 확인에 대한
+              　• 재화 등의 구매신청 및 이에 관한 확인 또는 “몰”의 확인에 대한
                 동의
               </Wrapper>
               <Wrapper al={`flex-start`}>• 결제방법의 선택</Wrapper>
@@ -379,7 +379,7 @@ const Index = () => {
               </Wrapper>
               <Wrapper
                 al={`flex-start`}
-                margin={`10px 0 10px`}
+                margin={`30px 0 10px`}
                 fontWeight={`600`}
               >
                 제10조 계약의 성립
@@ -391,14 +391,14 @@ const Index = () => {
                 법정대리인이 계약을 취소할 수 있다는 내용을 고지하여야 합니다.
               </Wrapper>
               <Wrapper al={`flex-start`}>
-                • 신청 내용에 허위, 기재누락, 오기가 있는 경우
+              　• 신청 내용에 허위, 기재누락, 오기가 있는 경우
               </Wrapper>
               <Wrapper al={`flex-start`}>
-                • 미성년자가 담배, 주류 등 청소년보호법에서 금지하는 재화 및
+              　• 미성년자가 담배, 주류 등 청소년보호법에서 금지하는 재화 및
                 용역을 구매하는 경우
               </Wrapper>
               <Wrapper al={`flex-start`}>
-                • 기타 구매신청에 승낙하는 것이 "몰" 기술상 현저히 지장이 있다고
+              　• 기타 구매신청에 승낙하는 것이 "몰" 기술상 현저히 지장이 있다고
                 판단하는 경우
               </Wrapper>
               <Wrapper al={`flex-start`}>
@@ -406,20 +406,20 @@ const Index = () => {
                 도달한 시점에 계약이 성립한 것으로 봅니다.
               </Wrapper>
               <Wrapper al={`flex-start`}>
-                ③　"몰"의 승낙의 의사표시에는 이용자의 구매 신청에 대한 확인 및
-                판매가능 여부, 구매신청의 정정 취소 등에 관한 정보　등을
+                ③ "몰"의 승낙의 의사표시에는 이용자의 구매 신청에 대한 확인 및
+                판매가능 여부, 구매신청의 정정 취소 등에 관한 정보등을
                 포함하여야 합니다.
               </Wrapper>
               <Wrapper
                 al={`flex-start`}
-                margin={`10px 0 10px`}
+                margin={`30px 0 10px`}
                 fontWeight={`600`}
               >
                 제11조 지급방법
               </Wrapper>
               <Wrapper al={`flex-start`}>
                 "몰"에서 구매한 재화 또는 용역에 대한 대금지급방법은 다음 각
-                호의 방법　중 가용한 방법으로 할 수 있습니다. 단, "몰"은
+                호의 방법 중 가용한 방법으로 할 수 있습니다. 단, "몰"은
                 이용자의 지급방법에 대하여 재화 등의 대금에 어떠한 명목의
                 수수료도 추가하여 징수할 수 없습니다.
               </Wrapper>
@@ -431,7 +431,7 @@ const Index = () => {
               </Wrapper>
               <Wrapper al={`flex-start`}>③ 온라인무통장입금</Wrapper>
               <Wrapper al={`flex-start`}>④ 전자화폐에 의한 결제</Wrapper>
-              <Wrapper al={`flex-start`}>⑤ 수령　시 대금지급</Wrapper>
+              <Wrapper al={`flex-start`}>⑤ 수령시 대금지급</Wrapper>
               <Wrapper al={`flex-start`}>
                 ⑥ 마일리지 등 "몰"이 지급한 포인트에 의한 결제
               </Wrapper>
@@ -443,7 +443,7 @@ const Index = () => {
               </Wrapper>
               <Wrapper
                 al={`flex-start`}
-                margin={`10px 0 10px`}
+                margin={`30px 0 10px`}
                 fontWeight={`600`}
               >
                 제12조 수신확인통지ㆍ구매신청 변경 및 취소
@@ -461,7 +461,7 @@ const Index = () => {
               </Wrapper>
               <Wrapper
                 al={`flex-start`}
-                margin={`10px 0 10px`}
+                margin={`30px 0 10px`}
                 fontWeight={`600`}
               >
                 제13조 재화 등의 공급
@@ -472,7 +472,7 @@ const Index = () => {
                 있도록 주문제작, 포장 등 기타의 필요한 조치를 취합니다. 다만,
                 "몰"이 이미 재화 등의 대금의 전부 또는 일부를 받은 경우에는
                 대금의 전부 또는 일부를 받은 날부터 3영업일 이내에 조치를
-                취합니다. 이때 "몰"은 이용자가 재화　등의 공급 절차 및 진행
+                취합니다. 이때 "몰"은 이용자가 재화 등의 공급 절차 및 진행
                 사항을 확인할 수 있도록 적절한 조치를 합니다.
               </Wrapper>
               <Wrapper al={`flex-start`}>
@@ -484,26 +484,26 @@ const Index = () => {
               </Wrapper>
               <Wrapper
                 al={`flex-start`}
-                margin={`10px 0 10px`}
+                margin={`30px 0 10px`}
                 fontWeight={`600`}
               >
                 제14조 환급
               </Wrapper>
               <Wrapper al={`flex-start`}>
-                "몰"은 이용자가 구매신청한 재화　등이 품절 등의 사유로 인도 또는
+                "몰"은 이용자가 구매신청한 재화 등이 품절 등의 사유로 인도 또는
                 제공을 할 수 없을 때에는 지체없이 그 사유를 이용자에게 통지하고
                 사전에 재화 등의 대금을 받은 경우에는 대금을 받은 날부터 3영업일
                 이내에 환급하거나 환급에 필요한 조치를 취합니다.
               </Wrapper>
               <Wrapper
                 al={`flex-start`}
-                margin={`10px 0 10px`}
+                margin={`30px 0 10px`}
                 fontWeight={`600`}
               >
                 제15조 청약철회 등
               </Wrapper>
               <Wrapper al={`flex-start`}>
-                ① 　몰"과 재화 등의 구매에 관한 계약을 체결한 이용자는
+                ① 몰"과 재화 등의 구매에 관한 계약을 체결한 이용자는
                 「전자상거래 등에서의 소비자보호에 관한 법률」 제13조 제2항에
                 따른 계약내용에 관한 서면을 받은 날(그 서면을 받은 때보다 재화
                 등의 공급이 늦게 이루어진 경우에는 재화 등을 공급받거나 재화
@@ -517,20 +517,20 @@ const Index = () => {
                 경우에는 반품 및 교환을 할 수 없습니다.
               </Wrapper>
               <Wrapper al={`flex-start`}>
-                • 이용자에게 책임 있는 사유로 재화 등이 멸실 또는 훼손된
+              　• 이용자에게 책임 있는 사유로 재화 등이 멸실 또는 훼손된
                 경우(다만, 재화 등의 내용을 확인하기 위하여 포장 등을 훼손한
                 경우에는 청약철회를 할 수 있습니다)
               </Wrapper>
               <Wrapper al={`flex-start`}>
-                • 이용자의 사용 또는 일부 소비에 의하여 재화 등의 가치가 현저히
+              　• 이용자의 사용 또는 일부 소비에 의하여 재화 등의 가치가 현저히
                 감소한 경우
               </Wrapper>
               <Wrapper al={`flex-start`}>
-                • 시간의 경과에 의하여 재판매가 곤란할 정도로 재화 등의 가치가
+              　• 시간의 경과에 의하여 재판매가 곤란할 정도로 재화 등의 가치가
                 현저히 감소한 경우
               </Wrapper>
               <Wrapper al={`flex-start`}>
-                • 같은 성능을 지닌 재화 등으로 복제가 가능한 경우 그 원본인 재화
+              　• 같은 성능을 지닌 재화 등으로 복제가 가능한 경우 그 원본인 재화
                 등의 포장을 훼손한 경우
               </Wrapper>
               <Wrapper al={`flex-start`}>
@@ -551,7 +551,7 @@ const Index = () => {
               </Wrapper>
               <Wrapper
                 al={`flex-start`}
-                margin={`10px 0 10px`}
+                margin={`30px 0 10px`}
                 fontWeight={`600`}
               >
                 제16조 청약철회 등의 효과
@@ -584,7 +584,7 @@ const Index = () => {
               </Wrapper>
               <Wrapper
                 al={`flex-start`}
-                margin={`10px 0 10px`}
+                margin={`30px 0 10px`}
                 fontWeight={`600`}
               >
                 제17조 개인정보보호
@@ -647,7 +647,7 @@ const Index = () => {
               </Wrapper>
               <Wrapper
                 al={`flex-start`}
-                margin={`10px 0 10px`}
+                margin={`30px 0 10px`}
                 fontWeight={`600`}
               >
                 제18조 "몰"의 의무
@@ -673,7 +673,7 @@ const Index = () => {
               </Wrapper>
               <Wrapper
                 al={`flex-start`}
-                margin={`10px 0 10px`}
+                margin={`30px 0 10px`}
                 fontWeight={`600`}
               >
                 제19조 회원의 ID 및 비밀번호에 대한 의무
@@ -693,7 +693,7 @@ const Index = () => {
               </Wrapper>
               <Wrapper
                 al={`flex-start`}
-                margin={`10px 0 10px`}
+                margin={`30px 0 10px`}
                 fontWeight={`600`}
               >
                 제20조 이용자의 의무
@@ -722,7 +722,7 @@ const Index = () => {
               </Wrapper>
               <Wrapper
                 al={`flex-start`}
-                margin={`10px 0 10px`}
+                margin={`30px 0 10px`}
                 fontWeight={`600`}
               >
                 제21조 연결"몰"과 피연결"몰" 간의 관계
@@ -741,7 +741,7 @@ const Index = () => {
               </Wrapper>
               <Wrapper
                 al={`flex-start`}
-                margin={`10px 0 10px`}
+                margin={`30px 0 10px`}
                 fontWeight={`600`}
               >
                 제22조 저작권의 귀속 및 이용제한
@@ -762,7 +762,7 @@ const Index = () => {
               </Wrapper>
               <Wrapper
                 al={`flex-start`}
-                margin={`10px 0 10px`}
+                margin={`30px 0 10px`}
                 fontWeight={`600`}
               >
                 제23조 분쟁해결
@@ -783,7 +783,7 @@ const Index = () => {
               </Wrapper>
               <Wrapper
                 al={`flex-start`}
-                margin={`10px 0 10px`}
+                margin={`30px 0 10px`}
                 fontWeight={`600`}
               >
                 제24조 면책 조항
@@ -839,7 +839,7 @@ const Index = () => {
               </Wrapper>
               <Wrapper
                 al={`flex-start`}
-                margin={`10px 0 10px`}
+                margin={`30px 0 10px`}
                 fontWeight={`600`}
               >
                 제25조 재판권 및 준거법
@@ -857,7 +857,7 @@ const Index = () => {
               </Wrapper>
               <Wrapper
                 al={`flex-start`}
-                margin={`10px 0 10px`}
+                margin={`30px 0 10px`}
                 fontWeight={`600`}
               >
                 부 칙 시행일 등
@@ -865,7 +865,7 @@ const Index = () => {
               <Wrapper al={`flex-start`}>
                 ① 이 약관은 2023년 01월 1일부터 시행합니다.
               </Wrapper>
-              <Wrapper al={`flex-start`} margin={`0 0 20px`}>
+              <Wrapper al={`flex-start`} margin={`0 0 95px`}>
                 ② 이 약관은 전자상거래(인터넷사이버몰) 표준약관 제10023호(2014.
                 9. 19. 개정)를 준수합니다.
               </Wrapper>

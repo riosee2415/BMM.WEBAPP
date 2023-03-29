@@ -15,7 +15,6 @@ import {
   RsWrapper,
   SpanText,
   Text,
-  TextArea,
   TextInput,
   WholeWrapper,
   Wrapper,
@@ -59,6 +58,8 @@ const Index = () => {
   ////// GLOBAL STATE //////
   const { requestList, lastPage } = useSelector((state) => state.request);
   const [currentTap, setCurrentTab] = useState(1);
+  const [isCom, setIsCom] = useState(3);
+  // const [search, setSerch] = useState
 
   ////// HOOKS //////
   const width = useWidth();
@@ -72,6 +73,7 @@ const Index = () => {
       type: REQUEST_LIST_REQUEST,
       data: {
         page: currentTap,
+        searchProductName: "",
       },
     });
   }, [currentTap]);
@@ -85,6 +87,13 @@ const Index = () => {
     [currentTap]
   );
 
+  const listTypeHandler = useCallback(
+    (data) => {
+      setIsCom(data);
+    },
+    [isCom]
+  );
+
   ////// DATAVIEW //////
 
   return (
@@ -92,7 +101,6 @@ const Index = () => {
       <Head>
         <title>BUY ME MINE | 상품 요청</title>
       </Head>
-
       <ClientLayout>
         <WholeWrapper padding={width < 900 ? `70px 0 0` : `95px 0 0`}>
           <RsWrapper dr={`row`} al={`flex-start`} position={`relative`}>
@@ -165,10 +173,14 @@ const Index = () => {
                 </Text>
                 <Wrapper width={`auto`} dr={`row`}>
                   <CustomSelect>
-                    <Select placeholder="전체">
-                      <Select.Option>전체</Select.Option>
-                      <Select.Option>답변대기</Select.Option>
-                      <Select.Option>답변완료</Select.Option>
+                    <Select
+                      value={isCom}
+                      onChange={listTypeHandler}
+                      placeholder="전체"
+                    >
+                      <Select.Option value={3}>전체</Select.Option>
+                      <Select.Option value={2}>답변대기</Select.Option>
+                      <Select.Option value={1}>답변완료</Select.Option>
                     </Select>
                   </CustomSelect>
                   <Wrapper
@@ -226,8 +238,8 @@ const Index = () => {
                 requestList.map((data) => {
                   return (
                     <List
+                      key={data.id}
                       onClick={() => router.push(`/customer/request/secret`)}
-                      key={`data.req.user.id`}
                     >
                       <Wrapper
                         display={width < 700 ? `none` : `flex`}

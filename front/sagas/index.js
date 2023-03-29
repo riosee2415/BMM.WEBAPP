@@ -13,6 +13,7 @@ import faqSaga from "./faq";
 import eventSaga from "./event";
 import requestSaga from "./request";
 import advertiseSaga from "./advertise";
+import mainImageSaga from "./mainImage";
 //
 import axios from "axios";
 import backURL from "../config/config";
@@ -36,6 +37,7 @@ export default function* rootSaga() {
     fork(eventSaga),
     fork(requestSaga),
     fork(advertiseSaga),
+    fork(mainImageSaga),
     //
   ]);
 }

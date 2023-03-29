@@ -145,7 +145,7 @@ const Login = () => {
     dispatch({
       type: LOGIN_REQUEST,
       data: {
-        email: userId.value,
+        userId: userId.value,
         password: password.value,
       },
     });
