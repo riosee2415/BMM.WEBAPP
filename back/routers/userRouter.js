@@ -10,6 +10,14 @@ const sendSecretMail = require("../utils/mailSender");
 
 const router = express.Router();
 
+/**
+ * SUBJECT : 사용자 목록
+ * PARAMETERS : searchData, searchLevel, searchExit
+ * ORDER BY : -
+ * STATEMENT : -
+ * DEVELOPMENT : 신태섭
+ * DEV DATE : 2023/03/29
+ */
 router.post("/list", isAdminCheck, async (req, res, next) => {
   const { searchData, searchLevel, searchExit } = req.body;
 
@@ -20,45 +28,53 @@ router.post("/list", isAdminCheck, async (req, res, next) => {
   const _searchExit = searchExit ? searchExit : false;
 
   const selectQuery = `
-  SELECT	ROW_NUMBER() OVER(ORDER	BY createdAt)		AS num,
-          id,
-          userId,
-          email,
-          username,
-          mobile,
-          level,
-          isExit,
-          CASE
-            WHEN	level = 1	THEN "일반회원"
-            WHEN	level = 2	THEN "비어있음"
-            WHEN	level = 3	THEN "운영자"
-            WHEN	level = 4	THEN "최고관리자"
-            WHEN	level = 5	THEN "개발사"
-          END											AS viewLevel,
-          terms,
-          createdAt,
-          updatedAt,
-          exitedAt,
-          DATE_FORMAT(createdAt, "%Y년 %m월 %d일")		AS viewCreatedAt,
-		      DATE_FORMAT(updatedAt, "%Y년 %m월 %d일")		AS viewUpdatedAt,
-		      DATE_FORMAT(exitedAt, "%Y년 %m월 %d일")		AS viewExitedAt
-    FROM	users
-   WHERE	CONCAT(username, email) LIKE '%${_searchData}%'
-          ${
-            _searchLevel === parseInt(0)
-              ? ``
-              : _searchLevel === 1
-              ? `AND level = 1`
-              : _searchLevel === 3
-              ? `AND level = 3`
-              : _searchLevel === 4
-              ? `AND level = 4`
-              : _searchLevel === 5
-              ? `AND level = 5`
-              : ``
-          } 
-          AND	isExit = ${_searchExit}
-   ORDER	BY num DESC
+SELECT	ROW_NUMBER()	OVER(ORDER	BY createdAt)	    AS num,
+		    id,
+        userId,
+        username,
+        mobile,
+        email,
+        postCode,
+        address,
+        detailAddress,
+        point,
+        FORMAT(point, 0)							              AS formatPoint,
+        recommId,
+        level,
+        terms,
+        menuRight1,
+        menuRight2,
+        menuRight3,
+        menuRight4,
+        menuRight5,
+        menuRight6,
+        menuRight7,
+        menuRight8,
+        menuRight9,
+        menuRight10,
+        menuRight11,
+        menuRight12,
+        createdAt,
+        updatedAt,
+        DATE_FORMAT(createdAt, "%Y년 %m월 %d일")		AS viewCreatedAt,
+        DATE_FORMAT(updatedAt, "%Y년 %m월 %d일")		AS viewUpdatedAt
+  FROM	users
+ WHERE	CONCAT(username, email) LIKE '%${_searchData}%'
+        ${
+          _searchLevel === parseInt(0)
+            ? ``
+            : _searchLevel === 1
+            ? `AND level = 1`
+            : _searchLevel === 3
+            ? `AND level = 3`
+            : _searchLevel === 4
+            ? `AND level = 4`
+            : _searchLevel === 5
+            ? `AND level = 5`
+            : ``
+        } 
+        AND	isExit = ${_searchExit}
+  ORDER	BY num DESC
   `;
 
   try {
@@ -71,7 +87,14 @@ router.post("/list", isAdminCheck, async (req, res, next) => {
   }
 });
 
-// 권한메뉴 관리자 리스트
+/**
+ * SUBJECT : 권한메뉴 관리자 리스트
+ * PARAMETERS : username
+ * ORDER BY : -
+ * STATEMENT : -
+ * DEVELOPMENT : 신태섭
+ * DEV DATE : 2023/03/29
+ */
 router.post("/adminList", async (req, res, next) => {
   const { username, type } = req.body;
 
@@ -79,14 +102,20 @@ router.post("/adminList", async (req, res, next) => {
   const _username = username ? username : "";
 
   const selectQuery = `
-  SELECT	id,
+  SELECT	ROW_NUMBER()	OVER(ORDER	BY createdAt)	    AS num,
+          id,
+          userId,
           username,
-          email,
-          level,
           mobile,
-          DATE_FORMAT(createdAt, "%Y년 %m월 %d일") AS viewCreatedAt,
-          DATE_FORMAT(updatedAt, "%Y년 %m월 %d일") AS updatedAt,
-          DATE_FORMAT(exitedAt, "%Y년 %m월 %d일") AS viewExitedAt,
+          email,
+          postCode,
+          address,
+          detailAddress,
+          point,
+          FORMAT(point, 0)							              AS formatPoint,
+          recommId,
+          level,
+          terms,
           menuRight1,
           menuRight2,
           menuRight3,
@@ -98,9 +127,13 @@ router.post("/adminList", async (req, res, next) => {
           menuRight9,
           menuRight10,
           menuRight11,
-          menuRight12
-    FROM	users  
-   WHERE	1 = 1
+          menuRight12,
+          createdAt,
+          updatedAt,
+          DATE_FORMAT(createdAt, "%Y년 %m월 %d일")		AS viewCreatedAt,
+          DATE_FORMAT(updatedAt, "%Y년 %m월 %d일")		AS viewUpdatedAt
+    FROM	users
+   WHERE  1 = 1
      AND  username LIKE "${_username}%"
      AND  level LIKE 5
    ORDER  BY createdAt DESC
@@ -305,38 +338,61 @@ router.post(
   }
 );
 
+/**
+ * SUBJECT : GET SIGNIN (me)
+ * PARAMETERS : -
+ * ORDER BY : -
+ * STATEMENT : -
+ * DEVELOPMENT : 신태섭
+ * DEV DATE : 2023/03/29
+ */
 router.get("/signin", async (req, res, next) => {
   console.log("❌❌❌❌❌❌❌❌❌❌❌❌❌❌");
   console.log(req.user);
   console.log("❌❌❌❌❌❌❌❌❌❌❌❌❌❌");
   try {
     if (req.user) {
-      const fullUserWithoutPassword = await User.findOne({
-        where: { id: req.user.id },
-        attributes: [
-          "id",
-          "username",
-          "email",
-          "level",
-          "menuRight1",
-          "menuRight2",
-          "menuRight3",
-          "menuRight4",
-          "menuRight5",
-          "menuRight6",
-          "menuRight7",
-          "menuRight8",
-          "menuRight9",
-          "menuRight10",
-          "menuRight11",
-          "menuRight12",
-        ],
-      });
+      const selectQuery = `
+      SELECT	ROW_NUMBER()	OVER(ORDER	BY createdAt)	    AS num,
+              id,
+              userId,
+              username,
+              mobile,
+              email,
+              postCode,
+              address,
+              detailAddress,
+              point,
+              FORMAT(point, 0)							              AS formatPoint,
+              recommId,
+              level,
+              terms,
+              menuRight1,
+              menuRight2,
+              menuRight3,
+              menuRight4,
+              menuRight5,
+              menuRight6,
+              menuRight7,
+              menuRight8,
+              menuRight9,
+              menuRight10,
+              menuRight11,
+              menuRight12,
+              createdAt,
+              updatedAt,
+              DATE_FORMAT(createdAt, "%Y년 %m월 %d일")		AS viewCreatedAt,
+              DATE_FORMAT(updatedAt, "%Y년 %m월 %d일")		AS viewUpdatedAt
+        FROM	users
+       WHERE  id = ${req.user.id}
+      `;
+
+      const fullUserWithoutPassword = await models.sequelize.query(selectQuery);
 
       console.log("🍀🍀🍀🍀🍀🍀🍀🍀🍀🍀🍀🍀🍀🍀🍀🍀🍀🍀🍀🍀🍀🍀");
-      console.log(fullUserWithoutPassword);
+      console.log(fullUserWithoutPassword[0][0]);
       console.log("🍀🍀🍀🍀🍀🍀🍀🍀🍀🍀🍀🍀🍀🍀🍀🍀🍀🍀🍀🍀🍀🍀");
-      return res.status(200).json(fullUserWithoutPassword);
+      return res.status(200).json(fullUserWithoutPassword[0][0]);
     } else {
       res.status(200).json(null);
     }
@@ -346,6 +402,14 @@ router.get("/signin", async (req, res, next) => {
   }
 });
 
+/**
+ * SUBJECT : 로그인
+ * PARAMETERS : userId, password
+ * ORDER BY : -
+ * STATEMENT : -
+ * DEVELOPMENT : 신태섭
+ * DEV DATE : 2023/03/29
+ */
 router.post("/signin", (req, res, next) => {
   passport.authenticate("local", (err, user, info) => {
     if (err) {
@@ -364,33 +428,56 @@ router.post("/signin", (req, res, next) => {
         return next(loginErr);
       }
 
-      const fullUserWithoutPassword = await User.findOne({
-        where: { id: user.id },
-        attributes: [
-          "id",
-          "username",
-          "email",
-          "level",
-          "menuRight1",
-          "menuRight2",
-          "menuRight3",
-          "menuRight4",
-          "menuRight5",
-          "menuRight6",
-          "menuRight7",
-          "menuRight8",
-          "menuRight9",
-          "menuRight10",
-          "menuRight11",
-          "menuRight12",
-        ],
-      });
+      const selectQuery = `
+      SELECT	ROW_NUMBER()	OVER(ORDER	BY createdAt)	    AS num,
+              id,
+              userId,
+              username,
+              mobile,
+              email,
+              postCode,
+              address,
+              detailAddress,
+              point,
+              FORMAT(point, 0)							              AS formatPoint,
+              recommId,
+              level,
+              terms,
+              menuRight1,
+              menuRight2,
+              menuRight3,
+              menuRight4,
+              menuRight5,
+              menuRight6,
+              menuRight7,
+              menuRight8,
+              menuRight9,
+              menuRight10,
+              menuRight11,
+              menuRight12,
+              createdAt,
+              updatedAt,
+              DATE_FORMAT(createdAt, "%Y년 %m월 %d일")		AS viewCreatedAt,
+              DATE_FORMAT(updatedAt, "%Y년 %m월 %d일")		AS viewUpdatedAt
+        FROM	users
+       WHERE  id = ${user.id}
+      `;
 
-      return res.status(200).json(fullUserWithoutPassword);
+      const fullUserWithoutPassword = await models.sequelize.query(selectQuery);
+
+      return res.status(200).json(fullUserWithoutPassword[0][0]);
     });
   })(req, res, next);
 });
 
+/**
+ * SUBJECT : 관리자 로그인
+ * PARAMETERS : userId, password
+ * ORDER BY : -
+ * STATEMENT : -
+ * DEVELOPMENT : 신태섭
+ * DEV DATE : 2023/03/29
+ */
 router.post("/signin/admin", (req, res, next) => {
   passport.authenticate("local", (err, user, info) => {
     if (err) {
@@ -414,58 +501,144 @@ router.post("/signin/admin", (req, res, next) => {
         return next(loginErr);
       }
 
-      const fullUserWithoutPassword = await User.findOne({
-        where: { id: user.id },
-        attributes: [
-          "id",
-          "username",
-          "email",
-          "level",
-          "menuRight1",
-          "menuRight2",
-          "menuRight3",
-          "menuRight4",
-          "menuRight5",
-          "menuRight6",
-          "menuRight7",
-          "menuRight8",
-          "menuRight9",
-          "menuRight10",
-          "menuRight11",
-          "menuRight12",
-        ],
-      });
+      const selectQuery = `
+      SELECT	ROW_NUMBER()	OVER(ORDER	BY createdAt)	    AS num,
+              id,
+              userId,
+              username,
+              mobile,
+              email,
+              postCode,
+              address,
+              detailAddress,
+              point,
+              FORMAT(point, 0)							              AS formatPoint,
+              recommId,
+              level,
+              terms,
+              menuRight1,
+              menuRight2,
+              menuRight3,
+              menuRight4,
+              menuRight5,
+              menuRight6,
+              menuRight7,
+              menuRight8,
+              menuRight9,
+              menuRight10,
+              menuRight11,
+              menuRight12,
+              createdAt,
+              updatedAt,
+              DATE_FORMAT(createdAt, "%Y년 %m월 %d일")		AS viewCreatedAt,
+              DATE_FORMAT(updatedAt, "%Y년 %m월 %d일")		AS viewUpdatedAt
+        FROM	users
+       WHERE  id = ${user.id}
+      `;
 
-      return res.status(200).json(fullUserWithoutPassword);
+      const fullUserWithoutPassword = await models.sequelize.query(selectQuery);
+
+      return res.status(200).json(fullUserWithoutPassword[0][0]);
     });
   })(req, res, next);
 });
 
+/**
+ * SUBJECT : 회원가입
+ * PARAMETERS :  userId,
+                 username,
+                 password,
+                 mobile,
+                 email,
+                 postCode,
+                 address,
+                 detailAddress,
+                 recommId,
+                 terms
+ * ORDER BY : -
+ * STATEMENT : -
+ * DEVELOPMENT : 신태섭
+ * DEV DATE : 2023/03/29
+ */
 router.post("/signup", async (req, res, next) => {
-  const { email, username, mobile, password, terms } = req.body;
+  const {
+    userId,
+    username,
+    password,
+    mobile,
+    email,
+    postCode,
+    address,
+    detailAddress,
+    recommId,
+    terms,
+  } = req.body;
 
   if (!terms) {
     return res.status(401).send("이용약관에 동의해주세요.");
   }
 
-  try {
-    const exUser = await User.findOne({
-      where: { email: email },
-    });
+  const findUserIdQuery = `
+  SELECT  id
+    FROM  users
+   WHERE  userId = "${userId}"
+  `;
 
-    if (exUser) {
-      return res.status(401).send("이미 가입된 이메일 입니다.");
+  const findEmailQuery = `
+  SELECT  id
+    FROM  users
+   WHERE  email = "${email}"
+  `;
+
+  try {
+    const findResult = await models.sequelize.query(findUserIdQuery);
+
+    if (findResult[0].length !== 0) {
+      return res.status(401).send("이미 사용중인 아이디 입니다.");
+    }
+
+    const findEmailResult = await models.sequelize.query(findEmailQuery);
+
+    if (findEmailResult[0].length !== 0) {
+      return res.status(401).send("이미 사용중인 이메일 입니다.");
     }
 
     const hashedPassword = await bcrypt.hash(password, 12);
 
-    const result = await User.create({
-      email,
+    const insertQuery = `
+    INSERT  INTO  users
+    (
+      userId,
       username,
+      password,
       mobile,
+      email,
+      postCode,
+      address,
+      detailAddress,
+      recommId,
       terms,
-      password: hashedPassword,
-    });
+      createdAt,
+      updatedAt
+    )
+    VALUES
+    (
+      "${userId}",
+      "${username}",
+      "${hashedPassword}",
+      "${mobile}",
+      "${email}",
+      ${postCode ? `"${postCode}"` : null},
+      ${address ? `"${address}"` : null},
+      ${detailAddress ? `"${detailAddress}"` : null},
+      ${recommId ? `"${recommId}"` : null},
+      ${terms},
+      NOW(),
+      NOW()
+    )
+    `;
+
+    await models.sequelize.query(insertQuery);
 
     res.status(201).send("SUCCESS");
   } catch (error) {
@@ -483,22 +656,58 @@ router.get("/me", isLoggedIn, async (req, res, next) => {
   }
 });
 
+/**
+ * SUBJECT : 회원 정보 수정
+ * PARAMETERS : password, mobile, email, postCode, address, detailAddress
+ * ORDER BY : -
+ * STATEMENT : -
+ * DEVELOPMENT : 신태섭
+ * DEV DATE : 2023/03/29
+ */
 router.post("/me/update", isLoggedIn, async (req, res, next) => {
-  const { id, mobile } = req.body;
+  const { password, mobile, email, postCode, address, detailAddress } =
+    req.body;
+
+  const findUserQuery = `
+    SELECT  password
+      FROM  users
+     WHERE  id = ${req.user.id}
+    `;
+
+  const findEmailQuery = `
+  SELECT  id
+    FROM  users
+   WHERE  email = "${email}"
+     AND  id != ${req.user.id}
+  `;
 
   try {
-    const exUser = await User.findOne({ where: { id: parseInt(id) } });
+    const findEmailResult = await models.sequelize.query(findEmailQuery);
 
-    if (!exUser) {
-      return res.status(401).send("존재하지 않는 사용자 입니다.");
+    if (findEmailResult[0].length !== 0) {
+      return res.status(401).send("이미 사용중인 이메일 입니다.");
     }
 
-    const updateUser = await User.update(
-      { mobile },
-      {
-        where: { id: parseInt(id) },
-      }
-    );
+    const findResult = await models.sequelize.query(findUserQuery);
+
+    const result = await bcrypt.compare(password, findResult[0][0].password);
+
+    if (!result) {
+      return res.status(401).send("기존 비밀번호가 일치하지 않습니다.");
+    }
+
+    const updateQuery = `
+    UPDATE  users
+       SET  mobile = "${mobile}",
+            email = "${email}",
+            postCode = "${postCode}",
+            address = "${address}",
+            detailAddress = "${detailAddress}",
+            updatedAt = NOW()
+     WHERE  id = ${req.user.id}
+    `;
+
+    await models.sequelize.query(updateQuery);
 
     return res.status(200).json({ result: true });
   } catch (error) {
@@ -507,63 +716,152 @@ router.post("/me/update", isLoggedIn, async (req, res, next) => {
   }
 });
 
-router.post("/findemail", async (req, res, next) => {
-  const { nickname, mobile } = req.body;
+/**
+ * SUBJECT : 아이디 찾기 (이메일 발송)
+ * PARAMETERS : username, email
+ * ORDER BY : -
+ * STATEMENT : -
+ * DEVELOPMENT : 신태섭
+ * DEV DATE : 2023/03/29
+ */
+router.post("/findUserId", async (req, res, next) => {
+  const { username, email } = req.body;
+
+  const findUserQuery = `
+    SELECT  id
+      FROM  users
+     WHERE  username = "${username}"
+       AND  email = "${email}"
+    `;
 
   try {
-    const exUser = await User.findOne({
-      where: {
-        nickname,
-        mobile,
-      },
-    });
+    const findUserData = await models.sequelize.query(findUserQuery);
 
-    if (exUser) {
-      return res.status(200).json({ email: exUser.email });
-    } else {
-      return res.status(200).json({ email: false });
+    if (findUserData[0].length === 0) {
+      return res.status(401).send("일치하는 사용자 정보가 존재하지 않습니다.");
     }
+
+    const UUID = generateUUID();
+
+    const userUpdateQuery = `
+    UPDATE  users
+       SET  secret = "${UUID}"
+     WHERE  email = "${email}"
+       AND  username = "${username}"
+    `;
+
+    await models.sequelize.query(userUpdateQuery);
+
+    await sendSecretMail(
+      email,
+      `🔐 [보안 인증코드 입니다.] BMM 에서 아이디 찾기을 위한 보안인증 코드를 발송했습니다.`,
+      `
+    <div>
+      <h3>BMM</h3>
+      <hr />
+      <p>보안 인증코드를 발송해드립니다. BMM 홈페이지의 인증코드 입력란에 정확히 입력해주시기 바랍니다.</p>
+      <p>인증코드는 [<strong>${UUID}</strong>] 입니다. </p>
+
+      <br /><hr />
+      <article>
+        발송해드린 인증코드는 외부로 유출하시거나, 유출 될 경우 개인정보 침해의 위험이 있으니, 필히 본인만 사용하며 타인에게 양도하거나 알려주지 마십시오.
+      </article>
+    </div>
+    `
+    );
+
+    return res.status(200).json({ result: true });
   } catch (error) {
     console.error(error);
     return res.status(401).send("아이디를 찾을 수 없습니다.");
   }
 });
 
-router.post("/modifypass", isLoggedIn, async (req, res, next) => {
-  const { email, nickname, mobile } = req.body;
+/**
+ * SUBJECT : 인증번호 확인하기 (아이디)
+ * PARAMETERS : secret
+ * ORDER BY : -
+ * STATEMENT : -
+ * DEVELOPMENT : 신태섭
+ * DEV DATE : 2023/03/29
+ */
+router.post("/findId/secretCheck", async (req, res, next) => {
+  const { email, secret } = req.body;
+
+  const findUser = `
+  SELECT  id,
+          userId
+    FROM  users
+   WHERE  secret = "${secret}"
+  `;
 
   try {
-    const cookieEmail = req.user.dataValues.email;
-    const cookieNickname = req.user.dataValues.nickname;
-    const cookieMobile = req.user.dataValues.mobile;
+    const userData = await models.sequelize.query(findUser);
 
-    if (
-      email === cookieEmail &&
-      nickname === cookieNickname &&
-      mobile === cookieMobile
-    ) {
-      const currentUserId = req.user.dataValues.id;
+    if (userData[0].length === 0) {
+      return res.status(401).send("인증코드를 잘못 입력하셨습니다.");
+    }
 
-      const UUID = generateUUID();
+    const updateQuery = `
+    UPDATE  users
+       SET  secret = NULL
+     WHERE  email = "${email}"
+    `;
 
-      const updateResult = await User.update(
-        { secret: UUID },
-        {
-          where: { id: parseInt(currentUserId) },
-        }
-      );
+    await models.sequelize.query(updateQuery);
 
-      if (updateResult[0] > 0) {
-        // 이메일 전송
+    return res.status(200).json(userData[0][0].userId);
+  } catch (error) {
+    console.error(error);
+    return res.status(401).send("잘못된 요청 입니다.");
+  }
+});
 
-        await sendSecretMail(
-          cookieEmail,
-          `🔐 [보안 인증코드 입니다.] ㅁㅁㅁㅁ 에서 비밀번호 변경을 위한 보안인증 코드를 발송했습니다.`,
-          `
+/**
+ * SUBJECT : 비밀번호 찾기 (이메일 발송)
+ * PARAMETERS : userId, username, email
+ * ORDER BY : -
+ * STATEMENT : -
+ * DEVELOPMENT : 신태섭
+ * DEV DATE : 2023/03/29
+ */
+router.post("/modifypass", async (req, res, next) => {
+  const { userId, username, email } = req.body;
+
+  const findUserQuery = `
+  SELECT  id,
+          email
+    FROM  users
+   WHERE  userId = "${userId}"
+     AND  email = "${email}"
+     AND  username = "${username}"
+  `;
+
+  try {
+    const findUserData = await models.sequelize.query(findUserQuery);
+
+    if (findUserData[0].length === 0) {
+      return res.status(401).send("일치하는 정보가 없습니다.");
+    }
+
+    const UUID = generateUUID();
+
+    const userUpdateQuery = `
+    UPDATE  users
+       SET  secret = "${UUID}"
+     WHERE  userId = "${userId}"
+    `;
+
+    await models.sequelize.query(userUpdateQuery);
+
+    await sendSecretMail(
+      email,
+      `🔐 [보안 인증코드 입니다.] BMM에서 비밀번호 변경을 위한 보안인증 코드를 발송했습니다.`,
+      `
           <div>
-            <h3>ㅁㅁㅁㅁ</h3>
+            <h3>BMM</h3>
             <hr />
-            <p>보안 인증코드를 발송해드립니다. ㅁㅁㅁㅁ 홈페이지의 인증코드 입력란에 정확히 입력해주시기 바랍니다.</p>
+            <p>보안 인증코드를 발송해드립니다. BMM 홈페이지의 인증코드 입력란에 정확히 입력해주시기 바랍니다.</p>
             <p>인증코드는 [<strong>${UUID}</strong>] 입니다. </p>
 
             <br /><hr />
@@ -572,53 +870,83 @@ router.post("/modifypass", isLoggedIn, async (req, res, next) => {
             </article>
           </div>
           `
-        );
+    );
 
-        return res.status(200).json({ result: true });
-      } else {
-        return res
-          .status(401)
-          .send("요청이 올바르지 않습니다. 다시 시도해주세요.");
-      }
-    } else {
-      return res
-        .status(401)
-        .send("입력하신 정보가 잘못되었습니다. 다시 확인해주세요.");
-    }
+    return res.status(200).json({ result: true });
   } catch (error) {
     console.error(error);
     return res.status(401).send("잘못된 요청 입니다. [CODE097]");
   }
 });
 
-router.patch("/modifypass/update", isLoggedIn, async (req, res, next) => {
-  const { secret, password } = req.body;
+/**
+ * SUBJECT : 인증번호 확인하기 (비밀번호)
+ * PARAMETERS : secret
+ * ORDER BY : -
+ * STATEMENT : -
+ * DEVELOPMENT : 신태섭
+ * DEV DATE : 2023/03/29
+ */
+router.post("/checkSecret", async (req, res, next) => {
+  const { secret } = req.body;
+
+  const findUser = `
+  SELECT  id
+    FROM  users
+   WHERE  secret = "${secret}"
+  `;
 
   try {
-    const exUser = await User.findOne({
-      where: { id: req.user.dataValues.id },
-    });
+    const userData = await models.sequelize.query(findUser);
 
-    if (!exUser) {
-      return res
-        .status(401)
-        .send("잘못된 요청 입니다. 다시 로그인 후 이용해주세요.");
+    if (userData[0].length === 0) {
+      return res.status(401).send("인증코드를 잘못 입력하셨습니다.");
+    }
+
+    return res.status(200).json({ result: true });
+  } catch (error) {
+    console.error(error);
+    return res.status(401).send("잘못된 요청 입니다.");
+  }
+});
+
+/**
+ * SUBJECT : 비밀번호 찾기 (비밀번호 변경)
+ * PARAMETERS : userId, password
+ * ORDER BY : -
+ * STATEMENT : -
+ * DEVELOPMENT : 신태섭
+ * DEV DATE : 2023/03/29
+ */
+router.post("/modifypass/update", async (req, res, next) => {
+  const { userId, password } = req.body;
+
+  const findUser = `
+  SELECT  id
+    FROM  users
+   WHERE  userId = "${userId}"
+  `;
+
+  try {
+    const userData = await models.sequelize.query(findUser);
+
+    if (userData[0].length === 0) {
+      return res.status(401).send("잠시 후 다시 시도하여 주십시오.");
     }
 
     const hashPassord = await bcrypt.hash(password, 12);
 
-    const updateResult = await User.update(
-      { password: hashPassord },
-      {
-        where: { id: req.user.dataValues.id },
-      }
-    );
+    const userUpdateQuery = `
+    UPDATE  users
+       SET  password = "${hashPassord}",
+            updatedAt = NOW(),
+            secret = NULL
+     WHERE  userId = "${userId}"
+    `;
 
-    if (updateResult[0] === 1) {
-      return res.status(200).json({ result: true });
-    } else {
-      return res.status(200).json({ result: false });
-    }
+    await models.sequelize.query(userUpdateQuery);
+
+    return res.status(200).json({ result: true });
   } catch (error) {
     console.error(error);
     return res.status(401).send("잘못된 요청 입니다.");

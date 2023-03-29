@@ -20,7 +20,7 @@ module.exports = class User extends Model {
         },
         mobile: {
           type: DataTypes.STRING(50), // 전화번호
-          allowNull: false,
+          allowNull: true,
         },
         email: {
           type: DataTypes.STRING(60), // 이메일
