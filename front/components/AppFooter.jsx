@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import {
   Wrapper,
   Text,
@@ -13,7 +13,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { COMPANY_GET_REQUEST } from "../reducers/company";
 import { LOGO_GET_REQUEST } from "../reducers/logo";
 import { UpOutlined } from "@ant-design/icons";
-import { message } from "antd";
+import { message, Modal } from "antd";
+import Link from "next/dist/client/link";
 
 const AppFooter = () => {
   const width = useWidth();
@@ -61,9 +62,17 @@ const AppFooter = () => {
             width={`auto`}
             fontSize={width < 800 ? `14px` : `16px`}
           >
-            <Text margin={width < 800 ? `0 15px 0 0` : `0 30px 0 0`} isHover>
-              이용약관
-            </Text>
+            <Link href={`/terms`}>
+              <a>
+                <Text
+                  margin={width < 800 ? `0 15px 0 0` : `0 30px 0 0`}
+                  isHover
+                >
+                  이용약관
+                </Text>
+              </a>
+            </Link>
+
             <Text isHover>개인정보처리방침</Text>
           </Wrapper>
           {companys && companys[0] && (
