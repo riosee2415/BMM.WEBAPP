@@ -324,10 +324,10 @@ const Home = ({}) => {
                 <Empty description="조회된 이벤트가 없습니다." />
               </Wrapper>
             ) : (
-              eventList.map((data) => {
+              eventList.slice(0, 2).map((data) => {
                 return (
                   <EventBox
-                    key={`data.id`}
+                    key={data.id}
                     width={width < 800 ? `100%` : `49%`}
                     al={`flex-end`}
                     ju={`flex-end`}
