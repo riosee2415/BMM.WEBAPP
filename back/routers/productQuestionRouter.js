@@ -13,8 +13,92 @@ const router = express.Router();
  * DEVELOPMENT : 신태섭
  * DEV DATE : 2023/03/27
  */
+router.post("/list", async (req, res, next) => {
+  const { page, searchProductName } = req.body;
+
+  const LIMIT = 10;
+
+  const _page = page ? page : 1;
+
+  const __page = _page - 1;
+  const OFFSET = __page * 10;
+
+  const _searchProductName = searchProductName ? searchProductName : ``;
+
+  try {
+    const lengthQuery = `
+      SELECT  ROW_NUMBER()  OVER(ORDER  BY A.createdAt)   AS num,
+              A.id,
+              A.name,
+              A.mobile,
+              A.email,
+              A.productName,
+              A.productUrl,
+              A.content,
+              A.password,
+              A.isCompleted,
+              A.answer,
+              A.answerdAt,
+              A.createdAt,
+              A.updatedAt,
+              A.UserId
+        FROM  productQuestions       A
+       WHERE  1 = 1
+         AND  A.productName LIKE "%${_searchProductName}%"
+    `;
+
+    const selectQuery = `
+    SELECT	ROW_NUMBER()  OVER(ORDER  BY A.createdAt)   AS num,
+            A.id,
+            A.name,
+            A.mobile,
+            A.email,
+            A.productName,
+            A.productUrl,
+            A.content,
+            A.password,
+            A.isCompleted,
+            A.answer,
+            A.answerdAt,
+            A.createdAt,
+            A.updatedAt,
+            A.UserId
+      FROM	productQuestions       A
+     WHERE  1 = 1
+       AND  A.productName LIKE "%${_searchProductName}%"
+     ORDER  BY num DESC
+     LIMIT  ${LIMIT}
+    OFFSET  ${OFFSET}
+    `;
+
+    const length = await models.sequelize.query(lengthQuery);
+    const prodQue = await models.sequelize.query(selectQuery);
+
+    const prodQueLen = length[0].length;
+
+    const lastPage =
+      prodQueLen % LIMIT > 0 ? prodQueLen / LIMIT + 1 : prodQueLen / LIMIT;
+
+    return res.status(200).json({
+      list: prodQue[0],
+      lastPage: parseInt(lastPage),
+    });
+  } catch (error) {
+    console.error(error);
+    return res.status(401).send("목록을 불러올 수 없습니다.");
+  }
+});
+
+/**
+ * SUBJECT : 나의 상품문의 목록
+ * PARAMETERS : page
+ * ORDER BY : -
+ * STATEMENT : -
+ * DEVELOPMENT : 신태섭
+ * DEV DATE : 2023/03/27
+ */
 router.post("/my/list", isLoggedIn, async (req, res, next) => {
-  const { page } = req.query;
+  const { page } = req.body;
 
   if (!req.user) {
     return res.status(403).send("로그인 후 이용 가능합니다.");
@@ -29,7 +113,8 @@ router.post("/my/list", isLoggedIn, async (req, res, next) => {
 
   try {
     const lengthQuery = `
-      SELECT  A.id,
+      SELECT  ROW_NUMBER()  OVER(ORDER  BY A.createdAt)   AS num,
+              A.id,
               A.name,
               A.mobile,
               A.email,
@@ -49,7 +134,8 @@ router.post("/my/list", isLoggedIn, async (req, res, next) => {
     `;
 
     const selectQuery = `
-    SELECT	A.id,
+    SELECT	ROW_NUMBER()  OVER(ORDER  BY A.createdAt)   AS num,
+            A.id,
             A.name,
             A.mobile,
             A.email,
@@ -66,7 +152,7 @@ router.post("/my/list", isLoggedIn, async (req, res, next) => {
       FROM	productQuestions       A
      WHERE  1 = 1
        AND  A.UserId = ${req.user.id}
-     ORDER  BY A.createdAt DESC
+     ORDER  BY num DESC
      LIMIT  ${LIMIT}
     OFFSET  ${OFFSET}
     `;
@@ -91,9 +177,11 @@ router.post("/my/list", isLoggedIn, async (req, res, next) => {
 
 // 상품문의 관리자 목록
 router.post("/admin/list", isAdminCheck, async (req, res, next) => {
-  const { listType } = req.body;
+  const { listType, searchProductName, searchUserName } = req.body;
 
   const _listType = parseInt(listType) || 3;
+  const _searchProductName = searchProductName ? searchProductName : ``;
+  const _searchUserName = searchUserName ? searchUserName : ``;
 
   const selectQuery = `
   SELECT  ROW_NUMBER()  OVER(ORDER  BY A.createdAt)   AS num,
@@ -117,15 +205,18 @@ router.post("/admin/list", isAdminCheck, async (req, res, next) => {
           END                    AS questionType
     FROM  productQuestions       A
    WHERE  1 = 1
+     AND  A.productName LIKE "%${_searchProductName}%"
+     AND  A.name LIKE "%${_searchUserName}%"
           ${
             _listType === 1
-              ? `AND A.isCompleted = TRUE`
+              ? `AND A.isCompleted = 1`
               : _listType === 2
-              ? `AND A.isCompleted = FALSE`
+              ? `AND A.isCompleted = 0`
               : _listType === 3
               ? ``
               : ``
           }
+   ORDER  BY num DESC
   `;
 
   try {
