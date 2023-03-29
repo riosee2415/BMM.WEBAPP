@@ -41,6 +41,26 @@ const List = styled(Wrapper)`
   }
 `;
 
+const SquareBox = styled(Wrapper)`
+  width: 100%;
+  position: relative;
+  overflow: ${(props) => props.overflow || `hidden`};
+
+  &:before {
+    content: "";
+    display: block;
+    padding-bottom: 41%;
+  }
+
+  & img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    transition: 0.5s;
+  }
+`;
+
 const Index = () => {
   ////// GLOBAL STATE //////
   const { eventList, eventPage } = useSelector((state) => state.event);
@@ -101,7 +121,9 @@ const Index = () => {
                     <Link href={`/event/${data.id}`}>
                       <ATag>
                         <Wrapper al={`flex-start`}>
-                          <Image alt="thumbnail" src={data.thumbnail} />
+                          <SquareBox>
+                            <Image alt="thumbnail" src={data.thumbnail} />
+                          </SquareBox>
                           <Text
                             width={`100%`}
                             isEllipsis

@@ -539,8 +539,8 @@ const Event = ({}) => {
               <Wrapper dr={`row`} ju={`space-around`} margin={`30px 0`}>
                 <Wrapper>
                   <Image
-                    width={`100%`}
-                    height={`150px`}
+                    width={`630px`}
+                    height={`260px`}
                     src={eventPath1 ? eventPath1 : currentData.thumbnail}
                     alt={`image`}
                   />
