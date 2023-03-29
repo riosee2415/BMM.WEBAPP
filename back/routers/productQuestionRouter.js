@@ -89,6 +89,55 @@ router.post("/my/list", isLoggedIn, async (req, res, next) => {
   }
 });
 
+// 상품문의 관리자 목록
+router.post("/admin/list", isAdminCheck, async (req, res, next) => {
+  const { listType } = req.body;
+
+  const _listType = parseInt(listType) || 3;
+
+  const selectQuery = `
+  SELECT  ROW_NUMBER()  OVER(ORDER  BY A.createdAt)   AS num,
+          A.id,
+          A.name,
+          A.mobile,
+          A.email,
+          A.productName,
+          A.productUrl,
+          A.content,
+          A.password,
+          A.isCompleted,
+          A.answer,
+          A.answerdAt,
+          A.createdAt,
+          A.updatedAt,
+          A.UserId,
+          CASE
+              WHEN  A.UserId IS NOT NULL THEN "회원 작성"
+              ELSE  "비회원 작성"
+          END                    AS questionType
+    FROM  productQuestions       A
+   WHERE  1 = 1
+          ${
+            _listType === 1
+              ? `AND A.isCompleted = TRUE`
+              : _listType === 2
+              ? `AND A.isCompleted = FALSE`
+              : _listType === 3
+              ? ``
+              : ``
+          }
+  `;
+
+  try {
+    const productQuestions = await models.sequelize.query(selectQuery);
+
+    return res.status(200).json(productQuestions[0]);
+  } catch (error) {
+    console.error(error);
+    return res.status(401).send("상품문의 데이터를 가져올 수 없습니다.");
+  }
+});
+
 /**
  * SUBJECT : 상품문의 상세
  * PARAMETERS : id
@@ -132,55 +181,6 @@ router.post("/detail", async (req, res, next) => {
     }
 
     return res.status(200).json(detailData[0][0]);
-  } catch (error) {
-    console.error(error);
-    return res.status(401).send("상품문의 데이터를 가져올 수 없습니다.");
-  }
-});
-
-// 상품문의 상세
-router.post("/detail", isAdminCheck, async (req, res, next) => {
-  const { id } = req.body;
-
-  const _listType = parseInt(listType) || 3;
-
-  try {
-    const selectQuery = `
-      SELECT  ROW_NUMBER()  OVER(ORDER  BY A.createdAt)   AS num,
-              A.id,
-              A.name,
-              A.mobile,
-              A.email,
-              A.productName,
-              A.productUrl,
-              A.content,
-              A.password,
-              A.isCompleted,
-              A.answer,
-              A.answerdAt,
-              A.createdAt,
-              A.updatedAt,
-              A.UserId,
-              CASE
-                  WHEN  A.UserId IS NOT NULL THEN "회원 작성"
-                  ELSE  "비회원 작성"
-              END                    AS questionType
-        FROM  productQuestions       A
-       WHERE  1 = 1
-              ${
-                _listType === 1
-                  ? `AND A.isCompleted = TRUE`
-                  : _listType === 2
-                  ? `AND A.isCompleted = FALSE`
-                  : _listType === 3
-                  ? ``
-                  : ``
-              }
-      `;
-
-    const productQuestions = await models.sequelize.query(selectQuery);
-
-    return res.status(200).json({ productQuestions: productQuestions[0] });
   } catch (error) {
     console.error(error);
     return res.status(401).send("상품문의 데이터를 가져올 수 없습니다.");
