@@ -122,8 +122,8 @@ router.post("/my/list", async (req, res, next) => {
           A.createdAt,
           A.updatedAt,
           DATE_FORMAT(A.answerdAt, "%Y년 %m월 %d일")      AS viewAnswerdAt,
-          DATE_FORMAT(A.createdAt, "%Y년 %m월 %d일")      AS viewCreatedAt,
-          DATE_FORMAT(A.updatedAt, "%Y년 %m월 %d일")       AS viewUpdatedAt
+          DATE_FORMAT(A.createdAt, "%Y.%m.%d")          AS viewCreatedAt,
+          DATE_FORMAT(A.updatedAt, "%Y년 %m월 %d일")      AS viewUpdatedAt
     FROM  questions   A
    WHERE  1 = 1
      AND  A.UserId = ${req.user.id}
@@ -144,8 +144,8 @@ router.post("/my/list", async (req, res, next) => {
           A.createdAt,
           A.updatedAt,
           DATE_FORMAT(A.answerdAt, "%Y년 %m월 %d일")      AS viewAnswerdAt,
-          DATE_FORMAT(A.createdAt, "%Y년 %m월 %d일")      AS viewCreatedAt,
-          DATE_FORMAT(A.updatedAt, "%Y년 %m월 %d일")       AS viewUpdatedAt
+          DATE_FORMAT(A.createdAt, "%Y.%m.%d")          AS viewCreatedAt,
+          DATE_FORMAT(A.updatedAt, "%Y년 %m월 %d일")      AS viewUpdatedAt
     FROM  questions   A
    WHERE  1 = 1
      AND  A.UserId = ${req.user.id}
