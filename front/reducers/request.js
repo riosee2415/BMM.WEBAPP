@@ -6,6 +6,8 @@ export const initailState = {
   requestAdminList: [], //관리자리스트
   reqyestDetail: null,
 
+  requestData: null, // 상품요청 데이턴
+
   //
   st_requestListLoading: false, // 상품요청 가져오기
   st_requestListDone: false,
@@ -47,6 +49,8 @@ export const REQUEST_CREATE_FAILURE = "REQUEST_CREATE_FAILURE";
 export const REQUEST_ANSWER_UPDATE_REQUEST = "REQUEST_UPDATE_REQUEST";
 export const REQUEST_ANSWER_UPDATE_SUCCESS = "REQUEST_UPDATE_SUCCESS";
 export const REQUEST_ANSWER_UPDATE_FAILURE = "REQUEST_UPDATE_FAILURE";
+
+export const REQUEST = "REQUEST_UPDATE_FAILURE";
 
 const reducer = (state = initailState, action) =>
   produce(state, (draft) => {

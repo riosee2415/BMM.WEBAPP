@@ -183,7 +183,7 @@ const Index = () => {
                   <Text color={Theme.darkGrey_C} fontSize={`16px`}>
                     {requestDetail && requestDetail.name}
                     <SpanText margin={`0 0 0 18px`}>
-                      {requestDetail && requestDetail.updatedAt}
+                      {requestDetail && requestDetail.createdAt}
                     </SpanText>
                   </Text>
                 </Wrapper>

@@ -72,8 +72,11 @@ const AppFooter = () => {
                 </Text>
               </a>
             </Link>
-
-            <Text isHover>개인정보처리방침</Text>
+            <Link href={`/privacy`}>
+              <a>
+                <Text isHover>개인정보처리방침</Text>
+              </a>
+            </Link>
           </Wrapper>
           {companys && companys[0] && (
             <Text>

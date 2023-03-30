@@ -53,7 +53,7 @@ const List = styled(Wrapper)`
 
 const Index = () => {
   ////// GLOBAL STATE //////
-  const password = useInput();
+  const password = useInput("");
 
   ////// HOOKS //////
   const width = useWidth();
@@ -63,8 +63,9 @@ const Index = () => {
   ////// REDUX //////
   ////// USEEFFECT //////
   useEffect(() => {
-    if (password.value.length === 4) {
+    if (password.value) {
       if (password.value) {
+        // router.push(`/customer/request/${data.id}`);
         return message.success({
           content: "비밀번호가 맞습니다.",
         });
@@ -78,14 +79,13 @@ const Index = () => {
 
   ////// TOGGLE //////
 
-  //// HANDLER //////
+  //// HANDLER /////
   const passwordHandler = useCallback(() => {
     if (!password.value) {
       return message.error({
         content: "비밀번호를 입력해주세요.",
       });
     }
-
     dispatch({
       type: REQUEST_LIST_REQUEST,
       data: {

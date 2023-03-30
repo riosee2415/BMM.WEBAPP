@@ -288,7 +288,7 @@ const Advertise = ({}) => {
       dataIndex: "num",
     },
     {
-      title: "썸네일",
+      title: "메인사진",
       render: (data) => (
         <Image style={{ width: `100px` }} src={data.imagePath} />
       ),
@@ -354,7 +354,7 @@ const Advertise = ({}) => {
         <RightOutlined />
         <Popover content={content}>
           <HomeText cur={true} margin={`3px 20px 0px 20px`}>
-            {level2}{" "}
+            {level2}
           </HomeText>
         </Popover>
       </Wrapper>
