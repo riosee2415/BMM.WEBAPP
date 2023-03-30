@@ -2,6 +2,8 @@ import produce from "../util/produce";
 
 export const initailState = {
   questions: null,
+  myQueList: null,
+  lastPage: 1,
   types: null,
 
   createTypeModal: false, // 문의 유형 create 모달 실행
@@ -12,6 +14,11 @@ export const initailState = {
   st_questionLoading: false, // 문의 정보 가져오기
   st_questionDone: false,
   st_questionError: null,
+
+  //
+  st_myQueListLoading: false, // 마이페이지 문의 정보 가져오기
+  st_myQueListDone: false,
+  st_myQueListError: null,
   //
   st_questionCreateLoading: false, // 문의 정보 추가하기
   st_questionCreateDone: false,
@@ -45,6 +52,10 @@ export const initailState = {
 export const QUESTION_GET_REQUEST = "QUESTION_GET_REQUEST";
 export const QUESTION_GET_SUCCESS = "QUESTION_GET_SUCCESS";
 export const QUESTION_GET_FAILURE = "QUESTION_GET_FAILURE";
+
+export const MY_QUE_LIST_REQUEST = "MY_QUE_LIST_REQUEST";
+export const MY_QUE_LIST_SUCCESS = "MY_QUE_LIST_SUCCESS";
+export const MY_QUE_LIST_FAILURE = "MY_QUE_LIST_FAILURE";
 
 export const QUESTION_DELETE_REQUEST = "QUESTION_DELETE_REQUEST";
 export const QUESTION_DELETE_SUCCESS = "QUESTION_DELETE_SUCCESS";
@@ -103,6 +114,27 @@ const reducer = (state = initailState, action) =>
         draft.st_questionError = action.error;
         break;
       }
+      //////////////////////////////////////////////////////
+      case MY_QUE_LIST_REQUEST: {
+        draft.st_myQueListLoading = true;
+        draft.st_myQueListDone = null;
+        draft.st_myQueListError = false;
+        break;
+      }
+      case MY_QUE_LIST_SUCCESS: {
+        draft.st_myQueListLoading = false;
+        draft.st_myQueListDone = true;
+        draft.myQueList = action.data.questions;
+        draft.lastPage = action.data.lastPage;
+        break;
+      }
+      case MY_QUE_LIST_FAILURE: {
+        draft.st_myQueListLoading = false;
+        draft.st_myQueListDone = false;
+        draft.st_myQueListError = action.error;
+        break;
+      }
+      //////////////////////////////////////////////////////
       case QUESTION_DELETE_REQUEST: {
         draft.st_questionDeleteLoading = true;
         draft.st_questionDeleteDone = null;

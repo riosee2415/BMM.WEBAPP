@@ -18,6 +18,9 @@ import {
 import styled from "styled-components";
 import MypageTop from "../../../components/MypageTop";
 import Link from "next/dist/client/link";
+import { useSelector } from "react-redux";
+import { MY_QUE_LIST_REQUEST } from "../../../reducers/question";
+import { Empty } from "antd";
 
 const List = styled(Wrapper)`
   height: 60px;
@@ -29,10 +32,18 @@ const List = styled(Wrapper)`
     cursor: pointer;
     background: ${Theme.subTheme_C};
   }
+
+  @media (max-width: 800px) {
+    font-size: 14px;
+  }
 `;
 
 const Question = () => {
   ////// GLOBAL STATE //////
+  const { myQueList, lastPage } = useSelector((state) => state.question);
+
+  const [currentPage, setCurrentPage] = useState(1);
+
   ////// HOOKS //////
   const width = useWidth();
 
@@ -40,6 +51,14 @@ const Question = () => {
   ////// USEEFFECT //////
   ////// TOGGLE //////
   ////// HANDLER //////
+  // 페이지네이션
+  const otherPageCall = useCallback(
+    (changePage) => {
+      setCurrentPage(changePage);
+    },
+    [currentPage]
+  );
+
   ////// DATAVIEW //////
 
   return (
@@ -69,7 +88,7 @@ const Question = () => {
               bgColor={Theme.lightGrey3_C}
               borderTop={`1px solid ${Theme.basicTheme_C}`}
               borderBottom={`1px solid ${Theme.lightGrey2_C}`}
-              fontSize={`16px`}
+              fontSize={width < 800 ? `14px` : `16px`}
               fontWeight={`600`}
             >
               <Wrapper width={`10%`} display={width < 800 ? `none` : `flex`}>
@@ -78,34 +97,54 @@ const Question = () => {
               <Wrapper width={width < 800 ? `65%` : `75%`}>제목</Wrapper>
               <Wrapper width={width < 800 ? `35%` : `15%`}>문의날짜</Wrapper>
             </Wrapper>
-            <Link href={`/mypage/question/1`}>
-              <ATag>
-                <List>
-                  <Wrapper
-                    width={`10%`}
-                    color={Theme.grey_C}
-                    display={width < 800 ? `none` : `flex`}
-                  >
-                    10
-                  </Wrapper>
-                  <Wrapper
-                    width={width < 800 ? `65%` : `75%`}
-                    padding={width < 800 ? `0 10px` : `0 50px`}
-                    color={Theme.darkGrey_C}
-                  >
-                    <Wrapper dr={`row`} ju={`flex-start`}>
-                      <Text width={width < 800 ? `100%` : `75%`} isEllipsis>
-                        제목이 들어올 곳입니다.
-                      </Text>
-                    </Wrapper>
-                  </Wrapper>
-                  <Wrapper width={width < 800 ? `35%` : `15%`}>
-                    2022.12.22
-                  </Wrapper>
-                </List>
-              </ATag>
-            </Link>
-            <CustomPage />
+            {myQueList && myQueList.length === 0 ? (
+              <Wrapper padding={`50px 0`}>
+                <Empty description="조회된 1:1문의 내역이 없습니다." />
+              </Wrapper>
+            ) : (
+              myQueList.map((data) => {
+                return (
+                  <Link key={data.id} href={`/mypage/question/${data.id}`}>
+                    <ATag>
+                      <List>
+                        <Wrapper
+                          width={`10%`}
+                          color={Theme.grey_C}
+                          display={width < 800 ? `none` : `flex`}
+                        >
+                          {data.num}
+                        </Wrapper>
+                        <Wrapper
+                          width={width < 800 ? `65%` : `75%`}
+                          padding={width < 800 ? `0 10px` : `0 50px`}
+                          color={Theme.darkGrey_C}
+                        >
+                          <Wrapper dr={`row`} ju={`flex-start`}>
+                            <Text
+                              width={width < 800 ? `100%` : `75%`}
+                              isEllipsis
+                            >
+                              {data.title}
+                            </Text>
+                          </Wrapper>
+                        </Wrapper>
+                        <Wrapper width={width < 800 ? `35%` : `15%`}>
+                          {data.viewCreatedAt}
+                        </Wrapper>
+                      </List>
+                    </ATag>
+                  </Link>
+                );
+              })
+            )}
+
+            <CustomPage
+              defaultCurrent={1}
+              current={parseInt(currentPage)}
+              total={lastPage * 10}
+              pageSize={10}
+              onChange={(page) => otherPageCall(page)}
+            />
           </RsWrapper>
         </WholeWrapper>
       </ClientLayout>
@@ -126,6 +165,10 @@ export const getServerSideProps = wrapper.getServerSideProps(
 
     context.store.dispatch({
       type: LOAD_MY_INFO_REQUEST,
+    });
+
+    context.store.dispatch({
+      type: MY_QUE_LIST_REQUEST,
     });
 
     // 구현부 종료

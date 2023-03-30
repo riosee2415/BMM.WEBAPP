@@ -1,6 +1,10 @@
 import { all, call, delay, fork, put, takeLatest } from "redux-saga/effects";
 import axios from "axios";
 import {
+  MY_QUE_LIST_REQUEST,
+  MY_QUE_LIST_SUCCESS,
+  MY_QUE_LIST_FAILURE,
+  //
   QUESTION_GET_REQUEST,
   QUESTION_GET_SUCCESS,
   QUESTION_GET_FAILURE,
@@ -52,6 +56,34 @@ function* questionGet(action) {
     console.error(err);
     yield put({
       type: QUESTION_GET_FAILURE,
+      error: err.response.data,
+    });
+  }
+}
+
+// ******************************************************************************************************************
+// ******************************************************************************************************************
+// ******************************************************************************************************************
+
+// ******************************************************************************************************************
+// SAGA AREA ********************************************************************************************************
+// ******************************************************************************************************************
+async function myQueListAPI(data) {
+  return await axios.post(`/api/question/my/list`, data);
+}
+
+function* myQueList(action) {
+  try {
+    const result = yield call(myQueListAPI, action.data);
+
+    yield put({
+      type: MY_QUE_LIST_SUCCESS,
+      data: result.data,
+    });
+  } catch (err) {
+    console.error(err);
+    yield put({
+      type: MY_QUE_LIST_FAILURE,
       error: err.response.data,
     });
   }
@@ -261,6 +293,10 @@ function* watchQuestionGet() {
   yield takeLatest(QUESTION_GET_REQUEST, questionGet);
 }
 
+function* watchMyQueList() {
+  yield takeLatest(MY_QUE_LIST_REQUEST, myQueList);
+}
+
 function* watchQuestionCreate() {
   yield takeLatest(QUESTION_CREATE_REQUEST, questionCreate);
 }
@@ -295,6 +331,7 @@ function* watchQuestionTypeUpdate() {
 export default function* bannerSaga() {
   yield all([
     fork(watchQuestionGet),
+    fork(watchMyQueList),
     fork(watchQuestionCreate),
     fork(watchQuestionDelete),
     fork(watchQuestionUpdate),
