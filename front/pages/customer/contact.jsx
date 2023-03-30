@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import ClientLayout from "../../components/ClientLayout";
 import Head from "next/head";
 import wrapper from "../../store/configureStore";
@@ -23,19 +23,66 @@ import Theme from "../../components/Theme";
 import styled from "styled-components";
 
 import { useRouter } from "next/router";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import useInput from "../../hooks/useInput";
+import Link from "next/dist/client/link";
+import { QUESTION_CREATE_REQUEST } from "../../reducers/question";
+import { message } from "antd";
 
 const Contact = () => {
   ////// GLOBAL STATE //////
   const { me } = useSelector((state) => state.user);
+  const { st_questionCreateDone, st_questionCreateError } = useSelector(
+    (state) => state.question
+  );
   ////// HOOKS //////
   const width = useWidth();
   const router = useRouter();
+  const dispatch = useDispatch();
+
+  const userId = useInput(me && me.userId);
+  const username = useInput(me && me.username);
+  const title = useInput(``);
+  const content = useInput(``);
+
   ////// REDUX //////
   ////// USEEFFECT //////
+
+  // ********************** 1:1문의 생성 후처리 *************************
+  useEffect(() => {
+    if (st_questionCreateDone) {
+      title.setValue("");
+      content.setValue("");
+
+      return message.success("1:1문의가 작성되었습니다.");
+    }
+
+    if (st_questionCreateError) {
+      return message.error(st_questionCreateError);
+    }
+  }, [st_questionCreateDone, st_questionCreateError]);
   ////// TOGGLE //////
 
   ////// HANDLER //////
+  const createHandler = useCallback(() => {
+    if (!title.value || title.value.trim().length === "") {
+      return message.error("제목을 입력해주세요.");
+    }
+
+    if (!content.value || content.value.trim().length === "") {
+      return message.error("내용을 입력해주세요.");
+    }
+
+    dispatch({
+      type: QUESTION_CREATE_REQUEST,
+      data: {
+        username: username.value,
+        title: title.value,
+        content: content.value,
+        userLoginId: userId.value,
+      },
+    });
+  }, [userId, username, title, content]);
   ////// DATAVIEW //////
 
   return (
@@ -143,6 +190,7 @@ const Contact = () => {
                   아이디<SpanText color={Theme.red_C}>*</SpanText>
                 </Text>
                 <TextInput
+                  {...userId}
                   readOnly
                   width={width < 700 ? `100%` : `calc(100% - 135px)`}
                   height={`45px`}
@@ -159,6 +207,7 @@ const Contact = () => {
                   이름<SpanText color={Theme.red_C}>*</SpanText>
                 </Text>
                 <TextInput
+                  {...username}
                   readOnly
                   width={width < 700 ? `100%` : `calc(100% - 135px)`}
                   height={`45px`}
@@ -175,6 +224,7 @@ const Contact = () => {
                   제목<SpanText color={Theme.red_C}>*</SpanText>
                 </Text>
                 <TextInput
+                  {...title}
                   width={width < 700 ? `100%` : `calc(100% - 135px)`}
                   height={`45px`}
                   placeholder="제목을 입력해주세요."
@@ -193,20 +243,39 @@ const Contact = () => {
                   al={`flex-start`}
                 >
                   <TextArea
+                    {...content}
                     width={`100%`}
                     height={`120px`}
                     placeholder="내용을 입력해주세요."
                   />
-                  <CommonButton
-                    margin={`40px 0 0`}
-                    width={`240px`}
-                    height={`54px`}
-                    kindOf={`white`}
-                    fontWeight={`600`}
-                    fontSize={`18px`}
-                  >
-                    1:1 문의하기
-                  </CommonButton>
+                  {me ? (
+                    <CommonButton
+                      margin={`40px 0 0`}
+                      width={`240px`}
+                      height={`54px`}
+                      kindOf={`white`}
+                      fontWeight={`600`}
+                      fontSize={`18px`}
+                      onClick={createHandler}
+                    >
+                      1:1 문의하기
+                    </CommonButton>
+                  ) : (
+                    <Link href={`/user/login`}>
+                      <a>
+                        <CommonButton
+                          margin={`40px 0 0`}
+                          width={`240px`}
+                          height={`54px`}
+                          kindOf={`white`}
+                          fontWeight={`600`}
+                          fontSize={`18px`}
+                        >
+                          로그인
+                        </CommonButton>
+                      </a>
+                    </Link>
+                  )}
                 </Wrapper>
               </Wrapper>
             </Wrapper>

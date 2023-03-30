@@ -52,6 +52,8 @@ const Question = ({}) => {
   const { st_loadMyInfoDone, me } = useSelector((state) => state.user);
   const { questions } = useSelector((state) => state.question);
 
+  console.log(questions);
+
   const router = useRouter();
   const dispatch = useDispatch();
 
@@ -118,9 +120,8 @@ const Question = ({}) => {
       setCurrentData(record);
 
       infoForm.setFieldsValue({
-        name: record.name,
-        mobile: record.mobile,
-        email: record.email,
+        username: record.username,
+        userLoginId: record.userLoginId,
         title: record.title,
         content: record.content,
         createdAt: record.viewCreatedAt,
@@ -140,7 +141,7 @@ const Question = ({}) => {
     },
     {
       title: "이름",
-      dataIndex: "name",
+      dataIndex: "username",
     },
     {
       title: "문의제목",
@@ -225,6 +226,7 @@ const Question = ({}) => {
           width={`calc(50% - 10px)`}
           margin="5px"
           shadow={`3px 3px 6px ${Theme.lightGrey_C}`}
+          padding={`10px`}
         >
           {currentData ? (
             <>
@@ -241,15 +243,11 @@ const Question = ({}) => {
                 wrapperCol={{ span: 21 }}
                 style={{ width: "100%", paddingRight: "20px" }}
               >
-                <Form.Item label="이름" name="name">
+                <Form.Item label="이름" name="username">
                   <Input size="small" readOnly />
                 </Form.Item>
 
-                <Form.Item label="연락처" name="mobile">
-                  <Input size="small" readOnly />
-                </Form.Item>
-
-                <Form.Item label="이메일" name="email">
+                <Form.Item label="아이디" name="userLoginId">
                   <Input size="small" readOnly />
                 </Form.Item>
 

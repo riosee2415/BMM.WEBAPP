@@ -647,6 +647,152 @@ router.post("/signup", async (req, res, next) => {
   }
 });
 
+/**
+ * SUBJECT : SNS 로그인
+ * PARAMETERS :
+ * ORDER BY : -
+ * STATEMENT : -
+ * DEVELOPMENT : 신태섭
+ * DEV DATE : 2023/03/30
+ */
+router.post("/snsLogin", (req, res, next) => {
+  passport.authenticate("local", async (err, user, info) => {
+    const { userId, password, username } = req.body;
+    if (user) {
+      if (err) {
+        console.error(err);
+        return next(err);
+      }
+
+      if (info) {
+        console.log(`❌ LOGIN FAILED : ${info.reason}`);
+        return res.status(401).send(info.reason);
+      }
+
+      return req.login(user, async (loginErr) => {
+        if (loginErr) {
+          console.error(loginErr);
+          return next(loginErr);
+        }
+
+        const selectQuery = `
+      SELECT	ROW_NUMBER()	OVER(ORDER	BY createdAt)	    AS num,
+              id,
+              userId,
+              username,
+              mobile,
+              email,
+              postCode,
+              address,
+              detailAddress,
+              point,
+              FORMAT(point, 0)							              AS formatPoint,
+              recommId,
+              level,
+              terms,
+              menuRight1,
+              menuRight2,
+              menuRight3,
+              menuRight4,
+              menuRight5,
+              menuRight6,
+              menuRight7,
+              menuRight8,
+              menuRight9,
+              menuRight10,
+              menuRight11,
+              menuRight12,
+              createdAt,
+              updatedAt,
+              DATE_FORMAT(createdAt, "%Y년 %m월 %d일")		AS viewCreatedAt,
+              DATE_FORMAT(updatedAt, "%Y년 %m월 %d일")		AS viewUpdatedAt
+        FROM	users
+       WHERE  id = ${user.id}
+      `;
+
+        const fullUserWithoutPassword = await models.sequelize.query(
+          selectQuery
+        );
+
+        return res.status(200).json(fullUserWithoutPassword[0][0]);
+      });
+    } else {
+      const hashedPassword = await bcrypt.hash(password, 12);
+
+      const insertQuery = `
+    INSERT INTO users
+    (
+      userId,
+      username,
+      password,
+      email,
+      terms,
+      createdAt,
+      updatedAt
+    )
+    VALUES
+    (
+      "${userId}",
+      "${username}",
+      "${hashedPassword}",
+      "${userId}",
+      1,
+      NOW(),
+      NOW()
+    )
+    `;
+
+      const insertResult = await models.sequelize.query(insertQuery);
+
+      const findUserQuery = `
+      SELECT	ROW_NUMBER()	OVER(ORDER	BY createdAt)	    AS num,
+              id,
+              userId,
+              username,
+              mobile,
+              email,
+              postCode,
+              address,
+              detailAddress,
+              point,
+              FORMAT(point, 0)							              AS formatPoint,
+              recommId,
+              level,
+              terms,
+              menuRight1,
+              menuRight2,
+              menuRight3,
+              menuRight4,
+              menuRight5,
+              menuRight6,
+              menuRight7,
+              menuRight8,
+              menuRight9,
+              menuRight10,
+              menuRight11,
+              menuRight12,
+              createdAt,
+              updatedAt,
+              DATE_FORMAT(createdAt, "%Y년 %m월 %d일")		AS viewCreatedAt,
+              DATE_FORMAT(updatedAt, "%Y년 %m월 %d일")		AS viewUpdatedAt
+        FROM	users
+       WHERE  id = ${insertResult[0]}
+      `;
+
+      const findUser = await models.sequelize.query(findUserQuery);
+
+      return req.login(findUser[0][0], async (loginErr) => {
+        if (loginErr) {
+          console.error(loginErr);
+          return next(loginErr);
+        }
+
+        return res.status(200).json(findUser[0][0]);
+      });
+    }
+  })(req, res, next);
+});
+
 router.get("/me", isLoggedIn, async (req, res, next) => {
   try {
     return res.status(200).json(req.user);

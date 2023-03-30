@@ -17,6 +17,10 @@ import {
 import styled from "styled-components";
 import MypageTop from "../../../components/MypageTop";
 import Link from "next/dist/client/link";
+import { useDispatch, useSelector } from "react-redux";
+import { useEffect } from "react";
+import { useRouter } from "next/router";
+import { QUESTION_DETAIL_REQUEST } from "../../../reducers/question";
 
 const ListBtn = styled(Wrapper)`
   width: 240px;
@@ -40,11 +44,25 @@ const ListBtn = styled(Wrapper)`
 
 const Question = () => {
   ////// GLOBAL STATE //////
+  const { questionDetail } = useSelector((state) => state.question);
+  console.log(questionDetail);
   ////// HOOKS //////
   const width = useWidth();
+  const router = useRouter();
+  const dispatch = useDispatch();
 
   ////// REDUX //////
   ////// USEEFFECT //////
+  useEffect(() => {
+    if (router) {
+      dispatch({
+        type: QUESTION_DETAIL_REQUEST,
+        data: {
+          id: router.query.id,
+        },
+      });
+    }
+  }, [router]);
   ////// TOGGLE //////
   ////// HANDLER //////
   ////// DATAVIEW //////
@@ -81,7 +99,7 @@ const Question = () => {
                 padding={`0 10px`}
                 color={Theme.grey_C}
               >
-                screenscratchcost300,000won
+                {questionDetail && questionDetail[0].userLoginId}
               </Wrapper>
             </Wrapper>
             <Wrapper dr={`row`} ju={`space-between`} margin={`0 0 33px`}>
@@ -96,7 +114,9 @@ const Question = () => {
                 al={`flex-start`}
                 padding={`0 10px`}
               >
-                <Text color={Theme.grey_C}>김똑진</Text>
+                <Text color={Theme.grey_C}>
+                  {questionDetail && questionDetail[0].username}
+                </Text>
               </Wrapper>
             </Wrapper>
 
@@ -112,7 +132,9 @@ const Question = () => {
                 al={`flex-start`}
                 padding={`0 10px`}
               >
-                <Text color={Theme.grey_C}>제목입니다.</Text>
+                <Text color={Theme.grey_C}>
+                  {questionDetail && questionDetail[0].title}
+                </Text>
               </Wrapper>
             </Wrapper>
 
@@ -135,11 +157,7 @@ const Question = () => {
                 padding={`10px`}
               >
                 <Text color={Theme.grey_C}>
-                  리뷰의 내용이 30자로 들어오게 됩니다. 제목의 역할을 하게
-                  됩니다. 내용이 더 들어오게 된다면 이렇게 나타납니다. 내용이 더
-                  들어오게 된다면 이렇게 나타납니다. 내용이 더 들어오게 된다면
-                  이렇게 나타납니다. 내용이 더 들어오게 된다면 이렇게
-                  나타납니다.리뷰의 내용이 30자로 들어오게 됩니다. 제목의 역할을
+                  {questionDetail && questionDetail[0].content}
                 </Text>
               </Wrapper>
             </Wrapper>
