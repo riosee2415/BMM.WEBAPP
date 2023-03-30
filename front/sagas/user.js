@@ -52,6 +52,26 @@ import {
   ADMINUSER_EXITFALSE_REQUEST,
   ADMINUSER_EXITFALSE_SUCCESS,
   ADMINUSER_EXITFALSE_FAILURE,
+  //
+  FIND_ID_REQUEST,
+  FIND_ID_SUCCESS,
+  FIND_ID_FAILURE,
+  //
+  FIND_ID_CODE_REQUEST,
+  FIND_ID_CODE_SUCCESS,
+  FIND_ID_CODE_FAILURE,
+  //
+  FIND_PASS_REQUEST,
+  FIND_PASS_SUCCESS,
+  FIND_PASS_FAILURE,
+  //
+  SECRET_CODE_REQUEST,
+  SECRET_CODE_SUCCESS,
+  SECRET_CODE_FAILURE,
+  //
+  PASS_UPDATE_REQUEST,
+  PASS_UPDATE_SUCCESS,
+  PASS_UPDATE_FAILURE,
 } from "../reducers/user";
 
 // SAGA AREA ********************************************************************************************************
@@ -400,6 +420,141 @@ function* adminUserExitFalse(action) {
 // ******************************************************************************************************************
 // ******************************************************************************************************************
 
+// SAGA AREA ********************************************************************************************************
+// ******************************************************************************************************************
+async function findIdAPI(data) {
+  return await axios.post(`/api/user/findUserId`, data);
+}
+
+function* findId(action) {
+  try {
+    const result = yield call(findIdAPI, action.data);
+
+    yield put({
+      type: FIND_ID_SUCCESS,
+      data: result.data,
+    });
+  } catch (err) {
+    console.error(err);
+    yield put({
+      type: FIND_ID_FAILURE,
+      error: err.response.data,
+    });
+  }
+}
+
+// ******************************************************************************************************************
+// ******************************************************************************************************************
+// ******************************************************************************************************************
+
+// SAGA AREA ********************************************************************************************************
+// ******************************************************************************************************************
+async function findIdCodeAPI(data) {
+  return await axios.post(`/api/user/findId/secretCheck`, data);
+}
+
+function* findIdCode(action) {
+  try {
+    const result = yield call(findIdCodeAPI, action.data);
+
+    yield put({
+      type: FIND_ID_CODE_SUCCESS,
+      data: result.data,
+    });
+  } catch (err) {
+    console.error(err);
+    yield put({
+      type: FIND_ID_CODE_FAILURE,
+      error: err.response.data,
+    });
+  }
+}
+
+// ******************************************************************************************************************
+// ******************************************************************************************************************
+// ******************************************************************************************************************
+
+// ******************************************************************************************************************
+// SAGA AREA ********************************************************************************************************
+// ******************************************************************************************************************
+async function findPassAPI(data) {
+  return await axios.post(`/api/user/modifypass`, data);
+}
+
+function* findPass(action) {
+  try {
+    const result = yield call(findPassAPI, action.data);
+    yield put({
+      type: FIND_PASS_SUCCESS,
+      data: result.data,
+    });
+  } catch (err) {
+    console.error(err);
+    yield put({
+      type: FIND_PASS_FAILURE,
+      error: err.response.data,
+    });
+  }
+}
+
+// ******************************************************************************************************************
+// ******************************************************************************************************************
+// ******************************************************************************************************************
+
+// ******************************************************************************************************************
+// SAGA AREA ********************************************************************************************************
+// ******************************************************************************************************************
+async function secretCodeAPI(data) {
+  return await axios.post(`/api/user/checkSecret`, data);
+}
+
+function* secretCode(action) {
+  try {
+    const result = yield call(secretCodeAPI, action.data);
+    yield put({
+      type: SECRET_CODE_SUCCESS,
+      data: result.data,
+    });
+  } catch (err) {
+    console.error(err);
+    yield put({
+      type: SECRET_CODE_FAILURE,
+      error: err.response.data,
+    });
+  }
+}
+
+// ******************************************************************************************************************
+// ******************************************************************************************************************
+// ******************************************************************************************************************
+
+// ******************************************************************************************************************
+// SAGA AREA ********************************************************************************************************
+// ******************************************************************************************************************
+async function passUpdateAPI(data) {
+  return await axios.post(`/api/user/modifypass/update`, data);
+}
+
+function* passUpdate(action) {
+  try {
+    const result = yield call(passUpdateAPI, action.data);
+    yield put({
+      type: PASS_UPDATE_SUCCESS,
+      data: result.data,
+    });
+  } catch (err) {
+    console.error(err);
+    yield put({
+      type: PASS_UPDATE_FAILURE,
+      error: err.response.data,
+    });
+  }
+}
+
+// ******************************************************************************************************************
+// ******************************************************************************************************************
+// ******************************************************************************************************************
+
 //////////////////////////////////////////////////////////////
 
 function* watchLoadMyInfo() {
@@ -454,6 +609,26 @@ function* watchAdminUserExitFalse() {
   yield takeLatest(ADMINUSER_EXITFALSE_REQUEST, adminUserExitFalse);
 }
 
+function* watchFindId() {
+  yield takeLatest(FIND_ID_REQUEST, findId);
+}
+
+function* watchFindIdCode() {
+  yield takeLatest(FIND_ID_CODE_REQUEST, findIdCode);
+}
+
+function* watchFindPass() {
+  yield takeLatest(FIND_PASS_REQUEST, findPass);
+}
+
+function* watchSecretCode() {
+  yield takeLatest(SECRET_CODE_REQUEST, secretCode);
+}
+
+function* watchPassUpdate() {
+  yield takeLatest(PASS_UPDATE_REQUEST, passUpdate);
+}
+
 //////////////////////////////////////////////////////////////
 export default function* userSaga() {
   yield all([
@@ -470,6 +645,11 @@ export default function* userSaga() {
     fork(watchAdminUserRightHistoryList),
     fork(watchAdminUserExitTrue),
     fork(watchAdminUserExitFalse),
+    fork(watchFindId),
+    fork(watchFindIdCode),
+    fork(watchFindPass),
+    fork(watchSecretCode),
+    fork(watchPassUpdate),
     //
   ]);
 }
