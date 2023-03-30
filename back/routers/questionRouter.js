@@ -237,6 +237,52 @@ router.post("/admin/list", isAdminCheck, async (req, res, next) => {
 });
 
 /**
+ * SUBJECT : 1대1문의 상세조회
+ * PARAMETERS : id
+ * ORDER BY : -
+ * STATEMENT : -
+ * DEVELOPMENT : 신태섭
+ * DEV DATE : 2023/03/30
+ */
+router.post("/detail", async (req, res, next) => {
+  const { id } = req.body;
+
+  const selectQuery = `
+  SELECT  A.id,
+          A.userLoginId,
+          A.username,
+          A.title,
+          A.content,
+          A.isCompleted,
+          A.completedAt,
+          DATE_FORMAT(A.completedAt, "%Y년 %m월 %d일")    AS viewCompletedAt,
+          A.answer,
+          A.answerdAt,
+          A.createdAt,
+          A.updatedAt,
+          DATE_FORMAT(A.answerdAt, "%Y년 %m월 %d일")      AS viewAnswerdAt,
+          DATE_FORMAT(A.createdAt, "%Y년 %m월 %d일")      AS viewCreatedAt,
+          DATE_FORMAT(A.updatedAt, "%Y년 %m월 %d일")       AS viewUpdatedAt
+    FROM  questions   A
+   WHERE  1 = 1
+     AND  A.id = ${id}
+  `;
+
+  try {
+    const list = await models.sequelize.query(selectQuery);
+
+    if (list[0].length === 0) {
+      return res.status(401).send("존재하지 않는 1대1문의 정보입니다.");
+    }
+
+    return res.status(200).json(list[0]);
+  } catch (error) {
+    console.error(error);
+    return res.status(401).send("문의 데이터를 조회할 수 없습니다.");
+  }
+});
+
+/**
  * SUBJECT : 1대1문의 등록
  * PARAMETERS : userLoginId, username, title, content
  * ORDER BY : -
