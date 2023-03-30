@@ -776,7 +776,7 @@ router.post("/snsLogin", (req, res, next) => {
               DATE_FORMAT(createdAt, "%Y년 %m월 %d일")		AS viewCreatedAt,
               DATE_FORMAT(updatedAt, "%Y년 %m월 %d일")		AS viewUpdatedAt
         FROM	users
-       WHERE  id = ${insertResult[0].insertId}
+       WHERE  id = ${insertResult[0]}
       `;
 
       const findUser = await models.sequelize.query(findUserQuery);
