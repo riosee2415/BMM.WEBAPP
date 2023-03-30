@@ -924,6 +924,46 @@ router.post("/findUserId", async (req, res, next) => {
 });
 
 /**
+ * SUBJECT : 인증번호 확인하기 (아이디)
+ * PARAMETERS : secret
+ * ORDER BY : -
+ * STATEMENT : -
+ * DEVELOPMENT : 신태섭
+ * DEV DATE : 2023/03/29
+ */
+router.post("/findId/secretCheck", async (req, res, next) => {
+  const { secret } = req.body;
+
+  const findUser = `
+  SELECT  id,
+          userId
+    FROM  users
+   WHERE  secret = "${secret}"
+  `;
+
+  try {
+    const userData = await models.sequelize.query(findUser);
+
+    if (userData[0].length === 0) {
+      return res.status(401).send("인증코드를 잘못 입력하셨습니다.");
+    }
+
+    const updateQuery = `
+    UPDATE  users
+       SET  secret = NULL
+     WHERE  secret = "${secret}"
+    `;
+
+    await models.sequelize.query(updateQuery);
+
+    return res.status(200).json(userData[0][0].userId);
+  } catch (error) {
+    console.error(error);
+    return res.status(401).send("잘못된 요청 입니다.");
+  }
+});
+
+/**
  * SUBJECT : 비밀번호 찾기 (이메일 발송)
  * PARAMETERS : userId, username, email
  * ORDER BY : -
