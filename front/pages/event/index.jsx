@@ -30,7 +30,7 @@ const List = styled(Wrapper)`
   &:hover {
     cursor: pointer;
 
-    & img {
+    img {
       box-shadow: 3px 3px 10px ${Theme.lightGrey_C};
     }
   }

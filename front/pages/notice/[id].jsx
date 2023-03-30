@@ -46,7 +46,6 @@ const Detail = () => {
   ////// GLOBAL STATE //////
   const { noticeDetail } = useSelector((state) => state.notice);
 
-  console.log(noticeDetail);
   ////// HOOKS //////
   const width = useWidth();
   const router = useRouter();

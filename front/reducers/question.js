@@ -2,7 +2,8 @@ import produce from "../util/produce";
 
 export const initailState = {
   questions: null,
-  myQueList: null,
+  myQueList: [],
+  questionDetail: null,
   lastPage: 1,
   types: null,
 
@@ -19,6 +20,10 @@ export const initailState = {
   st_myQueListLoading: false, // 마이페이지 문의 정보 가져오기
   st_myQueListDone: false,
   st_myQueListError: null,
+  //
+  st_questionDetailLoading: false, // 마이페이지 문의상세 정보 가져오기
+  st_questionDetailDone: false,
+  st_questionDetailError: null,
   //
   st_questionCreateLoading: false, // 문의 정보 추가하기
   st_questionCreateDone: false,
@@ -56,6 +61,10 @@ export const QUESTION_GET_FAILURE = "QUESTION_GET_FAILURE";
 export const MY_QUE_LIST_REQUEST = "MY_QUE_LIST_REQUEST";
 export const MY_QUE_LIST_SUCCESS = "MY_QUE_LIST_SUCCESS";
 export const MY_QUE_LIST_FAILURE = "MY_QUE_LIST_FAILURE";
+
+export const QUESTION_DETAIL_REQUEST = "QUESTION_DETAIL_REQUEST";
+export const QUESTION_DETAIL_SUCCESS = "QUESTION_DETAIL_SUCCESS";
+export const QUESTION_DETAIL_FAILURE = "QUESTION_DETAIL_FAILURE";
 
 export const QUESTION_DELETE_REQUEST = "QUESTION_DELETE_REQUEST";
 export const QUESTION_DELETE_SUCCESS = "QUESTION_DELETE_SUCCESS";
@@ -132,6 +141,25 @@ const reducer = (state = initailState, action) =>
         draft.st_myQueListLoading = false;
         draft.st_myQueListDone = false;
         draft.st_myQueListError = action.error;
+        break;
+      }
+      //////////////////////////////////////////////////////
+      case QUESTION_DETAIL_REQUEST: {
+        draft.st_questionDetailLoading = true;
+        draft.st_questionDetailDone = null;
+        draft.st_questionDetailError = false;
+        break;
+      }
+      case QUESTION_DETAIL_SUCCESS: {
+        draft.st_questionDetailLoading = false;
+        draft.st_questionDetailDone = true;
+        draft.questionDetail = action.data;
+        break;
+      }
+      case QUESTION_DETAIL_FAILURE: {
+        draft.st_questionDetailLoading = false;
+        draft.st_questionDetailDone = false;
+        draft.st_questionDetailError = action.error;
         break;
       }
       //////////////////////////////////////////////////////

@@ -9,6 +9,10 @@ import {
   QUESTION_GET_SUCCESS,
   QUESTION_GET_FAILURE,
   //
+  QUESTION_DETAIL_REQUEST,
+  QUESTION_DETAIL_SUCCESS,
+  QUESTION_DETAIL_FAILURE,
+  //
   QUESTION_CREATE_REQUEST,
   QUESTION_CREATE_SUCCESS,
   QUESTION_CREATE_FAILURE,
@@ -41,7 +45,7 @@ import {
 // SAGA AREA ********************************************************************************************************
 // ******************************************************************************************************************
 async function questionGetAPI(data) {
-  return await axios.post(`/api/question/list`, data);
+  return await axios.post(`/api/question/admin/list`, data);
 }
 
 function* questionGet(action) {
@@ -84,6 +88,34 @@ function* myQueList(action) {
     console.error(err);
     yield put({
       type: MY_QUE_LIST_FAILURE,
+      error: err.response.data,
+    });
+  }
+}
+
+// ******************************************************************************************************************
+// ******************************************************************************************************************
+// ******************************************************************************************************************
+
+// ******************************************************************************************************************
+// SAGA AREA ********************************************************************************************************
+// ******************************************************************************************************************
+async function questionDetailAPI(data) {
+  return await axios.post(`/api/question/detail`, data);
+}
+
+function* questionDetail(action) {
+  try {
+    const result = yield call(questionDetailAPI, action.data);
+
+    yield put({
+      type: QUESTION_DETAIL_SUCCESS,
+      data: result.data,
+    });
+  } catch (err) {
+    console.error(err);
+    yield put({
+      type: QUESTION_DETAIL_FAILURE,
       error: err.response.data,
     });
   }
@@ -297,6 +329,10 @@ function* watchMyQueList() {
   yield takeLatest(MY_QUE_LIST_REQUEST, myQueList);
 }
 
+function* watchQuestionDetail() {
+  yield takeLatest(QUESTION_DETAIL_REQUEST, questionDetail);
+}
+
 function* watchQuestionCreate() {
   yield takeLatest(QUESTION_CREATE_REQUEST, questionCreate);
 }
@@ -332,6 +368,7 @@ export default function* bannerSaga() {
   yield all([
     fork(watchQuestionGet),
     fork(watchMyQueList),
+    fork(watchQuestionDetail),
     fork(watchQuestionCreate),
     fork(watchQuestionDelete),
     fork(watchQuestionUpdate),
