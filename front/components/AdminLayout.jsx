@@ -51,6 +51,11 @@ export const items = {
       link: "/admin/info/kakaoch",
       useYn: true,
     },
+    {
+      name: "플랫폼카테고리관리",
+      link: "/admin/info/category",
+      useYn: true,
+    },
   ],
   배너관리: [
     {

@@ -15,6 +15,7 @@ import event from "./event";
 import request from "./request";
 import advertise from "./advertise";
 import mainImage from "./mainImage";
+import category from "./category";
 
 const rootReducer = (state, action) => {
   switch (action.type) {
@@ -38,6 +39,7 @@ const rootReducer = (state, action) => {
         request,
         advertise,
         mainImage,
+        category,
       });
       return combinedReducer(state, action);
     }
