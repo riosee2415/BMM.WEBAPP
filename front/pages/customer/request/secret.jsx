@@ -53,46 +53,55 @@ const List = styled(Wrapper)`
 
 const Index = () => {
   ////// GLOBAL STATE //////
-  const password = useInput("");
+  const { requestData } = useSelector((state) => state.request);
 
   ////// HOOKS //////
   const width = useWidth();
   const router = useRouter();
   const dispatch = useDispatch();
 
+  const password = useInput("");
+
+  const [requsetDatum, setRequesDatum] = useState(requestData);
+
   ////// REDUX //////
   ////// USEEFFECT //////
-  useEffect(() => {
-    if (password.value) {
-      if (password.value) {
-        // router.push(`/customer/request/${data.id}`);
-        return message.success({
-          content: "비밀번호가 맞습니다.",
-        });
-      } else {
-        return message.error({
-          content: "비밀번호가 틀렸습니다.",
-        });
-      }
-    }
-  }, [password.value]);
+  // useEffect(() => {
+  //   if (password.value) {
+  //     if (password.value) {
+  //       // router.push(`/customer/request/${data.id}`);
+  //       return message.success({
+  //         content: "비밀번호가 맞습니다.",
+  //       });
+  //     } else {
+  //       return message.error({
+  //         content: "비밀번호가 틀렸습니다.",
+  //       });
+  //     }
+  //   }
+  // }, [password.value]);
 
   ////// TOGGLE //////
 
   //// HANDLER /////
   const passwordHandler = useCallback(() => {
-    if (!password.value) {
-      return message.error({
-        content: "비밀번호를 입력해주세요.",
-      });
+    if (!requsetDatum) {
+      return router.push(`/customer/request`);
+
+      // message.error("")
     }
-    dispatch({
-      type: REQUEST_LIST_REQUEST,
-      data: {
-        password: password.value,
-      },
-    });
-  }, [password.value]);
+
+    if (!password.value) {
+      return message.error("비밀번호를 입력해주세요.");
+    }
+
+    if (requsetDatum.password === password.value) {
+      router.push(`/customer/request/${requsetDatum.id}`);
+      return message.success("비밀번호가 일치합니다.");
+    } else {
+      return message.error("비밀번호가 일치하지 않습니다.");
+    }
+  }, [password.value, requsetDatum]);
 
   const onSubmitHandler = useCallback(
     (e) => {
@@ -213,27 +222,5 @@ const Index = () => {
     </>
   );
 };
-
-export const getServerSideProps = wrapper.getServerSideProps(
-  async (context) => {
-    // SSR Cookie Settings For Data Load/////////////////////////////////////
-    const cookie = context.req ? context.req.headers.cookie : "";
-    axios.defaults.headers.Cookie = "";
-    if (context.req && cookie) {
-      axios.defaults.headers.Cookie = cookie;
-    }
-    ////////////////////////////////////////////////////////////////////////
-    // 구현부
-
-    context.store.dispatch({
-      type: LOAD_MY_INFO_REQUEST,
-    });
-
-    // 구현부 종료
-    context.store.dispatch(END);
-    console.log("🍀 SERVER SIDE PROPS END");
-    await context.store.sagaTask.toPromise();
-  }
-);
 
 export default Index;
