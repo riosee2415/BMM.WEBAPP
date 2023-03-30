@@ -30,6 +30,7 @@ const advertiseBannerRouter = require("./routers/advertiseBannerRouter");
 const brandRouter = require("./routers/brandRouter");
 const mainImageRouter = require("./routers/mainImageRouter");
 const cuponRouter = require("./routers/cuponRouter");
+const cateRouter = require("./routers/cateRouter");
 
 // Config Settings
 db.sequelize
@@ -115,6 +116,7 @@ app.use("/api/advertise", advertiseBannerRouter);
 app.use("/api/brand", brandRouter);
 app.use("/api/mainImage", mainImageRouter);
 app.use("/api/cp", cuponRouter);
+app.use("/api/cate", cateRouter);
 
 // second minute hour day-of-month month day-of-week
 const task = cron.schedule(
