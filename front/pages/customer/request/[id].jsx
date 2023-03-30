@@ -256,7 +256,7 @@ const Index = () => {
                     color={Theme.grey_C}
                     width={width < 800 ? `100%` : `calc(100% - 150px)`}
                   >
-                    {requestDetail && requestDetail.mobile}
+                    {requestDetail && requestDetail.email}
                   </Wrapper>
                 </Wrapper>
                 <Wrapper dr={`row`} fontSize={`16px`} margin={`0 0 24px`}>
@@ -271,7 +271,7 @@ const Index = () => {
                     color={Theme.grey_C}
                     width={width < 800 ? `100%` : `calc(100% - 150px)`}
                   >
-                    {requestDetail && requestDetail.mobile}
+                    {requestDetail && requestDetail.productName}
                   </Wrapper>
                 </Wrapper>
                 <Wrapper dr={`row`} fontSize={`16px`} margin={`0 0 24px`}>
@@ -286,7 +286,7 @@ const Index = () => {
                     color={Theme.grey_C}
                     width={width < 800 ? `100%` : `calc(100% - 150px)`}
                   >
-                    {requestDetail && requestDetail.email}
+                    {requestDetail && requestDetail.productUrl}
                   </Wrapper>
                 </Wrapper>
 

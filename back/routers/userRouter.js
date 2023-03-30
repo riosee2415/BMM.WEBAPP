@@ -932,7 +932,7 @@ router.post("/findUserId", async (req, res, next) => {
  * DEV DATE : 2023/03/29
  */
 router.post("/findId/secretCheck", async (req, res, next) => {
-  const { email, secret } = req.body;
+  const { secret } = req.body;
 
   const findUser = `
   SELECT  id,
@@ -951,7 +951,7 @@ router.post("/findId/secretCheck", async (req, res, next) => {
     const updateQuery = `
     UPDATE  users
        SET  secret = NULL
-     WHERE  email = "${email}"
+     WHERE  secret = "${secret}"
     `;
 
     await models.sequelize.query(updateQuery);

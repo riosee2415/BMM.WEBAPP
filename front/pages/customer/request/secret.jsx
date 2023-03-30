@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import ClientLayout from "../../../components/ClientLayout";
 import Head from "next/head";
 import wrapper from "../../../store/configureStore";
@@ -8,8 +8,6 @@ import { END } from "redux-saga";
 import useWidth from "../../../hooks/useWidth";
 import {
   CommonButton,
-  CustomPage,
-  CustomSelect,
   Image,
   RsWrapper,
   SpanText,
@@ -21,13 +19,12 @@ import {
 } from "../../../components/commonComponents";
 import CustomerLeft from "../../../components/CustomerLeft";
 import Theme from "../../../components/Theme";
-
 import styled from "styled-components";
-
 import { useRouter } from "next/router";
-import { useSelector } from "react-redux";
-import { Select } from "antd";
-import { LockFilled } from "@ant-design/icons";
+import { useDispatch, useSelector } from "react-redux";
+import { message } from "antd";
+import useInput from "../../../hooks/useInput";
+import { REQUEST_LIST_REQUEST } from "../../../reducers/request";
 
 const List = styled(Wrapper)`
   flex-direction: row;
@@ -56,14 +53,54 @@ const List = styled(Wrapper)`
 
 const Index = () => {
   ////// GLOBAL STATE //////
+  const password = useInput();
+
   ////// HOOKS //////
   const width = useWidth();
   const router = useRouter();
+  const dispatch = useDispatch();
+
   ////// REDUX //////
   ////// USEEFFECT //////
+  useEffect(() => {
+    if (password.value) {
+      return message.success({
+        content: "비밀번호가 맞습니다.",
+      });
+    } else {
+      return message.error({
+        content: "비밀번호가 틀렸습니다.",
+      });
+    }
+  }, [password.value]);
+
   ////// TOGGLE //////
 
-  ////// HANDLER //////
+  //// HANDLER //////
+  const passwordHandler = useCallback(() => {
+    if (!password.value) {
+      return message.error({
+        content: "비밀번호를 입력해주세요.",
+      });
+    }
+
+    dispatch({
+      type: REQUEST_LIST_REQUEST,
+      data: {
+        password: password.value,
+      },
+    });
+  }, [password.value]);
+
+  const onSubmitHandler = useCallback(
+    (e) => {
+      if (e.key === "Enter") {
+        passwordHandler();
+      }
+    },
+    [password.value]
+  );
+
   ////// DATAVIEW //////
 
   return (
@@ -153,6 +190,8 @@ const Index = () => {
                   height={`46px`}
                   type={`password`}
                   margin={`0 10px 0 0`}
+                  onKeyUp={onSubmitHandler}
+                  {...password}
                 />
                 <CommonButton
                   height={`46px`}
@@ -160,6 +199,7 @@ const Index = () => {
                   fontSize={`16px`}
                   fontWeight={`600`}
                   kindOf={`darkgrey`}
+                  onClick={passwordHandler}
                 >
                   확인
                 </CommonButton>

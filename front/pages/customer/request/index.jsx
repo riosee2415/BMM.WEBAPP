@@ -59,7 +59,7 @@ const Index = () => {
   const { requestList, lastPage } = useSelector((state) => state.request);
   const [currentTap, setCurrentTab] = useState(1);
   const [isCom, setIsCom] = useState(3);
-  // const [search, setSerch] = useState
+  const [search, setSearch] = useState("");
 
   ////// HOOKS //////
   const width = useWidth();
@@ -73,10 +73,11 @@ const Index = () => {
       type: REQUEST_LIST_REQUEST,
       data: {
         page: currentTap,
-        searchProductName: "",
+        searchProductName: search,
+        requestList: isCom,
       },
     });
-  }, [currentTap]);
+  }, [currentTap, search, isCom]);
 
   ////// TOGGLE //////
   ////// HANDLER //////
@@ -195,6 +196,9 @@ const Index = () => {
                       placeholder={`검색어를 입력해주세요.`}
                       radius={`46px`}
                       padding={`0 40px 0 20px`}
+                      onChange={(e) => {
+                        setSearch(e.target.value);
+                      }}
                     />
                     <Wrapper
                       width={`auto`}
@@ -268,6 +272,7 @@ const Index = () => {
                       <Wrapper width={width < 700 ? `calc(100% / 3)` : `12%`}>
                         {data.createAt}
                       </Wrapper>
+
                       <Wrapper
                         width={width < 700 ? `calc(100% / 3)` : `12%`}
                         fontSize={width < 700 ? `15px` : `18px`}
