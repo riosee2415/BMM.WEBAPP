@@ -63,14 +63,16 @@ const Index = () => {
   ////// REDUX //////
   ////// USEEFFECT //////
   useEffect(() => {
-    if (password.value) {
-      return message.success({
-        content: "비밀번호가 맞습니다.",
-      });
-    } else {
-      return message.error({
-        content: "비밀번호가 틀렸습니다.",
-      });
+    if (password.value.length === 4) {
+      if (password.value) {
+        return message.success({
+          content: "비밀번호가 맞습니다.",
+        });
+      } else {
+        return message.error({
+          content: "비밀번호가 틀렸습니다.",
+        });
+      }
     }
   }, [password.value]);
 
