@@ -148,7 +148,7 @@ const Advertise = ({}) => {
     });
   }, []);
 
-  // ********************** 광고배너 생성 후처리 *************************
+  // ********************** 메인사진 생성 후처리 *************************
 
   useEffect(() => {
     if (st_mainImageCreateDone) {
@@ -156,7 +156,7 @@ const Advertise = ({}) => {
         type: MAINIMAGE_LIST_REQUEST,
       });
 
-      return message.success("광고배너가 생성되었습니다.");
+      return message.success("메인사진이 생성되었습니다.");
     }
 
     if (st_mainImageCreateError) {
@@ -164,7 +164,7 @@ const Advertise = ({}) => {
     }
   }, [st_mainImageCreateDone, st_mainImageCreateError]);
 
-  // ********************** 광고배너 수정 후처리 *************************
+  // ********************** 메인사진 수정 후처리 *************************
 
   useEffect(() => {
     if (st_mainImageUpdateDone) {
@@ -172,7 +172,7 @@ const Advertise = ({}) => {
         type: MAINIMAGE_LIST_REQUEST,
       });
 
-      return message.success("광고배너가 수정되었습니다.");
+      return message.success("메인사진이 수정되었습니다.");
     }
 
     if (st_mainImageUpdateError) {
@@ -180,7 +180,7 @@ const Advertise = ({}) => {
     }
   }, [st_mainImageUpdateDone, st_mainImageUpdateError]);
 
-  // ********************** 광고배너 삭제 후처리 *************************
+  // ********************** 메인사진 삭제 후처리 *************************
   useEffect(() => {
     if (st_mainImageDeleteDone) {
       setCurrentData(null);
@@ -189,7 +189,7 @@ const Advertise = ({}) => {
         type: MAINIMAGE_LIST_REQUEST,
       });
 
-      return message.success("광고배너가 삭제되었습니다.");
+      return message.success("메인사진이 삭제되었습니다.");
     }
 
     if (st_mainImageDeleteError) {
@@ -197,11 +197,11 @@ const Advertise = ({}) => {
     }
   }, [st_mainImageDeleteDone, st_mainImageDeleteError]);
 
-  // ********************** 광고배너 이미지 후처리 *************************
+  // ********************** 메인사진 이미지 후처리 *************************
 
   useEffect(() => {
     if (st_mainImageUploadDone) {
-      return message.success("광고배너이미자가 업로드되었습니다.");
+      return message.success("메인사진이 업로드되었습니다.");
     }
 
     if (st_mainImageUploadError) {
@@ -364,10 +364,10 @@ const Advertise = ({}) => {
         <GuideUl>
           <GuideLi>메인사진을 추가 / 삭제 등 관리를 할 수 있습니다.</GuideLi>
           <GuideLi isImpo={true}>
-            광고배너 이미지는 5MB이하로 올려주세요.
+            메인사진 이미지는 5MB이하로 올려주세요.
           </GuideLi>
           <GuideLi isImpo={true}>
-            삭제처리 된 광고배너은 복구가 불가능합니다.
+            삭제처리 된 메인사진은 복구가 불가능합니다.
           </GuideLi>
         </GuideUl>
       </Wrapper>
@@ -407,7 +407,7 @@ const Advertise = ({}) => {
               <Wrapper margin={`0px 0px 5px 0px`}>
                 <InfoTitle>
                   <CheckOutlined />
-                  광고배너 이미지 정보
+                  메인사진 이미지 정보
                 </InfoTitle>
               </Wrapper>
 
@@ -433,7 +433,7 @@ const Advertise = ({}) => {
                   type="primary"
                   onClick={clickImgUpload}
                 >
-                  광고배너 이미지 업로드
+                  메인사진 이미지 업로드
                 </Button>
               </Wrapper>
 
@@ -447,7 +447,7 @@ const Advertise = ({}) => {
               <Wrapper margin={`0px 0px 5px 0px`}>
                 <InfoTitle>
                   <CheckOutlined />
-                  광고배너 기본정보
+                  메인사진 기본정보
                 </InfoTitle>
               </Wrapper>
 
