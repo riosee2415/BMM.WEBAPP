@@ -254,6 +254,7 @@ router.post("/detail", async (req, res, next) => {
           A.answerdAt,
           A.createdAt,
           A.updatedAt,
+          DATE_FORMAT(A.createdAt, "%Y년 %m월 %d일")        AS viewCreatedAt,
           A.UserId,
           CASE
               WHEN  A.UserId IS NOT NULL THEN "회원 작성"

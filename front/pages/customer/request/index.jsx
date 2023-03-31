@@ -3,7 +3,7 @@ import ClientLayout from "../../../components/ClientLayout";
 import Head from "next/head";
 import wrapper from "../../../store/configureStore";
 import { LOAD_MY_INFO_REQUEST } from "../../../reducers/user";
-import { REQUEST_LIST_REQUEST } from "../../../reducers/request";
+import { REQUEST_DATA, REQUEST_LIST_REQUEST } from "../../../reducers/request";
 import axios from "axios";
 import { END } from "redux-saga";
 import useWidth from "../../../hooks/useWidth";
@@ -93,6 +93,17 @@ const Index = () => {
     },
     [isCom]
   );
+
+  const moveLinkHandler = useCallback((data) => {
+    dispatch({
+      type: REQUEST_DATA,
+      data: {
+        ...data,
+      },
+    });
+
+    router.push(`/customer/request/secret`);
+  }, []);
 
   ////// DATAVIEW //////
 
@@ -240,10 +251,7 @@ const Index = () => {
               ) : (
                 requestList.map((data) => {
                   return (
-                    <List
-                      key={data.id}
-                      onClick={() => router.push(`/customer/request/secret`)}
-                    >
+                    <List key={data.id} onClick={() => moveLinkHandler(data)}>
                       <Wrapper
                         display={width < 700 ? `none` : `flex`}
                         width={`8%`}

@@ -7,7 +7,7 @@ export const initailState = {
   reqyestDetail: null,
   requestMyList: [], //마이페이지 상품요청리스트
 
-  requestData: null, // 상품요청 데이턴
+  requestData: null, // 상품요청 데이터
 
   //
   st_requestListLoading: false, // 상품요청 가져오기
@@ -194,6 +194,13 @@ const reducer = (state = initailState, action) =>
       case REQUEST_DATA: {
         draft.requestData = action.data;
       }
+
+      case REQUEST_DATA: {
+        draft.requestData = action.data;
+        break;
+      }
+
+      //////////////////////////////////////////////
 
       default:
         break;

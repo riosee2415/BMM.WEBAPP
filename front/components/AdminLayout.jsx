@@ -56,6 +56,11 @@ export const items = {
       link: "/admin/info/category",
       useYn: true,
     },
+    {
+      name: "브랜드관리",
+      link: "/admin/info/brand",
+      useYn: true,
+    },
   ],
   배너관리: [
     {
@@ -179,6 +184,11 @@ export const items = {
     {
       name: "메인사진이력관리",
       link: "/admin/history/mainImage",
+      useYn: true,
+    },
+    {
+      name: "브랜드이력관리",
+      link: "/admin/history/brand",
       useYn: true,
     },
   ],
