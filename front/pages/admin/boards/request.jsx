@@ -15,6 +15,8 @@ import {
   OtherMenu,
   GuideUl,
   GuideLi,
+  SearchForm,
+  SearchFormItem,
 } from "../../../components/commonComponents";
 import { LOAD_MY_INFO_REQUEST } from "../../../reducers/user";
 import Theme from "../../../components/Theme";
@@ -25,6 +27,7 @@ import {
   CloseOutlined,
   HomeOutlined,
   RightOutlined,
+  SearchOutlined,
 } from "@ant-design/icons";
 import {
   REQUEST_ADMIN_LIST_REQUEST,
@@ -89,6 +92,11 @@ const Request = ({}) => {
   ////// HOOKS //////
   const [isCom, setIsCom] = useState(2);
 
+  const [searchForm] = Form.useForm();
+
+  const [searchProductName, setSearchProductName] = useState("");
+  const [searchUserName, setSearchUserName] = useState("");
+
   ////// USEEFFECT //////
 
   useEffect(() => {
@@ -121,9 +129,11 @@ const Request = ({}) => {
       type: REQUEST_ADMIN_LIST_REQUEST,
       data: {
         listType: isCom,
+        searchProductName: searchProductName,
+        searchUserName: searchUserName,
       },
     });
-  }, [isCom]);
+  }, [isCom, searchProductName, searchUserName]);
 
   //// ********************** 답변 생성 후처리 *************************
   useEffect(() => {
@@ -140,6 +150,24 @@ const Request = ({}) => {
   }, [st_requestAnswerUpdateDone, st_requestAnswerUpdateError]);
 
   ////// HANDLER //////
+  const searchProductHandler = useCallback(
+    (data) => {
+      setSearchProductName(data.productName);
+    },
+    [searchProductName]
+  );
+
+  const searchUserHandler = useCallback(
+    (data) => {
+      setSearchUserName(data.UserId);
+    },
+    [searchUserName]
+  );
+
+  // const allSearchHandler = useCallback(() => {
+  //   searchForm.resetFields();
+  //   setEventTitle("");
+  // }, [eventTitle]);
 
   const beforeSetDataHandler = useCallback(
     (record) => {
@@ -182,7 +210,7 @@ const Request = ({}) => {
       dataIndex: "id",
     },
     {
-      title: "제목",
+      title: "상품명",
       dataIndex: "productName",
     },
     {
@@ -228,7 +256,7 @@ const Request = ({}) => {
         <RightOutlined />
         <Popover content={content}>
           <HomeText cur={true} margin={`3px 20px 0px 20px`}>
-            {level2}{" "}
+            {level2}
           </HomeText>
         </Popover>
       </Wrapper>
@@ -244,6 +272,33 @@ const Request = ({}) => {
       </Wrapper>
 
       {/* 검색 */}
+      <SearchForm
+        form={searchForm}
+        onFinish={searchProductHandler}
+        layout="inline"
+        style={{ width: "100%" }}
+        dr={`row`}
+        ju={`flex-start`}
+      >
+        <SearchFormItem name="title">
+          <Input size="small" placeholder="상품명으로 검색해주세요." />
+        </SearchFormItem>
+
+        <SearchFormItem>
+          <Button icon={<SearchOutlined />} size="small" htmlType="submit">
+            검색
+          </Button>
+        </SearchFormItem>
+        <SearchFormItem name="title">
+          <Input size="small" placeholder="상품명으로 검색해주세요." />
+        </SearchFormItem>
+
+        <SearchFormItem>
+          <Button icon={<SearchOutlined />} size="small" htmlType="submit">
+            검색
+          </Button>
+        </SearchFormItem>
+      </SearchForm>
       <Wrapper padding={`10px 20px`} dr={`row`} ju={`flex-start`}>
         <Button
           type={isCom === 2 ? "primary" : "default"}
