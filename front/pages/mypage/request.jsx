@@ -19,6 +19,7 @@ import MypageTop from "../../components/MypageTop";
 import { LockFilled } from "@ant-design/icons";
 import { REQUEST_MY_LIST_REQUEST } from "../../reducers/request";
 import { useDispatch, useSelector } from "react-redux";
+import { Empty } from "antd";
 
 const List = styled(Wrapper)`
   height: 60px;
@@ -48,7 +49,7 @@ const MobileList = styled(Wrapper)`
 
 const Request = () => {
   ////// GLOBAL STATE //////
-  const { requestMyList } = useSelector((state) => state.request);
+  const { requestMyList, lastPage } = useSelector((state) => state.request);
   const [currentTap, setCurrentTab] = useState(1);
 
   ////// HOOKS //////
@@ -110,97 +111,92 @@ const Request = () => {
 
             {width < 700 ? (
               <Wrapper>
-                <MobileList>
-                  <Wrapper
-                    dr={`row`}
-                    ju={`flex-start`}
-                    color={Theme.darkGrey_C}
-                    fontSize={`16px`}
-                    margin={`0 0 10px`}
-                  >
-                    <Text maxWidth={`90%`} isEllipsis isHover>
-                      상품 요청
-                    </Text>
-                    <Text padding={`0 5px`}>
-                      <LockFilled />
-                    </Text>
+                {requestMyList && requestMyList.length === 0 ? (
+                  <Wrapper padding={`50px 0`}>
+                    <Empty description="조회된 상품요청이 없습니다." />
                   </Wrapper>
+                ) : (
+                  requestMyList.map((data) => {
+                    return (
+                      <MobileList>
+                        <Wrapper
+                          dr={`row`}
+                          ju={`flex-start`}
+                          color={Theme.darkGrey_C}
+                          fontSize={`16px`}
+                          margin={`0 0 10px`}
+                        >
+                          <Text maxWidth={`90%`} isEllipsis isHover>
+                            {data.productName}
+                          </Text>
+                          <Text padding={`0 5px`}>
+                            <LockFilled />
+                          </Text>
+                        </Wrapper>
 
-                  <Wrapper dr={`row`} ju={`space-between`}>
-                    <Text color={Theme.grey_C}>김**</Text>
-                    <Text>2022.12.31</Text>
-                    <Text>답변완료</Text>
-                    {/* <Text color={Theme.lightGrey_C}>미답변</Text> */}
-                  </Wrapper>
-                </MobileList>
+                        <Wrapper dr={`row`} ju={`space-between`}>
+                          <Text color={Theme.grey_C}>{data.name}</Text>
+                          <Text>{data.viewCreatedAt}</Text>
+                          <Text>{data.isCompleted}</Text>
+                          {/* <Text color={Theme.lightGrey_C}>미답변</Text> */}
+                        </Wrapper>
+                      </MobileList>
+                    );
+                  })
+                )}
               </Wrapper>
             ) : (
               <>
-                <List>
-                  <Wrapper width={`10%`} color={Theme.grey_C}>
-                    10
+                {requestMyList && requestMyList.length === 0 ? (
+                  <Wrapper padding={`50px 0`}>
+                    <Empty description="조회된 상품요청이 없습니다." />
                   </Wrapper>
-                  <Wrapper
-                    width={`60%`}
-                    padding={`0 14px`}
-                    color={Theme.darkGrey_C}
-                  >
-                    <Wrapper dr={`row`} ju={`flex-start`}>
-                      <Text maxWidth={`52%`} isEllipsis isHover>
-                        상품 요청
-                      </Text>
-                      <Text padding={`0 5px`}>
-                        <LockFilled />
-                      </Text>
-                    </Wrapper>
-                  </Wrapper>
-                  <Wrapper width={`10%`} color={Theme.grey_C}>
-                    김**
-                  </Wrapper>
-                  <Wrapper width={`10%`}>2022.12.31</Wrapper>
-                  <Wrapper width={`10%`} fontSize={`16px`} fontWeight={`600`}>
-                    답변완료
-                  </Wrapper>
-                </List>
-                <List>
-                  <Wrapper width={`10%`} color={Theme.grey_C}>
-                    10
-                  </Wrapper>
-                  <Wrapper
-                    width={`60%`}
-                    padding={`0 14px`}
-                    color={Theme.darkGrey_C}
-                  >
-                    <Wrapper dr={`row`} ju={`flex-start`}>
-                      <Text maxWidth={`52%`} isEllipsis isHover>
-                        상품 요청
-                      </Text>
-                      <Text padding={`0 5px`}>
-                        <LockFilled />
-                      </Text>
-                    </Wrapper>
-                  </Wrapper>
-                  <Wrapper width={`10%`} color={Theme.grey_C}>
-                    김**
-                  </Wrapper>
-                  <Wrapper width={`10%`}>2022.12.31</Wrapper>
-                  <Wrapper
-                    width={`10%`}
-                    fontSize={`16px`}
-                    fontWeight={`600`}
-                    color={Theme.lightGrey_C}
-                  >
-                    미답변
-                  </Wrapper>
-                </List>
+                ) : (
+                  requestMyList.map((data) => {
+                    return (
+                      <List>
+                        <Wrapper width={`10%`} color={Theme.grey_C}>
+                          {data.num}
+                        </Wrapper>
+                        <Wrapper
+                          width={`60%`}
+                          padding={`0 14px`}
+                          color={Theme.darkGrey_C}
+                        >
+                          <Wrapper dr={`row`} ju={`flex-start`}>
+                            <Text maxWidth={`52%`} isEllipsis isHover>
+                              {data.productName}
+                            </Text>
+                            <Text padding={`0 5px`}>
+                              <LockFilled />
+                            </Text>
+                          </Wrapper>
+                        </Wrapper>
+                        <Wrapper width={`10%`} color={Theme.grey_C}>
+                          {data.name}
+                        </Wrapper>
+                        <Wrapper width={`10%`}>{data.viewCreatedAt}</Wrapper>
+                        <Wrapper
+                          width={`10%`}
+                          fontSize={`16px`}
+                          fontWeight={`600`}
+                        >
+                          {data.isCompleted}
+                        </Wrapper>
+                      </List>
+                    );
+                  })
+                )}
               </>
             )}
 
-            {/* )
-              })
-            )} */}
-
-            <CustomPage />
+            <CustomPage
+              defaultCurrent={1}
+              current={parseInt(currentTap)}
+              total={lastPage * 10}
+              pageSize={10}
+              onChange={(page) => nextPageCall(page)}
+            />
           </RsWrapper>
         </WholeWrapper>
       </ClientLayout>
