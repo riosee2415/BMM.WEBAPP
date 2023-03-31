@@ -11,10 +11,11 @@ import {
 import styled from "styled-components";
 import { useDispatch, useSelector } from "react-redux";
 import Theme from "../Theme";
-import { Carousel } from "antd";
+import { Carousel, Empty } from "antd";
 import useWidth from "../../hooks/useWidth";
 import { useRouter } from "next/router";
 import { CloseOutlined, LeftOutlined, RightOutlined } from "@ant-design/icons";
+import { BRAND_LIST_REQUEST } from "../../reducers/brand";
 
 const ArrowBtn = styled(Wrapper)`
   width: 43px;
@@ -77,63 +78,28 @@ const SliderWrapper = styled(Carousel)`
 `;
 
 const MainBrandSlider = () => {
+  const { brandList } = useSelector((state) => state.brand);
+
+  console.log(brandList);
+
   const width = useWidth();
   const router = useRouter();
   const dispatch = useDispatch();
+
   const slideRef = useRef();
 
-  const bannerData = [
-    {
-      img: "https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/bmm/assets/images/main/img_intro_1.png",
-      content: "소화제의 명가",
-      name: "카베진a",
-    },
-    {
-      img: "https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/bmm/assets/images/main/img_intro_2.png",
-      content: "소화제의 명가",
-      name: "카베진a",
-    },
-    {
-      img: "https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/bmm/assets/images/main/img_intro_3.png",
-      content: "소화제의 명가",
-      name: "카베진a",
-    },
-    {
-      img: "https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/bmm/assets/images/main/img_intro_4.png",
-      content: "소화제의 명가",
-      name: "카베진a",
-    },
-    {
-      img: "https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/bmm/assets/images/main/img_intro_5.png",
-      content: "소화제의 명가",
-      name: "카베진a",
-    },
-    {
-      img: "https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/bmm/assets/images/main/img_intro_6.png",
-      content: "소화제의 명가",
-      name: "카베진a",
-    },
-    {
-      img: "https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/bmm/assets/images/main/img_intro_4.png",
-      content: "소화제의 명가",
-      name: "카베진a",
-    },
-    {
-      img: "https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/bmm/assets/images/main/img_intro_5.png",
-      content: "소화제의 명가",
-      name: "카베진a",
-    },
-    {
-      img: "https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/bmm/assets/images/main/img_intro_6.png",
-      content: "소화제의 명가",
-      name: "카베진a",
-    },
-  ];
+  useEffect(() => {
+    dispatch({
+      type: BRAND_LIST_REQUEST,
+    });
+  }, []);
 
   return (
     <MainBrandWrapper
-      overflow={bannerData && bannerData.length < 6 && `hidden`}
-      height={bannerData && bannerData.length < 6 && `512px`}
+      overflow={brandList && brandList.length < 6 && `hidden`}
+      height={
+        brandList && brandList.length < 6 && width < 700 ? `356px` : `512px`
+      }
     >
       <SliderWrapper
         draggable={true}
@@ -145,8 +111,12 @@ const MainBrandSlider = () => {
         slidesToScroll={1}
         rows={2}
       >
-        {bannerData &&
-          bannerData.map((data, idx) => {
+        {brandList && brandList.length === 0 ? (
+          <Wrapper display={`flex !important`} height={`500px`}>
+            <Empty description="조회된 내역이 없습니다." />
+          </Wrapper>
+        ) : (
+          brandList.map((data, idx) => {
             return (
               <Wrapper
                 key={idx}
@@ -155,7 +125,7 @@ const MainBrandSlider = () => {
                 height={`100%`}
                 padding={`10px`}
               >
-                <SquareBox bgImg={`url(${data.img})`}>
+                <SquareBox bgImg={`url(${data.imagePath})`}>
                   <Wrapper
                     height={`100%`}
                     position={`absolute`}
@@ -165,7 +135,7 @@ const MainBrandSlider = () => {
                     al={`flex-start`}
                     ju={`flex-start`}
                   >
-                    <Text fontSize={`15px`}>{data.content}</Text>
+                    <Text fontSize={`15px`}>{data.subDesc}</Text>
                     <Text
                       fontSize={width < 800 ? `18px` : `23px`}
                       fontWeight={`bold`}
@@ -176,7 +146,8 @@ const MainBrandSlider = () => {
                 </SquareBox>
               </Wrapper>
             );
-          })}
+          })
+        )}
       </SliderWrapper>
       <Wrapper height={`100%`} dr={`row`} ju={`flex-end`} padding={`15px 0`}>
         <Wrapper width={`auto`} dr={`row`}>
