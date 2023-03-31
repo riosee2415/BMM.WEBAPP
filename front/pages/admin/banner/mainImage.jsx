@@ -367,6 +367,9 @@ const Advertise = ({}) => {
             메인사진 이미지는 5MB이하로 올려주세요.
           </GuideLi>
           <GuideLi isImpo={true}>
+            메인사진 이미지 사이즈는 340 X 340 입니다.
+          </GuideLi>
+          <GuideLi isImpo={true}>
             삭제처리 된 메인사진은 복구가 불가능합니다.
           </GuideLi>
         </GuideUl>
@@ -413,8 +416,8 @@ const Advertise = ({}) => {
 
               <Wrapper margin={`30px 0`}>
                 <Image
-                  width={`100%`}
-                  height={`150px`}
+                  width={`340px`}
+                  height={`340px`}
                   src={mainImagePath ? mainImagePath : currentData.imagePath}
                   alt={`image`}
                 />
@@ -428,7 +431,7 @@ const Advertise = ({}) => {
                 />
                 <Button
                   loading={st_mainImageUploadLoading}
-                  style={{ width: `100%`, marginTop: `5px` }}
+                  style={{ width: `340px`, marginTop: `5px` }}
                   size="small"
                   type="primary"
                   onClick={clickImgUpload}

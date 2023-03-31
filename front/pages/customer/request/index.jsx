@@ -74,10 +74,9 @@ const Index = () => {
       data: {
         page: currentTap,
         searchProductName: search,
-        requestList: isCom,
       },
     });
-  }, [currentTap, search, isCom]);
+  }, [currentTap, search]);
 
   ////// TOGGLE //////
   ////// HANDLER //////

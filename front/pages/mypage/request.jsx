@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import ClientLayout from "../../components/ClientLayout";
 import Theme from "../../components/Theme";
 import Head from "next/head";
@@ -17,6 +17,8 @@ import {
 import styled from "styled-components";
 import MypageTop from "../../components/MypageTop";
 import { LockFilled } from "@ant-design/icons";
+import { REQUEST_MY_LIST_REQUEST } from "../../reducers/request";
+import { useDispatch, useSelector } from "react-redux";
 
 const List = styled(Wrapper)`
   height: 60px;
@@ -46,11 +48,24 @@ const MobileList = styled(Wrapper)`
 
 const Request = () => {
   ////// GLOBAL STATE //////
+  const { requestMyList } = useSelector((state) => state.request);
+  const [currentTap, setCurrentTab] = useState(1);
+
   ////// HOOKS //////
   const width = useWidth();
+  const dispatch = useDispatch();
 
   ////// REDUX //////
   ////// USEEFFECT //////
+  useEffect(() => {
+    dispatch({
+      type: REQUEST_MY_LIST_REQUEST,
+      data: {
+        page: currentTap,
+      },
+    });
+  }, [currentTap]);
+
   ////// TOGGLE //////
   ////// HANDLER //////
   ////// DATAVIEW //////
@@ -92,6 +107,7 @@ const Request = () => {
               <Wrapper width={`10%`}>작성일</Wrapper>
               <Wrapper width={`10%`}>답변상태</Wrapper>
             </Wrapper>
+
             {width < 700 ? (
               <Wrapper>
                 <MobileList>
@@ -179,6 +195,11 @@ const Request = () => {
                 </List>
               </>
             )}
+
+            {/* )
+              })
+            )} */}
+
             <CustomPage />
           </RsWrapper>
         </WholeWrapper>

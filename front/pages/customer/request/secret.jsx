@@ -54,6 +54,7 @@ const List = styled(Wrapper)`
 const Index = () => {
   ////// GLOBAL STATE //////
   const password = useInput("");
+  const { requestData } = useSelector((state) => state.request);
 
   ////// HOOKS //////
   const width = useWidth();
@@ -62,20 +63,6 @@ const Index = () => {
 
   ////// REDUX //////
   ////// USEEFFECT //////
-  useEffect(() => {
-    if (password.value) {
-      if (password.value) {
-        // router.push(`/customer/request/${data.id}`);
-        return message.success({
-          content: "비밀번호가 맞습니다.",
-        });
-      } else {
-        return message.error({
-          content: "비밀번호가 틀렸습니다.",
-        });
-      }
-    }
-  }, [password.value]);
 
   ////// TOGGLE //////
 
@@ -89,7 +76,7 @@ const Index = () => {
     dispatch({
       type: REQUEST_LIST_REQUEST,
       data: {
-        password: password.value,
+        password: requestData,
       },
     });
   }, [password.value]);
