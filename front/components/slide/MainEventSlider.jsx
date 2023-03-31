@@ -128,6 +128,10 @@ const MainEventSlider = () => {
     });
   }, []);
 
+  const moveLinkHandler = useCallback((link) => {
+    window.open(link);
+  }, []);
+
   return (
     <MainEventSliderWrapper
       overflow={mainImageList && mainImageList.length < 2 && `hidden`}
@@ -155,7 +159,11 @@ const MainEventSlider = () => {
                 padding={`0 10px`}
               >
                 <SquareBox>
-                  <Image alt="image" src={data.imagePath} />
+                  <Image
+                    alt="image"
+                    src={data.imagePath}
+                    onClick={() => moveLinkHandler(data.link)}
+                  />
                 </SquareBox>
               </Wrapper>
             );

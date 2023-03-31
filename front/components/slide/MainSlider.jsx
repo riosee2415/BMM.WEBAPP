@@ -130,7 +130,6 @@ const MainSlider = () => {
                         <Text lineHeight={`1.2`}>{data.title}</Text>
                       )}
                     </Wrapper>
-
                     <ColWrapper margin={`22px 0`}>
                       {data.contentUseYn === 1 && (
                         <Text fontSize={`1.125rem`}>{data.content}</Text>

@@ -13,6 +13,7 @@ import {
   CustomSelect,
   Image,
   RsWrapper,
+  SearchForm,
   SpanText,
   Text,
   TextInput,
@@ -74,9 +75,10 @@ const Index = () => {
       data: {
         page: currentTap,
         searchProductName: search,
+        listType: isCom,
       },
     });
-  }, [currentTap, search]);
+  }, [currentTap, search, isCom]);
 
   ////// TOGGLE //////
   ////// HANDLER //////
@@ -194,6 +196,7 @@ const Index = () => {
                       <Select.Option value={1}>답변완료</Select.Option>
                     </Select>
                   </CustomSelect>
+
                   <Wrapper
                     width={width < 900 ? `calc(100% - 134px)` : `288px`}
                     position={`relative`}
@@ -285,8 +288,13 @@ const Index = () => {
                         fontSize={width < 700 ? `15px` : `18px`}
                         fontWeight={`600`}
                       >
-                        <Text color={Theme.grey_C}>{data.isCompleted}</Text>
-                        {/* <Text>답변완료</Text> */}
+                        <Text>
+                          {data.isCompleted ? (
+                            <Text>답변완료</Text>
+                          ) : (
+                            <Text color={Theme.grey_C}>답변대기</Text>
+                          )}
+                        </Text>
                       </Wrapper>
                     </List>
                   );

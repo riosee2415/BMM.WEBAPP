@@ -138,7 +138,7 @@ const reducer = (state = initailState, action) =>
         draft.st_requestAdminListLoading = false;
         draft.st_requestAdminListDone = true;
         draft.st_requestAdminListError = null;
-        draft.requestAdminList = action.data.productQuestions;
+        draft.requestAdminList = action.data;
         break;
       }
       case REQUEST_ADMIN_LIST_FAILURE: {

@@ -70,7 +70,7 @@ const Index = () => {
   return (
     <>
       <Head>
-        <title>BUY ME MINE | 이용 약관</title>
+        <title>BUY ME MINE | 개인정보처리방침</title>
       </Head>
 
       <ClientLayout>

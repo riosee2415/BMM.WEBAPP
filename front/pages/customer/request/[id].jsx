@@ -197,20 +197,12 @@ const Index = () => {
                   fontWeight={`600`}
                   color={Theme.lightGrey_C}
                 >
-                  {requestDetail && requestDetail.isCompleted}
+                  {requestDetail && requestDetail.isCompleted ? (
+                    <Text>답변완료</Text>
+                  ) : (
+                    <Text color={Theme.grey_C}>답변대기</Text>
+                  )}
                 </Wrapper>
-                {/* <Wrapper
-                  width={width < 800 ? `100%` : `auto`}
-                  margin={width < 800 ? `10px 0 0` : `0`}
-                  padding={`0 20px`}
-                  height={`40px`}
-                  border={`1px solid ${Theme.basicTheme_C}`}
-                  bgColor={Theme.white_C}
-                  fontSize={`16px`}
-                  fontWeight={`600`}
-                >
-                  답변완료
-                </Wrapper> */}
               </Wrapper>
 
               <Wrapper padding={`40px 0 60px`}>
@@ -307,7 +299,9 @@ const Index = () => {
                 radius={`30px`}
                 padding={width < 800 ? `20px 15px` : `40px 26px`}
               >
-                <Text>{requestDetail && requestDetail.answer}</Text>
+                <Text>
+                  {requestDetail && requestDetail.answer ? "" : "아직 답변이 없습니다."}
+                </Text>
               </Wrapper>
 
               <Wrapper dr={`row`} margin={`36px 0 0`}>
