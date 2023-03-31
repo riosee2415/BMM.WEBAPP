@@ -8,7 +8,7 @@ export const initailState = {
   userHistory: [],
   adminUserRightHistory: [],
   idCode: null, // 아이디찾기 인증코드
-  resultId: null,
+  resultId: null, //아이디찾기 결과
   //
   st_loginLoading: false,
   st_loginDone: false,
@@ -29,6 +29,10 @@ export const initailState = {
   st_userListUpdateLoading: false,
   st_userListUpdateDone: false,
   st_userListUpdateError: null,
+  //
+  st_userUpdateLoading: false, // 회원정보수정
+  st_userUpdateDone: false,
+  st_userUpdateError: null,
   //
   st_loadMyInfoLoading: false, // 로그인 정보 가져오기 시도 중
   st_loadMyInfoDone: false,
@@ -94,6 +98,10 @@ export const SIGNUP_FAILURE = "SIGNUP_FAILURE";
 export const USERLIST_REQUEST = "USERLIST_REQUEST";
 export const USERLIST_SUCCESS = "USERLIST_SUCCESS";
 export const USERLIST_FAILURE = "USERLIST_FAILURE";
+
+export const USER_UPDATE_REQUEST = "USER_UPDATE_REQUEST";
+export const USER_UPDATE_SUCCESS = "USER_UPDATE_SUCCESS";
+export const USER_UPDATE_FAILURE = "USER_UPDATE_FAILURE";
 
 export const USERLIST_UPDATE_REQUEST = "USERLIST_UPDATE_REQUEST";
 export const USERLIST_UPDATE_SUCCESS = "USERLIST_UPDATE_SUCCESS";
@@ -294,6 +302,26 @@ const reducer = (state = initailState, action) =>
         draft.st_userListUpdateLoading = false;
         draft.st_userListUpdateDone = false;
         draft.st_userListUpdateError = action.error;
+        break;
+      }
+      //////////////////////////////////////////////
+
+      case USER_UPDATE_REQUEST: {
+        draft.st_userUpdateLoading = true;
+        draft.st_userUpdateDone = false;
+        draft.st_userUpdateError = null;
+        break;
+      }
+      case USER_UPDATE_SUCCESS: {
+        draft.st_userUpdateLoading = false;
+        draft.st_userUpdateDone = true;
+        draft.st_userUpdateError = null;
+        break;
+      }
+      case USER_UPDATE_FAILURE: {
+        draft.st_userUpdateLoading = false;
+        draft.st_userUpdateDone = false;
+        draft.st_userUpdateError = action.error;
         break;
       }
       //////////////////////////////////////////////

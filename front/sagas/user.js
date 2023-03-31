@@ -21,6 +21,10 @@ import {
   USERLIST_UPDATE_SUCCESS,
   USERLIST_UPDATE_FAILURE,
   //
+  USER_UPDATE_REQUEST,
+  USER_UPDATE_SUCCESS,
+  USER_UPDATE_FAILURE,
+  //
   LOAD_MY_INFO_REQUEST,
   LOAD_MY_INFO_SUCCESS,
   LOAD_MY_INFO_FAILURE,
@@ -221,6 +225,32 @@ function* userListUpdate(action) {
     console.error(err);
     yield put({
       type: USERLIST_UPDATE_FAILURE,
+      error: err.response.data,
+    });
+  }
+}
+
+// ******************************************************************************************************************
+// ******************************************************************************************************************
+// ******************************************************************************************************************
+
+// SAGA AREA ********************************************************************************************************
+// ******************************************************************************************************************
+async function userUpdateAPI(data) {
+  return await axios.post(`/api/user/me/update`, data);
+}
+
+function* userUpdate(action) {
+  try {
+    const result = yield call(userUpdateAPI, action.data);
+    yield put({
+      type: USER_UPDATE_SUCCESS,
+      data: result.data,
+    });
+  } catch (err) {
+    console.error(err);
+    yield put({
+      type: USER_UPDATE_FAILURE,
       error: err.response.data,
     });
   }
@@ -581,6 +611,10 @@ function* watchUserListUpdate() {
   yield takeLatest(USERLIST_UPDATE_REQUEST, userListUpdate);
 }
 
+function* watchUserUpdate() {
+  yield takeLatest(USER_UPDATE_REQUEST, userUpdate);
+}
+
 function* watchKakaoLogin() {
   yield takeLatest(KAKAO_LOGIN_REQUEST, kakaoLogin);
 }
@@ -638,6 +672,7 @@ export default function* userSaga() {
     fork(watchSignUp),
     fork(watchUserList),
     fork(watchUserListUpdate),
+    fork(watchUserUpdate),
     fork(watchKakaoLogin),
     fork(watchUserHistory),
     fork(watchMenuRightUp),
