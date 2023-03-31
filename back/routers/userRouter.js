@@ -1196,6 +1196,55 @@ router.get(
 );
 
 /**
+ * SUBJECT : 회원탈퇴
+ * PARAMETERS : password
+ * ORDER BY : -
+ * STATEMENT : -
+ * DEVELOPMENT : 신태섭
+ * DEV DATE : 2023/03/31
+ */
+router.post("/userExit", isLoggedIn, async (req, res, next) => {
+  const { password } = req.body;
+
+  const findPasswordQuery = `
+  SELECT  password
+    FROM  users
+   WHERE  id = ${req.user.id}
+  `;
+
+  const updateQuery = `
+  UPDATE  users
+     SET  isExit = 1,
+          exitedAt = NOW()
+   WHERE  id = ${req.user.id}
+  `;
+
+  try {
+    const findPasswordData = await models.sequelize.query(findPasswordQuery);
+
+    if (findPasswordData[0].length === 0) {
+      return res.status(401).send("존재하지 않는 사용자 정보입니다.");
+    }
+
+    const result = await bcrypt.compare(
+      password,
+      findPasswordData[0][0].password
+    );
+
+    if (!result) {
+      return res.status(401).send("비밀번호가 일치하지 않습니다.");
+    }
+
+    await models.sequelize.query(updateQuery);
+
+    return res.status(200).json({ result: true });
+  } catch (error) {
+    console.error(error);
+    return res.status(401).send("회원탈퇴를 진행할 수 없습니다.");
+  }
+});
+
+/**
  * SUBJECT : 로그아웃
  * PARAMETERS : -
  * ORDER BY : -
