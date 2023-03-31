@@ -218,60 +218,6 @@ router.post("/update", isAdminCheck, async (req, res, next) => {
 });
 
 /**
- * SUBJECT : 브랜드 수정
- * PARAMETERS : id,
-                imagePath,
-                name,
-                subDesc
- * ORDER BY : -
- * STATEMENT : -
- * DEVELOPMENT : 신태섭
- * DEV DATE : 2023/03/23
- */
-router.post("/update", isAdminCheck, async (req, res, next) => {
-  const { id, imagePath, name, subDesc } = req.body;
-
-  const updateQuery = `
-    UPDATE    brand
-       SET    imagePath = "${imagePath}",
-              name = "${name}",
-              subDesc = "${subDesc}",
-              updator = ${req.user.id},
-              updatedAt = NOW()
-     WHERE    id = ${id}
-    `;
-
-  const historyInsertQuery = `
-    INSERT  INTO    brandHistory
-    (
-        content,
-        value,
-        updator,
-        createdAt,
-        updatedAt
-    )
-    VALUES
-    (
-        "데이터 수정",
-        "${name}",
-        ${req.user.id},
-        NOW(),
-        NOW()
-    )
-    `;
-
-  try {
-    await models.sequelize.query(updateQuery);
-    await models.sequelize.query(historyInsertQuery);
-
-    return res.status(200).json({ result: true });
-  } catch (error) {
-    console.error(error);
-    return res.status(401).send("브랜드를 수정할 수 없습니다.");
-  }
-});
-
-/**
  * SUBJECT : 브랜드 삭제
  * PARAMETERS : id,
                 name
