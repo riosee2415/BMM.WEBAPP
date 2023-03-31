@@ -76,6 +76,14 @@ import {
   PASS_UPDATE_REQUEST,
   PASS_UPDATE_SUCCESS,
   PASS_UPDATE_FAILURE,
+  //
+  USER_EXIT_REQUEST,
+  USER_EXIT_SUCCESS,
+  USER_EXIT_FAILURE,
+  //
+  LOGOUT_REQUEST,
+  LOGOUT_SUCCESS,
+  LOGOUT_FAILURE,
 } from "../reducers/user";
 
 // SAGA AREA ********************************************************************************************************
@@ -585,6 +593,60 @@ function* passUpdate(action) {
 // ******************************************************************************************************************
 // ******************************************************************************************************************
 
+// ******************************************************************************************************************
+// SAGA AREA ********************************************************************************************************
+// ******************************************************************************************************************
+async function logoutAPI(data) {
+  return await axios.get(`/api/user/logout`, data);
+}
+
+function* logout(action) {
+  try {
+    const result = yield call(logoutAPI, action.data);
+    yield put({
+      type: LOGOUT_SUCCESS,
+      data: result.data,
+    });
+  } catch (err) {
+    console.error(err);
+    yield put({
+      type: LOGOUT_FAILURE,
+      error: err.response.data,
+    });
+  }
+}
+
+// ******************************************************************************************************************
+// ******************************************************************************************************************
+// ******************************************************************************************************************
+
+// ******************************************************************************************************************
+// SAGA AREA ********************************************************************************************************
+// ******************************************************************************************************************
+async function userExitAPI(data) {
+  return await axios.post(`/api/user/userExit`, data);
+}
+
+function* userExit(action) {
+  try {
+    const result = yield call(userExitAPI, action.data);
+    yield put({
+      type: USER_EXIT_SUCCESS,
+      data: result.data,
+    });
+  } catch (err) {
+    console.error(err);
+    yield put({
+      type: USER_EXIT_FAILURE,
+      error: err.response.data,
+    });
+  }
+}
+
+// ******************************************************************************************************************
+// ******************************************************************************************************************
+// ******************************************************************************************************************
+
 //////////////////////////////////////////////////////////////
 
 function* watchLoadMyInfo() {
@@ -663,6 +725,14 @@ function* watchPassUpdate() {
   yield takeLatest(PASS_UPDATE_REQUEST, passUpdate);
 }
 
+function* watchUserExit() {
+  yield takeLatest(USER_EXIT_REQUEST, userExit);
+}
+
+function* watchLogout() {
+  yield takeLatest(LOGOUT_REQUEST, logout);
+}
+
 //////////////////////////////////////////////////////////////
 export default function* userSaga() {
   yield all([
@@ -685,6 +755,8 @@ export default function* userSaga() {
     fork(watchFindPass),
     fork(watchSecretCode),
     fork(watchPassUpdate),
+    fork(watchUserExit),
+    fork(watchLogout),
     //
   ]);
 }

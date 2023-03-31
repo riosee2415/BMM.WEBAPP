@@ -80,8 +80,6 @@ const SliderWrapper = styled(Carousel)`
 const MainBrandSlider = () => {
   const { brandList } = useSelector((state) => state.brand);
 
-  console.log(brandList);
-
   const width = useWidth();
   const router = useRouter();
   const dispatch = useDispatch();

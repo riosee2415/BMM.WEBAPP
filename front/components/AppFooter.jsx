@@ -31,8 +31,6 @@ const AppFooter = () => {
     st_companyError,
   } = useSelector((state) => state.company);
 
-  console.log(snsInfos);
-
   useEffect(() => {
     dispatch({
       type: COMPANY_GET_REQUEST,

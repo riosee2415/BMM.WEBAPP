@@ -81,6 +81,14 @@ export const initailState = {
   st_passUpdateLoading: false, // 비밀번호 변경
   st_passUpdateDone: false,
   st_passUpdateError: null,
+  //
+  st_userExitLoading: false, // 회원탈퇴
+  st_userExitDone: false,
+  st_userExitError: null,
+  //
+  st_logoutLoading: false, // 로그아웃
+  st_logoutDone: false,
+  st_logoutError: null,
 };
 
 export const LOGIN_REQUEST = "LOGIN_REQUEST";
@@ -158,6 +166,14 @@ export const SECRET_CODE_FAILURE = "SECRET_CODE_FAILURE";
 export const PASS_UPDATE_REQUEST = "PASS_UPDATE_REQUEST";
 export const PASS_UPDATE_SUCCESS = "PASS_UPDATE_SUCCESS";
 export const PASS_UPDATE_FAILURE = "PASS_UPDATE_FAILURE";
+
+export const USER_EXIT_REQUEST = "USER_EXIT_REQUEST";
+export const USER_EXIT_SUCCESS = "USER_EXIT_SUCCESS";
+export const USER_EXIT_FAILURE = "USER_EXIT_FAILURE";
+
+export const LOGOUT_REQUEST = "LOGOUT_REQUEST";
+export const LOGOUT_SUCCESS = "LOGOUT_SUCCESS";
+export const LOGOUT_FAILURE = "LOGOUT_FAILURE";
 
 export const UPDATE_MODAL_OPEN_REQUEST = "UPDATE_MODAL_OPEN_REQUEST";
 export const UPDATE_MODAL_CLOSE_REQUEST = "UPDATE_MODAL_CLOSE_REQUEST";
@@ -558,6 +574,48 @@ const reducer = (state = initailState, action) =>
         draft.st_passUpdateLoading = false;
         draft.st_passUpdateDone = false;
         draft.st_passUpdateError = action.error;
+        break;
+      }
+
+      //////////////////////////////////////////////
+
+      case USER_EXIT_REQUEST: {
+        draft.st_userExitLoading = true;
+        draft.st_userExitDone = false;
+        draft.st_userExitError = null;
+        break;
+      }
+      case USER_EXIT_SUCCESS: {
+        draft.st_userExitLoading = false;
+        draft.st_userExitDone = true;
+        draft.st_userExitError = null;
+        break;
+      }
+      case USER_EXIT_FAILURE: {
+        draft.st_userExitLoading = false;
+        draft.st_userExitDone = false;
+        draft.st_userExitError = action.error;
+        break;
+      }
+
+      //////////////////////////////////////////////
+
+      case LOGOUT_REQUEST: {
+        draft.st_logoutLoading = true;
+        draft.st_logoutDone = false;
+        draft.st_logoutError = null;
+        break;
+      }
+      case LOGOUT_SUCCESS: {
+        draft.st_logoutLoading = false;
+        draft.st_logoutDone = true;
+        draft.st_logoutError = null;
+        break;
+      }
+      case LOGOUT_FAILURE: {
+        draft.st_logoutLoading = false;
+        draft.st_logoutDone = false;
+        draft.st_logoutError = action.error;
         break;
       }
 
