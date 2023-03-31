@@ -73,13 +73,14 @@ const Index = () => {
         content: "비밀번호를 입력해주세요.",
       });
     }
+
     dispatch({
       type: REQUEST_LIST_REQUEST,
       data: {
         password: requestData,
       },
     });
-  }, [password.value]);
+  }, [requestData]);
 
   const onSubmitHandler = useCallback(
     (e) => {
