@@ -366,7 +366,6 @@ router.post("/answer/update", isAdminCheck, async (req, res, next) => {
 
   const selectQuery = `
     SELECT    id,
-              title,
               answer
       FROM    productQuestions
      WHERE    id = ${id}
