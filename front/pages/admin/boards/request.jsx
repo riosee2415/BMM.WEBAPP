@@ -87,9 +87,6 @@ const Request = ({}) => {
   /////////////////////////////////////////////////////////////////////////
 
   ////// HOOKS //////
-
-  // const [searchForm] = Form.useForm();
-
   const [isCom, setIsCom] = useState(2);
 
   ////// USEEFFECT //////
@@ -128,7 +125,7 @@ const Request = ({}) => {
     });
   }, [isCom]);
 
-  //   // ********************** 답변 생성 후처리 *************************
+  //// ********************** 답변 생성 후처리 *************************
   useEffect(() => {
     if (st_requestAnswerUpdateDone) {
       dispatch({
@@ -143,18 +140,6 @@ const Request = ({}) => {
   }, [st_requestAnswerUpdateDone, st_requestAnswerUpdateError]);
 
   ////// HANDLER //////
-
-  // const listTypeHandler = useCallback(
-  //   (data) => {
-  //     setIsCom(data);
-  //   },
-  //   [isCom]
-  // );
-
-  // const allSearchHandler = useCallback(() => {
-  //   searchForm.resetFields();
-  //   setIsCom("");
-  // }, [isCom]);
 
   const beforeSetDataHandler = useCallback(
     (record) => {
@@ -260,32 +245,6 @@ const Request = ({}) => {
 
       {/* 검색 */}
       <Wrapper padding={`10px 20px`} dr={`row`} ju={`flex-start`}>
-        {/* <SearchForm form={searchForm} layout="inline" style={{ width: "100%" }}>
-          <SearchFormItem name="title">
-            <Select
-              value={isCom}
-              onChange={listTypeHandler}
-              style={{ width: `200px` }}
-              size="small"
-            >
-              <Select.Option value={1}>완료</Select.Option>
-              <Select.Option value={2}>미완료</Select.Option>
-              <Select.Option value={3}>전체</Select.Option>
-            </Select>
-          </SearchFormItem>
-
-          <SearchFormItem>
-            <Button
-              icon={<UnorderedListOutlined />}
-              size="small"
-              type="primary"
-              onClick={allSearchHandler}
-            >
-              전체조회
-            </Button>
-          </SearchFormItem>
-        </SearchForm> */}
-
         <Button
           type={isCom === 2 ? "primary" : "default"}
           onClick={() => setIsCom(2)}

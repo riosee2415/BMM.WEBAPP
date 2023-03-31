@@ -137,8 +137,11 @@ const Request = () => {
                         <Wrapper dr={`row`} ju={`space-between`}>
                           <Text color={Theme.grey_C}>{data.name}</Text>
                           <Text>{data.viewCreatedAt}</Text>
-                          <Text>{data.isCompleted}</Text>
-                          {/* <Text color={Theme.lightGrey_C}>미답변</Text> */}
+                          {requestDetail && requestDetail.isCompleted ? (
+                            <Text>답변완료</Text>
+                          ) : (
+                            <Text color={Theme.grey_C}>답변대기</Text>
+                          )}
                         </Wrapper>
                       </MobileList>
                     );
@@ -181,7 +184,11 @@ const Request = () => {
                           fontSize={`16px`}
                           fontWeight={`600`}
                         >
-                          {data.isCompleted}
+                          {data.isCompleted ? (
+                            <Text>답변완료</Text>
+                          ) : (
+                            <Text color={Theme.grey_C}>답변대기</Text>
+                          )}
                         </Wrapper>
                       </List>
                     );

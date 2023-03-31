@@ -283,7 +283,11 @@ const Index = () => {
                 </Wrapper>
 
                 <EditorWrapper margin={`40px 0 0`}>
-                  에디터 연동자리
+                  <Text
+                    dangerouslySetInnerHTML={{
+                      __html: requestDetail && requestDetail.content,
+                    }}
+                  ></Text>
                 </EditorWrapper>
               </Wrapper>
               <Wrapper
@@ -300,7 +304,9 @@ const Index = () => {
                 padding={width < 800 ? `20px 15px` : `40px 26px`}
               >
                 <Text>
-                  {requestDetail && requestDetail.answer ? "" : "아직 답변이 없습니다."}
+                  {requestDetail && requestDetail.answer
+                    ? ""
+                    : "아직 답변이 없습니다."}
                 </Text>
               </Wrapper>
 

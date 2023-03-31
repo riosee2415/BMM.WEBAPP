@@ -10,10 +10,7 @@ import {
 import Theme from "./Theme";
 import useWidth from "../hooks/useWidth";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  COMPANY_GET_REQUEST,
-  SNS_INFO_LIST_REQUEST,
-} from "../reducers/company";
+import { COMPANY_GET_REQUEST } from "../reducers/company";
 import { LOGO_GET_REQUEST } from "../reducers/logo";
 import { UpOutlined } from "@ant-design/icons";
 import { message, Modal } from "antd";
@@ -26,22 +23,17 @@ const AppFooter = () => {
   const { logos } = useSelector((state) => state.logo);
   const {
     companys,
-    snsInfos,
     //
     st_companyError,
   } = useSelector((state) => state.company);
-
-  console.log(snsInfos);
 
   useEffect(() => {
     dispatch({
       type: COMPANY_GET_REQUEST,
     });
+  }, []);
 
-    dispatch({
-      type: SNS_INFO_LIST_REQUEST,
-    });
-
+  useEffect(() => {
     dispatch({
       type: LOGO_GET_REQUEST,
     });
@@ -117,132 +109,117 @@ const AppFooter = () => {
             <UpOutlined />
           </Wrapper>
         </Wrapper>
-        {companys && (
-          <Wrapper al={`flex-start`}>
-            <Wrapper
-              dr={`row`}
-              ju={`flex-start`}
-              margin={width < 800 ? `0` : `0 0 15px`}
-            >
-              {companys[1] && (
-                <Text>
-                  <SpanText margin={`0 10px 0 0`} color={Theme.grey_C}>
-                    {companys[1].name}
-                  </SpanText>
-                  <SpanText fontWeight={`500`}>{companys[1].value}</SpanText>
-                </Text>
-              )}
-              <SpanText
-                margin={width < 900 ? `0 10px` : `0 16px`}
-                fontSize={`12px`}
-                color={Theme.lightGrey2_C}
+        <Wrapper al={`flex-start`}>
+          {companys && (
+            <Wrapper al={`flex-start`}>
+              <Wrapper
+                width={`auto`}
+                dr={`row`}
+                ju={`flex-start`}
+                margin={width < 800 ? `0` : `0 0 15px`}
               >
-                |
-              </SpanText>
+                {companys[1] && (
+                  <Text>
+                    <SpanText margin={`0 10px 0 0`} color={Theme.grey_C}>
+                      {companys[1].name}
+                    </SpanText>
+                    <SpanText fontWeight={`500`}>{companys[1].value}</SpanText>
+                  </Text>
+                )}
+                <SpanText
+                  margin={width < 900 ? `0 10px` : `0 16px`}
+                  fontSize={`12px`}
+                  color={Theme.lightGrey2_C}
+                >
+                  |
+                </SpanText>
 
-              {companys[2] && (
-                <Text>
-                  <SpanText margin={`0 10px 0 0`} color={Theme.grey_C}>
-                    {companys[2].name}
-                  </SpanText>
-                  <SpanText fontWeight={`500`}>{companys[2].value}</SpanText>
-                </Text>
-              )}
-              <SpanText
-                margin={width < 900 ? `0 10px` : `0 16px`}
-                fontSize={`12px`}
-                color={Theme.lightGrey2_C}
-              >
-                |
-              </SpanText>
-              {companys[3] && (
-                <Text>
-                  <SpanText margin={`0 10px 0 0`} color={Theme.grey_C}>
-                    {companys[3].name}
-                  </SpanText>
-                  <SpanText fontWeight={`500`}>{companys[3].value}</SpanText>
-                </Text>
-              )}
-              <SpanText
-                margin={width < 900 ? `0 10px` : `0 16px`}
-                fontSize={`12px`}
-                color={Theme.lightGrey2_C}
-              >
-                |
-              </SpanText>
-              {companys[4] && (
-                <Text>
-                  <SpanText margin={`0 10px 0 0`} color={Theme.grey_C}>
-                    {companys[4].name}
-                  </SpanText>
-                  <SpanText fontWeight={`500`}>{companys[4].value}</SpanText>
-                </Text>
-              )}
-            </Wrapper>
-            <Wrapper dr={`row`} ju={`flex-start`}>
-              {companys[5] && (
-                <Text>
-                  <SpanText margin={`0 10px 0 0`} color={Theme.grey_C}>
-                    {companys[5].name}
-                  </SpanText>
-                  <SpanText fontWeight={`500`}>{companys[5].value}</SpanText>
-                </Text>
-              )}
-              <SpanText
-                margin={width < 900 ? `0 10px` : `0 16px`}
-                fontSize={`12px`}
-                color={Theme.lightGrey2_C}
-              >
-                |
-              </SpanText>
-              {companys[6] && (
-                <Text>
-                  <SpanText margin={`0 10px 0 0`} color={Theme.grey_C}>
-                    {companys[6].name}
-                  </SpanText>
-                  <SpanText fontWeight={`500`}>{companys[6].value}</SpanText>
-                </Text>
-              )}
-              <SpanText
-                margin={width < 900 ? `0 10px` : `0 16px`}
-                fontSize={`12px`}
-                color={Theme.lightGrey2_C}
-              >
-                |
-              </SpanText>
-              {companys[7] && (
-                <Text>
-                  <SpanText margin={`0 10px 0 0`} color={Theme.grey_C}>
-                    {companys[7].name}
-                  </SpanText>
-                  <SpanText fontWeight={`500`}>{companys[7].value}</SpanText>
-                </Text>
-              )}
-            </Wrapper>
+                {companys[2] && (
+                  <Text>
+                    <SpanText margin={`0 10px 0 0`} color={Theme.grey_C}>
+                      {companys[2].name}
+                    </SpanText>
+                    <SpanText fontWeight={`500`}>{companys[2].value}</SpanText>
+                  </Text>
+                )}
+                <SpanText
+                  margin={width < 900 ? `0 10px` : `0 16px`}
+                  fontSize={`12px`}
+                  color={Theme.lightGrey2_C}
+                >
+                  |
+                </SpanText>
+                {companys[3] && (
+                  <Text>
+                    <SpanText margin={`0 10px 0 0`} color={Theme.grey_C}>
+                      {companys[3].name}
+                    </SpanText>
+                    <SpanText fontWeight={`500`}>{companys[3].value}</SpanText>
+                  </Text>
+                )}
+                <SpanText
+                  margin={width < 900 ? `0 10px` : `0 16px`}
+                  fontSize={`12px`}
+                  color={Theme.lightGrey2_C}
+                >
+                  |
+                </SpanText>
+                {companys[4] && (
+                  <Text>
+                    <SpanText margin={`0 10px 0 0`} color={Theme.grey_C}>
+                      {companys[4].name}
+                    </SpanText>
+                    <SpanText fontWeight={`500`}>{companys[4].value}</SpanText>
+                  </Text>
+                )}
+              </Wrapper>
+              <Wrapper dr={`row`} ju={`flex-start`}>
+                {companys[5] && (
+                  <Text>
+                    <SpanText margin={`0 10px 0 0`} color={Theme.grey_C}>
+                      {companys[5].name}
+                    </SpanText>
+                    <SpanText fontWeight={`500`}>{companys[5].value}</SpanText>
+                  </Text>
+                )}
+                <SpanText
+                  margin={width < 900 ? `0 10px` : `0 16px`}
+                  fontSize={`12px`}
+                  color={Theme.lightGrey2_C}
+                >
+                  |
+                </SpanText>
+                {companys[6] && (
+                  <Text>
+                    <SpanText margin={`0 10px 0 0`} color={Theme.grey_C}>
+                      {companys[6].name}
+                    </SpanText>
+                    <SpanText fontWeight={`500`}>{companys[6].value}</SpanText>
+                  </Text>
+                )}
+                <SpanText
+                  margin={width < 900 ? `0 10px` : `0 16px`}
+                  fontSize={`12px`}
+                  color={Theme.lightGrey2_C}
+                >
+                  |
+                </SpanText>
+                {companys[7] && (
+                  <Text>
+                    <SpanText margin={`0 10px 0 0`} color={Theme.grey_C}>
+                      {companys[7].name}
+                    </SpanText>
+                    <SpanText fontWeight={`500`}>{companys[7].value}</SpanText>
+                  </Text>
+                )}
+              </Wrapper>
 
-            <Wrapper dr={`row`} ju={`space-between`} al={`flex-end`}>
               <Text margin={`13px 0 0`} color={Theme.lightGrey2_C}>
                 © 2022 Copyright BuyMeMine
               </Text>
-              <Wrapper width={`auto`} dr={`row`}>
-                {snsInfos &&
-                  snsInfos.map((data) => {
-                    return (
-                      <a href={data.link} target={`_blank`} key={data.id}>
-                        <Image
-                          margin={`0 0 0 10px`}
-                          width={`40px`}
-                          height={`40px`}
-                          alt="sns icon"
-                          src={data.imageURL}
-                        />
-                      </a>
-                    );
-                  })}
-              </Wrapper>
             </Wrapper>
-          </Wrapper>
-        )}
+          )}
+        </Wrapper>
       </RsWrapper>
     </WholeWrapper>
   );
