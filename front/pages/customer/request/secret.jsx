@@ -51,7 +51,7 @@ const List = styled(Wrapper)`
   }
 `;
 
-const Index = () => {
+const Secret = () => {
   ////// GLOBAL STATE //////
   const { requestData } = useSelector((state) => state.request);
 
@@ -223,4 +223,26 @@ const Index = () => {
   );
 };
 
-export default Index;
+export const getServerSideProps = wrapper.getServerSideProps(
+  async (context) => {
+    // SSR Cookie Settings For Data Load/////////////////////////////////////
+    const cookie = context.req ? context.req.headers.cookie : "";
+    axios.defaults.headers.Cookie = "";
+    if (context.req && cookie) {
+      axios.defaults.headers.Cookie = cookie;
+    }
+    ////////////////////////////////////////////////////////////////////////
+    // 구현부
+
+    context.store.dispatch({
+      type: LOAD_MY_INFO_REQUEST,
+    });
+
+    // 구현부 종료
+    context.store.dispatch(END);
+    console.log("🍀 SERVER SIDE PROPS END");
+    await context.store.sagaTask.toPromise();
+  }
+);
+
+export default Secret;
