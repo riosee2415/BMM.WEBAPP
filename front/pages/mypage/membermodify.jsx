@@ -3,7 +3,12 @@ import ClientLayout from "../../components/ClientLayout";
 import Theme from "../../components/Theme";
 import Head from "next/head";
 import wrapper from "../../store/configureStore";
-import { LOAD_MY_INFO_REQUEST, USER_UPDATE_REQUEST } from "../../reducers/user";
+import {
+  LOAD_MY_INFO_REQUEST,
+  LOGOUT_REQUEST,
+  USER_EXIT_REQUEST,
+  USER_UPDATE_REQUEST,
+} from "../../reducers/user";
 import axios from "axios";
 import { END } from "redux-saga";
 import useWidth from "../../hooks/useWidth";
@@ -89,9 +94,13 @@ const ModifyBtn = styled(Wrapper)`
 
 const MemberModify = () => {
   ////// GLOBAL STATE //////
-  const { me, st_userUpdateDone, st_userUpdateError } = useSelector(
-    (state) => state.user
-  );
+  const {
+    me,
+    st_userUpdateDone,
+    st_userUpdateError,
+    st_userExitDone,
+    st_userExitError,
+  } = useSelector((state) => state.user);
 
   const [isModal, setIsModal] = useState(false);
   const [pModal, setPModal] = useState(false);
@@ -101,6 +110,7 @@ const MemberModify = () => {
   const router = useRouter();
   const dispatch = useDispatch();
 
+  const exitPassword = useInput(``);
   const password = useInput(``);
   const mobile = useInput(me && me.mobile);
   const email = useInput(me && me.email);
@@ -138,6 +148,26 @@ const MemberModify = () => {
     }
   }, [st_userUpdateDone]);
 
+  // ********************** 회원탈퇴 후처리 *************************
+
+  useEffect(() => {
+    if (st_userExitError) {
+      return message.error(st_userExitError);
+    }
+  }, [st_userExitError]);
+
+  useEffect(() => {
+    if (st_userExitDone) {
+      router.push(`/`);
+
+      dispatch({
+        type: LOGOUT_REQUEST,
+      });
+
+      return message.success("탈퇴되었습니다.");
+    }
+  }, [st_userExitDone]);
+
   ////// TOGGLE //////
   const modalToggle = useCallback(() => {
     setIsModal((prev) => !prev);
@@ -166,6 +196,7 @@ const MemberModify = () => {
     if (!detailAddressInput.value) {
       return message.error("상세주소를 입력해주세요.");
     }
+
     if (!password.value || password.value.trim() === "") {
       return message.error("비밀번호를 입력해주세요.");
     }
@@ -198,6 +229,20 @@ const MemberModify = () => {
     addressInput,
     detailAddressInput,
   ]);
+
+  // 회원탈퇴
+  const exitHandler = useCallback(() => {
+    if (!exitPassword.value || exitPassword.value.trim() === "") {
+      return message.error("비밀번호를 입력해주세요.");
+    }
+
+    dispatch({
+      type: USER_EXIT_REQUEST,
+      data: {
+        password: exitPassword.value,
+      },
+    });
+  }, [exitPassword.value]);
   ////// DATAVIEW //////
 
   return (
@@ -359,6 +404,7 @@ const MemberModify = () => {
                     placeholder="비밀번호를 입력해주세요."
                     margin={`0 0 12px`}
                     fontSize={width < 900 ? `14px` : `16px`}
+                    {...exitPassword}
                   />
                   <Wrapper
                     width={`100%`}
@@ -374,7 +420,7 @@ const MemberModify = () => {
                   </Wrapper>
                 </Wrapper>
                 <Wrapper dr={`row`} ju={`space-between`}>
-                  <OutBtn onClick={modalToggle}>탈퇴하기</OutBtn>
+                  <OutBtn onClick={exitHandler}>탈퇴하기</OutBtn>
                   <CommonButton
                     fontSize={width < 500 ? `16px` : `18px`}
                     fontWeight={`600`}
