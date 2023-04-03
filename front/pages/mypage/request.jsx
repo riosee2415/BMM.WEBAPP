@@ -13,6 +13,7 @@ import {
   Wrapper,
   Text,
   CustomPage,
+  ATag,
 } from "../../components/commonComponents";
 import styled from "styled-components";
 import MypageTop from "../../components/MypageTop";
@@ -20,6 +21,7 @@ import { LockFilled } from "@ant-design/icons";
 import { REQUEST_MY_LIST_REQUEST } from "../../reducers/request";
 import { useDispatch, useSelector } from "react-redux";
 import { Empty } from "antd";
+import Link from "next/dist/client/link";
 
 const List = styled(Wrapper)`
   height: 60px;
@@ -118,32 +120,36 @@ const Request = () => {
                 ) : (
                   requestMyList.map((data) => {
                     return (
-                      <MobileList>
-                        <Wrapper
-                          dr={`row`}
-                          ju={`flex-start`}
-                          color={Theme.darkGrey_C}
-                          fontSize={`16px`}
-                          margin={`0 0 10px`}
-                        >
-                          <Text maxWidth={`90%`} isEllipsis isHover>
-                            {data.productName}
-                          </Text>
-                          <Text padding={`0 5px`}>
-                            <LockFilled />
-                          </Text>
-                        </Wrapper>
+                      <Link href={`/customer/request/${data.id}`}>
+                        <ATag>
+                          <MobileList>
+                            <Wrapper
+                              dr={`row`}
+                              ju={`flex-start`}
+                              color={Theme.darkGrey_C}
+                              fontSize={`16px`}
+                              margin={`0 0 10px`}
+                            >
+                              <Text maxWidth={`90%`} isEllipsis isHover>
+                                {data.productName}
+                              </Text>
+                              <Text padding={`0 5px`}>
+                                <LockFilled />
+                              </Text>
+                            </Wrapper>
 
-                        <Wrapper dr={`row`} ju={`space-between`}>
-                          <Text color={Theme.grey_C}>{data.name}</Text>
-                          <Text>{data.viewCreatedAt}</Text>
-                          {data.isCompleted ? (
-                            <Text>답변완료</Text>
-                          ) : (
-                            <Text color={Theme.grey_C}>답변대기</Text>
-                          )}
-                        </Wrapper>
-                      </MobileList>
+                            <Wrapper dr={`row`} ju={`space-between`}>
+                              <Text color={Theme.grey_C}>{data.name}</Text>
+                              <Text>{data.viewCreatedAt}</Text>
+                              {data.isCompleted ? (
+                                <Text>답변완료</Text>
+                              ) : (
+                                <Text color={Theme.grey_C}>답변대기</Text>
+                              )}
+                            </Wrapper>
+                          </MobileList>
+                        </ATag>
+                      </Link>
                     );
                   })
                 )}
@@ -157,40 +163,46 @@ const Request = () => {
                 ) : (
                   requestMyList.map((data) => {
                     return (
-                      <List>
-                        <Wrapper width={`8%`} color={Theme.grey_C}>
-                          {data.num}
-                        </Wrapper>
-                        <Wrapper
-                          width={`50%`}
-                          padding={`0 14px`}
-                          color={Theme.darkGrey_C}
-                        >
-                          <Wrapper dr={`row`} ju={`flex-start`}>
-                            <Text maxWidth={`52%`} isEllipsis isHover>
-                              {data.productName}
-                            </Text>
-                            <Text padding={`0 5px`}>
-                              <LockFilled />
-                            </Text>
-                          </Wrapper>
-                        </Wrapper>
-                        <Wrapper width={`14%`} color={Theme.grey_C}>
-                          {data.name}
-                        </Wrapper>
-                        <Wrapper width={`14%`}>{data.viewCreatedAt}</Wrapper>
-                        <Wrapper
-                          width={`14%`}
-                          fontSize={`16px`}
-                          fontWeight={`600`}
-                        >
-                          {data.isCompleted ? (
-                            <Text>답변완료</Text>
-                          ) : (
-                            <Text color={Theme.grey_C}>답변대기</Text>
-                          )}
-                        </Wrapper>
-                      </List>
+                      <Link href={`/customer/request/${data.id}`}>
+                        <ATag>
+                          <List>
+                            <Wrapper width={`8%`} color={Theme.grey_C}>
+                              {data.num}
+                            </Wrapper>
+                            <Wrapper
+                              width={`50%`}
+                              padding={`0 14px`}
+                              color={Theme.darkGrey_C}
+                            >
+                              <Wrapper dr={`row`} ju={`flex-start`}>
+                                <Text maxWidth={`52%`} isEllipsis isHover>
+                                  {data.productName}
+                                </Text>
+                                <Text padding={`0 5px`}>
+                                  <LockFilled />
+                                </Text>
+                              </Wrapper>
+                            </Wrapper>
+                            <Wrapper width={`14%`} color={Theme.grey_C}>
+                              {data.name}
+                            </Wrapper>
+                            <Wrapper width={`14%`}>
+                              {data.viewCreatedAt}
+                            </Wrapper>
+                            <Wrapper
+                              width={`14%`}
+                              fontSize={`16px`}
+                              fontWeight={`600`}
+                            >
+                              {data.isCompleted ? (
+                                <Text>답변완료</Text>
+                              ) : (
+                                <Text color={Theme.grey_C}>답변대기</Text>
+                              )}
+                            </Wrapper>
+                          </List>
+                        </ATag>
+                      </Link>
                     );
                   })
                 )}

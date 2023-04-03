@@ -42,8 +42,8 @@ router.post("/list", async (req, res, next) => {
             A.answerdAt,
             A.createdAt,
             A.updatedAt,
-            DATE_FORMAT(A.createdAt, "%Y년 %m월 %d일")        AS viewCreatedAt,
-            DATE_FORMAT(A.updatedAt, "%Y년 %m월 %d일")        AS viewUpdatedAt,
+            DATE_FORMAT(A.createdAt, "%Y. %m. %d.")        AS viewCreatedAt,
+            DATE_FORMAT(A.updatedAt, "%Y. %m. %d.")        AS viewUpdatedAt,
             A.UserId
       FROM  productQuestions       A
      WHERE  1 = 1
@@ -74,8 +74,8 @@ router.post("/list", async (req, res, next) => {
             A.answerdAt,
             A.createdAt,
             A.updatedAt,
-            DATE_FORMAT(A.createdAt, "%Y년 %m월 %d일")        AS viewCreatedAt,
-            DATE_FORMAT(A.updatedAt, "%Y년 %m월 %d일")        AS viewUpdatedAt,
+            DATE_FORMAT(A.createdAt, "%Y. %m. %d.")        AS viewCreatedAt,
+            DATE_FORMAT(A.updatedAt, "%Y. %m. %d.")        AS viewUpdatedAt,
             A.UserId
       FROM  productQuestions       A
      WHERE  1 = 1
@@ -150,8 +150,8 @@ router.post("/my/list", isLoggedIn, async (req, res, next) => {
               A.answerdAt,
               A.createdAt,
               A.updatedAt,
-              DATE_FORMAT(A.createdAt, "%Y년 %m월 %d일")        AS viewCreatedAt,
-              DATE_FORMAT(A.updatedAt, "%Y년 %m월 %d일")        AS viewUpdatedAt,
+              DATE_FORMAT(A.createdAt, "%Y. %m. %d.")        AS viewCreatedAt,
+              DATE_FORMAT(A.updatedAt, "%Y. %m. %d.")        AS viewUpdatedAt,
               A.UserId
         FROM  productQuestions       A
        WHERE  1 = 1
@@ -173,8 +173,8 @@ router.post("/my/list", isLoggedIn, async (req, res, next) => {
             A.answerdAt,
             A.createdAt,
             A.updatedAt,
-            DATE_FORMAT(A.createdAt, "%Y년 %m월 %d일")        AS viewCreatedAt,
-            DATE_FORMAT(A.updatedAt, "%Y년 %m월 %d일")        AS viewUpdatedAt,
+            DATE_FORMAT(A.createdAt, "%Y. %m. %d.")        AS viewCreatedAt,
+            DATE_FORMAT(A.updatedAt, "%Y. %m. %d.")        AS viewUpdatedAt,
             A.UserId
       FROM	productQuestions       A
      WHERE  1 = 1
@@ -226,7 +226,7 @@ router.post("/admin/list", isAdminCheck, async (req, res, next) => {
           A.createdAt,
           A.updatedAt,
           DATE_FORMAT(A.createdAt, "%Y년 %m월 %d일")        AS viewCreatedAt,
-          DATE_FORMAT(A.updatedAt, "%Y년 %m월 %d일")        AS viewUpdatedAt,
+          DATE_FORMAT(A.updatedAt, "%Y. %m. %d.")        AS viewUpdatedAt,
           A.UserId,
           CASE
               WHEN  A.UserId IS NOT NULL THEN "회원 작성"
@@ -283,8 +283,8 @@ router.post("/detail", async (req, res, next) => {
           A.answerdAt,
           A.createdAt,
           A.updatedAt,
-          DATE_FORMAT(A.createdAt, "%Y년 %m월 %d일")        AS viewCreatedAt,
-          DATE_FORMAT(A.updatedAt, "%Y년 %m월 %d일")        AS viewUpdatedAt,
+          DATE_FORMAT(A.createdAt, "%Y. %m. %d.")        AS viewCreatedAt,
+          DATE_FORMAT(A.updatedAt, "%Y. %m. %d.")        AS viewUpdatedAt,
           A.UserId,
           CASE
               WHEN  A.UserId IS NOT NULL THEN "회원 작성"

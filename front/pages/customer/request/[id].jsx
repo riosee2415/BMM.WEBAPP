@@ -302,6 +302,7 @@ const Index = () => {
                 bgColor={Theme.lightGrey3_C}
                 radius={`30px`}
                 padding={width < 800 ? `20px 15px` : `40px 26px`}
+                al={`flex-start`}
               >
                 <Text>
                   {requestDetail && requestDetail.answer
