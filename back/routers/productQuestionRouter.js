@@ -7,14 +7,14 @@ const router = express.Router();
 
 /**
  * SUBJECT : 나의 상품문의 목록
- * PARAMETERS : page
+ * PARAMETERS : page, searchProductName, listType
  * ORDER BY : -
  * STATEMENT : -
  * DEVELOPMENT : 신태섭
  * DEV DATE : 2023/03/27
  */
 router.post("/list", async (req, res, next) => {
-  const { page, searchProductName } = req.body;
+  const { page, searchProductName, listType } = req.body;
 
   const LIMIT = 10;
 
@@ -24,6 +24,7 @@ router.post("/list", async (req, res, next) => {
   const OFFSET = __page * 10;
 
   const _searchProductName = searchProductName ? searchProductName : ``;
+  const _listType = parseInt(listType) || 3;
 
   try {
     const lengthQuery = `
@@ -47,6 +48,15 @@ router.post("/list", async (req, res, next) => {
       FROM  productQuestions       A
      WHERE  1 = 1
        AND  A.productName LIKE "%${_searchProductName}%"
+            ${
+              _listType === 1
+                ? `AND A.isCompleted = 1`
+                : _listType === 2
+                ? `AND A.isCompleted = 0`
+                : _listType === 3
+                ? ``
+                : ``
+            }
     `;
 
     const selectQuery = `
@@ -70,6 +80,15 @@ router.post("/list", async (req, res, next) => {
       FROM  productQuestions       A
      WHERE  1 = 1
        AND  A.productName LIKE "%${_searchProductName}%"
+            ${
+              _listType === 1
+                ? `AND A.isCompleted = 1`
+                : _listType === 2
+                ? `AND A.isCompleted = 0`
+                : _listType === 3
+                ? ``
+                : ``
+            }
      ORDER  BY num DESC
      LIMIT  ${LIMIT}
     OFFSET  ${OFFSET}
