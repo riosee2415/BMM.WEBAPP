@@ -98,6 +98,7 @@ const reducer = (state = initailState, action) =>
         draft.st_requestMyListDone = true;
         draft.st_requestMyListError = null;
         draft.requestMyList = action.data.list;
+        draft.lastPage = action.data.lastPage;
         break;
       }
       case REQUEST_MY_LIST_FAILURE: {

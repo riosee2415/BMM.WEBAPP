@@ -71,6 +71,23 @@ const Request = () => {
 
   ////// TOGGLE //////
   ////// HANDLER //////
+  const nextPageCall = useCallback(
+    (changePage) => {
+      setCurrentTab(changePage);
+    },
+    [currentTap]
+  );
+
+  const maskingName = (value) => {
+    if (value.length === 2) {
+      return value.replace(/(?<=.{1})./gi, "*");
+    } else if (value.length > 2) {
+      return value.replace(/(?<=.{2})./gi, "*");
+    } else {
+      return value;
+    }
+  };
+
   ////// DATAVIEW //////
 
   return (
@@ -139,7 +156,12 @@ const Request = () => {
                             </Wrapper>
 
                             <Wrapper dr={`row`} ju={`space-between`}>
-                              <Text color={Theme.grey_C}>{data.name}</Text>
+                              <Text color={Theme.grey_C}>
+                                {data.name.string.split(",", 0)}
+                                {console.log(
+                                  data.name && data.name.string.split(",", 0)
+                                )}
+                              </Text>
                               <Text>{data.viewCreatedAt}</Text>
                               {data.isCompleted ? (
                                 <Text>답변완료</Text>
@@ -183,7 +205,11 @@ const Request = () => {
                                 </Text>
                               </Wrapper>
                             </Wrapper>
-                            <Wrapper width={`14%`} color={Theme.grey_C}>
+                            <Wrapper
+                              width={`14%`}
+                              color={Theme.grey_C}
+                              onChange={maskingName}
+                            >
                               {data.name}
                             </Wrapper>
                             <Wrapper width={`14%`}>
