@@ -94,7 +94,6 @@ const Request = ({}) => {
   const [isCom, setIsCom] = useState(2);
 
   const [searchForm] = Form.useForm();
-  const [userSearchForm] = Form.useForm();
 
   const [searchProductName, setSearchProductName] = useState("");
   const [searchUserName, setSearchUserName] = useState("");
@@ -156,17 +155,18 @@ const Request = ({}) => {
     (data) => {
       searchForm.resetFields();
       setSearchProductName(data.productName);
-    },
-    [searchProductName]
-  );
-
-  const searchUserHandler = useCallback(
-    (data) => {
-      userSearchForm.resetFields();
       setSearchUserName(data.name);
     },
-    [searchUserName]
+    [searchProductName, searchUserName]
   );
+
+  // const searchUserHandler = useCallback(
+  //   (data) => {
+  //     userSearchForm.resetFields();
+  //     setSearchUserName(data.name);
+  //   },
+  //   [searchUserName]
+  // );
 
   const allSearchHandler = useCallback(() => {
     searchForm.resetFields();
@@ -282,7 +282,7 @@ const Request = ({}) => {
           form={searchForm}
           onFinish={searchProductHandler}
           layout="inline"
-          style={{ width: "49%" }}
+          style={{ width: "100%" }}
         >
           <SearchFormItem name="productName">
             <Input size="small" placeholder="상품명으로 검색해주세요." />
@@ -292,29 +292,9 @@ const Request = ({}) => {
               검색
             </Button>
           </SearchFormItem>
-          <SearchFormItem>
-            <Button
-              icon={<UnorderedListOutlined />}
-              size="small"
-              type="primary"
-              onClick={allSearchHandler}
-            >
-              전체조회
-            </Button>
-          </SearchFormItem>
-        </SearchForm>
-        <SearchForm
-          form={userSearchForm}
-          onFinish={searchUserHandler}
-          layout="inline"
-          style={{ width: "49%" }}
-          dr={`row`}
-          ju={`flex-start`}
-        >
           <SearchFormItem name="name">
             <Input size="small" placeholder="작성자로 검색해주세요." />
           </SearchFormItem>
-
           <SearchFormItem>
             <Button icon={<SearchOutlined />} size="small" htmlType="submit">
               검색

@@ -102,11 +102,11 @@ const Request = () => {
               fontWeight={`600`}
               display={width < 800 ? `none` : `flex`}
             >
-              <Wrapper width={`10%`}>번호</Wrapper>
-              <Wrapper width={`60%`}>제목</Wrapper>
-              <Wrapper width={`10%`}>작성자</Wrapper>
-              <Wrapper width={`10%`}>작성일</Wrapper>
-              <Wrapper width={`10%`}>답변상태</Wrapper>
+              <Wrapper width={`8%`}>번호</Wrapper>
+              <Wrapper width={`50%`}>제목</Wrapper>
+              <Wrapper width={`14%`}>작성자</Wrapper>
+              <Wrapper width={`14%`}>작성일</Wrapper>
+              <Wrapper width={`14%`}>답변상태</Wrapper>
             </Wrapper>
 
             {width < 700 ? (
@@ -137,7 +137,7 @@ const Request = () => {
                         <Wrapper dr={`row`} ju={`space-between`}>
                           <Text color={Theme.grey_C}>{data.name}</Text>
                           <Text>{data.viewCreatedAt}</Text>
-                          {requestDetail && requestDetail.isCompleted ? (
+                          {data.isCompleted ? (
                             <Text>답변완료</Text>
                           ) : (
                             <Text color={Theme.grey_C}>답변대기</Text>
@@ -158,11 +158,11 @@ const Request = () => {
                   requestMyList.map((data) => {
                     return (
                       <List>
-                        <Wrapper width={`10%`} color={Theme.grey_C}>
+                        <Wrapper width={`8%`} color={Theme.grey_C}>
                           {data.num}
                         </Wrapper>
                         <Wrapper
-                          width={`60%`}
+                          width={`50%`}
                           padding={`0 14px`}
                           color={Theme.darkGrey_C}
                         >
@@ -175,12 +175,12 @@ const Request = () => {
                             </Text>
                           </Wrapper>
                         </Wrapper>
-                        <Wrapper width={`10%`} color={Theme.grey_C}>
+                        <Wrapper width={`14%`} color={Theme.grey_C}>
                           {data.name}
                         </Wrapper>
-                        <Wrapper width={`10%`}>{data.viewCreatedAt}</Wrapper>
+                        <Wrapper width={`14%`}>{data.viewCreatedAt}</Wrapper>
                         <Wrapper
-                          width={`10%`}
+                          width={`14%`}
                           fontSize={`16px`}
                           fontWeight={`600`}
                         >
