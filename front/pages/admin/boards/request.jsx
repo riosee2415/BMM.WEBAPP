@@ -28,6 +28,7 @@ import {
   HomeOutlined,
   RightOutlined,
   SearchOutlined,
+  UnorderedListOutlined,
 } from "@ant-design/icons";
 import {
   REQUEST_ADMIN_LIST_REQUEST,
@@ -93,6 +94,7 @@ const Request = ({}) => {
   const [isCom, setIsCom] = useState(2);
 
   const [searchForm] = Form.useForm();
+  const [userSearchForm] = Form.useForm();
 
   const [searchProductName, setSearchProductName] = useState("");
   const [searchUserName, setSearchUserName] = useState("");
@@ -152,6 +154,7 @@ const Request = ({}) => {
   ////// HANDLER //////
   const searchProductHandler = useCallback(
     (data) => {
+      searchForm.resetFields();
       setSearchProductName(data.productName);
     },
     [searchProductName]
@@ -159,15 +162,17 @@ const Request = ({}) => {
 
   const searchUserHandler = useCallback(
     (data) => {
-      setSearchUserName(data.UserId);
+      userSearchForm.resetFields();
+      setSearchUserName(data.name);
     },
     [searchUserName]
   );
 
-  // const allSearchHandler = useCallback(() => {
-  //   searchForm.resetFields();
-  //   setEventTitle("");
-  // }, [eventTitle]);
+  const allSearchHandler = useCallback(() => {
+    searchForm.resetFields();
+    setSearchProductName("");
+    setSearchUserName("");
+  }, [searchProductName, searchUserName]);
 
   const beforeSetDataHandler = useCallback(
     (record) => {
@@ -272,33 +277,62 @@ const Request = ({}) => {
       </Wrapper>
 
       {/* 검색 */}
-      <SearchForm
-        form={searchForm}
-        onFinish={searchProductHandler}
-        layout="inline"
-        style={{ width: "100%" }}
-        dr={`row`}
-        ju={`flex-start`}
-      >
-        <SearchFormItem name="title">
-          <Input size="small" placeholder="상품명으로 검색해주세요." />
-        </SearchFormItem>
+      <Wrapper dr={`row`} ju={`space-between`}>
+        <SearchForm
+          form={searchForm}
+          onFinish={searchProductHandler}
+          layout="inline"
+          style={{ width: "49%" }}
+        >
+          <SearchFormItem name="productName">
+            <Input size="small" placeholder="상품명으로 검색해주세요." />
+          </SearchFormItem>
+          <SearchFormItem>
+            <Button icon={<SearchOutlined />} size="small" htmlType="submit">
+              검색
+            </Button>
+          </SearchFormItem>
+          <SearchFormItem>
+            <Button
+              icon={<UnorderedListOutlined />}
+              size="small"
+              type="primary"
+              onClick={allSearchHandler}
+            >
+              전체조회
+            </Button>
+          </SearchFormItem>
+        </SearchForm>
+        <SearchForm
+          form={userSearchForm}
+          onFinish={searchUserHandler}
+          layout="inline"
+          style={{ width: "49%" }}
+          dr={`row`}
+          ju={`flex-start`}
+        >
+          <SearchFormItem name="name">
+            <Input size="small" placeholder="작성자로 검색해주세요." />
+          </SearchFormItem>
 
-        <SearchFormItem>
-          <Button icon={<SearchOutlined />} size="small" htmlType="submit">
-            검색
-          </Button>
-        </SearchFormItem>
-        <SearchFormItem name="title">
-          <Input size="small" placeholder="상품명으로 검색해주세요." />
-        </SearchFormItem>
+          <SearchFormItem>
+            <Button icon={<SearchOutlined />} size="small" htmlType="submit">
+              검색
+            </Button>
+          </SearchFormItem>
+          <SearchFormItem>
+            <Button
+              icon={<UnorderedListOutlined />}
+              size="small"
+              type="primary"
+              onClick={allSearchHandler}
+            >
+              전체조회
+            </Button>
+          </SearchFormItem>
+        </SearchForm>
+      </Wrapper>
 
-        <SearchFormItem>
-          <Button icon={<SearchOutlined />} size="small" htmlType="submit">
-            검색
-          </Button>
-        </SearchFormItem>
-      </SearchForm>
       <Wrapper padding={`10px 20px`} dr={`row`} ju={`flex-start`}>
         <Button
           type={isCom === 2 ? "primary" : "default"}

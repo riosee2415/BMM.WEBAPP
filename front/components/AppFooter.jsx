@@ -74,7 +74,17 @@ const AppFooter = () => {
             </Link>
             <Link href={`/privacy`}>
               <a>
-                <Text isHover>개인정보처리방침</Text>
+                <Text
+                  margin={width < 800 ? `0 15px 0 0` : `0 30px 0 0`}
+                  isHover
+                >
+                  개인정보처리방침
+                </Text>
+              </a>
+            </Link>
+            <Link href={`/serviceTerms`}>
+              <a>
+                <Text isHover>서비스이용안내</Text>
               </a>
             </Link>
           </Wrapper>

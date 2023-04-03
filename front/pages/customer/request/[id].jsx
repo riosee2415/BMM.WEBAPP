@@ -183,7 +183,7 @@ const Index = () => {
                   <Text color={Theme.darkGrey_C} fontSize={`16px`}>
                     {requestDetail && requestDetail.name}
                     <SpanText margin={`0 0 0 18px`}>
-                      {requestDetail && requestDetail.createdAt}
+                      {requestDetail && requestDetail.viewCreatedAt}
                     </SpanText>
                   </Text>
                 </Wrapper>
@@ -305,7 +305,7 @@ const Index = () => {
               >
                 <Text>
                   {requestDetail && requestDetail.answer
-                    ? ""
+                    ? requestDetail && requestDetail.answer
                     : "아직 답변이 없습니다."}
                 </Text>
               </Wrapper>
