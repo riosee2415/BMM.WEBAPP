@@ -34,12 +34,15 @@ import {
   UP_LIST_REQUEST,
   UP_NEW_REQUEST,
   UP_UPDATE_REQUEST,
+  DOWN_LIST_REQUEST,
 } from "../../../reducers/category";
 
 const Category = ({}) => {
   const { st_loadMyInfoDone, me } = useSelector((state) => state.user);
   const {
     upList,
+    downList,
+    //
     st_upNewDone,
     st_upNewError,
     st_upUpdateDone,
@@ -61,6 +64,8 @@ const Category = ({}) => {
 
   const [newModal, setNewModal] = useState(false);
   const [updateModal, setUpdateModal] = useState(false);
+
+  const [currentUp, setCurrentUp] = useState(null);
 
   const moveLinkHandler = useCallback((link) => {
     router.push(link);
@@ -202,6 +207,17 @@ const Category = ({}) => {
     });
   }, []);
 
+  const selectHandler = useCallback((row) => {
+    setCurrentUp(row);
+
+    dispatch({
+      type: DOWN_LIST_REQUEST,
+      data: {
+        CateUpId: row.id,
+      },
+    });
+  }, []);
+
   ////// DATAVIEW //////
 
   ////// DATA COLUMNS //////
@@ -251,17 +267,67 @@ const Category = ({}) => {
         </Wrapper>
       ),
     },
+
+    {
+      title: "제어2",
+      render: (row) => (
+        <Wrapper al="flex-start">
+          <Button
+            size="small"
+            type={
+              currentUp && parseInt(currentUp.id) === parseInt(row.id)
+                ? "primary"
+                : "dashed"
+            }
+            onClick={() => selectHandler(row)}
+          >
+            하위 카테고리 관리
+          </Button>
+        </Wrapper>
+      ),
+    },
   ];
 
   const columns2 = [
     {
       title: "번호",
-      dataIndex: "id",
+      dataIndex: "num",
+    },
+
+    {
+      title: "세부카테고리명",
+      dataIndex: "value",
     },
 
     {
       title: "생성일",
-      dataIndex: "createdAt",
+      dataIndex: "viewCreatedAt",
+    },
+
+    {
+      title: "최근수정일",
+      dataIndex: "viewUpdatedAt",
+    },
+
+    {
+      title: "제어",
+      render: (row) => (
+        <Wrapper dr="row" ju="flex-start">
+          <Button size="small" type="default">
+            수정
+          </Button>
+
+          <Popconfirm
+            title="정말 삭제하시겠습니까?"
+            okText="삭제"
+            cancelText="취소"
+          >
+            <Button size="small" type="danger">
+              삭제
+            </Button>
+          </Popconfirm>
+        </Wrapper>
+      ),
     },
   ];
 
@@ -333,19 +399,29 @@ const Category = ({}) => {
           margin="30px 0px"
         ></Wrapper>
 
-        <Wrapper>
-          <Wrapper dr="row" ju="flex-start">
-            <Text margin="0px 10px 0px 0px">세부 카테고리</Text>
-            <Button size="small" type="primary">
-              + 생성
-            </Button>
+        {currentUp ? (
+          <Wrapper>
+            <Wrapper dr="row" ju="flex-start">
+              <Text margin="0px 10px 0px 0px">세부 카테고리</Text>
+              <Button size="small" type="primary">
+                + 생성
+              </Button>
+            </Wrapper>
+            <Table
+              style={{ width: "100%" }}
+              size="small"
+              columns={columns2}
+              dataSource={downList}
+              rowKey="id"
+            ></Table>
           </Wrapper>
-          <Table
-            style={{ width: "100%" }}
-            size="small"
-            columns={columns2}
-          ></Table>
-        </Wrapper>
+        ) : (
+          <Wrapper dr="row">
+            <Text color={Theme.darkGrey_C}>
+              상단 상위 카테고리를 선택하면, 하위 카테고리 관리가 가능합니다.
+            </Text>
+          </Wrapper>
+        )}
       </Wrapper>
 
       {/* NEW MODAL */}

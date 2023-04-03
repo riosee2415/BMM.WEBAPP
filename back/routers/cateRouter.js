@@ -235,7 +235,8 @@ router.post("/down/list", async (req, res, next) => {
   const _value = value ? value : "";
 
   const selectQ = `
-      SELECT  id,
+      SELECT  ROW_NUMBER() OVER(ORDER BY value ASC)	AS num,
+              id,
               value,
               createdAt,
               updatedAt,

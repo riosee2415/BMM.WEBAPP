@@ -2,6 +2,7 @@ import produce from "../util/produce";
 
 export const initailState = {
   upList: [],
+  downList: [],
   //
   // 1뎁스 카테고리 가져오기
   st_upListLoading: false,
@@ -22,6 +23,11 @@ export const initailState = {
   st_upDelLoading: false,
   st_upDelDone: false,
   st_upDelError: null,
+  //
+  // 2뎁스 카테고리 가져오기
+  st_downListLoading: false,
+  st_downListDone: false,
+  st_downListError: null,
 };
 
 export const UP_LIST_REQUEST = "UP_LIST_REQUEST";
@@ -39,6 +45,10 @@ export const UP_UPDATE_FAILURE = "UP_UPDATE_FAILURE";
 export const UP_DEL_REQUEST = "UP_DEL_REQUEST";
 export const UP_DEL_SUCCESS = "UP_DEL_SUCCESS";
 export const UP_DEL_FAILURE = "UP_DEL_FAILURE";
+
+export const DOWN_LIST_REQUEST = "DOWN_LIST_REQUEST";
+export const DOWN_LIST_SUCCESS = "DOWN_LIST_SUCCESS";
+export const DOWN_LIST_FAILURE = "DOWN_LIST_FAILURE";
 
 const reducer = (state = initailState, action) =>
   produce(state, (draft) => {
@@ -125,6 +135,28 @@ const reducer = (state = initailState, action) =>
         draft.st_upDelLoading = false;
         draft.st_upDelDone = false;
         draft.st_upDelError = action.data.error;
+        break;
+      }
+      ////////////////////////////////////////////////////////////////
+      case DOWN_LIST_REQUEST: {
+        draft.st_downListLoading = true;
+        draft.st_downListDone = false;
+        draft.st_downListError = null;
+        break;
+      }
+
+      case DOWN_LIST_SUCCESS: {
+        draft.st_downListLoading = false;
+        draft.st_downListDone = true;
+        draft.st_downListError = null;
+        draft.downList = action.data;
+        break;
+      }
+
+      case DOWN_LIST_FAILURE: {
+        draft.st_downListLoading = false;
+        draft.st_downListDone = false;
+        draft.st_downListError = action.data.error;
         break;
       }
       ////////////////////////////////////////////////////////////////

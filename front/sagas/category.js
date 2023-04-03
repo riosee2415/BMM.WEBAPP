@@ -16,6 +16,10 @@ import {
   UP_DEL_REQUEST,
   UP_DEL_SUCCESS,
   UP_DEL_FAILURE,
+  //
+  DOWN_LIST_REQUEST,
+  DOWN_LIST_SUCCESS,
+  DOWN_LIST_FAILURE,
 } from "../reducers/category";
 
 // SAGA AREA ********************************************************************************************************
@@ -126,6 +130,33 @@ function* upDel(action) {
 // ******************************************************************************************************************
 // ******************************************************************************************************************
 
+// SAGA AREA ********************************************************************************************************
+// ******************************************************************************************************************
+async function downListAPI(data) {
+  return await axios.post(`/api/cate/down/list`, data);
+}
+
+function* downList(action) {
+  try {
+    const result = yield call(downListAPI, action.data);
+
+    yield put({
+      type: DOWN_LIST_SUCCESS,
+      data: result.data,
+    });
+  } catch (err) {
+    console.error(err);
+    yield put({
+      type: DOWN_LIST_FAILURE,
+      error: err.response.data,
+    });
+  }
+}
+
+// ******************************************************************************************************************
+// ******************************************************************************************************************
+// ******************************************************************************************************************
+
 //////////////////////////////////////////////////////////////
 function* watchUpList() {
   yield takeLatest(UP_LIST_REQUEST, upList);
@@ -139,6 +170,9 @@ function* watchUpUpdate() {
 function* watchUpDel() {
   yield takeLatest(UP_DEL_REQUEST, upDel);
 }
+function* watchDownList() {
+  yield takeLatest(DOWN_LIST_REQUEST, downList);
+}
 
 //////////////////////////////////////////////////////////////
 export default function* categorySaga() {
@@ -147,6 +181,7 @@ export default function* categorySaga() {
     fork(watchUpNew),
     fork(watchUpUpdate),
     fork(watchUpDel),
+    fork(watchDownList),
     //
     //
   ]);
