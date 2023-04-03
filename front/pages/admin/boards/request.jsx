@@ -113,7 +113,7 @@ const Request = ({}) => {
 
   const [searchProductName, setSearchProductName] = useState("");
   const [searchUserName, setSearchUserName] = useState("");
- 
+
   ////// USEEFFECT //////
 
   useEffect(() => {
@@ -157,6 +157,9 @@ const Request = ({}) => {
     if (st_requestAnswerUpdateDone) {
       dispatch({
         type: REQUEST_ADMIN_LIST_REQUEST,
+        data: {
+          listType: 2,
+        },
       });
 
       return message.success("답변이 생성되었습니다.");

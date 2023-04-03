@@ -75,6 +75,8 @@ const reducer = (state = initailState, action) =>
         draft.st_requestListDone = true;
         draft.st_requestListError = null;
         draft.requestList = action.data.list;
+        draft.lastPage = action.data.lastPage;
+
         break;
       }
       case REQUEST_LIST_FAILURE: {
@@ -117,6 +119,7 @@ const reducer = (state = initailState, action) =>
         draft.st_requestListDetailDone = true;
         draft.st_requestListDetailError = null;
         draft.requestDetail = action.data;
+
         break;
       }
       case REQUEST_LIST_DETAIL_FAILURE: {
