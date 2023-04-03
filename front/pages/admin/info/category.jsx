@@ -35,6 +35,9 @@ import {
   UP_NEW_REQUEST,
   UP_UPDATE_REQUEST,
   DOWN_LIST_REQUEST,
+  DOWN_NEW_REQUEST,
+  DOWN_UPDATE_REQUEST,
+  DOWN_DEL_REQUEST,
 } from "../../../reducers/category";
 
 const Category = ({}) => {
@@ -49,6 +52,12 @@ const Category = ({}) => {
     st_upUpdateError,
     st_upDelDone,
     st_upDelError,
+    st_downNewDone,
+    st_downNewError,
+    st_downUpdateDone,
+    st_downUpdateError,
+    st_downDelDone,
+    st_downDelError,
   } = useSelector((state) => state.category);
 
   const router = useRouter();
@@ -60,10 +69,14 @@ const Category = ({}) => {
   const [sameDepth, setSameDepth] = useState([]);
 
   const [nForm] = Form.useForm();
+  const [n2Form] = Form.useForm();
   const [uForm] = Form.useForm();
+  const [u2Form] = Form.useForm();
 
   const [newModal, setNewModal] = useState(false);
+  const [new2Modal, setNew2Modal] = useState(false);
   const [updateModal, setUpdateModal] = useState(false);
+  const [update2Modal, setUpdate2Modal] = useState(false);
 
   const [currentUp, setCurrentUp] = useState(null);
 
@@ -90,6 +103,25 @@ const Category = ({}) => {
   ////// HOOKS //////
 
   ////// USEEFFECT //////
+
+  // 하위 카테고리 생성 후처리
+  useEffect(() => {
+    if (st_downNewDone && currentUp) {
+      message.info("하위 카테고리가 등록되었습니다.");
+      n2Form.resetFields();
+      new2ModalToggle();
+      dispatch({
+        type: DOWN_LIST_REQUEST,
+        data: {
+          CateUpId: currentUp.id,
+        },
+      });
+    }
+
+    if (st_downNewError) {
+      return message.error(st_downNewError);
+    }
+  }, [st_downNewDone, st_downNewError, currentUp]);
 
   // 상위 카테고리 생성 후처리
   useEffect(() => {
@@ -121,6 +153,25 @@ const Category = ({}) => {
     }
   }, [st_upUpdateDone, st_upUpdateError]);
 
+  // 하위 카테고리 수정 후처리
+  useEffect(() => {
+    if (st_downUpdateDone) {
+      message.info("하위 카테고리가 수정되었습니다.");
+      u2Form.resetFields();
+      update2ModalToggle(null);
+      dispatch({
+        type: DOWN_LIST_REQUEST,
+        data: {
+          CateUpId: currentUp.id,
+        },
+      });
+    }
+
+    if (st_downUpdateError) {
+      return message.error(st_downUpdateError);
+    }
+  }, [st_downUpdateDone, st_downUpdateError]);
+
   // 상위 카테고리 삭제 후처리
   useEffect(() => {
     if (st_upDelDone) {
@@ -133,6 +184,23 @@ const Category = ({}) => {
       return message.error(st_upDelError);
     }
   }, [st_upDelDone, st_upDelError]);
+
+  // 하위 카테고리 삭제 후처리
+  useEffect(() => {
+    if (st_downDelDone) {
+      message.success("하위 카테고리가 삭제되었습니다.");
+      dispatch({
+        type: DOWN_LIST_REQUEST,
+        data: {
+          CateUpId: currentUp.id,
+        },
+      });
+    }
+
+    if (st_downDelError) {
+      return message.error(st_downDelError);
+    }
+  }, [st_downDelDone, st_downDelError]);
 
   useEffect(() => {
     if (st_loadMyInfoDone) {
@@ -164,6 +232,10 @@ const Category = ({}) => {
     setNewModal((p) => !p);
   }, [newModal]);
 
+  const new2ModalToggle = useCallback(() => {
+    setNew2Modal((p) => !p);
+  }, [new2Modal]);
+
   const updateModalToggle = useCallback(
     (row) => {
       setUpdateModal((p) => !p);
@@ -179,6 +251,23 @@ const Category = ({}) => {
     [updateModal, uForm]
   );
 
+  const update2ModalToggle = useCallback(
+    (row) => {
+      setUpdate2Modal((p) => !p);
+
+      console.log(update2Modal);
+
+      if (update2Modal) {
+      } else {
+        u2Form.setFieldsValue({
+          id: row.id,
+          value: row.value,
+        });
+      }
+    },
+    [update2Modal, u2Form]
+  );
+
   const nFormSubmitHandler = useCallback(({ value }) => {
     dispatch({
       type: UP_NEW_REQUEST,
@@ -187,6 +276,19 @@ const Category = ({}) => {
       },
     });
   }, []);
+
+  const n2FormSubmitHandler = useCallback(
+    ({ value }) => {
+      dispatch({
+        type: DOWN_NEW_REQUEST,
+        data: {
+          value,
+          CateUpId: currentUp.id,
+        },
+      });
+    },
+    [currentUp]
+  );
 
   const uFormSubmitHandler = useCallback(({ id, value }) => {
     dispatch({
@@ -198,9 +300,28 @@ const Category = ({}) => {
     });
   }, []);
 
+  const u2FormSubmitHandler = useCallback(({ id, value }) => {
+    dispatch({
+      type: DOWN_UPDATE_REQUEST,
+      data: {
+        id,
+        value,
+      },
+    });
+  }, []);
+
   const upDeleteHandler = useCallback((id) => {
     dispatch({
       type: UP_DEL_REQUEST,
+      data: {
+        id,
+      },
+    });
+  }, []);
+
+  const downDeleteHandler = useCallback((id) => {
+    dispatch({
+      type: DOWN_DEL_REQUEST,
       data: {
         id,
       },
@@ -313,7 +434,11 @@ const Category = ({}) => {
       title: "제어",
       render: (row) => (
         <Wrapper dr="row" ju="flex-start">
-          <Button size="small" type="default">
+          <Button
+            size="small"
+            type="default"
+            onClick={() => update2ModalToggle(row)}
+          >
             수정
           </Button>
 
@@ -321,6 +446,7 @@ const Category = ({}) => {
             title="정말 삭제하시겠습니까?"
             okText="삭제"
             cancelText="취소"
+            onConfirm={() => downDeleteHandler(row.id)}
           >
             <Button size="small" type="danger">
               삭제
@@ -403,7 +529,7 @@ const Category = ({}) => {
           <Wrapper>
             <Wrapper dr="row" ju="flex-start">
               <Text margin="0px 10px 0px 0px">세부 카테고리</Text>
-              <Button size="small" type="primary">
+              <Button size="small" type="primary" onClick={new2ModalToggle}>
                 + 생성
               </Button>
             </Wrapper>
@@ -472,6 +598,74 @@ const Category = ({}) => {
         </Text>
 
         <Form form={uForm} colon={false} onFinish={uFormSubmitHandler}>
+          <Form.Item name="id" hidden>
+            <Input size="small" maxLength={15} />
+          </Form.Item>
+
+          <Form.Item
+            label="카테고리명"
+            name="value"
+            rules={[{ required: true, message: "카테고리명은 필수 입니다." }]}
+          >
+            <Input size="small" maxLength={15} />
+          </Form.Item>
+
+          <Wrapper al="flex-end">
+            <Button size="small" type="primary" htmlType="submit">
+              수정
+            </Button>
+          </Wrapper>
+        </Form>
+      </Modal>
+
+      {/* CATE2 NEW MODAL */}
+      <Modal
+        width="530px"
+        footer={null}
+        visible={new2Modal}
+        title="하위 카테고리 생성하기"
+        onCancel={new2ModalToggle}
+      >
+        <Text fontSize="11.5px" color={Theme.red_C} margin="0px 0px 15px 0px">
+          카테고리명은 가능한 짧은 단어로 구성해주세요. 최대 10자를 넘어가면
+          디자인이 상이해질 수 있습니다.
+        </Text>
+
+        <Form form={nForm} colon={false} onFinish={n2FormSubmitHandler}>
+          <Form.Item
+            label="카테고리명"
+            name="value"
+            rules={[{ required: true, message: "카테고리명은 필수 입니다." }]}
+          >
+            <Input
+              size="small"
+              placeholder="새로 생성할 카테고리명을 입력해주세요."
+              maxLength={15}
+            />
+          </Form.Item>
+
+          <Wrapper al="flex-end">
+            <Button size="small" type="primary" htmlType="submit">
+              생성
+            </Button>
+          </Wrapper>
+        </Form>
+      </Modal>
+
+      {/* CATE2 UPDATE MODAL */}
+      <Modal
+        width="530px"
+        footer={null}
+        visible={update2Modal}
+        title="하위 카테고리 수정하기"
+        onCancel={() => update2ModalToggle(null)}
+      >
+        <Text fontSize="11.5px" color={Theme.red_C} margin="0px 0px 15px 0px">
+          카테고리명은 가능한 짧은 단어로 구성해주세요. 최대 10자를 넘어가면
+          디자인이 상이해질 수 있습니다.
+        </Text>
+
+        <Form form={u2Form} colon={false} onFinish={u2FormSubmitHandler}>
           <Form.Item name="id" hidden>
             <Input size="small" maxLength={15} />
           </Form.Item>

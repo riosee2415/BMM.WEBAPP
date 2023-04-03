@@ -20,6 +20,18 @@ import {
   DOWN_LIST_REQUEST,
   DOWN_LIST_SUCCESS,
   DOWN_LIST_FAILURE,
+  //
+  DOWN_NEW_REQUEST,
+  DOWN_NEW_SUCCESS,
+  DOWN_NEW_FAILURE,
+  //
+  DOWN_UPDATE_REQUEST,
+  DOWN_UPDATE_SUCCESS,
+  DOWN_UPDATE_FAILURE,
+  //
+  DOWN_DEL_REQUEST,
+  DOWN_DEL_SUCCESS,
+  DOWN_DEL_FAILURE,
 } from "../reducers/category";
 
 // SAGA AREA ********************************************************************************************************
@@ -157,6 +169,87 @@ function* downList(action) {
 // ******************************************************************************************************************
 // ******************************************************************************************************************
 
+// SAGA AREA ********************************************************************************************************
+// ******************************************************************************************************************
+async function downNewAPI(data) {
+  return await axios.post(`/api/cate/down/new`, data);
+}
+
+function* downNew(action) {
+  try {
+    const result = yield call(downNewAPI, action.data);
+
+    yield put({
+      type: DOWN_NEW_SUCCESS,
+      data: result.data,
+    });
+  } catch (err) {
+    console.error(err);
+    yield put({
+      type: DOWN_NEW_FAILURE,
+      error: err.response.data,
+    });
+  }
+}
+
+// ******************************************************************************************************************
+// ******************************************************************************************************************
+// ******************************************************************************************************************
+
+// SAGA AREA ********************************************************************************************************
+// ******************************************************************************************************************
+async function downUpdateAPI(data) {
+  return await axios.post(`/api/cate/down/update`, data);
+}
+
+function* downUpdate(action) {
+  try {
+    const result = yield call(downUpdateAPI, action.data);
+
+    yield put({
+      type: DOWN_UPDATE_SUCCESS,
+      data: result.data,
+    });
+  } catch (err) {
+    console.error(err);
+    yield put({
+      type: DOWN_UPDATE_FAILURE,
+      error: err.response.data,
+    });
+  }
+}
+
+// ******************************************************************************************************************
+// ******************************************************************************************************************
+// ******************************************************************************************************************
+
+// SAGA AREA ********************************************************************************************************
+// ******************************************************************************************************************
+async function downDelAPI(data) {
+  return await axios.post(`/api/cate/down/delete`, data);
+}
+
+function* downDel(action) {
+  try {
+    const result = yield call(downDelAPI, action.data);
+
+    yield put({
+      type: DOWN_DEL_SUCCESS,
+      data: result.data,
+    });
+  } catch (err) {
+    console.error(err);
+    yield put({
+      type: DOWN_DEL_FAILURE,
+      error: err.response.data,
+    });
+  }
+}
+
+// ******************************************************************************************************************
+// ******************************************************************************************************************
+// ******************************************************************************************************************
+
 //////////////////////////////////////////////////////////////
 function* watchUpList() {
   yield takeLatest(UP_LIST_REQUEST, upList);
@@ -173,6 +266,15 @@ function* watchUpDel() {
 function* watchDownList() {
   yield takeLatest(DOWN_LIST_REQUEST, downList);
 }
+function* watchDownNew() {
+  yield takeLatest(DOWN_NEW_REQUEST, downNew);
+}
+function* watchDownUpdate() {
+  yield takeLatest(DOWN_UPDATE_REQUEST, downUpdate);
+}
+function* watchDownDel() {
+  yield takeLatest(DOWN_DEL_REQUEST, downDel);
+}
 
 //////////////////////////////////////////////////////////////
 export default function* categorySaga() {
@@ -182,6 +284,9 @@ export default function* categorySaga() {
     fork(watchUpUpdate),
     fork(watchUpDel),
     fork(watchDownList),
+    fork(watchDownNew),
+    fork(watchDownUpdate),
+    fork(watchDownDel),
     //
     //
   ]);
