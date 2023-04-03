@@ -53,6 +53,12 @@ const List = styled(Wrapper)`
 `;
 
 const EditorWrapper = styled(Wrapper)`
+  align-items: flex-start;
+
+  h1 {
+    font-size: 2em;
+  }
+
   @media (max-width: 700px) {
     img {
       width: 100%;
@@ -195,7 +201,8 @@ const Index = () => {
                   bgColor={Theme.white_C}
                   fontSize={`16px`}
                   fontWeight={`600`}
-                  color={Theme.lightGrey_C}
+                  color={Theme.black_C}
+                  border={`1px solid ${Theme.basicTheme_C}`}
                 >
                   {requestDetail && requestDetail.isCompleted ? (
                     <Text>답변완료</Text>

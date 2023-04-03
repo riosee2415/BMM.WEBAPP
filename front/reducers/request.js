@@ -4,7 +4,7 @@ export const initailState = {
   requestList: [], //상품요청리스트
   lastPage: 1,
   requestAdminList: [], //관리자리스트
-  reqyestDetail: null,
+  requestDetail: null,
   requestMyList: [], //마이페이지 상품요청리스트
 
   requestData: null, // 상품요청 데이터

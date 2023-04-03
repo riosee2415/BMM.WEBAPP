@@ -33,6 +33,7 @@ import {
 import {
   REQUEST_ADMIN_LIST_REQUEST,
   REQUEST_ANSWER_UPDATE_REQUEST,
+  REQUEST_LIST_DETAIL_REQUEST,
 } from "../../../reducers/request";
 
 const InfoTitle = styled.div`
@@ -49,10 +50,25 @@ const InfoTitle = styled.div`
   color: ${(props) => props.theme.subTheme5_C};
 `;
 
+const EditorWrapper = styled(Wrapper)`
+  align-items: flex-start;
+
+  h1 {
+    font-size: 2em;
+  }
+
+  @media (max-width: 700px) {
+    img {
+      width: 100%;
+    }
+  }
+`;
+
 const Request = ({}) => {
   const { st_loadMyInfoDone, me } = useSelector((state) => state.user);
   const {
     requestAdminList,
+    requestDetail,
 
     st_requestAnswerUpdateDone,
     st_requestAnswerUpdateError,
@@ -97,7 +113,7 @@ const Request = ({}) => {
 
   const [searchProductName, setSearchProductName] = useState("");
   const [searchUserName, setSearchUserName] = useState("");
-
+ 
   ////// USEEFFECT //////
 
   useEffect(() => {
@@ -160,14 +176,6 @@ const Request = ({}) => {
     [searchProductName, searchUserName]
   );
 
-  // const searchUserHandler = useCallback(
-  //   (data) => {
-  //     userSearchForm.resetFields();
-  //     setSearchUserName(data.name);
-  //   },
-  //   [searchUserName]
-  // );
-
   const allSearchHandler = useCallback(() => {
     searchForm.resetFields();
     setSearchProductName("");
@@ -187,6 +195,13 @@ const Request = ({}) => {
         productUrl: record.productUrl,
         password: record.password,
         answer: record.answer,
+      });
+
+      dispatch({
+        type: REQUEST_LIST_DETAIL_REQUEST,
+        data: {
+          id: record.id,
+        },
       });
     },
     [currentData, infoForm]
@@ -387,14 +402,14 @@ const Request = ({}) => {
                   />
                 </Form.Item>
 
-                <Form.Item contentEditable={true} label="내용" name="content">
-                  <Input.TextArea
+                <Form.Item label="내용" name="content">
+                  <EditorWrapper
+                    dangerouslySetInnerHTML={{
+                      __html: requestDetail && requestDetail.content,
+                    }}
                     style={{ background: Theme.lightGrey3_C, border: "none" }}
-                    rows={5}
-                    readOnly
-                  />
+                  ></EditorWrapper>
                 </Form.Item>
-
                 <Form.Item label="이름" name="name">
                   <Input
                     size="small"
