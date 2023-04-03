@@ -7,6 +7,8 @@ export const initailState = {
   updateModal: false,
   userHistory: [],
   adminUserRightHistory: [],
+  idCode: null, // 아이디찾기 인증코드
+  resultId: null, //아이디찾기 결과
   //
   st_loginLoading: false,
   st_loginDone: false,
@@ -27,6 +29,10 @@ export const initailState = {
   st_userListUpdateLoading: false,
   st_userListUpdateDone: false,
   st_userListUpdateError: null,
+  //
+  st_userUpdateLoading: false, // 회원정보수정
+  st_userUpdateDone: false,
+  st_userUpdateError: null,
   //
   st_loadMyInfoLoading: false, // 로그인 정보 가져오기 시도 중
   st_loadMyInfoDone: false,
@@ -55,6 +61,34 @@ export const initailState = {
   st_adminUserExitFalseLoading: false, // 재가입
   st_adminUserExitFalseDone: false,
   st_adminUserExitFalseError: null,
+  //
+  st_findIdLoading: false, // 아이디 찾기
+  st_findIdDone: false,
+  st_findIdError: null,
+  //
+  st_findIdCodeLoading: false, // 아이디 찾기 인증번호
+  st_findIdCodeDone: false,
+  st_findIdCodeError: null,
+  //
+  st_findPassLoading: false, // 비밀번호 찾기 확인용 코드전송
+  st_findPassDone: false,
+  st_findPassError: null,
+  //
+  st_secretCodeLoading: false, // 비밀번호 찾기 코드확인
+  st_secretCodeDone: false,
+  st_secretCodeError: null,
+  //
+  st_passUpdateLoading: false, // 비밀번호 변경
+  st_passUpdateDone: false,
+  st_passUpdateError: null,
+  //
+  st_userExitLoading: false, // 회원탈퇴
+  st_userExitDone: false,
+  st_userExitError: null,
+  //
+  st_logoutLoading: false, // 로그아웃
+  st_logoutDone: false,
+  st_logoutError: null,
 };
 
 export const LOGIN_REQUEST = "LOGIN_REQUEST";
@@ -72,6 +106,10 @@ export const SIGNUP_FAILURE = "SIGNUP_FAILURE";
 export const USERLIST_REQUEST = "USERLIST_REQUEST";
 export const USERLIST_SUCCESS = "USERLIST_SUCCESS";
 export const USERLIST_FAILURE = "USERLIST_FAILURE";
+
+export const USER_UPDATE_REQUEST = "USER_UPDATE_REQUEST";
+export const USER_UPDATE_SUCCESS = "USER_UPDATE_SUCCESS";
+export const USER_UPDATE_FAILURE = "USER_UPDATE_FAILURE";
 
 export const USERLIST_UPDATE_REQUEST = "USERLIST_UPDATE_REQUEST";
 export const USERLIST_UPDATE_SUCCESS = "USERLIST_UPDATE_SUCCESS";
@@ -108,6 +146,34 @@ export const ADMINUSER_EXITTRUE_FAILURE = "ADMINUSER_EXITTRUE_FAILURE";
 export const ADMINUSER_EXITFALSE_REQUEST = "ADMINUSER_EXITFALSE_REQUEST";
 export const ADMINUSER_EXITFALSE_SUCCESS = "ADMINUSER_EXITFALSE_SUCCESS";
 export const ADMINUSER_EXITFALSE_FAILURE = "ADMINUSER_EXITFALSE_FAILURE";
+
+export const FIND_ID_REQUEST = "FIND_ID_REQUEST";
+export const FIND_ID_SUCCESS = "FIND_ID_SUCCESS";
+export const FIND_ID_FAILURE = "FIND_ID_FAILURE";
+
+export const FIND_ID_CODE_REQUEST = "FIND_ID_CODE_REQUEST";
+export const FIND_ID_CODE_SUCCESS = "FIND_ID_CODE_SUCCESS";
+export const FIND_ID_CODE_FAILURE = "FIND_ID_CODE_FAILURE";
+
+export const FIND_PASS_REQUEST = "FIND_PASS_REQUEST";
+export const FIND_PASS_SUCCESS = "FIND_PASS_SUCCESS";
+export const FIND_PASS_FAILURE = "FIND_PASS_FAILURE";
+
+export const SECRET_CODE_REQUEST = "SECRET_CODE_REQUEST";
+export const SECRET_CODE_SUCCESS = "SECRET_CODE_SUCCESS";
+export const SECRET_CODE_FAILURE = "SECRET_CODE_FAILURE";
+
+export const PASS_UPDATE_REQUEST = "PASS_UPDATE_REQUEST";
+export const PASS_UPDATE_SUCCESS = "PASS_UPDATE_SUCCESS";
+export const PASS_UPDATE_FAILURE = "PASS_UPDATE_FAILURE";
+
+export const USER_EXIT_REQUEST = "USER_EXIT_REQUEST";
+export const USER_EXIT_SUCCESS = "USER_EXIT_SUCCESS";
+export const USER_EXIT_FAILURE = "USER_EXIT_FAILURE";
+
+export const LOGOUT_REQUEST = "LOGOUT_REQUEST";
+export const LOGOUT_SUCCESS = "LOGOUT_SUCCESS";
+export const LOGOUT_FAILURE = "LOGOUT_FAILURE";
 
 export const UPDATE_MODAL_OPEN_REQUEST = "UPDATE_MODAL_OPEN_REQUEST";
 export const UPDATE_MODAL_CLOSE_REQUEST = "UPDATE_MODAL_CLOSE_REQUEST";
@@ -256,6 +322,26 @@ const reducer = (state = initailState, action) =>
       }
       //////////////////////////////////////////////
 
+      case USER_UPDATE_REQUEST: {
+        draft.st_userUpdateLoading = true;
+        draft.st_userUpdateDone = false;
+        draft.st_userUpdateError = null;
+        break;
+      }
+      case USER_UPDATE_SUCCESS: {
+        draft.st_userUpdateLoading = false;
+        draft.st_userUpdateDone = true;
+        draft.st_userUpdateError = null;
+        break;
+      }
+      case USER_UPDATE_FAILURE: {
+        draft.st_userUpdateLoading = false;
+        draft.st_userUpdateDone = false;
+        draft.st_userUpdateError = action.error;
+        break;
+      }
+      //////////////////////////////////////////////
+
       case KAKAO_LOGIN_REQUEST: {
         draft.st_kakaoLoginLoading = true;
         draft.st_kakaoLoginDone = false;
@@ -387,6 +473,152 @@ const reducer = (state = initailState, action) =>
         draft.st_adminUserExitFalseError = action.error;
         break;
       }
+      //////////////////////////////////////////////
+
+      case FIND_ID_REQUEST: {
+        draft.st_findIdLoading = true;
+        draft.st_findIdDone = false;
+        draft.st_findIdError = null;
+        break;
+      }
+      case FIND_ID_SUCCESS: {
+        draft.st_findIdLoading = false;
+        draft.st_findIdDone = true;
+        draft.st_findIdError = null;
+
+        break;
+      }
+      case FIND_ID_FAILURE: {
+        draft.st_findIdLoading = false;
+        draft.st_findIdDone = false;
+        draft.st_findIdError = action.error;
+        break;
+      }
+      //////////////////////////////////////////////
+
+      case FIND_ID_CODE_REQUEST: {
+        draft.st_findIdCodeLoading = true;
+        draft.st_findIdCodeDone = false;
+        draft.st_findIdCodeError = null;
+        break;
+      }
+      case FIND_ID_CODE_SUCCESS: {
+        draft.st_findIdCodeLoading = false;
+        draft.st_findIdCodeDone = true;
+        draft.st_findIdCodeError = null;
+        draft.resultId = action.data;
+        break;
+      }
+      case FIND_ID_CODE_FAILURE: {
+        draft.st_findIdCodeLoading = false;
+        draft.st_findIdCodeDone = false;
+        draft.st_findIdCodeError = action.error;
+        break;
+      }
+      //////////////////////////////////////////////
+
+      case FIND_PASS_REQUEST: {
+        draft.st_findPassLoading = true;
+        draft.st_findPassDone = false;
+        draft.st_findPassError = null;
+        break;
+      }
+      case FIND_PASS_SUCCESS: {
+        draft.st_findPassLoading = false;
+        draft.st_findPassDone = true;
+        draft.st_findPassError = null;
+        break;
+      }
+      case FIND_PASS_FAILURE: {
+        draft.st_findPassLoading = false;
+        draft.st_findPassDone = false;
+        draft.st_findPassError = action.error;
+        break;
+      }
+      //////////////////////////////////////////////
+
+      case SECRET_CODE_REQUEST: {
+        draft.st_secretCodeLoading = true;
+        draft.st_secretCodeDone = false;
+        draft.st_secretCodeError = null;
+        break;
+      }
+      case SECRET_CODE_SUCCESS: {
+        draft.st_secretCodeLoading = false;
+        draft.st_secretCodeDone = true;
+        draft.st_secretCodeError = null;
+        break;
+      }
+      case SECRET_CODE_FAILURE: {
+        draft.st_secretCodeLoading = false;
+        draft.st_secretCodeDone = false;
+        draft.st_secretCodeError = action.error;
+        break;
+      }
+
+      //////////////////////////////////////////////
+
+      case PASS_UPDATE_REQUEST: {
+        draft.st_passUpdateLoading = true;
+        draft.st_passUpdateDone = false;
+        draft.st_passUpdateError = null;
+        break;
+      }
+      case PASS_UPDATE_SUCCESS: {
+        draft.st_passUpdateLoading = false;
+        draft.st_passUpdateDone = true;
+        draft.st_passUpdateError = null;
+        break;
+      }
+      case PASS_UPDATE_FAILURE: {
+        draft.st_passUpdateLoading = false;
+        draft.st_passUpdateDone = false;
+        draft.st_passUpdateError = action.error;
+        break;
+      }
+
+      //////////////////////////////////////////////
+
+      case USER_EXIT_REQUEST: {
+        draft.st_userExitLoading = true;
+        draft.st_userExitDone = false;
+        draft.st_userExitError = null;
+        break;
+      }
+      case USER_EXIT_SUCCESS: {
+        draft.st_userExitLoading = false;
+        draft.st_userExitDone = true;
+        draft.st_userExitError = null;
+        break;
+      }
+      case USER_EXIT_FAILURE: {
+        draft.st_userExitLoading = false;
+        draft.st_userExitDone = false;
+        draft.st_userExitError = action.error;
+        break;
+      }
+
+      //////////////////////////////////////////////
+
+      case LOGOUT_REQUEST: {
+        draft.st_logoutLoading = true;
+        draft.st_logoutDone = false;
+        draft.st_logoutError = null;
+        break;
+      }
+      case LOGOUT_SUCCESS: {
+        draft.st_logoutLoading = false;
+        draft.st_logoutDone = true;
+        draft.st_logoutError = null;
+        break;
+      }
+      case LOGOUT_FAILURE: {
+        draft.st_logoutLoading = false;
+        draft.st_logoutDone = false;
+        draft.st_logoutError = action.error;
+        break;
+      }
+
       //////////////////////////////////////////////
 
       case CURRENT_ADMINMENU_STATUS: {

@@ -3,7 +3,7 @@ import ClientLayout from "../../../components/ClientLayout";
 import Head from "next/head";
 import wrapper from "../../../store/configureStore";
 import { LOAD_MY_INFO_REQUEST } from "../../../reducers/user";
-import { REQUEST_LIST_REQUEST } from "../../../reducers/request";
+import { REQUEST_DATA, REQUEST_LIST_REQUEST } from "../../../reducers/request";
 import axios from "axios";
 import { END } from "redux-saga";
 import useWidth from "../../../hooks/useWidth";
@@ -13,6 +13,7 @@ import {
   CustomSelect,
   Image,
   RsWrapper,
+  SearchForm,
   SpanText,
   Text,
   TextInput,
@@ -74,7 +75,7 @@ const Index = () => {
       data: {
         page: currentTap,
         searchProductName: search,
-        requestList: isCom,
+        listType: isCom,
       },
     });
   }, [currentTap, search, isCom]);
@@ -94,6 +95,17 @@ const Index = () => {
     },
     [isCom]
   );
+
+  const moveLinkHandler = useCallback((data) => {
+    dispatch({
+      type: REQUEST_DATA,
+      data: {
+        ...data,
+      },
+    });
+
+    router.push(`/customer/request/secret`);
+  }, []);
 
   ////// DATAVIEW //////
 
@@ -174,16 +186,13 @@ const Index = () => {
                 </Text>
                 <Wrapper width={`auto`} dr={`row`}>
                   <CustomSelect>
-                    <Select
-                      value={isCom}
-                      onChange={listTypeHandler}
-                      placeholder="전체"
-                    >
+                    <Select value={isCom} onChange={listTypeHandler}>
                       <Select.Option value={3}>전체</Select.Option>
                       <Select.Option value={2}>답변대기</Select.Option>
                       <Select.Option value={1}>답변완료</Select.Option>
                     </Select>
                   </CustomSelect>
+
                   <Wrapper
                     width={width < 900 ? `calc(100% - 134px)` : `288px`}
                     position={`relative`}
@@ -229,10 +238,10 @@ const Index = () => {
                 display={width < 700 ? `none` : `flex`}
               >
                 <Wrapper width={`8%`}>번호</Wrapper>
-                <Wrapper width={`56%`}>제목</Wrapper>
-                <Wrapper width={`12%`}>작성자</Wrapper>
-                <Wrapper width={`12%`}>작성일</Wrapper>
-                <Wrapper width={`12%`}>답변상태</Wrapper>
+                <Wrapper width={`50%`}>제목</Wrapper>
+                <Wrapper width={`14%`}>작성자</Wrapper>
+                <Wrapper width={`14%`}>작성일</Wrapper>
+                <Wrapper width={`14%`}>답변상태</Wrapper>
               </Wrapper>
               {requestList && requestList.length === 0 ? (
                 <Wrapper padding={`50px 0`}>
@@ -241,10 +250,7 @@ const Index = () => {
               ) : (
                 requestList.map((data) => {
                   return (
-                    <List
-                      key={data.id}
-                      onClick={() => router.push(`/customer/request/secret`)}
-                    >
+                    <List key={data.id} onClick={() => moveLinkHandler(data)}>
                       <Wrapper
                         display={width < 700 ? `none` : `flex`}
                         width={`8%`}
@@ -253,7 +259,7 @@ const Index = () => {
                         {data.id}
                       </Wrapper>
                       <Wrapper
-                        width={width < 700 ? `100%` : `56%`}
+                        width={width < 700 ? `100%` : `50%`}
                         dr={`row`}
                         padding={width < 700 ? `0 0 10px` : `0 14px`}
                         ju={`flex-start`}
@@ -265,21 +271,25 @@ const Index = () => {
                       </Wrapper>
                       <Wrapper
                         color={Theme.grey_C}
-                        width={width < 700 ? `calc(100% / 3)` : `12%`}
+                        width={width < 700 ? `calc(100% / 3)` : `14%`}
                       >
                         {data.name}
                       </Wrapper>
-                      <Wrapper width={width < 700 ? `calc(100% / 3)` : `12%`}>
-                        {data.createAt}
+                      <Wrapper width={width < 700 ? `calc(100% / 2)` : `14%`}>
+                        {data.viewCreatedAt}
                       </Wrapper>
-
                       <Wrapper
-                        width={width < 700 ? `calc(100% / 3)` : `12%`}
+                        width={width < 700 ? `calc(100% / 3)` : `14%`}
                         fontSize={width < 700 ? `15px` : `18px`}
                         fontWeight={`600`}
                       >
-                        <Text color={Theme.grey_C}>{data.isCompleted}</Text>
-                        {/* <Text>답변완료</Text> */}
+                        <Text>
+                          {data.isCompleted ? (
+                            <Text>답변완료</Text>
+                          ) : (
+                            <Text color={Theme.grey_C}>답변대기</Text>
+                          )}
+                        </Text>
                       </Wrapper>
                     </List>
                   );

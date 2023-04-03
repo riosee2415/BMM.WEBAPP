@@ -4,6 +4,7 @@ import Theme from "./Theme";
 import useWidth from "../hooks/useWidth";
 import styled from "styled-components";
 import Link from "next/dist/client/link";
+import { useSelector } from "react-redux";
 
 const MypageBox = styled(Wrapper)`
   position: relative;
@@ -37,6 +38,8 @@ const MypageBox = styled(Wrapper)`
 `;
 
 const MypageTop = () => {
+  const { me } = useSelector((state) => state.user);
+
   const width = useWidth();
 
   return (
@@ -46,7 +49,7 @@ const MypageTop = () => {
           마이페이지
         </Text>
         <Text fontSize={width < 700 ? `16px` : `18px`} margin={`0 0 30px`}>
-          000 회원님 환영합니다!
+          {me && me.username} 회원님 환영합니다!
         </Text>
       </Wrapper>
       <Wrapper

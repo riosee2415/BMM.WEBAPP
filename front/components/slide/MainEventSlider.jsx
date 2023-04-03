@@ -3,9 +3,10 @@ import { Wrapper, Image } from "../commonComponents";
 import styled from "styled-components";
 import { useDispatch, useSelector } from "react-redux";
 import Theme from "../Theme";
-import { Carousel } from "antd";
+import { Carousel, Empty } from "antd";
 import useWidth from "../../hooks/useWidth";
 import { useRouter } from "next/router";
+import { MAINIMAGE_LIST_REQUEST } from "../../reducers/mainImage";
 
 const SquareBox = styled(Wrapper)`
   width: 100%;
@@ -115,29 +116,26 @@ const SliderWrapper = styled(Carousel)`
 `;
 
 const MainEventSlider = () => {
+  const { mainImageList } = useSelector((state) => state.mainImage);
+
   const width = useWidth();
   const router = useRouter();
   const dispatch = useDispatch();
 
-  const bannerData = [
-    {
-      img: "https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/bmm/assets/images/main/img_2nd_banner1.png",
-    },
-    {
-      img: "https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/bmm/assets/images/main/img_2nd_banner2.png",
-    },
-    {
-      img: "https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/bmm/assets/images/main/img_2nd_banner1.png",
-    },
-    {
-      img: "https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/bmm/assets/images/main/img_2nd_banner2.png",
-    },
-  ];
+  useEffect(() => {
+    dispatch({
+      type: MAINIMAGE_LIST_REQUEST,
+    });
+  }, []);
+
+  const moveLinkHandler = useCallback((link) => {
+    window.open(link);
+  }, []);
 
   return (
     <MainEventSliderWrapper
-      overflow={bannerData && bannerData.length < 2 && `hidden`}
-      height={bannerData && bannerData.length < 2 && `260px`}
+      overflow={mainImageList && mainImageList.length < 2 && `hidden`}
+      height={mainImageList && mainImageList.length < 2 && `260px`}
     >
       <SliderWrapper
         autoplay={true}
@@ -147,8 +145,12 @@ const MainEventSlider = () => {
         dots={false}
         arrows={true}
       >
-        {bannerData &&
-          bannerData.map((data, idx) => {
+        {mainImageList && mainImageList.length === 0 ? (
+          <Wrapper display={`flex !important`} height={`500px`}>
+            <Empty description="조회된 내역이 없습니다." />
+          </Wrapper>
+        ) : (
+          mainImageList.map((data, idx) => {
             return (
               <Wrapper
                 key={idx}
@@ -157,11 +159,16 @@ const MainEventSlider = () => {
                 padding={`0 10px`}
               >
                 <SquareBox>
-                  <Image alt="image" src={data.img} />
+                  <Image
+                    alt="image"
+                    src={data.imagePath}
+                    onClick={() => moveLinkHandler(data.link)}
+                  />
                 </SquareBox>
               </Wrapper>
             );
-          })}
+          })
+        )}
       </SliderWrapper>
     </MainEventSliderWrapper>
   );

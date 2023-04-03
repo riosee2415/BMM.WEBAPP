@@ -15,6 +15,8 @@ import {
   OtherMenu,
   GuideUl,
   GuideLi,
+  SearchForm,
+  SearchFormItem,
 } from "../../../components/commonComponents";
 import { LOAD_MY_INFO_REQUEST } from "../../../reducers/user";
 import Theme from "../../../components/Theme";
@@ -25,6 +27,8 @@ import {
   CloseOutlined,
   HomeOutlined,
   RightOutlined,
+  SearchOutlined,
+  UnorderedListOutlined,
 } from "@ant-design/icons";
 import {
   REQUEST_ADMIN_LIST_REQUEST,
@@ -87,10 +91,12 @@ const Request = ({}) => {
   /////////////////////////////////////////////////////////////////////////
 
   ////// HOOKS //////
-
-  // const [searchForm] = Form.useForm();
-
   const [isCom, setIsCom] = useState(2);
+
+  const [searchForm] = Form.useForm();
+
+  const [searchProductName, setSearchProductName] = useState("");
+  const [searchUserName, setSearchUserName] = useState("");
 
   ////// USEEFFECT //////
 
@@ -124,11 +130,13 @@ const Request = ({}) => {
       type: REQUEST_ADMIN_LIST_REQUEST,
       data: {
         listType: isCom,
+        searchProductName: searchProductName,
+        searchUserName: searchUserName,
       },
     });
-  }, [isCom]);
+  }, [isCom, searchProductName, searchUserName]);
 
-  //   // ********************** 답변 생성 후처리 *************************
+  //// ********************** 답변 생성 후처리 *************************
   useEffect(() => {
     if (st_requestAnswerUpdateDone) {
       dispatch({
@@ -143,18 +151,28 @@ const Request = ({}) => {
   }, [st_requestAnswerUpdateDone, st_requestAnswerUpdateError]);
 
   ////// HANDLER //////
+  const searchProductHandler = useCallback(
+    (data) => {
+      searchForm.resetFields();
+      setSearchProductName(data.productName);
+      setSearchUserName(data.name);
+    },
+    [searchProductName, searchUserName]
+  );
 
-  // const listTypeHandler = useCallback(
+  // const searchUserHandler = useCallback(
   //   (data) => {
-  //     setIsCom(data);
+  //     userSearchForm.resetFields();
+  //     setSearchUserName(data.name);
   //   },
-  //   [isCom]
+  //   [searchUserName]
   // );
 
-  // const allSearchHandler = useCallback(() => {
-  //   searchForm.resetFields();
-  //   setIsCom("");
-  // }, [isCom]);
+  const allSearchHandler = useCallback(() => {
+    searchForm.resetFields();
+    setSearchProductName("");
+    setSearchUserName("");
+  }, [searchProductName, searchUserName]);
 
   const beforeSetDataHandler = useCallback(
     (record) => {
@@ -197,7 +215,7 @@ const Request = ({}) => {
       dataIndex: "id",
     },
     {
-      title: "제목",
+      title: "상품명",
       dataIndex: "productName",
     },
     {
@@ -243,7 +261,7 @@ const Request = ({}) => {
         <RightOutlined />
         <Popover content={content}>
           <HomeText cur={true} margin={`3px 20px 0px 20px`}>
-            {level2}{" "}
+            {level2}
           </HomeText>
         </Popover>
       </Wrapper>
@@ -259,21 +277,29 @@ const Request = ({}) => {
       </Wrapper>
 
       {/* 검색 */}
-      <Wrapper padding={`10px 20px`} dr={`row`} ju={`flex-start`}>
-        {/* <SearchForm form={searchForm} layout="inline" style={{ width: "100%" }}>
-          <SearchFormItem name="title">
-            <Select
-              value={isCom}
-              onChange={listTypeHandler}
-              style={{ width: `200px` }}
-              size="small"
-            >
-              <Select.Option value={1}>완료</Select.Option>
-              <Select.Option value={2}>미완료</Select.Option>
-              <Select.Option value={3}>전체</Select.Option>
-            </Select>
+      <Wrapper dr={`row`} ju={`space-between`}>
+        <SearchForm
+          form={searchForm}
+          onFinish={searchProductHandler}
+          layout="inline"
+          style={{ width: "100%" }}
+        >
+          <SearchFormItem name="productName">
+            <Input size="small" placeholder="상품명으로 검색해주세요." />
           </SearchFormItem>
-
+          <SearchFormItem>
+            <Button icon={<SearchOutlined />} size="small" htmlType="submit">
+              검색
+            </Button>
+          </SearchFormItem>
+          <SearchFormItem name="name">
+            <Input size="small" placeholder="작성자로 검색해주세요." />
+          </SearchFormItem>
+          <SearchFormItem>
+            <Button icon={<SearchOutlined />} size="small" htmlType="submit">
+              검색
+            </Button>
+          </SearchFormItem>
           <SearchFormItem>
             <Button
               icon={<UnorderedListOutlined />}
@@ -284,8 +310,10 @@ const Request = ({}) => {
               전체조회
             </Button>
           </SearchFormItem>
-        </SearchForm> */}
+        </SearchForm>
+      </Wrapper>
 
+      <Wrapper padding={`10px 20px`} dr={`row`} ju={`flex-start`}>
         <Button
           type={isCom === 2 ? "primary" : "default"}
           onClick={() => setIsCom(2)}

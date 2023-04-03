@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import ClientLayout from "../../components/ClientLayout";
 import Theme from "../../components/Theme";
 import Head from "next/head";
@@ -17,6 +17,9 @@ import {
 import styled from "styled-components";
 import MypageTop from "../../components/MypageTop";
 import { LockFilled } from "@ant-design/icons";
+import { REQUEST_MY_LIST_REQUEST } from "../../reducers/request";
+import { useDispatch, useSelector } from "react-redux";
+import { Empty } from "antd";
 
 const List = styled(Wrapper)`
   height: 60px;
@@ -46,11 +49,24 @@ const MobileList = styled(Wrapper)`
 
 const Request = () => {
   ////// GLOBAL STATE //////
+  const { requestMyList, lastPage } = useSelector((state) => state.request);
+  const [currentTap, setCurrentTab] = useState(1);
+
   ////// HOOKS //////
   const width = useWidth();
+  const dispatch = useDispatch();
 
   ////// REDUX //////
   ////// USEEFFECT //////
+  useEffect(() => {
+    dispatch({
+      type: REQUEST_MY_LIST_REQUEST,
+      data: {
+        page: currentTap,
+      },
+    });
+  }, [currentTap]);
+
   ////// TOGGLE //////
   ////// HANDLER //////
   ////// DATAVIEW //////
@@ -86,100 +102,108 @@ const Request = () => {
               fontWeight={`600`}
               display={width < 800 ? `none` : `flex`}
             >
-              <Wrapper width={`10%`}>번호</Wrapper>
-              <Wrapper width={`60%`}>제목</Wrapper>
-              <Wrapper width={`10%`}>작성자</Wrapper>
-              <Wrapper width={`10%`}>작성일</Wrapper>
-              <Wrapper width={`10%`}>답변상태</Wrapper>
+              <Wrapper width={`8%`}>번호</Wrapper>
+              <Wrapper width={`50%`}>제목</Wrapper>
+              <Wrapper width={`14%`}>작성자</Wrapper>
+              <Wrapper width={`14%`}>작성일</Wrapper>
+              <Wrapper width={`14%`}>답변상태</Wrapper>
             </Wrapper>
+
             {width < 700 ? (
               <Wrapper>
-                <MobileList>
-                  <Wrapper
-                    dr={`row`}
-                    ju={`flex-start`}
-                    color={Theme.darkGrey_C}
-                    fontSize={`16px`}
-                    margin={`0 0 10px`}
-                  >
-                    <Text maxWidth={`90%`} isEllipsis isHover>
-                      상품 요청
-                    </Text>
-                    <Text padding={`0 5px`}>
-                      <LockFilled />
-                    </Text>
+                {requestMyList && requestMyList.length === 0 ? (
+                  <Wrapper padding={`50px 0`}>
+                    <Empty description="조회된 상품요청이 없습니다." />
                   </Wrapper>
+                ) : (
+                  requestMyList.map((data) => {
+                    return (
+                      <MobileList>
+                        <Wrapper
+                          dr={`row`}
+                          ju={`flex-start`}
+                          color={Theme.darkGrey_C}
+                          fontSize={`16px`}
+                          margin={`0 0 10px`}
+                        >
+                          <Text maxWidth={`90%`} isEllipsis isHover>
+                            {data.productName}
+                          </Text>
+                          <Text padding={`0 5px`}>
+                            <LockFilled />
+                          </Text>
+                        </Wrapper>
 
-                  <Wrapper dr={`row`} ju={`space-between`}>
-                    <Text color={Theme.grey_C}>김**</Text>
-                    <Text>2022.12.31</Text>
-                    <Text>답변완료</Text>
-                    {/* <Text color={Theme.lightGrey_C}>미답변</Text> */}
-                  </Wrapper>
-                </MobileList>
+                        <Wrapper dr={`row`} ju={`space-between`}>
+                          <Text color={Theme.grey_C}>{data.name}</Text>
+                          <Text>{data.viewCreatedAt}</Text>
+                          {data.isCompleted ? (
+                            <Text>답변완료</Text>
+                          ) : (
+                            <Text color={Theme.grey_C}>답변대기</Text>
+                          )}
+                        </Wrapper>
+                      </MobileList>
+                    );
+                  })
+                )}
               </Wrapper>
             ) : (
               <>
-                <List>
-                  <Wrapper width={`10%`} color={Theme.grey_C}>
-                    10
+                {requestMyList && requestMyList.length === 0 ? (
+                  <Wrapper padding={`50px 0`}>
+                    <Empty description="조회된 상품요청이 없습니다." />
                   </Wrapper>
-                  <Wrapper
-                    width={`60%`}
-                    padding={`0 14px`}
-                    color={Theme.darkGrey_C}
-                  >
-                    <Wrapper dr={`row`} ju={`flex-start`}>
-                      <Text maxWidth={`52%`} isEllipsis isHover>
-                        상품 요청
-                      </Text>
-                      <Text padding={`0 5px`}>
-                        <LockFilled />
-                      </Text>
-                    </Wrapper>
-                  </Wrapper>
-                  <Wrapper width={`10%`} color={Theme.grey_C}>
-                    김**
-                  </Wrapper>
-                  <Wrapper width={`10%`}>2022.12.31</Wrapper>
-                  <Wrapper width={`10%`} fontSize={`16px`} fontWeight={`600`}>
-                    답변완료
-                  </Wrapper>
-                </List>
-                <List>
-                  <Wrapper width={`10%`} color={Theme.grey_C}>
-                    10
-                  </Wrapper>
-                  <Wrapper
-                    width={`60%`}
-                    padding={`0 14px`}
-                    color={Theme.darkGrey_C}
-                  >
-                    <Wrapper dr={`row`} ju={`flex-start`}>
-                      <Text maxWidth={`52%`} isEllipsis isHover>
-                        상품 요청
-                      </Text>
-                      <Text padding={`0 5px`}>
-                        <LockFilled />
-                      </Text>
-                    </Wrapper>
-                  </Wrapper>
-                  <Wrapper width={`10%`} color={Theme.grey_C}>
-                    김**
-                  </Wrapper>
-                  <Wrapper width={`10%`}>2022.12.31</Wrapper>
-                  <Wrapper
-                    width={`10%`}
-                    fontSize={`16px`}
-                    fontWeight={`600`}
-                    color={Theme.lightGrey_C}
-                  >
-                    미답변
-                  </Wrapper>
-                </List>
+                ) : (
+                  requestMyList.map((data) => {
+                    return (
+                      <List>
+                        <Wrapper width={`8%`} color={Theme.grey_C}>
+                          {data.num}
+                        </Wrapper>
+                        <Wrapper
+                          width={`50%`}
+                          padding={`0 14px`}
+                          color={Theme.darkGrey_C}
+                        >
+                          <Wrapper dr={`row`} ju={`flex-start`}>
+                            <Text maxWidth={`52%`} isEllipsis isHover>
+                              {data.productName}
+                            </Text>
+                            <Text padding={`0 5px`}>
+                              <LockFilled />
+                            </Text>
+                          </Wrapper>
+                        </Wrapper>
+                        <Wrapper width={`14%`} color={Theme.grey_C}>
+                          {data.name}
+                        </Wrapper>
+                        <Wrapper width={`14%`}>{data.viewCreatedAt}</Wrapper>
+                        <Wrapper
+                          width={`14%`}
+                          fontSize={`16px`}
+                          fontWeight={`600`}
+                        >
+                          {data.isCompleted ? (
+                            <Text>답변완료</Text>
+                          ) : (
+                            <Text color={Theme.grey_C}>답변대기</Text>
+                          )}
+                        </Wrapper>
+                      </List>
+                    );
+                  })
+                )}
               </>
             )}
-            <CustomPage />
+
+            <CustomPage
+              defaultCurrent={1}
+              current={parseInt(currentTap)}
+              total={lastPage * 10}
+              pageSize={10}
+              onChange={(page) => nextPageCall(page)}
+            />
           </RsWrapper>
         </WholeWrapper>
       </ClientLayout>

@@ -37,13 +37,13 @@ import {
   RightOutlined,
 } from "@ant-design/icons";
 import {
-  MAINIMAGE_CREATE_REQUEST,
-  MAINIMAGE_DELETE_REQUEST,
-  MAINIMAGE_IMAGE_RESET,
-  MAINIMAGE_LIST_REQUEST,
-  MAINIMAGE_UPDATE_REQUEST,
-  MAINIMAGE_UPLOAD_REQUEST,
-} from "../../../reducers/mainImage";
+  BRAND_CREATE_REQUEST,
+  BRAND_DELETE_REQUEST,
+  BRAND_IMAGE_RESET,
+  BRAND_LIST_REQUEST,
+  BRAND_UPDATE_REQUEST,
+  BRAND_UPLOAD_REQUEST,
+} from "../../../reducers/brand";
 
 const InfoTitle = styled.div`
   font-size: 19px;
@@ -65,31 +65,32 @@ const ViewStatusIcon = styled(EyeOutlined)`
     props.active ? props.theme.subTheme5_C : props.theme.lightGrey_C};
 `;
 
-const Advertise = ({}) => {
+const Brand = ({}) => {
   const { st_loadMyInfoDone, me } = useSelector((state) => state.user);
   const {
-    mainImageList,
-    mainImagePath,
+    brandList,
 
-    st_mainImageCreateDone,
-    st_mainImageCreateError,
+    brandPath,
 
-    st_mainImageUpdateDone,
-    st_mainImageUpdateError,
+    st_brandCreateDone,
+    st_brandCreateError,
 
-    st_mainImageDeleteDone,
-    st_mainImageDeleteError,
+    st_brandUpdateDone,
+    st_brandUpdateError,
 
-    st_mainImageUploadLoading,
-    st_mainImageUploadDone,
-    st_mainImageUploadError,
-  } = useSelector((state) => state.mainImage);
+    st_brandDeleteDone,
+    st_brandDeleteError,
+
+    st_brandUploadLoading,
+    st_brandUploadDone,
+    st_brandUploadError,
+  } = useSelector((state) => state.brand);
 
   const router = useRouter();
   const dispatch = useDispatch();
 
   // 상위메뉴 변수
-  const [level1, setLevel1] = useState("배너관리");
+  const [level1, setLevel1] = useState("기초정보관리");
   const [level2, setLevel2] = useState("");
   const [sameDepth, setSameDepth] = useState([]);
   const [currentData, setCurrentData] = useState(null);
@@ -129,7 +130,7 @@ const Advertise = ({}) => {
         moveLinkHandler(`/admin`);
       }
 
-      if (!(me && me.menuRight4)) {
+      if (!(me && me.menuRight2)) {
         message.error("접근권한이 없는 페이지 입니다.");
         moveLinkHandler(`/admin`);
       }
@@ -148,78 +149,77 @@ const Advertise = ({}) => {
     });
   }, []);
 
-  // ********************** 메인사진 생성 후처리 *************************
-
+  // ********************** 브랜드 생성 후처리 *************************
   useEffect(() => {
-    if (st_mainImageCreateDone) {
+    if (st_brandCreateDone) {
       dispatch({
-        type: MAINIMAGE_LIST_REQUEST,
+        type: BRAND_LIST_REQUEST,
       });
 
-      return message.success("메인사진이 생성되었습니다.");
+      return message.success("브랜드가 생성되었습니다.");
     }
 
-    if (st_mainImageCreateError) {
-      return message.error(st_mainImageCreateError);
+    if (st_brandCreateError) {
+      return message.error(st_brandCreateError);
     }
-  }, [st_mainImageCreateDone, st_mainImageCreateError]);
+  }, [st_brandCreateDone, st_brandCreateError]);
 
-  // ********************** 메인사진 수정 후처리 *************************
-
+  // ********************** 브랜드 수정 후처리 *************************
   useEffect(() => {
-    if (st_mainImageUpdateDone) {
+    if (st_brandUpdateDone) {
       dispatch({
-        type: MAINIMAGE_LIST_REQUEST,
+        type: BRAND_LIST_REQUEST,
       });
 
-      return message.success("메인사진이 수정되었습니다.");
+      return message.success("브랜드가 수정되었습니다.");
     }
 
-    if (st_mainImageUpdateError) {
-      return message.error(st_mainImageUpdateError);
+    if (st_brandUpdateError) {
+      return message.error(st_brandUpdateError);
     }
-  }, [st_mainImageUpdateDone, st_mainImageUpdateError]);
+  }, [st_brandUpdateDone, st_brandUpdateError]);
 
-  // ********************** 메인사진 삭제 후처리 *************************
+  // ********************** 브랜드 삭제 후처리 *************************
   useEffect(() => {
-    if (st_mainImageDeleteDone) {
+    if (st_brandDeleteDone) {
+      dispatch({
+        type: BRAND_LIST_REQUEST,
+      });
+
       setCurrentData(null);
 
-      dispatch({
-        type: MAINIMAGE_LIST_REQUEST,
-      });
-
-      return message.success("메인사진이 삭제되었습니다.");
+      return message.success("브랜드가 삭제되었습니다.");
     }
 
-    if (st_mainImageDeleteError) {
-      return message.error(st_mainImageDeleteError);
+    if (st_brandDeleteError) {
+      return message.error(st_brandDeleteError);
     }
-  }, [st_mainImageDeleteDone, st_mainImageDeleteError]);
+  }, [st_brandDeleteDone, st_brandDeleteError]);
 
-  // ********************** 메인사진 이미지 후처리 *************************
-
+  // ********************** 브랜드 이미지 후처리 *************************
   useEffect(() => {
-    if (st_mainImageUploadDone) {
-      return message.success("메인사진이 업로드되었습니다.");
+    if (st_brandUploadDone) {
+      return message.success("브랜드 이미지가 업로드되었습니다.");
     }
 
-    if (st_mainImageUploadError) {
-      return message.error(st_mainImageUploadError);
+    if (st_brandUploadError) {
+      return message.error(st_brandUploadError);
     }
-  }, [st_mainImageUploadDone, st_mainImageUploadError]);
+  }, [st_brandUploadDone, st_brandUploadError]);
 
   ////// HANDLER //////
 
   const beforeSetDataHandler = useCallback(
     (record) => {
       setCurrentData(record);
+
       dispatch({
-        type: MAINIMAGE_IMAGE_RESET,
+        type: BRAND_IMAGE_RESET,
       });
 
       infoForm.setFieldsValue({
-        link: record.link,
+        name: record.name,
+        subDesc: record.subDesc,
         createdAt: record.viewCreatedAt,
         updatedAt: record.viewUpdatedAt,
         updator: record.updator,
@@ -244,36 +244,38 @@ const Advertise = ({}) => {
     }
 
     dispatch({
-      type: MAINIMAGE_UPLOAD_REQUEST,
+      type: BRAND_UPLOAD_REQUEST,
       data: formData,
     });
   });
 
   const createHandler = useCallback(() => {
     dispatch({
-      type: MAINIMAGE_CREATE_REQUEST,
+      type: BRAND_CREATE_REQUEST,
     });
   }, []);
 
   const updateHandler = useCallback(
     (data) => {
       dispatch({
-        type: MAINIMAGE_UPDATE_REQUEST,
+        type: BRAND_UPDATE_REQUEST,
         data: {
           id: currentData.id,
-          imagePath: mainImagePath ? mainImagePath : currentData.imagePath,
-          link: data.link,
+          imagePath: brandPath ? brandPath : currentData.imagePath,
+          name: data.name,
+          subDesc: data.subDesc,
         },
       });
     },
-    [currentData, mainImagePath]
+    [currentData, brandPath]
   );
 
   const deleteHandler = useCallback((data) => {
     dispatch({
-      type: MAINIMAGE_DELETE_REQUEST,
+      type: BRAND_DELETE_REQUEST,
       data: {
         id: data.id,
+        name: data.name,
       },
     });
   }, []);
@@ -288,15 +290,14 @@ const Advertise = ({}) => {
       dataIndex: "num",
     },
     {
-      title: "메인사진",
-      render: (data) => (
-        <Image style={{ width: `100px` }} src={data.imagePath} />
-      ),
+      title: "브랜드명",
+      dataIndex: "name",
     },
     {
-      title: "링크",
-      dataIndex: "link",
+      title: "브랜드이미지",
+      render: (data) => <Image width={`80px`} src={data.imagePath} />,
     },
+
     {
       title: "생성일",
       dataIndex: "viewCreatedAt",
@@ -354,7 +355,7 @@ const Advertise = ({}) => {
         <RightOutlined />
         <Popover content={content}>
           <HomeText cur={true} margin={`3px 20px 0px 20px`}>
-            {level2}
+            {level2}{" "}
           </HomeText>
         </Popover>
       </Wrapper>
@@ -362,15 +363,12 @@ const Advertise = ({}) => {
       {/* GUIDE */}
       <Wrapper margin={`10px 0px 0px 0px`}>
         <GuideUl>
-          <GuideLi>메인사진을 추가 / 삭제 등 관리를 할 수 있습니다.</GuideLi>
+          <GuideLi>브랜드를 추가 / 삭제 등 관리를 할 수 있습니다.</GuideLi>
           <GuideLi isImpo={true}>
-            메인사진 이미지는 5MB이하로 올려주세요.
+            브랜드 이미지는 5MB이하로 등록해주세요.
           </GuideLi>
           <GuideLi isImpo={true}>
-            메인사진 이미지 사이즈는 430 X 180 입니다.
-          </GuideLi>
-          <GuideLi isImpo={true}>
-            삭제처리 된 메인사진은 복구가 불가능합니다.
+            삭제처리 된 브랜드는 복구가 불가능합니다.
           </GuideLi>
         </GuideUl>
       </Wrapper>
@@ -383,14 +381,14 @@ const Advertise = ({}) => {
         >
           <Wrapper al="flex-end" margin={`0px 0px 5px 0px`}>
             <Button size="small" type="primary" onClick={createHandler}>
-              메인사진 생성
+              브랜드 생성
             </Button>
           </Wrapper>
           <Table
             style={{ width: "100%" }}
             rowKey="num"
             columns={col}
-            dataSource={mainImageList}
+            dataSource={brandList}
             size="small"
             onRow={(record, index) => {
               return {
@@ -410,15 +408,15 @@ const Advertise = ({}) => {
               <Wrapper margin={`0px 0px 5px 0px`}>
                 <InfoTitle>
                   <CheckOutlined />
-                  메인사진 이미지 정보
+                  브랜드 이미지 정보
                 </InfoTitle>
               </Wrapper>
 
-              <Wrapper margin={`30px 0`}>
+              <Wrapper>
                 <Image
-                  width={`430px`}
-                  height={`180px`}
-                  src={mainImagePath ? mainImagePath : currentData.imagePath}
+                  width={`300px`}
+                  height={`300px`}
+                  src={brandPath ? brandPath : currentData.imagePath}
                   alt={`image`}
                 />
 
@@ -430,42 +428,51 @@ const Advertise = ({}) => {
                   onChange={onChangeImg}
                 />
                 <Button
-                  loading={st_mainImageUploadLoading}
-                  style={{ width: `430px`, marginTop: `5px` }}
+                  loading={st_brandUploadLoading}
+                  style={{ width: `300px`, margin: `5px 0 10px` }}
                   size="small"
                   type="primary"
                   onClick={clickImgUpload}
                 >
-                  메인사진 이미지 업로드
+                  브랜드 이미지 업로드
                 </Button>
               </Wrapper>
-
-              <Wrapper
-                width="100%"
-                height="1px"
-                bgColor={Theme.lightGrey_C}
-                margin={`30px 0px`}
-              ></Wrapper>
 
               <Wrapper margin={`0px 0px 5px 0px`}>
                 <InfoTitle>
                   <CheckOutlined />
-                  메인사진 기본정보
+                  브랜드 기본정보
                 </InfoTitle>
               </Wrapper>
 
               <Form
                 form={infoForm}
                 style={{ width: `100%` }}
-                labelCol={{ span: 4 }}
-                wrapperCol={{ span: 20 }}
+                labelCol={{ span: 2 }}
+                wrapperCol={{ span: 22 }}
                 onFinish={updateHandler}
               >
                 <Form.Item
-                  label="링크"
-                  name="link"
+                  label="브랜드명"
+                  name="name"
                   rules={[
-                    { required: true, message: "링크은 필수 입력사항 입니다." },
+                    {
+                      required: true,
+                      message: "브랜드명은 필수 입력사항 입니다.",
+                    },
+                  ]}
+                >
+                  <Input size="small" />
+                </Form.Item>
+
+                <Form.Item
+                  label="서브제목"
+                  name="subDesc"
+                  rules={[
+                    {
+                      required: true,
+                      message: "서브제목은 필수 입력사항 입니다.",
+                    },
                   ]}
                 >
                   <Input size="small" />
@@ -474,7 +481,7 @@ const Advertise = ({}) => {
                 <Form.Item label="작성일" name="createdAt">
                   <Input
                     size="small"
-                    style={{ background: Theme.lightGrey3_C, border: "none" }}
+                    style={{ background: Theme.grey3_C, border: "none" }}
                     readOnly
                   />
                 </Form.Item>
@@ -482,7 +489,7 @@ const Advertise = ({}) => {
                 <Form.Item label="수정일" name="updatedAt">
                   <Input
                     size="small"
-                    style={{ background: Theme.lightGrey3_C, border: "none" }}
+                    style={{ background: Theme.grey3_C, border: "none" }}
                     readOnly
                   />
                 </Form.Item>
@@ -490,7 +497,7 @@ const Advertise = ({}) => {
                 <Form.Item label="최근작업자" name="updator">
                   <Input
                     size="small"
-                    style={{ background: Theme.lightGrey3_C, border: "none" }}
+                    style={{ background: Theme.grey3_C, border: "none" }}
                     readOnly
                   />
                 </Form.Item>
@@ -543,7 +550,7 @@ export const getServerSideProps = wrapper.getServerSideProps(
     });
 
     context.store.dispatch({
-      type: MAINIMAGE_LIST_REQUEST,
+      type: BRAND_LIST_REQUEST,
     });
 
     // 구현부 종료
@@ -553,4 +560,4 @@ export const getServerSideProps = wrapper.getServerSideProps(
   }
 );
 
-export default withRouter(Advertise);
+export default withRouter(Brand);

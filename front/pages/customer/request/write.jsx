@@ -61,7 +61,11 @@ const Index = () => {
       productName.setValue("");
       productUrl.setValue("");
       secret.setValue("");
+      setQueContent("");
       setIsTerm(false);
+
+      router.push(`/customer/request`);
+      window.scrollTo({ top: 0, behavior: "smooth" });
 
       return message.success("상품요청이 작성되었습니다.");
     }
@@ -115,6 +119,7 @@ const Index = () => {
         productName: productName.value,
         productUrl: productUrl.value,
         content: queContent,
+        password: secret.value,
       },
     });
   }, [name, mobile, email, productName, productUrl, queContent, secret]);

@@ -1,9 +1,14 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import ClientLayout from "../../components/ClientLayout";
 import Theme from "../../components/Theme";
 import Head from "next/head";
 import wrapper from "../../store/configureStore";
-import { LOAD_MY_INFO_REQUEST } from "../../reducers/user";
+import {
+  LOAD_MY_INFO_REQUEST,
+  LOGOUT_REQUEST,
+  USER_EXIT_REQUEST,
+  USER_UPDATE_REQUEST,
+} from "../../reducers/user";
 import axios from "axios";
 import { END } from "redux-saga";
 import useWidth from "../../hooks/useWidth";
@@ -19,6 +24,11 @@ import styled from "styled-components";
 import MypageTop from "../../components/MypageTop";
 import Modal from "antd/lib/modal/Modal";
 import { CloseOutlined } from "@ant-design/icons";
+import { useRouter } from "next/router";
+import { useDispatch, useSelector } from "react-redux";
+import { message } from "antd";
+import useInput from "../../hooks/useInput";
+import DaumPostcode from "react-daum-postcode";
 
 const PostBtn = styled.button`
   width: 35%;
@@ -84,19 +94,155 @@ const ModifyBtn = styled(Wrapper)`
 
 const MemberModify = () => {
   ////// GLOBAL STATE //////
+  const {
+    me,
+    st_userUpdateDone,
+    st_userUpdateError,
+    st_userExitDone,
+    st_userExitError,
+  } = useSelector((state) => state.user);
+
   const [isModal, setIsModal] = useState(false);
+  const [pModal, setPModal] = useState(false);
 
   ////// HOOKS //////
   const width = useWidth();
+  const router = useRouter();
+  const dispatch = useDispatch();
+
+  const exitPassword = useInput(``);
+  const password = useInput(``);
+  const mobile = useInput(me && me.mobile);
+  const email = useInput(me && me.email);
+  const zonecodeInput = useInput(me && me.postCode);
+  const addressInput = useInput(me && me.address);
+  const detailAddressInput = useInput(me && me.detailAddress);
 
   ////// REDUX //////
   ////// USEEFFECT //////
+  useEffect(() => {
+    if (!me) {
+      router.push(`/user/login`);
+
+      return message.error("로그인이 필요한 서비스입니다.");
+    }
+  }, [me]);
+
+  // ********************** 회원정보 수정 후처리 *************************
+
+  useEffect(() => {
+    if (st_userUpdateError) {
+      return message.error(st_userUpdateError);
+    }
+  }, [st_userUpdateError]);
+
+  useEffect(() => {
+    if (st_userUpdateDone) {
+      password.setValue(``);
+
+      dispatch({
+        type: LOAD_MY_INFO_REQUEST,
+      });
+
+      return message.success("회원정보가 수정되었습니다.");
+    }
+  }, [st_userUpdateDone]);
+
+  // ********************** 회원탈퇴 후처리 *************************
+
+  useEffect(() => {
+    if (st_userExitError) {
+      return message.error(st_userExitError);
+    }
+  }, [st_userExitError]);
+
+  useEffect(() => {
+    if (st_userExitDone) {
+      router.push(`/`);
+
+      dispatch({
+        type: LOGOUT_REQUEST,
+      });
+
+      return message.success("탈퇴되었습니다.");
+    }
+  }, [st_userExitDone]);
+
   ////// TOGGLE //////
   const modalToggle = useCallback(() => {
     setIsModal((prev) => !prev);
   }, [isModal]);
 
+  const pModalToggle = useCallback(() => {
+    setPModal((prev) => !prev);
+  }, [pModal]);
+
   ////// HANDLER //////
+
+  // 회원정보수정
+  const userModifyHandler = useCallback(() => {
+    if (!email.value) {
+      return message.error("이메일을 입력해주세요.");
+    }
+
+    if (!mobile.value) {
+      return message.error("전화번호를 입력해주세요.");
+    }
+
+    if (!addressInput.value) {
+      return message.error("주소를 입력해주세요.");
+    }
+
+    if (!detailAddressInput.value) {
+      return message.error("상세주소를 입력해주세요.");
+    }
+
+    if (!password.value || password.value.trim() === "") {
+      return message.error("비밀번호를 입력해주세요.");
+    }
+    //
+    if (
+      email.value === me.email &&
+      mobile.value === me.mobile &&
+      addressInput.value === me.address &&
+      detailAddressInput.value === me.detailAddress
+    ) {
+      return message.error("변경할 정보가 없습니다.");
+    }
+
+    dispatch({
+      type: USER_UPDATE_REQUEST,
+      data: {
+        password: password.value,
+        email: email.value,
+        mobile: mobile.value,
+        postCode: zonecodeInput.value,
+        address: addressInput.value,
+        detailAddress: detailAddressInput.value,
+      },
+    });
+  }, [
+    password.value,
+    email,
+    mobile,
+    zonecodeInput,
+    addressInput,
+    detailAddressInput,
+  ]);
+
+  // 회원탈퇴
+  const exitHandler = useCallback(() => {
+    if (!exitPassword.value || exitPassword.value.trim() === "") {
+      return message.error("비밀번호를 입력해주세요.");
+    }
+
+    dispatch({
+      type: USER_EXIT_REQUEST,
+      data: {
+        password: exitPassword.value,
+      },
+    });
+  }, [exitPassword.value]);
   ////// DATAVIEW //////
 
   return (
@@ -106,7 +252,7 @@ const MemberModify = () => {
       </Head>
 
       <ClientLayout>
-        <WholeWrapper padding={width < 900 ? `40px 0 0` : `95px 0 0`}>
+        <WholeWrapper padding={width < 900 ? `40px 0` : `95px 0`}>
           <RsWrapper>
             <MypageTop />
             <Wrapper
@@ -134,12 +280,13 @@ const MemberModify = () => {
                 margin={`0 0 20px`}
                 padding={`0 10px`}
               >
-                아이디
+                {me && me.userId}
               </Wrapper>
 
               <SignupLabel>비밀번호 확인</SignupLabel>
               <TextInput
                 width={`100%`}
+                {...password}
                 height={`46px`}
                 type="password"
                 margin={`0 0 20px`}
@@ -148,6 +295,7 @@ const MemberModify = () => {
               <SignupLabel>연락처</SignupLabel>
               <TextInput
                 width={`100%`}
+                {...mobile}
                 height={`46px`}
                 type="text"
                 margin={`0 0 20px`}
@@ -156,6 +304,7 @@ const MemberModify = () => {
               <SignupLabel>이메일</SignupLabel>
               <TextInput
                 width={`100%`}
+                {...email}
                 height={`46px`}
                 type="email"
                 margin={`0 0 20px`}
@@ -169,14 +318,16 @@ const MemberModify = () => {
               </Wrapper>
               <Wrapper dr={`row`} ju={`space-between`} margin={`0 0 10px`}>
                 <TextInput
+                  {...zonecodeInput}
                   width={`62%`}
                   height={`46px`}
                   type="post"
                   placeholder="우편번호"
                 />
-                <PostBtn>우편번호</PostBtn>
+                <PostBtn onClick={pModalToggle}>우편번호</PostBtn>
               </Wrapper>
               <TextInput
+                {...addressInput}
                 width={`100%`}
                 height={`46px`}
                 type="text"
@@ -184,6 +335,7 @@ const MemberModify = () => {
                 placeholder="기본주소"
               />
               <TextInput
+                {...detailAddressInput}
                 width={`100%`}
                 height={`46px`}
                 type="text"
@@ -191,7 +343,7 @@ const MemberModify = () => {
                 placeholder="상세주소를 입력해주세요."
               />
               <Wrapper>
-                <ModifyBtn>회원정보수정</ModifyBtn>
+                <ModifyBtn onClick={userModifyHandler}>회원정보수정</ModifyBtn>
               </Wrapper>
               <Wrapper
                 dr={`row`}
@@ -252,6 +404,7 @@ const MemberModify = () => {
                     placeholder="비밀번호를 입력해주세요."
                     margin={`0 0 12px`}
                     fontSize={width < 900 ? `14px` : `16px`}
+                    {...exitPassword}
                   />
                   <Wrapper
                     width={`100%`}
@@ -263,11 +416,11 @@ const MemberModify = () => {
                     padding={`0 11px`}
                     fontSize={width < 900 ? `14px` : `16px`}
                   >
-                    <Text>탈퇴시 주의사항이 들어올 곳입니다.</Text>
+                    <Text>회원 탈퇴시 회원가입이 불가능합니다.</Text>
                   </Wrapper>
                 </Wrapper>
                 <Wrapper dr={`row`} ju={`space-between`}>
-                  <OutBtn onClick={modalToggle}>탈퇴하기</OutBtn>
+                  <OutBtn onClick={exitHandler}>탈퇴하기</OutBtn>
                   <CommonButton
                     fontSize={width < 500 ? `16px` : `18px`}
                     fontWeight={`600`}
@@ -281,6 +434,20 @@ const MemberModify = () => {
                 </Wrapper>
               </Wrapper>
             </Wrapper>
+          </Modal>
+
+          <Modal visible={pModal} footer={null} onCancel={pModalToggle}>
+            <DaumPostcode
+              onComplete={(data) => {
+                addressInput.setValue(data.address);
+                zonecodeInput.setValue(data.zonecode);
+                pModalToggle();
+              }}
+              width={width < 600 ? `100%` : `600px`}
+              height={`500px`}
+              autoClose={false}
+              animation
+            />
           </Modal>
         </WholeWrapper>
       </ClientLayout>

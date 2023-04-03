@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect } from "react";
+import React, { useState, useCallback } from "react";
 import ClientLayout from "../../../components/ClientLayout";
 import Head from "next/head";
 import wrapper from "../../../store/configureStore";
@@ -12,7 +12,6 @@ import {
   RsWrapper,
   SpanText,
   Text,
-  TextArea,
   TextInput,
   WholeWrapper,
   Wrapper,
@@ -51,48 +50,43 @@ const List = styled(Wrapper)`
   }
 `;
 
-const Index = () => {
+const Secret = () => {
   ////// GLOBAL STATE //////
-  const password = useInput();
+  const { requestData } = useSelector((state) => state.request);
 
   ////// HOOKS //////
   const width = useWidth();
   const router = useRouter();
   const dispatch = useDispatch();
 
+  const password = useInput("");
+
+  const [requsetDatum, setRequesDatum] = useState(requestData);
+
   ////// REDUX //////
   ////// USEEFFECT //////
-  useEffect(() => {
-    if (password.value.length === 4) {
-      if (password.value) {
-        return message.success({
-          content: "비밀번호가 맞습니다.",
-        });
-      } else {
-        return message.error({
-          content: "비밀번호가 틀렸습니다.",
-        });
-      }
-    }
-  }, [password.value]);
 
   ////// TOGGLE //////
 
-  //// HANDLER //////
+  //// HANDLER /////
   const passwordHandler = useCallback(() => {
-    if (!password.value) {
-      return message.error({
-        content: "비밀번호를 입력해주세요.",
-      });
+    if (!requsetDatum) {
+      return router.push(`/customer/request`);
+
+      // message.error("")
     }
 
-    dispatch({
-      type: REQUEST_LIST_REQUEST,
-      data: {
-        password: password.value,
-      },
-    });
-  }, [password.value]);
+    if (!password.value) {
+      return message.error("비밀번호를 입력해주세요.");
+    }
+
+    if (requsetDatum.password === password.value) {
+      router.push(`/customer/request/${requsetDatum.id}`);
+      return message.success("비밀번호가 일치합니다.");
+    } else {
+      return message.error("비밀번호가 일치하지 않습니다.");
+    }
+  }, [password.value, requsetDatum]);
 
   const onSubmitHandler = useCallback(
     (e) => {
@@ -236,4 +230,4 @@ export const getServerSideProps = wrapper.getServerSideProps(
   }
 );
 
-export default Index;
+export default Secret;

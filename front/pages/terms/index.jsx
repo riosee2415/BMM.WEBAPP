@@ -351,7 +351,8 @@ const Index = () => {
               </Wrapper>
               <Wrapper al={`flex-start`}>A. 재화 등의 검색 및 선택</Wrapper>
               <Wrapper al={`flex-start`}>
-                　•	받는 사람의 성명, 주소, 전화번호, 전자우편주소(또는 이동전화번호), 개인통관번호 등의 입력
+                　• 받는 사람의 성명, 주소, 전화번호, 전자우편주소(또는
+                이동전화번호), 개인통관번호 등의 입력
               </Wrapper>
               <Wrapper al={`flex-start`}>
                 　• 약관내용, 청약철회권이 제한되는 서비스, 배송료ㆍ설치비 등의
@@ -862,7 +863,7 @@ const Index = () => {
                 부 칙 시행일 등
               </Wrapper>
               <Wrapper al={`flex-start`}>
-                ① 이 약관은 2023년 01월 1일부터 시행합니다.
+                ① 이 약관은 2023년 04월 1일부터 시행합니다.
               </Wrapper>
               <Wrapper al={`flex-start`} margin={`0 0 95px`}>
                 ② 이 약관은 전자상거래(인터넷사이버몰) 표준약관 제10023호(2014.

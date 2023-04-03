@@ -7,14 +7,14 @@ const router = express.Router();
 
 /**
  * SUBJECT : 나의 상품문의 목록
- * PARAMETERS : page
+ * PARAMETERS : page, searchProductName, listType
  * ORDER BY : -
  * STATEMENT : -
  * DEVELOPMENT : 신태섭
  * DEV DATE : 2023/03/27
  */
 router.post("/list", async (req, res, next) => {
-  const { page, searchProductName } = req.body;
+  const { page, searchProductName, listType } = req.body;
 
   const LIMIT = 10;
 
@@ -24,31 +24,11 @@ router.post("/list", async (req, res, next) => {
   const OFFSET = __page * 10;
 
   const _searchProductName = searchProductName ? searchProductName : ``;
+  const _listType = parseInt(listType) || 3;
 
   try {
     const lengthQuery = `
-      SELECT  ROW_NUMBER()  OVER(ORDER  BY A.createdAt)   AS num,
-              A.id,
-              A.name,
-              A.mobile,
-              A.email,
-              A.productName,
-              A.productUrl,
-              A.content,
-              A.password,
-              A.isCompleted,
-              A.answer,
-              A.answerdAt,
-              A.createdAt,
-              A.updatedAt,
-              A.UserId
-        FROM  productQuestions       A
-       WHERE  1 = 1
-         AND  A.productName LIKE "%${_searchProductName}%"
-    `;
-
-    const selectQuery = `
-    SELECT	ROW_NUMBER()  OVER(ORDER  BY A.createdAt)   AS num,
+    SELECT  ROW_NUMBER()  OVER(ORDER  BY A.createdAt)   AS num,
             A.id,
             A.name,
             A.mobile,
@@ -62,10 +42,53 @@ router.post("/list", async (req, res, next) => {
             A.answerdAt,
             A.createdAt,
             A.updatedAt,
+            DATE_FORMAT(A.createdAt, "%Y년 %m월 %d일")        AS viewCreatedAt,
+            DATE_FORMAT(A.updatedAt, "%Y년 %m월 %d일")        AS viewUpdatedAt,
             A.UserId
-      FROM	productQuestions       A
+      FROM  productQuestions       A
      WHERE  1 = 1
        AND  A.productName LIKE "%${_searchProductName}%"
+            ${
+              _listType === 1
+                ? `AND A.isCompleted = 1`
+                : _listType === 2
+                ? `AND A.isCompleted = 0`
+                : _listType === 3
+                ? ``
+                : ``
+            }
+    `;
+
+    const selectQuery = `
+    SELECT  ROW_NUMBER()  OVER(ORDER  BY A.createdAt)   AS num,
+            A.id,
+            A.name,
+            A.mobile,
+            A.email,
+            A.productName,
+            A.productUrl,
+            A.content,
+            A.password,
+            A.isCompleted,
+            A.answer,
+            A.answerdAt,
+            A.createdAt,
+            A.updatedAt,
+            DATE_FORMAT(A.createdAt, "%Y년 %m월 %d일")        AS viewCreatedAt,
+            DATE_FORMAT(A.updatedAt, "%Y년 %m월 %d일")        AS viewUpdatedAt,
+            A.UserId
+      FROM  productQuestions       A
+     WHERE  1 = 1
+       AND  A.productName LIKE "%${_searchProductName}%"
+            ${
+              _listType === 1
+                ? `AND A.isCompleted = 1`
+                : _listType === 2
+                ? `AND A.isCompleted = 0`
+                : _listType === 3
+                ? ``
+                : ``
+            }
      ORDER  BY num DESC
      LIMIT  ${LIMIT}
     OFFSET  ${OFFSET}
@@ -127,6 +150,8 @@ router.post("/my/list", isLoggedIn, async (req, res, next) => {
               A.answerdAt,
               A.createdAt,
               A.updatedAt,
+              DATE_FORMAT(A.createdAt, "%Y년 %m월 %d일")        AS viewCreatedAt,
+              DATE_FORMAT(A.updatedAt, "%Y년 %m월 %d일")        AS viewUpdatedAt,
               A.UserId
         FROM  productQuestions       A
        WHERE  1 = 1
@@ -148,6 +173,8 @@ router.post("/my/list", isLoggedIn, async (req, res, next) => {
             A.answerdAt,
             A.createdAt,
             A.updatedAt,
+            DATE_FORMAT(A.createdAt, "%Y년 %m월 %d일")        AS viewCreatedAt,
+            DATE_FORMAT(A.updatedAt, "%Y년 %m월 %d일")        AS viewUpdatedAt,
             A.UserId
       FROM	productQuestions       A
      WHERE  1 = 1
@@ -198,6 +225,8 @@ router.post("/admin/list", isAdminCheck, async (req, res, next) => {
           A.answerdAt,
           A.createdAt,
           A.updatedAt,
+          DATE_FORMAT(A.createdAt, "%Y년 %m월 %d일")        AS viewCreatedAt,
+          DATE_FORMAT(A.updatedAt, "%Y년 %m월 %d일")        AS viewUpdatedAt,
           A.UserId,
           CASE
               WHEN  A.UserId IS NOT NULL THEN "회원 작성"
@@ -254,6 +283,8 @@ router.post("/detail", async (req, res, next) => {
           A.answerdAt,
           A.createdAt,
           A.updatedAt,
+          DATE_FORMAT(A.createdAt, "%Y년 %m월 %d일")        AS viewCreatedAt,
+          DATE_FORMAT(A.updatedAt, "%Y년 %m월 %d일")        AS viewUpdatedAt,
           A.UserId,
           CASE
               WHEN  A.UserId IS NOT NULL THEN "회원 작성"
@@ -365,7 +396,6 @@ router.post("/answer/update", isAdminCheck, async (req, res, next) => {
 
   const selectQuery = `
     SELECT    id,
-              title,
               answer
       FROM    productQuestions
      WHERE    id = ${id}

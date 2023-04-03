@@ -5,6 +5,10 @@ import {
   REQUEST_LIST_SUCCESS,
   REQUEST_LIST_FAILURE,
   //
+  REQUEST_MY_LIST_REQUEST,
+  REQUEST_MY_LIST_SUCCESS,
+  REQUEST_MY_LIST_FAILURE,
+  //
   REQUEST_ADMIN_LIST_REQUEST,
   REQUEST_ADMIN_LIST_SUCCESS,
   REQUEST_ADMIN_LIST_FAILURE,
@@ -41,6 +45,33 @@ function* requestList(action) {
     console.error(err);
     yield put({
       type: REQUEST_LIST_FAILURE,
+      error: err.response.data,
+    });
+  }
+}
+// ******************************************************************************************************************
+// ******************************************************************************************************************
+// ******************************************************************************************************************
+
+// ******************************************************************************************************************
+// SAGA AREA ********************************************************************************************************
+// ******************************************************************************************************************
+async function requestMyListAPI(data) {
+  return await axios.post(`/api/productQuestion/my/list`, data);
+}
+
+function* requestMyList(action) {
+  try {
+    const result = yield call(requestMyListAPI, action.data);
+
+    yield put({
+      type: REQUEST_MY_LIST_SUCCESS,
+      data: result.data,
+    });
+  } catch (err) {
+    console.error(err);
+    yield put({
+      type: REQUEST_MY_LIST_FAILURE,
       error: err.response.data,
     });
   }
@@ -162,6 +193,9 @@ function* answerUpdate(action) {
 function* watchrequestList() {
   yield takeLatest(REQUEST_LIST_REQUEST, requestList);
 }
+function* watchrequestMyList() {
+  yield takeLatest(REQUEST_MY_LIST_REQUEST, requestMyList);
+}
 function* watchrequestListDetail() {
   yield takeLatest(REQUEST_LIST_DETAIL_REQUEST, requestListDetail);
 }
@@ -179,6 +213,7 @@ function* watchrequestAnswerUpdate() {
 export default function* requestSaga() {
   yield all([
     fork(watchrequestList),
+    fork(watchrequestMyList),
     fork(watchrequestListDetail),
     fork(watchrequestAdminList),
     fork(watchrequestCreate),
