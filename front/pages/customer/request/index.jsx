@@ -275,7 +275,7 @@ const Index = () => {
                       >
                         {data.name}
                       </Wrapper>
-                      <Wrapper width={width < 700 ? `calc(100% / 2)` : `14%`}>
+                      <Wrapper width={width < 700 ? `calc(100% / 3)` : `14%`}>
                         {data.viewCreatedAt}
                       </Wrapper>
                       <Wrapper

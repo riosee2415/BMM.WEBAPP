@@ -387,7 +387,7 @@ const Request = ({}) => {
                   />
                 </Form.Item>
 
-                <Form.Item label="내용" name="content">
+                <Form.Item contentEditable={true} label="내용" name="content">
                   <Input.TextArea
                     style={{ background: Theme.lightGrey3_C, border: "none" }}
                     rows={5}
@@ -434,7 +434,6 @@ const Request = ({}) => {
                     readOnly
                   />
                 </Form.Item>
-
                 <Wrapper margin={`0px 0px 5px 0px`}>
                   <InfoTitle>
                     <CheckOutlined />
