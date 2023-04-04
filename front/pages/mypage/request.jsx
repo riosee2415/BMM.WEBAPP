@@ -86,7 +86,7 @@ const Request = () => {
       </Head>
 
       <ClientLayout>
-        <WholeWrapper padding={width < 900 ? `40px 0 0` : `95px 0 0`}>
+        <WholeWrapper padding={width < 900 ? `40px 0 ` : `95px 0 `}>
           <RsWrapper>
             <MypageTop />
             <Wrapper
