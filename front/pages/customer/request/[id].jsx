@@ -23,34 +23,7 @@ import styled from "styled-components";
 
 import { useRouter } from "next/router";
 import { useDispatch, useSelector } from "react-redux";
-import { Select } from "antd";
-import { LockFilled } from "@ant-design/icons";
 import Link from "next/dist/client/link";
-
-const List = styled(Wrapper)`
-  flex-direction: row;
-  justify-content: space-between;
-  border-bottom: 1px solid ${Theme.lightGrey2_C};
-  height: 60px;
-  font-size: 16px;
-
-  &:hover {
-    cursor: pointer;
-    border-bottom: 1px solid ${Theme.basicTheme_C};
-  }
-
-  @media (max-width: 700px) {
-    height: auto;
-    padding: 10px;
-    border: 1px solid ${Theme.lightGrey2_C};
-    margin: 0 0 15px;
-    border-radius: 10px;
-
-    &:nth-child(2n) {
-      background: ${Theme.lightGrey3_C};
-    }
-  }
-`;
 
 const EditorWrapper = styled(Wrapper)`
   align-items: flex-start;
@@ -187,7 +160,8 @@ const Index = () => {
                     {requestDetail && requestDetail.productName}
                   </Text>
                   <Text color={Theme.darkGrey_C} fontSize={`16px`}>
-                    {requestDetail && requestDetail.name}
+                    {requestDetail &&
+                      requestDetail.name.replace(/(?<=.{1})./gi, "*")}
                     <SpanText margin={`0 0 0 18px`}>
                       {requestDetail && requestDetail.viewCreatedAt}
                     </SpanText>

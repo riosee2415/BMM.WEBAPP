@@ -24,28 +24,27 @@ import { Empty } from "antd";
 import Link from "next/dist/client/link";
 
 const List = styled(Wrapper)`
-  height: 60px;
   flex-direction: row;
+  justify-content: space-between;
   border-bottom: 1px solid ${Theme.lightGrey2_C};
+  height: 60px;
   font-size: 16px;
 
   &:hover {
     cursor: pointer;
-    background: ${Theme.subTheme_C};
-  }
-`;
-
-const MobileList = styled(Wrapper)`
-  margin: 0 0 10px;
-  border: 1px solid ${Theme.lightGrey2_C};
-  padding: 15px;
-
-  &:last-child {
-    margin: 0;
+    border-bottom: 1px solid ${Theme.basicTheme_C};
   }
 
-  &:nth-child(2n) {
-    background: ${Theme.subTheme_C};
+  @media (max-width: 700px) {
+    height: auto;
+    padding: 10px;
+    border: 1px solid ${Theme.lightGrey2_C};
+    margin: 0 0 15px;
+    border-radius: 10px;
+
+    &:nth-child(2n) {
+      background: ${Theme.lightGrey3_C};
+    }
   }
 `;
 
@@ -77,16 +76,6 @@ const Request = () => {
     },
     [currentTap]
   );
-
-  const maskingName = (value) => {
-    if (value.length === 2) {
-      return value.replace(/(?<=.{1})./gi, "*");
-    } else if (value.length > 2) {
-      return value.replace(/(?<=.{2})./gi, "*");
-    } else {
-      return value;
-    }
-  };
 
   ////// DATAVIEW //////
 
@@ -128,111 +117,65 @@ const Request = () => {
               <Wrapper width={`14%`}>답변상태</Wrapper>
             </Wrapper>
 
-            {width < 700 ? (
-              <Wrapper>
-                {requestMyList && requestMyList.length === 0 ? (
-                  <Wrapper padding={`50px 0`}>
-                    <Empty description="조회된 상품요청이 없습니다." />
-                  </Wrapper>
-                ) : (
-                  requestMyList.map((data) => {
-                    return (
-                      <Link href={`/customer/request/${data.id}`}>
-                        <ATag>
-                          <MobileList>
-                            <Wrapper
-                              dr={`row`}
-                              ju={`flex-start`}
-                              color={Theme.darkGrey_C}
-                              fontSize={`16px`}
-                              margin={`0 0 10px`}
-                            >
-                              <Text maxWidth={`90%`} isEllipsis isHover>
-                                {data.productName}
-                              </Text>
-                              <Text padding={`0 5px`}>
-                                <LockFilled />
-                              </Text>
-                            </Wrapper>
-
-                            <Wrapper dr={`row`} ju={`space-between`}>
-                              <Text color={Theme.grey_C}>
-                                {data.name.string.split(",", 0)}
-                                {console.log(
-                                  data.name && data.name.string.split(",", 0)
-                                )}
-                              </Text>
-                              <Text>{data.viewCreatedAt}</Text>
-                              {data.isCompleted ? (
-                                <Text>답변완료</Text>
-                              ) : (
-                                <Text color={Theme.grey_C}>답변대기</Text>
-                              )}
-                            </Wrapper>
-                          </MobileList>
-                        </ATag>
-                      </Link>
-                    );
-                  })
-                )}
+            {requestMyList && requestMyList.length === 0 ? (
+              <Wrapper padding={`50px 0`}>
+                <Empty description="조회된 상품요청이 없습니다." />
               </Wrapper>
             ) : (
-              <>
-                {requestMyList && requestMyList.length === 0 ? (
-                  <Wrapper padding={`50px 0`}>
-                    <Empty description="조회된 상품요청이 없습니다." />
-                  </Wrapper>
-                ) : (
-                  requestMyList.map((data) => {
-                    return (
-                      <Link href={`/customer/request/${data.id}`}>
-                        <ATag>
-                          <List>
-                            <Wrapper width={`8%`} color={Theme.grey_C}>
-                              {data.num}
-                            </Wrapper>
-                            <Wrapper
-                              width={`50%`}
-                              padding={`0 14px`}
-                              color={Theme.darkGrey_C}
-                            >
-                              <Wrapper dr={`row`} ju={`flex-start`}>
-                                <Text maxWidth={`52%`} isEllipsis isHover>
-                                  {data.productName}
-                                </Text>
-                                <Text padding={`0 5px`}>
-                                  <LockFilled />
-                                </Text>
-                              </Wrapper>
-                            </Wrapper>
-                            <Wrapper
-                              width={`14%`}
-                              color={Theme.grey_C}
-                              onChange={maskingName}
-                            >
-                              {data.name}
-                            </Wrapper>
-                            <Wrapper width={`14%`}>
-                              {data.viewCreatedAt}
-                            </Wrapper>
-                            <Wrapper
-                              width={`14%`}
-                              fontSize={`16px`}
-                              fontWeight={`600`}
-                            >
-                              {data.isCompleted ? (
-                                <Text>답변완료</Text>
-                              ) : (
-                                <Text color={Theme.grey_C}>답변대기</Text>
-                              )}
-                            </Wrapper>
-                          </List>
-                        </ATag>
-                      </Link>
-                    );
-                  })
-                )}
-              </>
+              requestMyList.map((data) => {
+                return (
+                  <Link href={`/customer/request/${data.id}`}>
+                    <ATag>
+                      <List>
+                        <Wrapper
+                          display={width < 700 ? `none` : `flex`}
+                          width={`8%`}
+                          color={Theme.grey_C}
+                        >
+                          {data.id}
+                        </Wrapper>
+                        <Wrapper
+                          width={width < 700 ? `100%` : `50%`}
+                          dr={`row`}
+                          padding={width < 700 ? `0 0 10px` : `0 14px`}
+                          ju={`flex-start`}
+                        >
+                          <Text
+                            maxWidth={`90%`}
+                            isEllipsis
+                            margin={`0 6px 0 0`}
+                          >
+                            {data.productName}
+                          </Text>
+                          <LockFilled />
+                        </Wrapper>
+                        <Wrapper
+                          color={Theme.grey_C}
+                          width={width < 700 ? `calc(100% / 3)` : `14%`}
+                        >
+                          {data.name.replace(/(?<=.{1})./gi, "*")}
+                        </Wrapper>
+                        <Wrapper width={width < 700 ? `calc(100% / 3)` : `14%`}>
+                          {data.viewCreatedAt}
+                        </Wrapper>
+                        <Wrapper
+                          width={width < 700 ? `calc(100% / 3)` : `14%`}
+                          fontSize={width < 700 ? `15px` : `18px`}
+                          fontWeight={`600`}
+                        >
+                          <Text>
+                            {data.isCompleted ? (
+                              <Text>답변완료</Text>
+                            ) : (
+                              <Text color={Theme.grey_C}>답변대기</Text>
+                            )}
+                          </Text>
+                        </Wrapper>
+                      </List>
+                    </ATag>
+                  </Link>
+                );
+              })
             )}
 
             <CustomPage

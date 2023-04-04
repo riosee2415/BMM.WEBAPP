@@ -18,37 +18,10 @@ import {
 } from "../../../components/commonComponents";
 import CustomerLeft from "../../../components/CustomerLeft";
 import Theme from "../../../components/Theme";
-import styled from "styled-components";
 import { useRouter } from "next/router";
 import { useDispatch, useSelector } from "react-redux";
 import { message } from "antd";
 import useInput from "../../../hooks/useInput";
-import { REQUEST_LIST_REQUEST } from "../../../reducers/request";
-
-const List = styled(Wrapper)`
-  flex-direction: row;
-  justify-content: space-between;
-  border-bottom: 1px solid ${Theme.lightGrey2_C};
-  height: 60px;
-  font-size: 16px;
-
-  &:hover {
-    cursor: pointer;
-    border-bottom: 1px solid ${Theme.basicTheme_C};
-  }
-
-  @media (max-width: 700px) {
-    height: auto;
-    padding: 10px;
-    border: 1px solid ${Theme.lightGrey2_C};
-    margin: 0 0 15px;
-    border-radius: 10px;
-
-    &:nth-child(2n) {
-      background: ${Theme.lightGrey3_C};
-    }
-  }
-`;
 
 const Secret = () => {
   ////// GLOBAL STATE //////
@@ -106,7 +79,7 @@ const Secret = () => {
       </Head>
 
       <ClientLayout>
-        <WholeWrapper padding={width < 900 ? `70px 0 0` : `95px 0 0`}>
+        <WholeWrapper padding={width < 900 ? `70px 0 ` : `95px 0 `}>
           <RsWrapper dr={`row`} al={`flex-start`} position={`relative`}>
             <CustomerLeft />
             <Wrapper

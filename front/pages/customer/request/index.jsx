@@ -13,7 +13,6 @@ import {
   CustomSelect,
   Image,
   RsWrapper,
-  SearchForm,
   SpanText,
   Text,
   TextInput,
@@ -273,7 +272,7 @@ const Index = () => {
                         color={Theme.grey_C}
                         width={width < 700 ? `calc(100% / 3)` : `14%`}
                       >
-                        {data.name}
+                        {data.name.replace(/(?<=.{1})./gi, "*")}
                       </Wrapper>
                       <Wrapper width={width < 700 ? `calc(100% / 3)` : `14%`}>
                         {data.viewCreatedAt}
