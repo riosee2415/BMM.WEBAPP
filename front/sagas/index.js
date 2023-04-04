@@ -16,6 +16,7 @@ import advertiseSaga from "./advertise";
 import mainImageSaga from "./mainImage";
 import categorySaga from "./category";
 import brandSaga from "./brand";
+import couponSaga from "./coupon";
 //
 import axios from "axios";
 import backURL from "../config/config";
@@ -42,6 +43,7 @@ export default function* rootSaga() {
     fork(mainImageSaga),
     fork(categorySaga),
     fork(brandSaga),
+    fork(couponSaga),
     //
   ]);
 }

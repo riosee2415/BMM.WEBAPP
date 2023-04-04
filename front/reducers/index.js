@@ -17,6 +17,7 @@ import advertise from "./advertise";
 import mainImage from "./mainImage";
 import category from "./category";
 import brand from "./brand";
+import coupon from "./coupon";
 
 const rootReducer = (state, action) => {
   switch (action.type) {
@@ -42,6 +43,7 @@ const rootReducer = (state, action) => {
         mainImage,
         category,
         brand,
+        coupon,
       });
       return combinedReducer(state, action);
     }
