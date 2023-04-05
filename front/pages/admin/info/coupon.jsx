@@ -30,7 +30,7 @@ import {
   SearchForm,
   SearchFormItem,
 } from "../../../components/commonComponents";
-import { LOAD_MY_INFO_REQUEST } from "../../../reducers/user";
+import { LOAD_MY_INFO_REQUEST, USERLIST_REQUEST } from "../../../reducers/user";
 import Theme from "../../../components/Theme";
 import { items } from "../../../components/AdminLayout";
 import {
@@ -45,6 +45,7 @@ import {
 import {
   COUPON_CREATE_REQUEST,
   COUPON_DELETE_REQUEST,
+  COUPON_GRANT_REQUEST,
   COUPON_LIST_REQUEST,
 } from "../../../reducers/coupon";
 import moment from "moment";
@@ -70,7 +71,7 @@ const ViewStatusIcon = styled(EyeOutlined)`
 `;
 
 const Coupon = ({}) => {
-  const { st_loadMyInfoDone, me } = useSelector((state) => state.user);
+  const { st_loadMyInfoDone, me, users } = useSelector((state) => state.user);
   const {
     couponList,
 
@@ -88,7 +89,7 @@ const Coupon = ({}) => {
   const dispatch = useDispatch();
 
   // 상위메뉴 변수
-  const [level1, setLevel1] = useState("고객지원관리");
+  const [level1, setLevel1] = useState("기초정보관리");
   const [level2, setLevel2] = useState("");
   const [sameDepth, setSameDepth] = useState([]);
   const [currentData, setCurrentData] = useState(null);
@@ -120,11 +121,13 @@ const Coupon = ({}) => {
 
   const [searchForm] = Form.useForm();
   const [createForm] = Form.useForm();
+  const [grantForm] = Form.useForm();
 
   const [sort, setSort] = useState(7);
   const [searchTitle, setSearchTitle] = useState("");
 
   const [cModal, setCModal] = useState(false);
+  const [gModal, setGModal] = useState(false);
 
   ////// USEEFFECT //////
 
@@ -206,11 +209,29 @@ const Coupon = ({}) => {
     }
   }, [st_couponDeleteDone, st_couponDeleteError]);
 
+  // ********************** 쿠폰 부여 후처리 *************************
+  useEffect(() => {
+    if (st_couponGrantDone) {
+      grantForm.resetFields();
+      grantModalToggle();
+
+      return message.success("쿠폰이 정상적으로 부여되었습니다.");
+    }
+
+    if (st_couponGrantError) {
+      return message.error(st_couponGrantError);
+    }
+  }, [st_couponGrantDone, st_couponGrantError]);
+
   ////// TOGGLE //////
 
   const createModalToggle = useCallback(() => {
     setCModal((prev) => !prev);
   }, [cModal]);
+
+  const grantModalToggle = useCallback(() => {
+    setGModal((prev) => !prev);
+  }, [gModal]);
 
   ////// HANDLER //////
 
@@ -267,6 +288,19 @@ const Coupon = ({}) => {
     });
   }, []);
 
+  const grantHandler = useCallback(
+    (data) => {
+      dispatch({
+        type: COUPON_GRANT_REQUEST,
+        data: {
+          UserId: data.userid,
+          CuponId: currentData.id,
+        },
+      });
+    },
+    [currentData]
+  );
+
   ////// DATAVIEW //////
 
   ////// DATA COLUMNS //////
@@ -295,6 +329,14 @@ const Coupon = ({}) => {
     {
       title: "생성일",
       dataIndex: "viewCreatedAt",
+    },
+    {
+      title: "쿠폰부여",
+      render: (data) => (
+        <Button size="small" type="primary" onClick={grantModalToggle}>
+          쿠폰부여
+        </Button>
+      ),
     },
     {
       title: "상태창",
@@ -446,7 +488,7 @@ const Coupon = ({}) => {
               <Wrapper margin={`0px 0px 5px 0px`}>
                 <InfoTitle>
                   <CheckOutlined />
-                  공지사항 기본정보
+                  쿠폰 기본정보
                 </InfoTitle>
               </Wrapper>
 
@@ -457,19 +499,11 @@ const Coupon = ({}) => {
                 wrapperCol={{ span: 22 }}
               >
                 <Form.Item label="쿠폰명" name="title">
-                  <Input
-                    size="small"
-                    readOnly
-                    style={{ background: Theme.white_C, color: Theme.black_C }}
-                  />
+                  <Input size="small" readOnly />
                 </Form.Item>
 
                 <Form.Item label="내용" name="description">
-                  <Input.TextArea
-                    rows={5}
-                    readOnly
-                    style={{ background: Theme.white_C, color: Theme.black_C }}
-                  />
+                  <Input.TextArea rows={5} readOnly />
                 </Form.Item>
 
                 <Form.Item label="마감일" name="limitDate">
@@ -481,35 +515,19 @@ const Coupon = ({}) => {
                 </Form.Item>
 
                 <Form.Item label="최소금액" name="minimunPay">
-                  <Input
-                    size="small"
-                    readOnly
-                    style={{ background: Theme.white_C, color: Theme.black_C }}
-                  />
+                  <Input size="small" readOnly />
                 </Form.Item>
 
                 <Form.Item label="할인금액" name="discountPay">
-                  <Input
-                    size="small"
-                    readOnly
-                    style={{ background: Theme.white_C, color: Theme.black_C }}
-                  />
+                  <Input size="small" readOnly />
                 </Form.Item>
 
                 <Form.Item label="작성일" name="createdAt">
-                  <Input
-                    size="small"
-                    readOnly
-                    style={{ background: Theme.white_C, color: Theme.black_C }}
-                  />
+                  <Input size="small" readOnly />
                 </Form.Item>
 
                 <Form.Item label="수정일" name="updatedAt">
-                  <Input
-                    size="small"
-                    readOnly
-                    style={{ background: Theme.white_C, color: Theme.black_C }}
-                  />
+                  <Input size="small" readOnly />
                 </Form.Item>
               </Form>
 
@@ -629,6 +647,47 @@ const Coupon = ({}) => {
           </Wrapper>
         </Form>
       </Modal>
+
+      <Modal
+        visible={gModal}
+        footer={null}
+        title={"쿠폰부여하기"}
+        width={`500px`}
+        onCancel={grantModalToggle}
+      >
+        <Form
+          style={{ width: "100%" }}
+          form={grantForm}
+          labelCol={{ span: 3 }}
+          wrapperCol={{ span: 21 }}
+          onFinish={grantHandler}
+        >
+          <Form.Item
+            label="회원"
+            name="userid"
+            rules={[
+              { required: true, message: "회원은 필수 선택사항 입니다." },
+            ]}
+          >
+            <Select size="small" placeholder="회원을 선택해주세요.">
+              {users &&
+                users.map((data) => {
+                  return (
+                    <Select.Option key={data.id} value={data.id}>
+                      {data.username}
+                    </Select.Option>
+                  );
+                })}
+            </Select>
+          </Form.Item>
+
+          <Wrapper al="flex-end">
+            <Button size="small" type="primary" htmlType="submit">
+              쿠폰부여
+            </Button>
+          </Wrapper>
+        </Form>
+      </Modal>
     </AdminLayout>
   );
 };
@@ -646,6 +705,10 @@ export const getServerSideProps = wrapper.getServerSideProps(
 
     context.store.dispatch({
       type: LOAD_MY_INFO_REQUEST,
+    });
+
+    context.store.dispatch({
+      type: USERLIST_REQUEST,
     });
 
     // 구현부 종료
