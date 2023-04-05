@@ -1,6 +1,10 @@
 import { all, call, delay, fork, put, takeLatest } from "redux-saga/effects";
 import axios from "axios";
 import {
+  ALL_LIST_REQUEST,
+  ALL_LIST_SUCCESS,
+  ALL_LIST_FAILURE,
+  //
   UP_LIST_REQUEST,
   UP_LIST_SUCCESS,
   UP_LIST_FAILURE,
@@ -33,6 +37,33 @@ import {
   DOWN_DEL_SUCCESS,
   DOWN_DEL_FAILURE,
 } from "../reducers/category";
+
+// SAGA AREA ********************************************************************************************************
+// ******************************************************************************************************************
+async function allListAPI(data) {
+  return await axios.post(`/api/cate/all`, data);
+}
+
+function* allList(action) {
+  try {
+    const result = yield call(allListAPI, action.data);
+
+    yield put({
+      type: ALL_LIST_SUCCESS,
+      data: result.data,
+    });
+  } catch (err) {
+    console.error(err);
+    yield put({
+      type: ALL_LIST_FAILURE,
+      error: err.response.data,
+    });
+  }
+}
+
+// ******************************************************************************************************************
+// ******************************************************************************************************************
+// ******************************************************************************************************************
 
 // SAGA AREA ********************************************************************************************************
 // ******************************************************************************************************************
@@ -251,6 +282,9 @@ function* downDel(action) {
 // ******************************************************************************************************************
 
 //////////////////////////////////////////////////////////////
+function* watchAllList() {
+  yield takeLatest(ALL_LIST_REQUEST, allList);
+}
 function* watchUpList() {
   yield takeLatest(UP_LIST_REQUEST, upList);
 }
@@ -279,6 +313,7 @@ function* watchDownDel() {
 //////////////////////////////////////////////////////////////
 export default function* categorySaga() {
   yield all([
+    fork(watchAllList),
     fork(watchUpList),
     fork(watchUpNew),
     fork(watchUpUpdate),

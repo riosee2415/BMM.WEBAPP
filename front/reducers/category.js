@@ -1,9 +1,14 @@
 import produce from "../util/produce";
 
 export const initailState = {
+  allList: [],
   upList: [],
   downList: [],
   //
+  // 전체 카테고리 가져오기
+  st_allListLoading: false,
+  st_allListDone: false,
+  st_allListError: null,
   // 1뎁스 카테고리 가져오기
   st_upListLoading: false,
   st_upListDone: false,
@@ -49,6 +54,10 @@ export const UP_LIST_REQUEST = "UP_LIST_REQUEST";
 export const UP_LIST_SUCCESS = "UP_LIST_SUCCESS";
 export const UP_LIST_FAILURE = "UP_LIST_FAILURE";
 
+export const ALL_LIST_REQUEST = "ALL_LIST_REQUEST";
+export const ALL_LIST_SUCCESS = "ALL_LIST_SUCCESS";
+export const ALL_LIST_FAILURE = "ALL_LIST_FAILURE";
+
 export const UP_NEW_REQUEST = "UP_NEW_REQUEST";
 export const UP_NEW_SUCCESS = "UP_NEW_SUCCESS";
 export const UP_NEW_FAILURE = "UP_NEW_FAILURE";
@@ -80,6 +89,28 @@ export const DOWN_DEL_FAILURE = "DOWN_DEL_FAILURE";
 const reducer = (state = initailState, action) =>
   produce(state, (draft) => {
     switch (action.type) {
+      case ALL_LIST_REQUEST: {
+        draft.st_allListLoading = true;
+        draft.st_allListDone = false;
+        draft.st_allListError = null;
+        break;
+      }
+
+      case ALL_LIST_SUCCESS: {
+        draft.st_allListLoading = false;
+        draft.st_allListDone = true;
+        draft.st_allListError = null;
+        draft.allList = action.data;
+        break;
+      }
+
+      case ALL_LIST_FAILURE: {
+        draft.st_allListLoading = false;
+        draft.st_allListDone = false;
+        draft.st_allListError = action.data.error;
+        break;
+      }
+      ////////////////////////////////////////////////////////////////
       case UP_LIST_REQUEST: {
         draft.st_upListLoading = true;
         draft.st_upListDone = false;

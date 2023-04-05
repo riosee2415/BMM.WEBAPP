@@ -20,7 +20,7 @@ import Link from "next/link";
 import { useDispatch, useSelector } from "react-redux";
 import { LOGO_GET_REQUEST } from "../reducers/logo";
 import { LOAD_MY_INFO_REQUEST } from "../reducers/user";
-import { UP_LIST_REQUEST } from "../reducers/category";
+import { ALL_LIST_REQUEST } from "../reducers/category";
 
 const WebRow = styled(RowWrapper)`
   z-index: 100;
@@ -184,9 +184,7 @@ const AppHeader = () => {
 
   const { me } = useSelector((state) => state.user);
   const { logos } = useSelector((state) => state.logo);
-  const { upList } = useSelector((state) => state.category);
-
-  console.log(upList);
+  const { allList } = useSelector((state) => state.category);
 
   const width = useWidth();
   const router = useRouter();
@@ -218,7 +216,7 @@ const AppHeader = () => {
     });
 
     dispatch({
-      type: UP_LIST_REQUEST,
+      type: ALL_LIST_REQUEST,
     });
   }, []);
 
@@ -386,16 +384,17 @@ const AppHeader = () => {
                   </Text>
 
                   <SubMenuWrapper height={`48px`}>
-                    {upList &&
-                      upList.map((data) => {
+                    {allList &&
+                      allList.map((data) => {
                         return (
                           <SubMenuTextCol key={data.id}>
                             {data.value}
                             <InMenu>
-                              <SubMenu>LUSH(러쉬)</SubMenu>
-                              <SubMenu>의류</SubMenu>
-                              <SubMenu>편의점</SubMenu>
-                              <SubMenu>DAISO(다이소)</SubMenu>
+                              {data.sub.map((cate) => {
+                                return (
+                                  <SubMenu key={cate.id}>{cate.value}</SubMenu>
+                                );
+                              })}
                             </InMenu>
                           </SubMenuTextCol>
                         );

@@ -24,6 +24,7 @@ import { mobileMenu } from "./AnimationCommon";
 import { LOGO_GET_REQUEST } from "../reducers/logo";
 import { useDispatch, useSelector } from "react-redux";
 import { Badge } from "antd";
+import { ALL_LIST_REQUEST } from "../reducers/category";
 
 const Circle = styled(Wrapper)`
   width: 56px;
@@ -36,9 +37,9 @@ const Circle = styled(Wrapper)`
 
 const MenuWrapper = styled(Wrapper)`
   position: fixed;
-  bottom: 80px;
+  bottom: 70px;
   left: 0;
-  height: calc(100vh - 80px);
+  height: calc(100vh - 70px);
   background: ${Theme.white_C};
   animation: ${mobileMenu} 1s forwards;
   z-index: 10000;
@@ -98,6 +99,7 @@ const TwoTextBox = styled(Wrapper)`
 
 const QuickMenu = () => {
   const { logos } = useSelector((state) => state.logo);
+  const { allList } = useSelector((state) => state.category);
 
   const width = useWidth();
   const router = useRouter();
@@ -118,6 +120,10 @@ const QuickMenu = () => {
   useEffect(() => {
     dispatch({
       type: LOGO_GET_REQUEST,
+    });
+
+    dispatch({
+      type: ALL_LIST_REQUEST,
     });
   }, [router.query]);
 
@@ -225,26 +231,17 @@ const QuickMenu = () => {
                 wrap={`nowrap`}
                 ju={`flex-start`}
               >
-                <TextBox onClick={() => setCurrentCategory("22")}>22</TextBox>
-                <TextBox>22</TextBox>
-                <TextBox isActive={true}>22</TextBox>
-                <TextBox>22</TextBox>
-                <TextBox>22</TextBox>
-                <TextBox>22</TextBox>
-                <TextBox>22</TextBox>
-                <TextBox>22</TextBox>
-                <TextBox>22</TextBox>
-                <TextBox>22</TextBox>
-                <TextBox>22</TextBox>
-                <TextBox>22</TextBox>
-                <TextBox>22</TextBox>
-                <TextBox>22</TextBox>
-                <TextBox>22</TextBox>
-                <TextBox>22</TextBox>
-                <TextBox>22</TextBox>
-                <TextBox>22</TextBox>
-                <TextBox>22</TextBox>
-                <TextBox>22</TextBox>
+                {allList &&
+                  allList.map((data) => {
+                    return (
+                      <TextBox
+                        key={data.id}
+                        onClick={() => setCurrentCategory("22")}
+                      >
+                        {data.value}
+                      </TextBox>
+                    );
+                  })}
               </Wrapper>
 
               {currentCategory && (
