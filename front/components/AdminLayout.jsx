@@ -61,6 +61,11 @@ export const items = {
       link: "/admin/info/brand",
       useYn: true,
     },
+    {
+      name: "쿠폰관리",
+      link: "/admin/info/coupon",
+      useYn: true,
+    },
   ],
   배너관리: [
     {

@@ -61,7 +61,7 @@ function* couponList(action) {
 // SAGA AREA ********************************************************************************************************
 // ******************************************************************************************************************
 async function couponCreateAPI(data) {
-  return await axios.post(`/api/cp/create`, data);
+  return await axios.post(`/api/cp/new`, data);
 }
 
 function* couponCreate(action) {
