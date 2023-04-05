@@ -20,6 +20,7 @@ import Link from "next/link";
 import { useDispatch, useSelector } from "react-redux";
 import { LOGO_GET_REQUEST } from "../reducers/logo";
 import { LOAD_MY_INFO_REQUEST } from "../reducers/user";
+import { UP_LIST_REQUEST } from "../reducers/category";
 
 const WebRow = styled(RowWrapper)`
   z-index: 100;
@@ -183,21 +184,15 @@ const AppHeader = () => {
 
   const { me } = useSelector((state) => state.user);
   const { logos } = useSelector((state) => state.logo);
+  const { upList } = useSelector((state) => state.category);
 
-  // const documentRef = useRef(document);
-
-  const [drawar, setDrawar] = useState(false);
-  const [subMenu, setSubMenu] = useState(``);
+  console.log(upList);
 
   const width = useWidth();
   const router = useRouter();
   const dispatch = useDispatch();
 
   ///////////// - EVENT HANDLER- ////////////
-
-  const drawarToggle = useCallback(() => {
-    setDrawar(!drawar);
-  });
 
   const handleScroll = useCallback(() => {
     const { pageYOffset } = window;
@@ -217,13 +212,15 @@ const AppHeader = () => {
     dispatch({
       type: LOAD_MY_INFO_REQUEST,
     });
-  }, [router.query]);
 
-  useEffect(() => {
     dispatch({
       type: LOGO_GET_REQUEST,
     });
-  }, [router.query]);
+
+    dispatch({
+      type: UP_LIST_REQUEST,
+    });
+  }, []);
 
   useEffect(() => {
     document.addEventListener("scroll", handleScroll);
@@ -389,39 +386,20 @@ const AppHeader = () => {
                   </Text>
 
                   <SubMenuWrapper height={`48px`}>
-                    <SubMenuTextCol>
-                      LUSH(러쉬)
-                      <InMenu>
-                        <SubMenu>LUSH(러쉬)</SubMenu>
-                        <SubMenu>의류</SubMenu>
-                        <SubMenu>편의점</SubMenu>
-                        <SubMenu>DAISO(다이소)</SubMenu>
-                      </InMenu>
-                    </SubMenuTextCol>
-                    <SubMenuTextCol>
-                      의류
-                      <InMenu>
-                        <SubMenu>의류</SubMenu>
-                        <SubMenu>편의점</SubMenu>
-                        <SubMenu>DAISO(다이소)</SubMenu>
-                      </InMenu>
-                    </SubMenuTextCol>
-                    <SubMenuTextCol>
-                      편의점
-                      <InMenu>
-                        <SubMenu>편의점</SubMenu>
-                        <SubMenu>DAISO(다이소)</SubMenu>
-                      </InMenu>
-                    </SubMenuTextCol>
-                    <SubMenuTextCol>
-                      DAISO(다이소)
-                      <InMenu>
-                        <SubMenu>LUSH(러쉬)</SubMenu>
-                        <SubMenu>의류</SubMenu>
-                        <SubMenu>편의점</SubMenu>
-                        <SubMenu>DAISO(다이소)</SubMenu>
-                      </InMenu>
-                    </SubMenuTextCol>
+                    {upList &&
+                      upList.map((data) => {
+                        return (
+                          <SubMenuTextCol key={data.id}>
+                            {data.value}
+                            <InMenu>
+                              <SubMenu>LUSH(러쉬)</SubMenu>
+                              <SubMenu>의류</SubMenu>
+                              <SubMenu>편의점</SubMenu>
+                              <SubMenu>DAISO(다이소)</SubMenu>
+                            </InMenu>
+                          </SubMenuTextCol>
+                        );
+                      })}
                   </SubMenuWrapper>
                 </MenuCol>
               </Wrapper>
