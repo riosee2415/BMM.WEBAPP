@@ -1,10 +1,10 @@
 import React, { useCallback, useEffect, useState } from "react";
 import Router, { useRouter } from "next/router";
-import { Checkbox, message, Modal } from "antd";
+import { Checkbox, message, Modal, Select } from "antd";
 import useInput from "../../hooks/useInput";
 import useWidth from "../../hooks/useWidth";
 import { useDispatch, useSelector } from "react-redux";
-import { SIGNUP_REQUEST } from "../../reducers/user";
+import { SIGNUP_REQUEST, USERLIST_REQUEST } from "../../reducers/user";
 import { LOAD_MY_INFO_REQUEST } from "../../reducers/user";
 import ClientLayout from "../../components/ClientLayout";
 import Head from "next/head";
@@ -19,6 +19,7 @@ import {
   TextInput,
   CommonButton,
   SpanText,
+  CustomSelect,
 } from "../../components/commonComponents";
 import Theme from "../../components/Theme";
 import styled from "styled-components";
@@ -64,6 +65,9 @@ const style = {
 
 const SignUp = () => {
   ////// GLOBAL STATE //////
+  const { users, st_signUpDone, st_signUpError } = useSelector(
+    (state) => state.user
+  );
 
   ////// HOOKS //////
   const width = useWidth();
@@ -81,15 +85,34 @@ const SignUp = () => {
   const isTerm1 = useInput(false);
   const isTerm2 = useInput(false);
 
+  const [recomId, setRecomId] = useState(null);
+
   const [pModal, setPModal] = useState(false); // 주소 모달
 
   ////// USEEFFECT //////
+  useEffect(() => {
+    if (st_signUpDone) {
+      router.push("/user/login");
+      return message.success("회원가입되었습니다.");
+    }
+    if (st_signUpError) {
+      return message.error(st_signUpError);
+    }
+  }, [st_signUpDone, st_signUpError]);
+
   ////// TOGGLE ////////
   const postCodeModalToggle = useCallback(() => {
     setPModal((prev) => !prev);
   }, [pModal]);
 
   ////// HANDLER ///////
+
+  const recomHandler = useCallback(
+    (data) => {
+      setRecomId(data);
+    },
+    [recomId]
+  );
 
   const signUpHandler = useCallback(() => {
     if (!userId.value || userId.value.trim() === "") {
@@ -124,10 +147,15 @@ const SignUp = () => {
       type: SIGNUP_REQUEST,
       data: {
         userId: userId.value,
+        username: userId.value,
         password: password.value,
         mobile: mobile.value,
         email: email.value,
-        terms: isTerm.value,
+        postCode: postCode.value,
+        address: address.value,
+        detailAddress: detailAddress.value,
+        recommId: recomId,
+        terms: isTerm1.value,
       },
     });
   }, [
@@ -141,6 +169,7 @@ const SignUp = () => {
     detailAddress.value,
     isTerm1.value,
     isTerm2.value,
+    recomId,
   ]);
 
   ////// DATAVIEW //////
@@ -218,7 +247,9 @@ const SignUp = () => {
                 placeholder="비밀번호 재확인"
                 {...passCheck}
               />
-              <SignupLabel>연락처</SignupLabel>
+              <SignupLabel>
+                연락처 <SpanText color={Theme.red_C}>*</SpanText>
+              </SignupLabel>
               <TextInput
                 width={`100%`}
                 height={`46px`}
@@ -271,13 +302,29 @@ const SignUp = () => {
                 placeholder="상세주소를 입력해주세요."
                 {...detailAddress}
               />
+
+              <SignupLabel>추천인</SignupLabel>
+
+              <CustomSelect width={`100%`} radius={`0px`}>
+                <Select onChange={recomHandler} placeholder="추천인">
+                  {users &&
+                    users.map((data) => {
+                      return (
+                        <Select.Option key={data.id} value={data.id}>
+                          {data.username}
+                        </Select.Option>
+                      );
+                    })}
+                </Select>
+              </CustomSelect>
+
               <Wrapper>
                 <Text
                   width={`100%`}
                   fontSize={width < 500 ? `18px` : `20px`}
                   fontWeight={`600`}
                   color={Theme.lightGrey_C}
-                  margin={`0 0 20px`}
+                  margin={`20px 0`}
                 >
                   약관동의
                 </Text>
@@ -296,7 +343,8 @@ const SignUp = () => {
                     <Checkbox
                       checked={isTerm1.value === true && isTerm2.value === true}
                       onClick={() => {
-                        isTerm1.setValue(true), isTerm2.setValue(true);
+                        isTerm1.setValue(!isTerm1.value),
+                          isTerm2.setValue(!isTerm2.value);
                       }}
                     >
                       <Text fontSize={width < 500 ? `16px` : `18px`}>
@@ -393,6 +441,10 @@ export const getServerSideProps = wrapper.getServerSideProps(
 
     context.store.dispatch({
       type: LOAD_MY_INFO_REQUEST,
+    });
+
+    context.store.dispatch({
+      type: USERLIST_REQUEST,
     });
 
     // 구현부 종료
