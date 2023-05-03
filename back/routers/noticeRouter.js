@@ -429,7 +429,7 @@ router.post("/delete", isAdminCheck, async (req, res, next) => {
 
 /**
  * SUBJECT : 공지사항 이력 목록
- * PARAMETERS : id, title
+ * PARAMETERS : datePick
  * ORDER BY : -
  * STATEMENT : -
  * DEVELOPMENT : 신태섭

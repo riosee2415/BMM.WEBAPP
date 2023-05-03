@@ -38,6 +38,11 @@ const cupon = require("./cupon");
 const cuponuser = require("./cuponuser");
 const cateup = require("./cateup");
 const catedown = require("./catedown");
+const searchtag = require("./searchtag");
+const product = require("./product");
+const producthistory = require("./producthistory");
+const productoption = require("./productoption");
+const productsearchtag = require("./productsearchtag");
 
 const env = process.env.NODE_ENV || "development";
 const config = require("../config/config")[env];
@@ -89,6 +94,11 @@ db.Cupon = cupon;
 db.CuponUser = cuponuser;
 db.CateUp = cateup;
 db.CateDown = catedown;
+db.SearchTag = searchtag;
+db.Product = product;
+db.ProductHistory = producthistory;
+db.ProductOption = productoption;
+db.ProductSearchTag = productsearchtag;
 
 Object.keys(db).forEach((modelName) => {
   db[modelName].init(sequelize);
