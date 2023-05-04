@@ -34,6 +34,7 @@ const cateRouter = require("./routers/cateRouter");
 const reviewRouter = require("./routers/reviewRouter");
 const productRouter = require("./routers/productRouter");
 const searchTagRouter = require("./routers/searchTagRouter");
+const likeRouter = require("./routers/likeRouter");
 
 // Config Settings
 db.sequelize
@@ -123,6 +124,7 @@ app.use("/api/cate", cateRouter);
 app.use("/api/review", reviewRouter);
 app.use("/api/product", productRouter);
 app.use("/api/searchTag", searchTagRouter);
+app.use("/api/like", likeRouter);
 
 // second minute hour day-of-month month day-of-week
 const task = cron.schedule(

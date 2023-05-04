@@ -86,10 +86,19 @@ router.post("/list", async (req, res, next) => {
   // orderType이 2라면 최신순
   // detault = 2
 
+  // CONCAT(A.discount, "%")																				            AS viewDiscount,
+  //         FORMAT((A.price * (A.discount / 100)), 0)					                        AS calDiscountPrice,
+  //         CONCAT(FORMAT((A.price * (A.discount / 100)), 0), "원")		                AS viewDiscountPrice,
+  //         CASE
+  //           WHEN	A.discount = 0 THEN	CONCAT(FORMAT(A.price, 0), "원")
+  //           ELSE	CONCAT(FORMAT(A.price - (A.price * (A.discount / 100)), 0), "원")
+  //         END															                                          AS realPrice,
+  //         A.price - (A.price * (A.discount / 100))                                  AS calcPrice,
+
   const _orderType = parseInt(orderType) || 2;
 
   const lengthQuery = `
-  SELECT	ROW_NUMBER()	OVER(ORDER	BY	A.createdAt)														AS num,
+  SELECT	ROW_NUMBER()	OVER(ORDER	BY	A.createdAt)														    AS num,
           A.id,
           A.thumbnail1,
           A.thumbnail2,
@@ -98,18 +107,17 @@ router.post("/list", async (req, res, next) => {
           A.title,
           A.description,
           A.marketPrice,
-          FORMAT(A.marketPrice, 0)																			AS formatMarketPrice,
-          CONCAT(FORMAT(A.marketPrice, 0), "원")																AS concatMarketPrice,
+          FORMAT(A.marketPrice, 0)																			            AS formatMarketPrice,
+          CONCAT(FORMAT(A.marketPrice, 0), "원")																    AS concatMarketPrice,
           A.memberPrice,
-          FORMAT(A.memberPrice, 0)																			AS formatMemberPrice,
-          CONCAT(FORMAT(A.memberPrice, 0), "원")																AS concatMemberPrice,
+          FORMAT(A.memberPrice, 0)																			            AS formatMemberPrice,
+          CONCAT(FORMAT(A.memberPrice, 0), "원")																    AS concatMemberPrice,
           A.weight,
-          CONCAT(A.weight, "Kg")																				AS concatWeight,
+          CONCAT(A.weight, "Kg")																				            AS concatWeight,
           A.buyMinLimitCount,
           A.buyMaxLimitCount,
           CONCAT("최소 ", A.buyMinLimitCount, "개 이상", " ~ ", "최대 ", A.buyMaxLimitCount, "개 이하 구매 가능")		AS viewBuyLimitCount,
           A.discount,
-          CONCAT(A.discount, "%")																				AS viewDiscount,
           A.youtubeLink,
           A.detailImage,
           A.origin,
@@ -127,17 +135,34 @@ router.post("/list", async (req, res, next) => {
           A.createdAt,
           A.updatedAt,
           DATE_FORMAT(A.createdAt, "%Y년 %m월 %d일")															  AS viewCreatedAt,
-          DATE_FORMAT(A.createdAt, "%Y.%m.%d")																AS viewFrontCreatedAt,
+          DATE_FORMAT(A.createdAt, "%Y.%m.%d")																    AS viewFrontCreatedAt,
           DATE_FORMAT(A.updatedAt, "%Y년 %m월 %d일")															  AS viewUpdatedAt,
           A.CateUpId,
           A.CateDownId,
           A.BrandId,
-          B.username																							AS updator,
-          C.value 																							AS upCategoryValue,
-          D.value 																							AS downCategoryValue,
-          E.imagePath																							AS brandImage,
-          E.name 																								AS brandName,
-          E.subDesc 																							AS brandSubDesc
+          B.username																							                AS updator,
+          C.value 																							                  AS upCategoryValue,
+          D.value 																							                  AS downCategoryValue,
+          E.imagePath																							                AS brandImage,
+          E.name 																								                  AS brandName,
+          E.subDesc 																							                AS brandSubDesc,
+          ${
+            req.user
+              ? `
+          CASE
+                WHEN (
+                        SELECT  COUNT(id)
+                          FROM  productLike
+                         WHERE  ProductId = A.id
+                           AND  UserId = ${req.user.id}
+                     ) > 0 THEN       1
+                           ELSE       0
+          END                                                                     AS isLike
+          `
+              : `
+          0                                                                       AS isLike    
+              `
+          }
     FROM	product		A
     LEFT
    OUTER
@@ -154,10 +179,10 @@ router.post("/list", async (req, res, next) => {
       ON	A.BrandId = E.id
    WHERE	1 = 1
      AND	A.isDelete = 0
-     AND    A.title LIKE "%${_searchTitle}%"
-            ${_CateUpId ? `AND A.CateUpId = ${_CateUpId}` : ``}
-            ${_CateDownId ? `AND A.CateDownId = ${_CateDownId}` : ``}
-            ${_BrandId ? `AND A.BrandId = ${_BrandId}` : ``}
+     AND  A.title LIKE "%${_searchTitle}%"
+          ${_CateUpId ? `AND A.CateUpId = ${_CateUpId}` : ``}
+          ${_CateDownId ? `AND A.CateDownId = ${_CateDownId}` : ``}
+          ${_BrandId ? `AND A.BrandId = ${_BrandId}` : ``}
     `;
 
   const selectQuery = `
@@ -170,18 +195,18 @@ router.post("/list", async (req, res, next) => {
           A.title,
           A.description,
           A.marketPrice,
-          FORMAT(A.marketPrice, 0)																			AS formatMarketPrice,
+          FORMAT(A.marketPrice, 0)																			        AS formatMarketPrice,
           CONCAT(FORMAT(A.marketPrice, 0), "원")																AS concatMarketPrice,
           A.memberPrice,
-          FORMAT(A.memberPrice, 0)																			AS formatMemberPrice,
+          FORMAT(A.memberPrice, 0)																			        AS formatMemberPrice,
           CONCAT(FORMAT(A.memberPrice, 0), "원")																AS concatMemberPrice,
           A.weight,
-          CONCAT(A.weight, "Kg")																				AS concatWeight,
+          CONCAT(A.weight, "Kg")																				        AS concatWeight,
           A.buyMinLimitCount,
           A.buyMaxLimitCount,
           CONCAT("최소 ", A.buyMinLimitCount, "개 이상", " ~ ", "최대 ", A.buyMaxLimitCount, "개 이하 구매 가능")		AS viewBuyLimitCount,
           A.discount,
-          CONCAT(A.discount, "%")																				AS viewDiscount,
+          CONCAT(A.discount, "%")																				        AS viewDiscount,
           A.youtubeLink,
           A.detailImage,
           A.origin,
@@ -199,17 +224,34 @@ router.post("/list", async (req, res, next) => {
           A.createdAt,
           A.updatedAt,
           DATE_FORMAT(A.createdAt, "%Y년 %m월 %d일")															  AS viewCreatedAt,
-          DATE_FORMAT(A.createdAt, "%Y.%m.%d")																AS viewFrontCreatedAt,
+          DATE_FORMAT(A.createdAt, "%Y.%m.%d")																    AS viewFrontCreatedAt,
           DATE_FORMAT(A.updatedAt, "%Y년 %m월 %d일")															  AS viewUpdatedAt,
           A.CateUpId,
           A.CateDownId,
           A.BrandId,
-          B.username																							AS updator,
-          C.value 																							AS upCategoryValue,
-          D.value 																							AS downCategoryValue,
-          E.imagePath																							AS brandImage,
-          E.name 																								AS brandName,
-          E.subDesc 																							AS brandSubDesc
+          B.username																							                AS updator,
+          C.value 																							                  AS upCategoryValue,
+          D.value 																							                  AS downCategoryValue,
+          E.imagePath																							                AS brandImage,
+          E.name 																								                  AS brandName,
+          E.subDesc 																							                AS brandSubDesc,
+          ${
+            req.user
+              ? `
+          CASE
+                WHEN (
+                        SELECT  COUNT(id)
+                          FROM  productLike
+                         WHERE  ProductId = A.id
+                           AND  UserId = ${req.user.id}
+                     ) > 0 THEN       1
+                           ELSE       0
+          END                                                                     AS isLike
+          `
+              : `
+          0                                                                       AS isLike    
+              `
+          }
     FROM	product		A
     LEFT
    OUTER
@@ -308,18 +350,18 @@ SELECT	ROW_NUMBER()	OVER(ORDER	BY	A.createdAt)														AS num,
         A.title,
         A.description,
         A.marketPrice,
-        FORMAT(A.marketPrice, 0)																			AS formatMarketPrice,
+        FORMAT(A.marketPrice, 0)																			        AS formatMarketPrice,
         CONCAT(FORMAT(A.marketPrice, 0), "원")																AS concatMarketPrice,
         A.memberPrice,
-        FORMAT(A.memberPrice, 0)																			AS formatMemberPrice,
+        FORMAT(A.memberPrice, 0)																			        AS formatMemberPrice,
         CONCAT(FORMAT(A.memberPrice, 0), "원")																AS concatMemberPrice,
         A.weight,
-        CONCAT(A.weight, "Kg")																				AS concatWeight,
+        CONCAT(A.weight, "Kg")																				        AS concatWeight,
         A.buyMinLimitCount,
         A.buyMaxLimitCount,
         CONCAT("최소 ", A.buyMinLimitCount, "개 이상", " ~ ", "최대 ", A.buyMaxLimitCount, "개 이하 구매 가능")		AS viewBuyLimitCount,
         A.discount,
-        CONCAT(A.discount, "%")																				AS viewDiscount,
+        CONCAT(A.discount, "%")																				        AS viewDiscount,
         A.youtubeLink,
         A.detailImage,
         A.origin,
@@ -336,18 +378,35 @@ SELECT	ROW_NUMBER()	OVER(ORDER	BY	A.createdAt)														AS num,
         A.isRecommend,
         A.createdAt,
         A.updatedAt,
-        DATE_FORMAT(A.createdAt, "%Y년 %m월 %d일")															  AS viewCreatedAt,
+        DATE_FORMAT(A.createdAt, "%Y년 %m월 %d일")													  AS viewCreatedAt,
         DATE_FORMAT(A.createdAt, "%Y.%m.%d")																AS viewFrontCreatedAt,
-        DATE_FORMAT(A.updatedAt, "%Y년 %m월 %d일")															  AS viewUpdatedAt,
+        DATE_FORMAT(A.updatedAt, "%Y년 %m월 %d일")													  AS viewUpdatedAt,
         A.CateUpId,
         A.CateDownId,
         A.BrandId,
-        B.username																							AS updator,
-        C.value 																							AS upCategoryValue,
-        D.value 																							AS downCategoryValue,
-        E.imagePath																							AS brandImage,
-        E.name 																								AS brandName,
-        E.subDesc 																							AS brandSubDesc
+        B.username																							            AS updator,
+        C.value 																							              AS upCategoryValue,
+        D.value 																							              AS downCategoryValue,
+        E.imagePath																							            AS brandImage,
+        E.name 																								              AS brandName,
+        E.subDesc 																							            AS brandSubDesc,
+        ${
+          req.user
+            ? `
+        CASE
+              WHEN (
+                      SELECT  COUNT(id)
+                        FROM  productLike
+                       WHERE  ProductId = A.id
+                         AND  UserId = ${req.user.id}
+                   ) > 0 THEN       1
+                         ELSE       0
+        END                                                                     AS isLike
+        `
+            : `
+        0                                                                       AS isLike    
+            `
+        }
   FROM	product		A
   LEFT
  OUTER
@@ -430,7 +489,7 @@ router.post("/admin/list", isAdminCheck, async (req, res, next) => {
   const _BrandId = BrandId ? BrandId : false;
 
   const selectQuery = `
-SELECT	ROW_NUMBER()	OVER(ORDER	BY	A.createdAt)														AS num,
+SELECT	ROW_NUMBER()	OVER(ORDER	BY	A.createdAt)														    AS num,
         A.id,
         A.thumbnail1,
         A.thumbnail2,
@@ -439,18 +498,18 @@ SELECT	ROW_NUMBER()	OVER(ORDER	BY	A.createdAt)														AS num,
         A.title,
         A.description,
         A.marketPrice,
-        FORMAT(A.marketPrice, 0)																			AS formatMarketPrice,
-        CONCAT(FORMAT(A.marketPrice, 0), "원")																AS concatMarketPrice,
+        FORMAT(A.marketPrice, 0)																			            AS formatMarketPrice,
+        CONCAT(FORMAT(A.marketPrice, 0), "원")																    AS concatMarketPrice,
         A.memberPrice,
-        FORMAT(A.memberPrice, 0)																			AS formatMemberPrice,
-        CONCAT(FORMAT(A.memberPrice, 0), "원")																AS concatMemberPrice,
+        FORMAT(A.memberPrice, 0)																			            AS formatMemberPrice,
+        CONCAT(FORMAT(A.memberPrice, 0), "원")																    AS concatMemberPrice,
         A.weight,
-        CONCAT(A.weight, "Kg")																				AS concatWeight,
+        CONCAT(A.weight, "Kg")																				            AS concatWeight,
         A.buyMinLimitCount,
         A.buyMaxLimitCount,
         CONCAT("최소 ", A.buyMinLimitCount, "개 이상", " ~ ", "최대 ", A.buyMaxLimitCount, "개 이하 구매 가능")		AS viewBuyLimitCount,
         A.discount,
-        CONCAT(A.discount, "%")																				AS viewDiscount,
+        CONCAT(A.discount, "%")																				            AS viewDiscount,
         A.youtubeLink,
         A.detailImage,
         A.origin,
@@ -468,17 +527,17 @@ SELECT	ROW_NUMBER()	OVER(ORDER	BY	A.createdAt)														AS num,
         A.createdAt,
         A.updatedAt,
         DATE_FORMAT(A.createdAt, "%Y년 %m월 %d일")															  AS viewCreatedAt,
-        DATE_FORMAT(A.createdAt, "%Y.%m.%d")																AS viewFrontCreatedAt,
+        DATE_FORMAT(A.createdAt, "%Y.%m.%d")																    AS viewFrontCreatedAt,
         DATE_FORMAT(A.updatedAt, "%Y년 %m월 %d일")															  AS viewUpdatedAt,
         A.CateUpId,
         A.CateDownId,
         A.BrandId,
-        B.username																							AS updator,
-        C.value 																							AS upCategoryValue,
-        D.value 																							AS downCategoryValue,
-        E.imagePath																							AS brandImage,
-        E.name 																								AS brandName,
-        E.subDesc 																							AS brandSubDesc
+        B.username																							                AS updator,
+        C.value 																							                  AS upCategoryValue,
+        D.value 																							                  AS downCategoryValue,
+        E.imagePath																							                AS brandImage,
+        E.name 																								                  AS brandName,
+        E.subDesc 																							                AS brandSubDesc
   FROM	product		A
   LEFT
  OUTER
@@ -605,7 +664,24 @@ SELECT	A.id,
         D.value 																							AS downCategoryValue,
         E.imagePath																							AS brandImage,
         E.name 																								AS brandName,
-        E.subDesc 																							AS brandSubDesc
+        E.subDesc 																							AS brandSubDesc,
+        ${
+          req.user
+            ? `
+        CASE
+              WHEN (
+                      SELECT  COUNT(id)
+                        FROM  productLike
+                       WHERE  ProductId = A.id
+                         AND  UserId = ${req.user.id}
+                   ) > 0 THEN       1
+                         ELSE       0
+        END                                                                     AS isLike
+        `
+            : `
+        0                                                                       AS isLike    
+            `
+        }
   FROM	product		A
   LEFT
  OUTER
