@@ -35,7 +35,7 @@ module.exports = class Product extends Model {
           allowNull: false,
         },
         memberPrice: {
-          type: DataTypes.INTEGER, // 시중가
+          type: DataTypes.INTEGER, // 회원가
           allowNull: false,
         },
         weight: {

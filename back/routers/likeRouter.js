@@ -44,6 +44,14 @@ router.post("/list", isLoggedIn, async (req, res, next) => {
             B.buyMaxLimitCount,
             CONCAT("최소 ", B.buyMinLimitCount, "개 이상", " ~ ", "최대 ", B.buyMaxLimitCount, "개 이하 구매 가능")		    AS viewBuyLimitCount,
             B.discount,
+            CONCAT(B.discount, "%")																				        AS viewDiscount,
+            FORMAT((B.marketPrice * (B.discount / 100)), 0)					                        AS calDiscountPrice,
+            CONCAT(FORMAT((B.marketPrice * (B.discount / 100)), 0), "원")		                AS viewDiscountPrice,
+            CASE
+                    WHEN	B.discount = 0 THEN	CONCAT(FORMAT(B.marketPrice, 0), "원")
+                    ELSE	CONCAT(FORMAT(B.marketPrice - (B.marketPrice * (B.discount / 100)), 0), "원")
+            END															                                          AS realPrice,
+            B.marketPrice - (B.marketPrice * (B.discount / 100))                                  AS calcPrice,
             B.youtubeLink,
             B.detailImage,
             B.origin,
@@ -132,6 +140,14 @@ router.post("/list", isLoggedIn, async (req, res, next) => {
             B.buyMaxLimitCount,
             CONCAT("최소 ", B.buyMinLimitCount, "개 이상", " ~ ", "최대 ", B.buyMaxLimitCount, "개 이하 구매 가능")		    AS viewBuyLimitCount,
             B.discount,
+            CONCAT(B.discount, "%")																				        AS viewDiscount,
+            FORMAT((B.marketPrice * (B.discount / 100)), 0)					                        AS calDiscountPrice,
+            CONCAT(FORMAT((B.marketPrice * (B.discount / 100)), 0), "원")		                AS viewDiscountPrice,
+            CASE
+                    WHEN	B.discount = 0 THEN	CONCAT(FORMAT(B.marketPrice, 0), "원")
+                    ELSE	CONCAT(FORMAT(B.marketPrice - (B.marketPrice * (B.discount / 100)), 0), "원")
+            END															                                          AS realPrice,
+            B.marketPrice - (B.marketPrice * (B.discount / 100))                                  AS calcPrice,
             B.youtubeLink,
             B.detailImage,
             B.origin,

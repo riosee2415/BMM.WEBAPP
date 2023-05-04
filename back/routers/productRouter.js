@@ -86,15 +86,6 @@ router.post("/list", async (req, res, next) => {
   // orderType이 2라면 최신순
   // detault = 2
 
-  // CONCAT(A.discount, "%")																				            AS viewDiscount,
-  //         FORMAT((A.price * (A.discount / 100)), 0)					                        AS calDiscountPrice,
-  //         CONCAT(FORMAT((A.price * (A.discount / 100)), 0), "원")		                AS viewDiscountPrice,
-  //         CASE
-  //           WHEN	A.discount = 0 THEN	CONCAT(FORMAT(A.price, 0), "원")
-  //           ELSE	CONCAT(FORMAT(A.price - (A.price * (A.discount / 100)), 0), "원")
-  //         END															                                          AS realPrice,
-  //         A.price - (A.price * (A.discount / 100))                                  AS calcPrice,
-
   const _orderType = parseInt(orderType) || 2;
 
   const lengthQuery = `
@@ -118,6 +109,14 @@ router.post("/list", async (req, res, next) => {
           A.buyMaxLimitCount,
           CONCAT("최소 ", A.buyMinLimitCount, "개 이상", " ~ ", "최대 ", A.buyMaxLimitCount, "개 이하 구매 가능")		AS viewBuyLimitCount,
           A.discount,
+          CONCAT(A.discount, "%")																				        AS viewDiscount,
+          FORMAT((A.marketPrice * (A.discount / 100)), 0)					                        AS calDiscountPrice,
+          CONCAT(FORMAT((A.marketPrice * (A.discount / 100)), 0), "원")		                AS viewDiscountPrice,
+          CASE
+            WHEN	A.discount = 0 THEN	CONCAT(FORMAT(A.marketPrice, 0), "원")
+            ELSE	CONCAT(FORMAT(A.marketPrice - (A.marketPrice * (A.discount / 100)), 0), "원")
+          END															                                          AS realPrice,
+          A.marketPrice - (A.marketPrice * (A.discount / 100))                                  AS calcPrice,
           A.youtubeLink,
           A.detailImage,
           A.origin,
@@ -207,6 +206,13 @@ router.post("/list", async (req, res, next) => {
           CONCAT("최소 ", A.buyMinLimitCount, "개 이상", " ~ ", "최대 ", A.buyMaxLimitCount, "개 이하 구매 가능")		AS viewBuyLimitCount,
           A.discount,
           CONCAT(A.discount, "%")																				        AS viewDiscount,
+          FORMAT((A.marketPrice * (A.discount / 100)), 0)					                        AS calDiscountPrice,
+          CONCAT(FORMAT((A.marketPrice * (A.discount / 100)), 0), "원")		                AS viewDiscountPrice,
+          CASE
+            WHEN	A.discount = 0 THEN	CONCAT(FORMAT(A.marketPrice, 0), "원")
+            ELSE	CONCAT(FORMAT(A.marketPrice - (A.marketPrice * (A.discount / 100)), 0), "원")
+          END															                                          AS realPrice,
+          A.marketPrice - (A.marketPrice * (A.discount / 100))                                  AS calcPrice,
           A.youtubeLink,
           A.detailImage,
           A.origin,
@@ -362,6 +368,13 @@ SELECT	ROW_NUMBER()	OVER(ORDER	BY	A.createdAt)														AS num,
         CONCAT("최소 ", A.buyMinLimitCount, "개 이상", " ~ ", "최대 ", A.buyMaxLimitCount, "개 이하 구매 가능")		AS viewBuyLimitCount,
         A.discount,
         CONCAT(A.discount, "%")																				        AS viewDiscount,
+        FORMAT((A.marketPrice * (A.discount / 100)), 0)					                        AS calDiscountPrice,
+        CONCAT(FORMAT((A.marketPrice * (A.discount / 100)), 0), "원")		                AS viewDiscountPrice,
+        CASE
+          WHEN	A.discount = 0 THEN	CONCAT(FORMAT(A.marketPrice, 0), "원")
+          ELSE	CONCAT(FORMAT(A.marketPrice - (A.marketPrice * (A.discount / 100)), 0), "원")
+        END															                                          AS realPrice,
+        A.marketPrice - (A.marketPrice * (A.discount / 100))                                  AS calcPrice,
         A.youtubeLink,
         A.detailImage,
         A.origin,
@@ -509,7 +522,14 @@ SELECT	ROW_NUMBER()	OVER(ORDER	BY	A.createdAt)														    AS num,
         A.buyMaxLimitCount,
         CONCAT("최소 ", A.buyMinLimitCount, "개 이상", " ~ ", "최대 ", A.buyMaxLimitCount, "개 이하 구매 가능")		AS viewBuyLimitCount,
         A.discount,
-        CONCAT(A.discount, "%")																				            AS viewDiscount,
+        CONCAT(A.discount, "%")																				        AS viewDiscount,
+        FORMAT((A.marketPrice * (A.discount / 100)), 0)					                        AS calDiscountPrice,
+        CONCAT(FORMAT((A.marketPrice * (A.discount / 100)), 0), "원")		                AS viewDiscountPrice,
+        CASE
+          WHEN	A.discount = 0 THEN	CONCAT(FORMAT(A.marketPrice, 0), "원")
+          ELSE	CONCAT(FORMAT(A.marketPrice - (A.marketPrice * (A.discount / 100)), 0), "원")
+        END															                                          AS realPrice,
+        A.marketPrice - (A.marketPrice * (A.discount / 100))                                  AS calcPrice,
         A.youtubeLink,
         A.detailImage,
         A.origin,
@@ -636,7 +656,14 @@ SELECT	A.id,
         A.buyMaxLimitCount,
         CONCAT("최소 ", A.buyMinLimitCount, "개 이상", " ~ ", "최대 ", A.buyMaxLimitCount, "개 이하 구매 가능")		AS viewBuyLimitCount,
         A.discount,
-        CONCAT(A.discount, "%")																				AS viewDiscount,
+        CONCAT(A.discount, "%")																				        AS viewDiscount,
+        FORMAT((A.marketPrice * (A.discount / 100)), 0)					                        AS calDiscountPrice,
+        CONCAT(FORMAT((A.marketPrice * (A.discount / 100)), 0), "원")		                AS viewDiscountPrice,
+        CASE
+          WHEN	A.discount = 0 THEN	CONCAT(FORMAT(A.marketPrice, 0), "원")
+          ELSE	CONCAT(FORMAT(A.marketPrice - (A.marketPrice * (A.discount / 100)), 0), "원")
+        END															                                          AS realPrice,
+        A.marketPrice - (A.marketPrice * (A.discount / 100))                                  AS calcPrice,
         A.youtubeLink,
         A.detailImage,
         A.origin,
