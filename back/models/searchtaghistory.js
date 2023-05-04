@@ -1,11 +1,16 @@
 const DataTypes = require("sequelize");
 const { Model } = DataTypes;
 
-module.exports = class SearchTag extends Model {
+// 검색태그 이력
+module.exports = class SearchTagHistory extends Model {
   static init(sequelize) {
     return super.init(
       {
-        value: {
+        title: {
+          type: DataTypes.STRING(50),
+          allowNull: false,
+        },
+        content: {
           type: DataTypes.STRING(100),
           allowNull: false,
         },
@@ -13,19 +18,10 @@ module.exports = class SearchTag extends Model {
           type: DataTypes.INTEGER,
           allowNull: false,
         },
-        isDelete: {
-          type: DataTypes.BOOLEAN,
-          allowNull: false,
-          defaultValue: false,
-        },
-        deletedAt: {
-          type: DataTypes.DATE,
-          allowNull: true,
-        },
       },
       {
-        modelName: "SearchTag",
-        tableName: "searchTag",
+        modelName: "SearchTagHistory",
+        tableName: "searchTagHistory",
         charset: "utf8mb4",
         collate: "utf8mb4_general_ci", // 한글 저장
         sequelize,
