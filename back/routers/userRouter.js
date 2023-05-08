@@ -1,7 +1,6 @@
 const express = require("express");
 const passport = require("passport");
 const bcrypt = require("bcrypt");
-const { User } = require("../models");
 const models = require("../models");
 const isAdminCheck = require("../middlewares/isAdminCheck");
 const isLoggedIn = require("../middlewares/isLoggedIn");
@@ -28,52 +27,66 @@ router.post("/list", isAdminCheck, async (req, res, next) => {
   const _searchExit = searchExit ? searchExit : false;
 
   const selectQuery = `
-SELECT	ROW_NUMBER()	OVER(ORDER	BY createdAt)	    AS num,
-		    id,
-        userId,
-        username,
-        mobile,
-        email,
-        postCode,
-        address,
-        detailAddress,
-        point,
-        FORMAT(point, 0)							              AS formatPoint,
-        recommId,
-        level,
-        terms,
-        menuRight1,
-        menuRight2,
-        menuRight3,
-        menuRight4,
-        menuRight5,
-        menuRight6,
-        menuRight7,
-        menuRight8,
-        menuRight9,
-        menuRight10,
-        menuRight11,
-        menuRight12,
-        createdAt,
-        updatedAt,
-        DATE_FORMAT(createdAt, "%Y년 %m월 %d일")		AS viewCreatedAt,
-        DATE_FORMAT(updatedAt, "%Y년 %m월 %d일")		AS viewUpdatedAt
-  FROM	users
- WHERE	CONCAT(username, email) LIKE '%${_searchData}%'
+SELECT	ROW_NUMBER()	OVER(ORDER	BY A.createdAt)	    AS num,
+		    A.id,
+        A.userId,
+        A.username,
+        A.mobile,
+        A.email,
+        A.postCode,
+        A.address,
+        A.detailAddress,
+        A.point,
+        FORMAT(A.point, 0)							              AS formatPoint,
+        A.recommId,
+        A.level,
+        A.terms,
+        A.menuRight1,
+        A.menuRight2,
+        A.menuRight3,
+        A.menuRight4,
+        A.menuRight5,
+        A.menuRight6,
+        A.menuRight7,
+        A.menuRight8,
+        A.menuRight9,
+        A.menuRight10,
+        A.menuRight11,
+        A.menuRight12,
+        A.createdAt,
+        A.updatedAt,
+        DATE_FORMAT(A.createdAt, "%Y년 %m월 %d일")		AS viewCreatedAt,
+        DATE_FORMAT(A.updatedAt, "%Y년 %m월 %d일")		AS viewUpdatedAt,
+        B.gradeName,
+        B.condition,
+        CASE
+            WHEN  B.gradeName = "실버"  THEN "-"
+            ELSE  CONCAT(B.condition, "회 이상주문")
+        END                                         AS viewGradeCondition,
+        B.benefit,
+        CASE
+            WHEN  B.gradeName = "실버"  THEN "-"
+            ELSE  CONCAT(B.benefit, "% 할인")
+        END                                         AS viewGradeBenefit
+  FROM	users       A
+ INNER
+  JOIN  userGrade   B
+    ON  A.UserGradeId = B.id
+ WHERE	CONCAT(A.username, A.email) LIKE '%${_searchData}%'
         ${
           _searchLevel === parseInt(0)
             ? ``
             : _searchLevel === 1
-            ? `AND level = 1`
+            ? `AND A.level = 1`
             : _searchLevel === 3
-            ? `AND level = 3`
+            ? `AND A.level = 3`
             : _searchLevel === 4
-            ? `AND level = 4`
+            ? `AND A.level = 4`
             : _searchLevel === 5
-            ? `AND level = 5`
+            ? `AND A.level = 5`
             : ``
         } 
-        AND	isExit = ${_searchExit}
+        AND	A.isExit = ${_searchExit}
   ORDER	BY num DESC
   `;
 
@@ -353,38 +366,52 @@ router.get("/signin", async (req, res, next) => {
   try {
     if (req.user) {
       const selectQuery = `
-      SELECT	ROW_NUMBER()	OVER(ORDER	BY createdAt)	    AS num,
-              id,
-              userId,
-              username,
-              mobile,
-              email,
-              postCode,
-              address,
-              detailAddress,
-              point,
-              FORMAT(point, 0)							              AS formatPoint,
-              recommId,
-              level,
-              terms,
-              menuRight1,
-              menuRight2,
-              menuRight3,
-              menuRight4,
-              menuRight5,
-              menuRight6,
-              menuRight7,
-              menuRight8,
-              menuRight9,
-              menuRight10,
-              menuRight11,
-              menuRight12,
-              createdAt,
-              updatedAt,
-              DATE_FORMAT(createdAt, "%Y년 %m월 %d일")		AS viewCreatedAt,
-              DATE_FORMAT(updatedAt, "%Y년 %m월 %d일")		AS viewUpdatedAt
-        FROM	users
-       WHERE  id = ${req.user.id}
+     SELECT	ROW_NUMBER()	OVER(ORDER	BY A.createdAt)	    AS num,
+            A.id,
+            A.userId,
+            A.username,
+            A.mobile,
+            A.email,
+            A.postCode,
+            A.address,
+            A.detailAddress,
+            A.point,
+            FORMAT(A.point, 0)							              AS formatPoint,
+            A.recommId,
+            A.level,
+            A.terms,
+            A.menuRight1,
+            A.menuRight2,
+            A.menuRight3,
+            A.menuRight4,
+            A.menuRight5,
+            A.menuRight6,
+            A.menuRight7,
+            A.menuRight8,
+            A.menuRight9,
+            A.menuRight10,
+            A.menuRight11,
+            A.menuRight12,
+            A.createdAt,
+            A.updatedAt,
+            DATE_FORMAT(A.createdAt, "%Y년 %m월 %d일")		AS viewCreatedAt,
+            DATE_FORMAT(A.updatedAt, "%Y년 %m월 %d일")		AS viewUpdatedAt,
+            B.gradeName,
+            B.condition,
+            CASE
+                WHEN  B.gradeName = "실버"  THEN "-"
+                ELSE  CONCAT(B.condition, "회 이상주문")
+            END                                         AS viewGradeCondition,
+            B.benefit,
+            CASE
+                WHEN  B.gradeName = "실버"  THEN "-"
+                ELSE  CONCAT(B.benefit, "% 할인")
+            END                                         AS viewGradeBenefit
+      FROM	users       A
+     INNER
+      JOIN  userGrade   B
+        ON  A.UserGradeId = B.id
+     WHERE  A.id = ${req.user.id}
       `;
 
       const fullUserWithoutPassword = await models.sequelize.query(selectQuery);
@@ -429,38 +456,52 @@ router.post("/signin", (req, res, next) => {
       }
 
       const selectQuery = `
-      SELECT	ROW_NUMBER()	OVER(ORDER	BY createdAt)	    AS num,
-              id,
-              userId,
-              username,
-              mobile,
-              email,
-              postCode,
-              address,
-              detailAddress,
-              point,
-              FORMAT(point, 0)							              AS formatPoint,
-              recommId,
-              level,
-              terms,
-              menuRight1,
-              menuRight2,
-              menuRight3,
-              menuRight4,
-              menuRight5,
-              menuRight6,
-              menuRight7,
-              menuRight8,
-              menuRight9,
-              menuRight10,
-              menuRight11,
-              menuRight12,
-              createdAt,
-              updatedAt,
-              DATE_FORMAT(createdAt, "%Y년 %m월 %d일")		AS viewCreatedAt,
-              DATE_FORMAT(updatedAt, "%Y년 %m월 %d일")		AS viewUpdatedAt
-        FROM	users
-       WHERE  id = ${user.id}
+      SELECT	ROW_NUMBER()	OVER(ORDER	BY A.createdAt)	    AS num,
+              A.id,
+              A.userId,
+              A.username,
+              A.mobile,
+              A.email,
+              A.postCode,
+              A.address,
+              A.detailAddress,
+              A.point,
+              FORMAT(A.point, 0)							              AS formatPoint,
+              A.recommId,
+              A.level,
+              A.terms,
+              A.menuRight1,
+              A.menuRight2,
+              A.menuRight3,
+              A.menuRight4,
+              A.menuRight5,
+              A.menuRight6,
+              A.menuRight7,
+              A.menuRight8,
+              A.menuRight9,
+              A.menuRight10,
+              A.menuRight11,
+              A.menuRight12,
+              A.createdAt,
+              A.updatedAt,
+              DATE_FORMAT(A.createdAt, "%Y년 %m월 %d일")		AS viewCreatedAt,
+              DATE_FORMAT(A.updatedAt, "%Y년 %m월 %d일")		AS viewUpdatedAt,
+              B.gradeName,
+              B.condition,
+              CASE
+                  WHEN  B.gradeName = "실버"  THEN "-"
+                  ELSE  CONCAT(B.condition, "회 이상주문")
+              END                                         AS viewGradeCondition,
+              B.benefit,
+              CASE
+                  WHEN  B.gradeName = "실버"  THEN "-"
+                  ELSE  CONCAT(B.benefit, "% 할인")
+              END                                         AS viewGradeBenefit
+        FROM	users       A
+       INNER
+        JOIN  userGrade   B
+          ON  A.UserGradeId = B.id
+       WHERE  A.id = ${user.id}
       `;
 
       const fullUserWithoutPassword = await models.sequelize.query(selectQuery);
@@ -676,38 +717,52 @@ router.post("/snsLogin", (req, res, next) => {
         }
 
         const selectQuery = `
-      SELECT	ROW_NUMBER()	OVER(ORDER	BY createdAt)	    AS num,
-              id,
-              userId,
-              username,
-              mobile,
-              email,
-              postCode,
-              address,
-              detailAddress,
-              point,
-              FORMAT(point, 0)							              AS formatPoint,
-              recommId,
-              level,
-              terms,
-              menuRight1,
-              menuRight2,
-              menuRight3,
-              menuRight4,
-              menuRight5,
-              menuRight6,
-              menuRight7,
-              menuRight8,
-              menuRight9,
-              menuRight10,
-              menuRight11,
-              menuRight12,
-              createdAt,
-              updatedAt,
-              DATE_FORMAT(createdAt, "%Y년 %m월 %d일")		AS viewCreatedAt,
-              DATE_FORMAT(updatedAt, "%Y년 %m월 %d일")		AS viewUpdatedAt
-        FROM	users
-       WHERE  id = ${user.id}
+      SELECT	ROW_NUMBER()	OVER(ORDER	BY A.createdAt)	    AS num,
+              A.id,
+              A.userId,
+              A.username,
+              A.mobile,
+              A.email,
+              A.postCode,
+              A.address,
+              A.detailAddress,
+              A.point,
+              FORMAT(A.point, 0)							              AS formatPoint,
+              A.recommId,
+              A.level,
+              A.terms,
+              A.menuRight1,
+              A.menuRight2,
+              A.menuRight3,
+              A.menuRight4,
+              A.menuRight5,
+              A.menuRight6,
+              A.menuRight7,
+              A.menuRight8,
+              A.menuRight9,
+              A.menuRight10,
+              A.menuRight11,
+              A.menuRight12,
+              A.createdAt,
+              A.updatedAt,
+              DATE_FORMAT(A.createdAt, "%Y년 %m월 %d일")		AS viewCreatedAt,
+              DATE_FORMAT(A.updatedAt, "%Y년 %m월 %d일")		AS viewUpdatedAt,
+              B.gradeName,
+              B.condition,
+              CASE
+                  WHEN  B.gradeName = "실버"  THEN "-"
+                  ELSE  CONCAT(B.condition, "회 이상주문")
+              END                                         AS viewGradeCondition,
+              B.benefit,
+              CASE
+                  WHEN  B.gradeName = "실버"  THEN "-"
+                  ELSE  CONCAT(B.benefit, "% 할인")
+              END                                         AS viewGradeBenefit
+        FROM	users       A
+       INNER
+        JOIN  userGrade   B
+          ON  A.UserGradeId = B.id
+       WHERE  A.id = ${user.id}
       `;
 
         const fullUserWithoutPassword = await models.sequelize.query(
@@ -745,38 +800,52 @@ router.post("/snsLogin", (req, res, next) => {
       const insertResult = await models.sequelize.query(insertQuery);
 
       const findUserQuery = `
-      SELECT	ROW_NUMBER()	OVER(ORDER	BY createdAt)	    AS num,
-              id,
-              userId,
-              username,
-              mobile,
-              email,
-              postCode,
-              address,
-              detailAddress,
-              point,
-              FORMAT(point, 0)							              AS formatPoint,
-              recommId,
-              level,
-              terms,
-              menuRight1,
-              menuRight2,
-              menuRight3,
-              menuRight4,
-              menuRight5,
-              menuRight6,
-              menuRight7,
-              menuRight8,
-              menuRight9,
-              menuRight10,
-              menuRight11,
-              menuRight12,
-              createdAt,
-              updatedAt,
-              DATE_FORMAT(createdAt, "%Y년 %m월 %d일")		AS viewCreatedAt,
-              DATE_FORMAT(updatedAt, "%Y년 %m월 %d일")		AS viewUpdatedAt
-        FROM	users
-       WHERE  id = ${insertResult[0]}
+      SELECT	ROW_NUMBER()	OVER(ORDER	BY A.createdAt)	    AS num,
+              A.id,
+              A.userId,
+              A.username,
+              A.mobile,
+              A.email,
+              A.postCode,
+              A.address,
+              A.detailAddress,
+              A.point,
+              FORMAT(A.point, 0)							              AS formatPoint,
+              A.recommId,
+              A.level,
+              A.terms,
+              A.menuRight1,
+              A.menuRight2,
+              A.menuRight3,
+              A.menuRight4,
+              A.menuRight5,
+              A.menuRight6,
+              A.menuRight7,
+              A.menuRight8,
+              A.menuRight9,
+              A.menuRight10,
+              A.menuRight11,
+              A.menuRight12,
+              A.createdAt,
+              A.updatedAt,
+              DATE_FORMAT(A.createdAt, "%Y년 %m월 %d일")		AS viewCreatedAt,
+              DATE_FORMAT(A.updatedAt, "%Y년 %m월 %d일")		AS viewUpdatedAt,
+              B.gradeName,
+              B.condition,
+              CASE
+                  WHEN  B.gradeName = "실버"  THEN "-"
+                  ELSE  CONCAT(B.condition, "회 이상주문")
+              END                                         AS viewGradeCondition,
+              B.benefit,
+              CASE
+                  WHEN  B.gradeName = "실버"  THEN "-"
+                  ELSE  CONCAT(B.benefit, "% 할인")
+              END                                         AS viewGradeBenefit
+        FROM	users       A
+       INNER
+        JOIN  userGrade   B
+          ON  A.UserGradeId = B.id
+       WHERE  A.id = ${insertResult[0]}
       `;
 
       const findUser = await models.sequelize.query(findUserQuery);

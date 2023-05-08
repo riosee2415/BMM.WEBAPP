@@ -1,4 +1,5 @@
 const Sequelize = require("sequelize");
+const usergrade = require("./usergrade");
 const user = require("./user");
 const userhistory = require("./userhistory");
 const mainbanner = require("./mainbanner");
@@ -57,6 +58,7 @@ const sequelize = new Sequelize(
   config
 );
 
+db.UserGrade = usergrade;
 db.User = user;
 db.UserHistory = userhistory;
 db.MainBanner = mainbanner;
