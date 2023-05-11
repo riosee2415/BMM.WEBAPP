@@ -27,6 +27,12 @@ import {
   HomeOutlined,
   RightOutlined,
 } from "@ant-design/icons";
+import {
+  SEARCHTAG_CREATE_REQUEST,
+  SEARCHTAG_DELETE_REQUEST,
+  SEARCHTAG_LIST_REQUEST,
+  SEARCHTAG_UPDATE_REQUEST,
+} from "../../../reducers/searchTag";
 
 const InfoTitle = styled.div`
   font-size: 19px;
@@ -50,6 +56,18 @@ const ViewStatusIcon = styled(EyeOutlined)`
 
 const SearchTag = ({}) => {
   const { st_loadMyInfoDone, me } = useSelector((state) => state.user);
+  const {
+    searchTagList,
+
+    st_searchTagCreateDone,
+    st_searchTagCreateError,
+
+    st_searchTagUpdateDone,
+    st_searchTagUpdateError,
+
+    st_searchTagDeleteDone,
+    st_searchTagDeleteError,
+  } = useSelector((state) => state.searchTag);
 
   const router = useRouter();
   const dispatch = useDispatch();
@@ -112,6 +130,53 @@ const SearchTag = ({}) => {
     });
   }, []);
 
+  // ********************** 검색태그 생성 후처리 *************************
+  useEffect(() => {
+    if (st_searchTagCreateDone) {
+      dispatch({
+        type: SEARCHTAG_LIST_REQUEST,
+      });
+
+      return message.success("검색태그가 생성되었습니다.");
+    }
+
+    if (st_searchTagCreateError) {
+      return message.error(st_searchTagCreateError);
+    }
+  }, [st_searchTagCreateDone, st_searchTagCreateError]);
+
+  // ********************** 검색태그 수성 후처리 *************************
+  useEffect(() => {
+    if (st_searchTagUpdateDone) {
+      dispatch({
+        type: SEARCHTAG_LIST_REQUEST,
+      });
+
+      return message.success("검색태그가 수정되었습니다.");
+    }
+
+    if (st_searchTagUpdateError) {
+      return message.error(st_searchTagUpdateError);
+    }
+  }, [st_searchTagUpdateDone, st_searchTagUpdateError]);
+
+  // ********************** 검색태그 삭제 후처리 *************************
+  useEffect(() => {
+    if (st_searchTagDeleteDone) {
+      dispatch({
+        type: SEARCHTAG_LIST_REQUEST,
+      });
+
+      setCurrentData(null);
+
+      return message.success("검색태그가 삭제되었습니다.");
+    }
+
+    if (st_searchTagDeleteError) {
+      return message.error(st_searchTagDeleteError);
+    }
+  }, [st_searchTagDeleteDone, st_searchTagDeleteError]);
+
   ////// HANDLER //////
 
   const beforeSetDataHandler = useCallback(
@@ -119,10 +184,7 @@ const SearchTag = ({}) => {
       setCurrentData(record);
 
       infoForm.setFieldsValue({
-        title: record.title,
-        typeId: record.NoticeTypeId,
-        content: record.content,
-        hit: record.hit,
+        value: record.value,
         createdAt: record.viewCreatedAt,
         updatedAt: record.viewUpdatedAt,
         updator: record.updator,
@@ -130,6 +192,35 @@ const SearchTag = ({}) => {
     },
     [currentData, infoForm]
   );
+
+  const createHandler = useCallback(() => {
+    dispatch({
+      type: SEARCHTAG_CREATE_REQUEST,
+    });
+  }, []);
+
+  const updateHandler = useCallback(
+    (data) => {
+      dispatch({
+        type: SEARCHTAG_UPDATE_REQUEST,
+        data: {
+          id: currentData.id,
+          value: data.value,
+        },
+      });
+    },
+    [currentData]
+  );
+
+  const deleteHandler = useCallback((data) => {
+    dispatch({
+      type: SEARCHTAG_DELETE_REQUEST,
+      data: {
+        id: data.id,
+        value: data.value,
+      },
+    });
+  }, []);
 
   ////// DATAVIEW //////
 
@@ -141,8 +232,8 @@ const SearchTag = ({}) => {
       dataIndex: "num",
     },
     {
-      title: "이미지 명칭",
-      dataIndex: "title",
+      title: "검색태그",
+      dataIndex: "value",
     },
 
     {
@@ -167,7 +258,7 @@ const SearchTag = ({}) => {
       render: (data) => (
         <Popconfirm
           title="정말 삭제하시겠습니까?"
-          onConfirm={() => {}}
+          onConfirm={() => deleteHandler(data)}
           okText="삭제"
           cancelText="취소"
         >
@@ -210,9 +301,9 @@ const SearchTag = ({}) => {
       {/* GUIDE */}
       <Wrapper margin={`10px 0px 0px 0px`}>
         <GuideUl>
-          <GuideLi>지점지역을 추가 / 삭제 등 관리를 할 수 있습니다.</GuideLi>
+          <GuideLi>검색태그를 추가 / 삭제 등 관리를 할 수 있습니다.</GuideLi>
           <GuideLi isImpo={true}>
-            삭제처리 된 지점지역은 복구가 불가능합니다.
+            삭제처리 된 검색태그는 복구가 불가능합니다.
           </GuideLi>
         </GuideUl>
       </Wrapper>
@@ -224,15 +315,15 @@ const SearchTag = ({}) => {
           shadow={`3px 3px 6px ${Theme.lightGrey_C}`}
         >
           <Wrapper al="flex-end" margin={`0px 0px 5px 0px`}>
-            <Button size="small" type="primary">
-              공지사항 생성
+            <Button size="small" type="primary" onClick={createHandler}>
+              검색태그 생성
             </Button>
           </Wrapper>
           <Table
             style={{ width: "100%" }}
             rowKey="num"
             columns={col}
-            dataSource={[]}
+            dataSource={searchTagList}
             size="small"
             onRow={(record, index) => {
               return {
@@ -252,48 +343,37 @@ const SearchTag = ({}) => {
               <Wrapper margin={`0px 0px 5px 0px`}>
                 <InfoTitle>
                   <CheckOutlined />
-                  공지사항 기본정보
+                  검색태그 기본정보
                 </InfoTitle>
               </Wrapper>
 
               <Form
                 form={infoForm}
                 style={{ width: `100%` }}
-                labelCol={{ span: 2 }}
-                wrapperCol={{ span: 22 }}
+                labelCol={{ span: 3 }}
+                wrapperCol={{ span: 21 }}
+                onFinish={updateHandler}
               >
                 <Form.Item
-                  label="제목"
-                  name="title"
+                  label="검색태그"
+                  name="value"
                   rules={[
-                    { required: true, message: "제목은 필수 입력사항 입니다." },
+                    {
+                      required: true,
+                      message: "검색태그은 필수 입력사항 입니다.",
+                    },
                   ]}
                 >
                   <Input size="small" />
                 </Form.Item>
 
-                <Form.Item
-                  label="내용"
-                  name="content"
-                  rules={[
-                    { required: true, message: "내용은 필수 입력사항 입니다." },
-                  ]}
-                >
-                  <Input.TextArea rows={10} />
-                </Form.Item>
-
-                <Form.Item label="조회수" name="hit">
+                <Form.Item label="생성일" name="createdAt">
                   <Input
                     size="small"
-                    style={{ background: Theme.lightGrey_C, border: "none" }}
-                    readOnly
-                  />
-                </Form.Item>
-
-                <Form.Item label="작성일" name="createdAt">
-                  <Input
-                    size="small"
-                    style={{ background: Theme.lightGrey_C, border: "none" }}
+                    style={{
+                      background: Theme.adminLightGrey_C,
+                      border: "none",
+                    }}
                     readOnly
                   />
                 </Form.Item>
@@ -301,7 +381,10 @@ const SearchTag = ({}) => {
                 <Form.Item label="수정일" name="updatedAt">
                   <Input
                     size="small"
-                    style={{ background: Theme.lightGrey_C, border: "none" }}
+                    style={{
+                      background: Theme.adminLightGrey_C,
+                      border: "none",
+                    }}
                     readOnly
                   />
                 </Form.Item>
@@ -309,7 +392,10 @@ const SearchTag = ({}) => {
                 <Form.Item label="최근작업자" name="updator">
                   <Input
                     size="small"
-                    style={{ background: Theme.lightGrey_C, border: "none" }}
+                    style={{
+                      background: Theme.adminLightGrey_C,
+                      border: "none",
+                    }}
                     readOnly
                   />
                 </Form.Item>
@@ -359,6 +445,10 @@ export const getServerSideProps = wrapper.getServerSideProps(
 
     context.store.dispatch({
       type: LOAD_MY_INFO_REQUEST,
+    });
+
+    context.store.dispatch({
+      type: SEARCHTAG_LIST_REQUEST,
     });
 
     // 구현부 종료

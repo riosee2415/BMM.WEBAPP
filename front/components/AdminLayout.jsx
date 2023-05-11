@@ -201,6 +201,11 @@ export const items = {
       link: "/admin/history/brand",
       useYn: true,
     },
+    {
+      name: "검색태그이력관리",
+      link: "/admin/history/searchTag",
+      useYn: true,
+    },
   ],
   서버관리: [],
 };
