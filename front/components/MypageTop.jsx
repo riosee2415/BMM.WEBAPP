@@ -59,14 +59,18 @@ const MypageTop = () => {
         height={width < 700 ? `160px` : `130px`}
       >
         <MypageBox bgColor={Theme.lightGrey3_C}>
-          <Text
-            fontSize={width < 700 ? `18px` : `28px`}
-            fontWeight={`bold`}
-            color={Theme.grey_C}
-          >
-            등급명
-          </Text>
-          <Text>회원 등급</Text>
+          <Link href={`/mypage/grade`}>
+            <ATag dr={`column`} height={`100%`}>
+              <Text
+                fontSize={width < 700 ? `18px` : `28px`}
+                fontWeight={`bold`}
+                color={Theme.grey_C}
+              >
+                등급명
+              </Text>
+              <Text>회원 등급</Text>
+            </ATag>
+          </Link>
         </MypageBox>
         <MypageBox>
           <Link href={`/mypage/point`}>
