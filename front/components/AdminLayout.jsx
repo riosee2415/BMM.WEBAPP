@@ -62,6 +62,11 @@ export const items = {
       useYn: true,
     },
     {
+      name: "검색태그관리",
+      link: "/admin/info/searchTag",
+      useYn: true,
+    },
+    {
       name: "쿠폰관리",
       link: "/admin/info/coupon",
       useYn: true,
