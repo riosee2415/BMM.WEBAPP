@@ -465,7 +465,7 @@ router.post("/bought/list", isLoggedIn, async (req, res, next) => {
  * ORDER BY : -
  * STATEMENT : -
  * DEVELOPMENT : 신태섭
- * DEV DATE : 2023/05/12
+ * DEV DATE : 2023/05/16
  */
 router.post("/bought/admin/list", isAdminCheck, async (req, res, next) => {
   const selectQuery = `
