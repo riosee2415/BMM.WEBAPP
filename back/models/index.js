@@ -46,6 +46,9 @@ const producthistory = require("./producthistory");
 const productoption = require("./productoption");
 const productsearchtag = require("./productsearchtag");
 const productlike = require("./productlike");
+const wishlist = require("./wishlist");
+const wishitem = require("./wishitem");
+const boughthistory = require("./boughthistory");
 
 const env = process.env.NODE_ENV || "development";
 const config = require("../config/config")[env];
@@ -105,6 +108,9 @@ db.ProductHistory = producthistory;
 db.ProductOption = productoption;
 db.ProductSearchTag = productsearchtag;
 db.ProductLike = productlike;
+db.WishList = wishlist;
+db.WishItem = wishitem;
+db.BoughtHistory = boughthistory;
 
 Object.keys(db).forEach((modelName) => {
   db[modelName].init(sequelize);
