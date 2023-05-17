@@ -20,6 +20,8 @@ import {
 import Theme from "../../components/Theme";
 import { Select } from "antd";
 import styled from "styled-components";
+import { useSelector } from "react-redux";
+import { PRODUCT_LIST_REQUEST } from "../../reducers/product";
 
 const CustomSelect = styled(Wrapper)`
   width: ${(props) => props.width || `145px`};
@@ -93,6 +95,9 @@ const Btn = styled(Wrapper)`
 
 const Index = () => {
   ////// GLOBAL STATE //////
+  const { productList } = useSelector((state) => state.product);
+
+  console.log(productList);
   ////// HOOKS //////
   const width = useWidth();
   ////// REDUX //////
@@ -317,6 +322,10 @@ export const getServerSideProps = wrapper.getServerSideProps(
 
     context.store.dispatch({
       type: LOAD_MY_INFO_REQUEST,
+    });
+
+    context.store.dispatch({
+      type: PRODUCT_LIST_REQUEST,
     });
 
     // 구현부 종료

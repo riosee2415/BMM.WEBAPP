@@ -245,20 +245,20 @@ const reducer = (state = initailState, action) =>
 
       //////////////////////////////////////////////
 
-      case PRODUCT_DETAIL_LIST_REQUEST: {
+      case PRODUCT_DETAIL_REQUEST: {
         draft.st_productDetailLoading = true;
         draft.st_productDetailDone = false;
         draft.st_productDetailError = null;
         break;
       }
-      case PRODUCT_DETAIL_LIST_SUCCESS: {
+      case PRODUCT_DETAIL_SUCCESS: {
         draft.st_productDetailLoading = false;
         draft.st_productDetailDone = true;
         draft.st_productDetailError = null;
         draft.productDetail = action.data;
         break;
       }
-      case PRODUCT_DETAIL_LIST_FAILURE: {
+      case PRODUCT_DETAIL_FAILURE: {
         draft.st_productDetailLoading = false;
         draft.st_productDetailDone = false;
         draft.st_productDetailError = action.error;
