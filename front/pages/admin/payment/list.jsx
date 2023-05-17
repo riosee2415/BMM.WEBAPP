@@ -27,6 +27,7 @@ import {
   HomeOutlined,
   RightOutlined,
 } from "@ant-design/icons";
+import { BOUGHT_ADMIN_LIST_REQUEST } from "../../../reducers/wish";
 
 const InfoTitle = styled.div`
   font-size: 19px;
@@ -82,6 +83,9 @@ const List = ({}) => {
 
   /////////////////////////////////////////////////////////////////////////
 
+  const { boughtAdminList } = useSelector((state) => state.wish);
+  console.log(boughtAdminList);
+
   ////// HOOKS //////
 
   ////// USEEFFECT //////
@@ -135,13 +139,16 @@ const List = ({}) => {
       dataIndex: "num",
     },
     {
-      title: "이미지 명칭",
-      dataIndex: "title",
+      title: "주문자",
+      dataIndex: "name",
     },
-
     {
-      title: "생성일",
-      dataIndex: "viewCreatedAt",
+      title: "주문자 전화번호",
+      dataIndex: "tel",
+    },
+    {
+      title: "개인통관고유번호",
+      dataIndex: "clearanceNum",
     },
     {
       title: "상태창",
@@ -226,17 +233,13 @@ const List = ({}) => {
         </Button>
       </Wrapper>
 
-      <Wrapper dr="row" padding="0px 50px" al="flex-start" ju="space-between">
-        <Wrapper
-          width="50%"
-          padding="0px 10px"
-          shadow={`3px 3px 6px ${Theme.lightGrey_C}`}
-        >
+      <Wrapper dr="row" al="flex-start" ju="space-between" padding={`0 20px`}>
+        <Wrapper padding="0px 10px" shadow={`3px 3px 6px ${Theme.lightGrey_C}`}>
           <Table
             style={{ width: "100%" }}
             rowKey="id"
             columns={col}
-            dataSource={[]}
+            dataSource={boughtAdminList}
             size="small"
             onRow={(record, index) => {
               return {
@@ -247,7 +250,7 @@ const List = ({}) => {
         </Wrapper>
 
         <Wrapper
-          width={`calc(50% - 10px)`}
+          margin={`10px 0 0`}
           padding="5px"
           shadow={`3px 3px 6px ${Theme.lightGrey_C}`}
         >
@@ -358,6 +361,10 @@ export const getServerSideProps = wrapper.getServerSideProps(
 
     context.store.dispatch({
       type: LOAD_MY_INFO_REQUEST,
+    });
+
+    context.store.dispatch({
+      type: BOUGHT_ADMIN_LIST_REQUEST,
     });
 
     // 구현부 종료
