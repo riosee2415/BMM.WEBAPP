@@ -438,9 +438,57 @@ router.post("/bought/list", isLoggedIn, async (req, res, next) => {
   OFFSET  ${OFFSET}
   `;
 
+  const itemQuery = `
+  SELECT  A.id,
+          A.ProductId,
+          A.productPrice,
+          CONCAT(FORMAT(A.productPrice, 0), "원")								                                                                                  AS viewProductPrice,
+          A.productDiscount,
+          CONCAT(A.productDiscount, "%")                                                                                                          AS viewProductDiscount,
+          A.productDelPrice,
+          CONCAT(FORMAT(A.productDelPrice, 0), "원")                                                                                               AS viewProdDelPrice,
+          A.productWeight,
+          CONCAT(A.productWeight, "KG")                                                                                                           AS concatProductWeight,
+          A.productTitle,
+          A.productThumbnail,
+          A.qun,
+          (A.productPrice * (A.productDiscount / 100) * A.qun)					                                                                          AS originCalDiscount,
+          FORMAT((A.productPrice * (A.productDiscount / 100) * A.qun), 0)					                                                                AS formatCalDiscount,
+          CONCAT(FORMAT((A.productPrice * (A.productDiscount / 100) * A.qun), 0), "원")		                                                        AS viewCalDiscount,
+          CASE
+              WHEN	A.productDiscount = 0 THEN	(A.productPrice * A.qun + A.optionPrice) + A.productDelPrice
+              ELSE	A.productPrice * A.qun - (A.productPrice * (A.productDiscount / 100) * A.qun) + A.optionPrice + A.productDelPrice
+          END														                                          	                                                              AS originRealPrice,
+          CASE
+              WHEN	A.productDiscount = 0 THEN	CONCAT(FORMAT(A.productPrice * A.qun + A.optionPrice + A.productDelPrice , 0), "원")
+              ELSE	CONCAT(FORMAT(A.productPrice * A.qun - (A.productPrice * (A.productDiscount / 100) * A.qun) + A.optionPrice + A.productDelPrice, 0), "원")
+          END														                                          	                                                              AS realPrice,
+          A.optionName,
+          A.optionPrice,
+          FORMAT(A.optionPrice, 0)                                                                                                                AS formatOptionPrice,
+          CONCAT(FORMAT(A.optionPrice, 0), "원")                                                                                                   AS viewOptionPrice,
+          A.isWrite,
+          A.optionId,
+          A.BoughtHistoryId
+    FROM  wishItem			     A
+   WHERE  A.BoughtHistoryId IS NOT NULL
+      `;
+
   try {
     const lengths = await models.sequelize.query(lengthQuery);
     const boughtHistory = await models.sequelize.query(selectQuery);
+
+    const products = await models.sequelize.query(itemQuery);
+
+    boughtHistory[0].map((item) => {
+      item["products"] = [];
+
+      products[0].map((innerItem) => {
+        if (parseInt(item.id) === parseInt(innerItem.BoughtHistoryId)) {
+          item.products.push(innerItem);
+        }
+      });
+    });
 
     const boughtHistoryLen = lengths[0].length;
 
@@ -461,13 +509,25 @@ router.post("/bought/list", isLoggedIn, async (req, res, next) => {
 
 /**
  * SUBJECT : 결제내역 목록
- * PARAMETERS :
+ * PARAMETERS : isCanBoughtCancel, ProductId, userId
  * ORDER BY : -
  * STATEMENT : -
  * DEVELOPMENT : 신태섭
  * DEV DATE : 2023/05/16
  */
 router.post("/bought/admin/list", isAdminCheck, async (req, res, next) => {
+  const { isCanBoughtCancel, ProductId, userId, searchUserLoginId } = req.body;
+
+  //isCanBoughtCancel === 1 이라면 취소 가능
+  //isCanBoughtCancel === 2 이라면 취소 불가능
+  //isCanBoughtCancel === 3 전체
+
+  const _isCanBoughtCancel = parseInt(isCanBoughtCancel) || 3;
+  const _ProductId = ProductId ? ProductId : false;
+  const _userId = userId ? userId : false;
+
+  const _searchUserLoginId = searchUserLoginId ? searchUserLoginId : ``;
+
   const selectQuery = `
   SELECT  ROW_NUMBER()  OVER(ORDER  BY A.createdAt)           AS num,
           A.id,
@@ -515,16 +575,91 @@ router.post("/bought/admin/list", isAdminCheck, async (req, res, next) => {
           A.updatedAt,
           DATE_FORMAT(A.createdAt, "%Y년 %m월 %d일")            AS viewCreatedAt,
           DATE_FORMAT(A.updatedAt, "%Y년 %m월 %d일")            AS viewUpdatedAt,
-          A.UserId
+          A.UserId,
+          A.isCanBoughtCancel
     FROM  boughtHistory           A
+   INNER
+    JOIN  users                   B
+      ON  A.UserId = B.id
    WHERE  1 = 1
+          ${
+            _isCanBoughtCancel === 1
+              ? `A.isCanBoughtCancel = 0`
+              : _isCanBoughtCancel === 2
+              ? `A.isCanBoughtCancel = 1`
+              : _isCanBoughtCancel === 3
+              ? ``
+              : ``
+          }
+          ${_userId ? `AND A.UserId = ${_userId}` : ``}
+     AND  B.username LIKE "%${_searchUserLoginId}%"
+          ${
+            _ProductId
+              ? `
+     AND  0 < (
+                  SELECT  COUNT(id)
+                    FROM  wishItem
+                   WHERE  BoughtHistoryId = A.id
+                     AND  ProductId = ${_ProductId}
+              )
+          `
+              : ``
+          }
    ORDER  BY num DESC
   `;
 
-  try {
-    const list = await models.sequelize.query(selectQuery);
+  const itemQuery = `
+        SELECT  A.id,
+                A.ProductId,
+                A.productPrice,
+                CONCAT(FORMAT(A.productPrice, 0), "원")								                                                                                  AS viewProductPrice,
+                A.productDiscount,
+                CONCAT(A.productDiscount, "%")                                                                                                          AS viewProductDiscount,
+                A.productDelPrice,
+                CONCAT(FORMAT(A.productDelPrice, 0), "원")                                                                                               AS viewProdDelPrice,
+                A.productWeight,
+                CONCAT(A.productWeight, "KG")                                                                                                           AS concatProductWeight,
+                A.productTitle,
+                A.productThumbnail,
+                A.qun,
+                (A.productPrice * (A.productDiscount / 100) * A.qun)					                                                                          AS originCalDiscount,
+                FORMAT((A.productPrice * (A.productDiscount / 100) * A.qun), 0)					                                                                AS formatCalDiscount,
+                CONCAT(FORMAT((A.productPrice * (A.productDiscount / 100) * A.qun), 0), "원")		                                                        AS viewCalDiscount,
+                CASE
+                    WHEN	A.productDiscount = 0 THEN	(A.productPrice * A.qun + A.optionPrice) + A.productDelPrice
+                    ELSE	A.productPrice * A.qun - (A.productPrice * (A.productDiscount / 100) * A.qun) + A.optionPrice + A.productDelPrice
+                END														                                          	                                                              AS originRealPrice,
+                CASE
+                    WHEN	A.productDiscount = 0 THEN	CONCAT(FORMAT(A.productPrice * A.qun + A.optionPrice + A.productDelPrice , 0), "원")
+                    ELSE	CONCAT(FORMAT(A.productPrice * A.qun - (A.productPrice * (A.productDiscount / 100) * A.qun) + A.optionPrice + A.productDelPrice, 0), "원")
+                END														                                          	                                                              AS realPrice,
+                A.optionName,
+                A.optionPrice,
+                FORMAT(A.optionPrice, 0)                                                                                                                AS formatOptionPrice,
+                CONCAT(FORMAT(A.optionPrice, 0), "원")                                                                                                   AS viewOptionPrice,
+                A.isWrite,
+                A.optionId,
+                A.BoughtHistoryId
+          FROM  wishItem			     A
+         WHERE  A.BoughtHistoryId IS NOT NULL
+            `;
 
-    return res.status(200).json(list[0]);
+  try {
+    const boughtList = await models.sequelize.query(selectQuery);
+
+    const products = await models.sequelize.query(itemQuery);
+
+    boughtList[0].map((item) => {
+      item["products"] = [];
+
+      products[0].map((innerItem) => {
+        if (parseInt(item.id) === parseInt(innerItem.BoughtHistoryId)) {
+          item.products.push(innerItem);
+        }
+      });
+    });
+
+    return res.status(200).json(boughtList[0]);
   } catch (error) {
     console.error(error);
     return res.status(401).send("결제내역을 조회할 수 없습니다.");

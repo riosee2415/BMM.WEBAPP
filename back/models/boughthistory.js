@@ -126,6 +126,11 @@ module.exports = class BoughtHistory extends Model {
           type: DataTypes.DATE, // 결제취소일
           allowNull: true,
         },
+        isCanBoughtCancel: {
+          type: DataTypes.BOOLEAN, // 결제 취소 가능 여부 (배송 전 / 후)
+          allowNull: false,
+          defaultValue: false,
+        },
       },
       {
         modelName: "BoughtHistory",
