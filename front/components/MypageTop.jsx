@@ -40,6 +40,8 @@ const MypageBox = styled(Wrapper)`
 const MypageTop = () => {
   const { me } = useSelector((state) => state.user);
 
+  console.log(me);
+
   const width = useWidth();
 
   return (
@@ -66,7 +68,7 @@ const MypageTop = () => {
                 fontWeight={`bold`}
                 color={Theme.grey_C}
               >
-                등급명
+                {me && me.gradeName}
               </Text>
               <Text>회원 등급</Text>
             </ATag>
@@ -80,7 +82,7 @@ const MypageTop = () => {
                 fontSize={width < 700 ? `18px` : `28px`}
                 fontWeight={`bold`}
               >
-                10,000
+                {me && me.formatPoint}
               </Text>
               <Text>포인트</Text>
             </ATag>

@@ -20,6 +20,7 @@ import couponSaga from "./coupon";
 import searchTagSaga from "./searchTag";
 import wishSaga from "./wish";
 import reviewSaga from "./review";
+import likeSaga from "./like";
 //
 import axios from "axios";
 import backURL from "../config/config";
@@ -50,6 +51,7 @@ export default function* rootSaga() {
     fork(searchTagSaga),
     fork(wishSaga),
     fork(reviewSaga),
+    fork(likeSaga),
     //
   ]);
 }

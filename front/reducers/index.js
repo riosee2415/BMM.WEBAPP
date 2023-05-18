@@ -22,6 +22,7 @@ import searchTag from "./searchTag";
 import wish from "./wish";
 import product from "./product";
 import review from "./review";
+import like from "./like";
 
 const rootReducer = (state, action) => {
   switch (action.type) {
@@ -52,6 +53,7 @@ const rootReducer = (state, action) => {
         wish,
         product,
         review,
+        like,
       });
       return combinedReducer(state, action);
     }
