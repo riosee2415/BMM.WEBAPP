@@ -217,6 +217,11 @@ const AppHeader = () => {
     router.push(link);
   }, []);
 
+  const moveProduct = useCallback((target) => {
+    router.push(`/product?target=${target}`);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }, []);
+
   ////////////// - USE EFFECT- //////////////
 
   useEffect(() => {
@@ -408,7 +413,12 @@ const AppHeader = () => {
                             <InMenu>
                               {data.sub.map((cate) => {
                                 return (
-                                  <SubMenu key={cate.id}>{cate.value}</SubMenu>
+                                  <SubMenu
+                                    onClick={() => moveProduct(data.id)}
+                                    key={cate.id}
+                                  >
+                                    {cate.value}
+                                  </SubMenu>
                                 );
                               })}
                             </InMenu>

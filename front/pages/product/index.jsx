@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import ClientLayout from "../../components/ClientLayout";
 import Head from "next/head";
 import wrapper from "../../store/configureStore";
@@ -18,11 +18,15 @@ import {
   Wrapper,
 } from "../../components/commonComponents";
 import Theme from "../../components/Theme";
-import { Empty, Select } from "antd";
+import { Empty, message, Select } from "antd";
 import styled from "styled-components";
 import { useDispatch, useSelector } from "react-redux";
 import { PRODUCT_LIST_REQUEST } from "../../reducers/product";
 import { useRouter } from "next/router";
+import { LIKE_CREATE_REQUEST } from "../../reducers/like";
+import { LOGO_GET_REQUEST } from "../../reducers/logo";
+import { ALL_LIST_REQUEST } from "../../reducers/category";
+import { COMPANY_GET_REQUEST } from "../../reducers/company";
 
 const CustomSelect = styled(Wrapper)`
   width: ${(props) => props.width || `145px`};
@@ -97,16 +101,42 @@ const Btn = styled(Wrapper)`
 const Index = () => {
   ////// GLOBAL STATE //////
   const { productList, productPage } = useSelector((state) => state.product);
+  const { st_likeCreateDone } = useSelector((state) => state.like);
 
   ////// HOOKS //////
   const width = useWidth();
   const router = useRouter();
   const dispatch = useDispatch();
 
+  const [tab, setTab] = useState(0);
   const [orderType, setOrderType] = useState(1);
   const [currentTap, setCurrentTab] = useState(1);
+  const [isLikeState, setIsLikeState] = useState(false);
+
   ////// REDUX //////
   ////// USEEFFECT //////
+  useEffect(() => {
+    if (st_likeCreateDone) {
+      dispatch({
+        type: PRODUCT_LIST_REQUEST,
+      });
+
+      if (isLikeState) {
+        message.success("찜목록에서 삭제되었습니다.");
+      } else {
+        message.success("찜목록에 추가되었습니다.");
+      }
+    }
+  }, [st_likeCreateDone]);
+
+  useEffect(() => {
+    if (router.query.target) {
+      setTab(parseInt(router.query.target));
+    } else {
+      return;
+    }
+  }, [router.query.target]);
+
   ////// TOGGLE //////
   ////// HANDLER //////
   const moveLinkHandler = useCallback((link) => {
@@ -134,6 +164,28 @@ const Index = () => {
       });
     },
     [orderType]
+  );
+
+  const likeCreateHandler = useCallback(
+    (data) => {
+      setIsLikeState(data.isLike);
+
+      dispatch({
+        type: LIKE_CREATE_REQUEST,
+        data: {
+          ProductId: data.ProductId,
+        },
+      });
+    },
+    [isLikeState]
+  );
+
+  const typeHandler = useCallback(
+    (data) => {
+      router.push(`/product?target=${data}`);
+      setTab(parseInt(data));
+    },
+    [tab]
   );
 
   ////// DATAVIEW //////
@@ -219,11 +271,13 @@ const Index = () => {
               ) : (
                 productList.map((data, idx) => {
                   return (
-                    <ProductWrapper
-                      key={idx}
-                      onClick={() => moveLinkHandler(`/product/${data.id}`)}
-                    >
-                      <SquareBox position={`relative`}>
+                    <ProductWrapper key={idx}>
+                      <SquareBox
+                        position={`relative`}
+                        onClick={() =>
+                          moveLinkHandler(`/product/${data.ProductId}`)
+                        }
+                      >
                         <Image alt="thumbnail" src={data.thumbnail1} />
                       </SquareBox>
                       <Text
@@ -252,7 +306,7 @@ const Index = () => {
                             fontSize={width < 800 ? `13px` : `18px`}
                             fontWeight={`600`}
                           >
-                            {data.price}
+                            {data.realPrice}
                           </Text>
                           <Text
                             color={Theme.lightGrey_C}
@@ -260,14 +314,14 @@ const Index = () => {
                             margin={`0 5px`}
                             className="line"
                           >
-                            {data.sale}
+                            {data.concatMarketPrice}
                           </Text>
                           <Text
                             fontSize={width < 800 ? `13px` : `18px`}
                             fontWeight={`600`}
                             color={Theme.red_C}
                           >
-                            {data.persent}
+                            {data.discount}%
                           </Text>
                         </Wrapper>
                         <Wrapper
@@ -282,11 +336,21 @@ const Index = () => {
                             margin={`0 14px 0 0`}
                             src={`https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/bmm/assets/images/header/icon_cart.png`}
                           />
-                          <Image
-                            width={width < 800 ? `18px` : `21px`}
-                            alt="like icon"
-                            src={`https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/bmm/assets/images/icon/heart.png`}
-                          />
+                          {data.isLike === 0 ? (
+                            <Image
+                              width={width < 800 ? `18px` : `21px`}
+                              alt="like icon"
+                              onClick={() => likeCreateHandler(data)}
+                              src={`https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/bmm/assets/images/icon/heart_A.png`}
+                            />
+                          ) : (
+                            <Image
+                              width={width < 800 ? `18px` : `21px`}
+                              alt="like icon"
+                              onClick={() => likeCreateHandler(data)}
+                              src={`https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/bmm/assets/images/icon/heart.png`}
+                            />
+                          )}
                         </Wrapper>
                       </Wrapper>
                     </ProductWrapper>
@@ -326,6 +390,18 @@ export const getServerSideProps = wrapper.getServerSideProps(
 
     context.store.dispatch({
       type: PRODUCT_LIST_REQUEST,
+    });
+
+    context.store.dispatch({
+      type: LOGO_GET_REQUEST,
+    });
+
+    context.store.dispatch({
+      type: ALL_LIST_REQUEST,
+    });
+
+    context.store.dispatch({
+      type: COMPANY_GET_REQUEST,
     });
 
     // 구현부 종료
