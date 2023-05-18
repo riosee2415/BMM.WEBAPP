@@ -72,7 +72,7 @@ function* itemUpdate(action) {
 // ******************************************************************************************************************
 // ******************************************************************************************************************
 async function itemDeleteAPI(data) {
-  return await axios.post(`/api/item/delete`, data);
+  return await axios.post(`/api/wish/item/delete`, data);
 }
 
 function* itemDelete(action) {
@@ -95,7 +95,7 @@ function* itemDelete(action) {
 // ******************************************************************************************************************
 // ******************************************************************************************************************
 async function itemDeleteAllAPI(data) {
-  return await axios.post(`/api/item/deleteAll`, data);
+  return await axios.post(`/api/wish/item/deleteAll`, data);
 }
 
 function* itemDeleteAll(action) {
@@ -118,7 +118,7 @@ function* itemDeleteAll(action) {
 // ******************************************************************************************************************
 // ******************************************************************************************************************
 async function boughtAdminListAPI(data) {
-  return await axios.post(`/api/bought/admin/list`, data);
+  return await axios.post(`/api/wish/bought/admin/list`, data);
 }
 
 function* boughtAdminList(action) {
