@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useCallback, useState } from "react";
 import ClientLayout from "../../components/ClientLayout";
 import Head from "next/head";
 import wrapper from "../../store/configureStore";
@@ -18,10 +18,11 @@ import {
   Wrapper,
 } from "../../components/commonComponents";
 import Theme from "../../components/Theme";
-import { Select } from "antd";
+import { Empty, Select } from "antd";
 import styled from "styled-components";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { PRODUCT_LIST_REQUEST } from "../../reducers/product";
+import { useRouter } from "next/router";
 
 const CustomSelect = styled(Wrapper)`
   width: ${(props) => props.width || `145px`};
@@ -95,66 +96,47 @@ const Btn = styled(Wrapper)`
 
 const Index = () => {
   ////// GLOBAL STATE //////
-  const { productList } = useSelector((state) => state.product);
+  const { productList, productPage } = useSelector((state) => state.product);
 
-  console.log(productList);
   ////// HOOKS //////
   const width = useWidth();
+  const router = useRouter();
+  const dispatch = useDispatch();
+
+  const [orderType, setOrderType] = useState(1);
+  const [currentTap, setCurrentTab] = useState(1);
   ////// REDUX //////
   ////// USEEFFECT //////
   ////// TOGGLE //////
   ////// HANDLER //////
+  const moveLinkHandler = useCallback((link) => {
+    router.push(link);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }, []);
+
+  //페이지네이션
+  const nextPageCall = useCallback(
+    (changePage) => {
+      setCurrentTab(changePage);
+    },
+    [currentTap]
+  );
+
+  // 최신순/오래된순
+  const orderTypeHandler = useCallback(
+    (data) => {
+      setOrderType(data);
+      dispatch({
+        type: PRODUCT_LIST_REQUEST,
+        data: {
+          orderType: data,
+        },
+      });
+    },
+    [orderType]
+  );
+
   ////// DATAVIEW //////
-  const bannerData = [
-    {
-      img: "https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/bmm/assets/images/main/img_3nd_banner1.png",
-      name: "베진카 300정",
-      content: "일본 위장약 소화제 위염약",
-      price: "9,000원",
-      sale: "9,000원",
-      persent: "10%",
-    },
-    {
-      img: "https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/bmm/assets/images/main/img_3nd_banner1.png",
-      name: "베진카 300정",
-      content: "일본 위장약 소화제 위염약",
-      price: "9,000원",
-      sale: "9,000원",
-      persent: "10%",
-    },
-    {
-      img: "https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/bmm/assets/images/main/img_3nd_banner1.png",
-      name: "베진카 300정",
-      content: "일본 위장약 소화제 위염약",
-      price: "9,000원",
-      sale: "9,000원",
-      persent: "10%",
-    },
-    {
-      img: "https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/bmm/assets/images/main/img_3nd_banner1.png",
-      name: "베진카 300정",
-      content: "일본 위장약 소화제 위염약",
-      price: "9,000원",
-      sale: "9,000원",
-      persent: "10%",
-    },
-    {
-      img: "https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/bmm/assets/images/main/img_3nd_banner1.png",
-      name: "베진카 300정",
-      content: "일본 위장약 소화제 위염약",
-      price: "9,000원",
-      sale: "9,000원",
-      persent: "10%",
-    },
-    {
-      img: "https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/bmm/assets/images/main/img_3nd_banner1.png",
-      name: "베진카 300정",
-      content: "일본 위장약 소화제 위염약",
-      price: "9,000원",
-      sale: "9,000원",
-      persent: "10%",
-    },
-  ];
 
   return (
     <>
@@ -212,33 +194,44 @@ const Index = () => {
               >
                 총&nbsp;
                 <SpanText fontWeight={`500`} color={Theme.basicTheme_C}>
-                  43
+                  {productList && productList.length}
                 </SpanText>
                 개의 상품이 있습니다.
               </Text>
 
               <CustomSelect>
-                <Select placeholder={`선택해주세요.`}>
-                  <Select.Option>추천순</Select.Option>
-                  <Select.Option>조회순</Select.Option>
+                <Select
+                  placeholder={`선택해주세요.`}
+                  value={orderType}
+                  onChange={orderTypeHandler}
+                >
+                  <Select.Option value={1}>오래된순</Select.Option>
+                  <Select.Option value={2}>최신순</Select.Option>
                 </Select>
               </CustomSelect>
             </Wrapper>
 
             <Wrapper dr={`row`} ju={`flex-start`} al={`flex-start`}>
-              {bannerData &&
-                bannerData.map((data, idx) => {
+              {productList && productList.length === 0 ? (
+                <Wrapper padding={`50px 0`}>
+                  <Empty description="조회된 상품이 없습니다." />
+                </Wrapper>
+              ) : (
+                productList.map((data, idx) => {
                   return (
-                    <ProductWrapper key={idx}>
+                    <ProductWrapper
+                      key={idx}
+                      onClick={() => moveLinkHandler(`/product/${data.id}`)}
+                    >
                       <SquareBox position={`relative`}>
-                        <Image alt="thumbnail" src={data.img} />
+                        <Image alt="thumbnail" src={data.thumbnail1} />
                       </SquareBox>
                       <Text
                         fontSize={width < 800 ? `14px` : `16px`}
                         fontWeight={`600`}
                         margin={width < 800 ? `10px 0 5px` : `18px 0 8px`}
                       >
-                        {data.name}
+                        {data.title}
                       </Text>
                       <Text
                         color={Theme.grey_C}
@@ -247,7 +240,7 @@ const Index = () => {
                         width={`100%`}
                         isEllipsis
                       >
-                        {data.content}
+                        {data.description}
                       </Text>
                       <Wrapper dr={`row`} ju={`space-between`}>
                         <Wrapper
@@ -298,9 +291,16 @@ const Index = () => {
                       </Wrapper>
                     </ProductWrapper>
                   );
-                })}
+                })
+              )}
 
-              <CustomPage />
+              <CustomPage
+                defaultCurrent={1}
+                current={parseInt(currentTap)}
+                total={productPage * 10}
+                pageSize={10}
+                onChange={(page) => nextPageCall(page)}
+              />
             </Wrapper>
           </RsWrapper>
         </WholeWrapper>
