@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import ClientLayout from "../../components/ClientLayout";
 import Theme from "../../components/Theme";
 import Head from "next/head";
@@ -18,6 +18,9 @@ import { RightOutlined } from "@ant-design/icons";
 import styled from "styled-components";
 import Link from "next/dist/client/link";
 import MypageTop from "../../components/MypageTop";
+import { useSelector } from "react-redux";
+import { message } from "antd";
+import { useRouter } from "next/router";
 
 const DetailText = styled(Wrapper)`
   color: ${Theme.grey_C};
@@ -36,12 +39,19 @@ const DetailText = styled(Wrapper)`
 
 const Index = () => {
   ////// GLOBAL STATE //////
-
+  const { me } = useSelector((state) => state.user);
   ////// HOOKS //////
   const width = useWidth();
+  const router = useRouter();
 
   ////// REDUX //////
   ////// USEEFFECT //////
+  useEffect(() => {
+    if (!me) {
+      router.push("/user/login");
+      return message.error("로그인 후 이용해주세요.");
+    }
+  }, [me]);
   ////// TOGGLE //////
 
   ////// HANDLER //////

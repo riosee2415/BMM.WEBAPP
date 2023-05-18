@@ -115,6 +115,7 @@ router.post("/list", isLoggedIn, async (req, res, next) => {
     JOIN	brand 		F
       ON	B.BrandId = F.id
    WHERE	1 = 1
+     AND  A.UserId = ${req.user.id}
      AND	B.isDelete = 0
   `;
 
@@ -212,9 +213,10 @@ router.post("/list", isLoggedIn, async (req, res, next) => {
       ON	B.BrandId = F.id
    WHERE	1 = 1
      AND	B.isDelete = 0
-   ORDER    BY num DESC
-   LIMIT    ${LIMIT}
-  OFFSET    ${OFFSET}
+     AND  A.UserId = ${req.user.id}
+   ORDER  BY num DESC
+   LIMIT  ${LIMIT}
+  OFFSET  ${OFFSET}
   `;
 
   try {
@@ -292,6 +294,30 @@ router.post("/create", isLoggedIn, async (req, res, next) => {
   } catch (error) {
     console.error(error);
     return res.status(401).send("상품을 찜할 수 없습니다.");
+  }
+});
+
+/**
+ * SUBJECT : 찜 목록 전체 삭제
+ * PARAMETERS : -
+ * ORDER BY : -
+ * STATEMENT : -
+ * DEVELOPMENT : 신태섭
+ * DEV DATE : 2023/05/18
+ */
+router.post("/allDelete", isLoggedIn, async (req, res, next) => {
+  const deleteQuery = `
+  DELETE
+    FROM  productLike
+   WHERE  UserId = ${req.user.id}
+  `;
+  try {
+    await models.sequelize.query(deleteQuery);
+
+    return res.status(200).json({ result: true });
+  } catch (error) {
+    console.error(error);
+    return res.status(401).send("찜 목록을 전체 삭제할 수 없습니다.");
   }
 });
 

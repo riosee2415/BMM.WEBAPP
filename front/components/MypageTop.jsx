@@ -40,8 +40,6 @@ const MypageBox = styled(Wrapper)`
 const MypageTop = () => {
   const { me } = useSelector((state) => state.user);
 
-  console.log(me);
-
   const width = useWidth();
 
   return (

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import ClientLayout from "../../components/ClientLayout";
 import Head from "next/head";
 import wrapper from "../../store/configureStore";
@@ -18,6 +18,14 @@ import {
 } from "../../components/commonComponents";
 import Theme from "../../components/Theme";
 import styled from "styled-components";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  LIKE_CREATE_REQUEST,
+  LIKE_DELETE_REQUEST,
+  LIKE_LIST_REQUEST,
+} from "../../reducers/like";
+import { Empty, message } from "antd";
+import { useRouter } from "next/router";
 
 const DBtn = styled(Wrapper)`
   width: 10%;
@@ -46,64 +54,86 @@ const DBtn = styled(Wrapper)`
 
 const Index = () => {
   ////// GLOBAL STATE //////
+  const { me } = useSelector((state) => state.user);
+  const { likeList, likePage, st_likeCreateDone, st_likeDeleteDone } =
+    useSelector((state) => state.like);
+
   ////// HOOKS //////
   const width = useWidth();
+  const router = useRouter();
+  const dispatch = useDispatch();
+
+  const [currentTap, setCurrentTab] = useState(1);
+  const [isLikeState, setIsLikeState] = useState(false);
 
   ////// REDUX //////
   ////// USEEFFECT //////
+  useEffect(() => {
+    if (!me) {
+      router.push("/user/login");
+      return message.error("로그인 후 이용해주세요.");
+    }
+  }, [me]);
+
+  useEffect(() => {
+    if (st_likeCreateDone) {
+      dispatch({
+        type: LIKE_LIST_REQUEST,
+      });
+
+      if (isLikeState) {
+        message.success("찜목록에서 삭제되었습니다.");
+      } else {
+        message.success("찜목록에 추가되었습니다.");
+      }
+    }
+  }, [st_likeCreateDone]);
+
+  useEffect(() => {
+    if (st_likeDeleteDone) {
+      dispatch({
+        type: LIKE_LIST_REQUEST,
+      });
+      message.success("찜목록이 전체 삭제되었습니다.");
+    }
+  }, [st_likeDeleteDone]);
+
   ////// TOGGLE //////
   ////// HANDLER //////
+  const moveLinkHandler = useCallback((link) => {
+    router.push(link);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }, []);
+
+  //페이지네이션
+  const nextPageCall = useCallback(
+    (changePage) => {
+      setCurrentTab(changePage);
+    },
+    [currentTap]
+  );
+
+  const likeCreateHandler = useCallback(
+    (data) => {
+      setIsLikeState(data.isLike);
+
+      dispatch({
+        type: LIKE_CREATE_REQUEST,
+        data: {
+          ProductId: data.ProductId,
+        },
+      });
+    },
+    [isLikeState]
+  );
+
+  const likeDeleteHandler = useCallback(() => {
+    dispatch({
+      type: LIKE_DELETE_REQUEST,
+    });
+  }, []);
+
   ////// DATAVIEW //////
-  const bannerData = [
-    {
-      img: "https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/bmm/assets/images/main/img_3nd_banner1.png",
-      name: "베진카 300정",
-      content: "일본 위장약 소화제 위염약",
-      price: "9,000원",
-      sale: "9,000원",
-      persent: "10%",
-    },
-    {
-      img: "https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/bmm/assets/images/main/img_3nd_banner1.png",
-      name: "베진카 300정",
-      content: "일본 위장약 소화제 위염약",
-      price: "9,000원",
-      sale: "9,000원",
-      persent: "10%",
-    },
-    {
-      img: "https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/bmm/assets/images/main/img_3nd_banner1.png",
-      name: "베진카 300정",
-      content: "일본 위장약 소화제 위염약",
-      price: "9,000원",
-      sale: "9,000원",
-      persent: "10%",
-    },
-    {
-      img: "https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/bmm/assets/images/main/img_3nd_banner1.png",
-      name: "베진카 300정",
-      content: "일본 위장약 소화제 위염약",
-      price: "9,000원",
-      sale: "9,000원",
-      persent: "10%",
-    },
-    {
-      img: "https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/bmm/assets/images/main/img_3nd_banner1.png",
-      name: "베진카 300정",
-      content: "일본 위장약 소화제 위염약",
-      price: "9,000원",
-      sale: "9,000원",
-      persent: "10%",
-    },
-    {
-      img: "https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/bmm/assets/images/main/img_3nd_banner1.png",
-      name: "베진카 300정",
-      content: "일본 위장약 소화제 위염약",
-      price: "9,000원",
-      sale: "9,000원",
-      persent: "10%",
-    },
-  ];
 
   return (
     <>
@@ -121,22 +151,31 @@ const Index = () => {
               >
                 찜목록
               </Text>
-              <DBtn>목록 전체 삭제</DBtn>
+              <DBtn onClick={() => likeDeleteHandler()}>목록 전체 삭제</DBtn>
             </Wrapper>
             <Wrapper dr={`row`} ju={`flex-start`} al={`flex-start`}>
-              {bannerData &&
-                bannerData.map((data, idx) => {
+              {likeList && likeList.length === 0 ? (
+                <Wrapper padding={`50px 0`}>
+                  <Empty description="찜한 상품이 없습니다." />
+                </Wrapper>
+              ) : (
+                likeList.map((data, idx) => {
                   return (
                     <ProductWrapper key={idx}>
-                      <SquareBox position={`relative`}>
-                        <Image alt="thumbnail" src={data.img} />
+                      <SquareBox
+                        position={`relative`}
+                        onClick={() =>
+                          moveLinkHandler(`/product/${data.ProductId}`)
+                        }
+                      >
+                        <Image alt="thumbnail" src={data.thumbnail1} />
                       </SquareBox>
                       <Text
                         fontSize={width < 800 ? `14px` : `16px`}
                         fontWeight={`600`}
                         margin={width < 800 ? `10px 0 5px` : `18px 0 8px`}
                       >
-                        {data.name}
+                        {data.title}
                       </Text>
                       <Text
                         color={Theme.grey_C}
@@ -145,7 +184,7 @@ const Index = () => {
                         width={`100%`}
                         isEllipsis
                       >
-                        {data.content}
+                        {data.description}
                       </Text>
                       <Wrapper dr={`row`} ju={`space-between`}>
                         <Wrapper
@@ -157,7 +196,7 @@ const Index = () => {
                             fontSize={width < 800 ? `13px` : `18px`}
                             fontWeight={`600`}
                           >
-                            {data.price}
+                            {data.realPrice}
                           </Text>
                           <Text
                             color={Theme.lightGrey_C}
@@ -165,14 +204,14 @@ const Index = () => {
                             margin={`0 5px`}
                             className="line"
                           >
-                            {data.sale}
+                            {data.concatMarketPrice}
                           </Text>
                           <Text
                             fontSize={width < 800 ? `13px` : `18px`}
                             fontWeight={`600`}
                             color={Theme.red_C}
                           >
-                            {data.persent}
+                            {data.discount}%
                           </Text>
                         </Wrapper>
                         <Wrapper
@@ -187,18 +226,35 @@ const Index = () => {
                             margin={`0 14px 0 0`}
                             src={`https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/bmm/assets/images/header/icon_cart.png`}
                           />
-                          <Image
-                            width={width < 800 ? `18px` : `21px`}
-                            alt="like icon"
-                            src={`https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/bmm/assets/images/icon/heart_A.png`}
-                          />
+                          {data.isLike === 0 ? (
+                            <Image
+                              width={width < 800 ? `18px` : `21px`}
+                              alt="like icon"
+                              onClick={() => likeCreateHandler(data)}
+                              src={`https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/bmm/assets/images/icon/heart_A.png`}
+                            />
+                          ) : (
+                            <Image
+                              width={width < 800 ? `18px` : `21px`}
+                              alt="like icon"
+                              onClick={() => likeCreateHandler(data)}
+                              src={`https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/bmm/assets/images/icon/heart.png`}
+                            />
+                          )}
                         </Wrapper>
                       </Wrapper>
                     </ProductWrapper>
                   );
-                })}
+                })
+              )}
 
-              <CustomPage />
+              <CustomPage
+                defaultCurrent={1}
+                current={parseInt(currentTap)}
+                total={likePage * 10}
+                pageSize={10}
+                onChange={(page) => nextPageCall(page)}
+              />
             </Wrapper>
           </RsWrapper>
         </WholeWrapper>
@@ -220,6 +276,10 @@ export const getServerSideProps = wrapper.getServerSideProps(
 
     context.store.dispatch({
       type: LOAD_MY_INFO_REQUEST,
+    });
+
+    context.store.dispatch({
+      type: LIKE_LIST_REQUEST,
     });
 
     // 구현부 종료

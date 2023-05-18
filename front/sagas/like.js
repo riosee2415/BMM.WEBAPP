@@ -74,7 +74,7 @@ function* likeCreate(action) {
 // SAGA AREA ********************************************************************************************************
 // ******************************************************************************************************************
 async function likeDeleteAPI(data) {
-  return await axios.post(`/api/like/delete`, data);
+  return await axios.post(`/api/like/allDelete`, data);
 }
 
 function* likeDelete(action) {
@@ -98,24 +98,24 @@ function* likeDelete(action) {
 // ******************************************************************************************************************
 
 //////////////////////////////////////////////////////////////
-function* watchEventList() {
+function* watchLikeList() {
   yield takeLatest(LIKE_LIST_REQUEST, likeList);
 }
 
-function* watchEventCreate() {
+function* watchLikeCreate() {
   yield takeLatest(LIKE_CREATE_REQUEST, likeCreate);
 }
 
-function* watchEventDelete() {
+function* watchLikeDelete() {
   yield takeLatest(LIKE_DELETE_REQUEST, likeDelete);
 }
 
 //////////////////////////////////////////////////////////////
 export default function* likeSaga() {
   yield all([
-    fork(watchEventList),
-    fork(watchEventCreate),
-    fork(watchEventDelete),
+    fork(watchLikeList),
+    fork(watchLikeCreate),
+    fork(watchLikeDelete),
 
     //
   ]);
