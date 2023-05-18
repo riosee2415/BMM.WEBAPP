@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import ClientLayout from "../../components/ClientLayout";
 import Theme from "../../components/Theme";
 import Head from "next/head";
@@ -20,12 +20,14 @@ import {
 } from "../../components/commonComponents";
 import styled from "styled-components";
 import MypageTop from "../../components/MypageTop";
-import { Modal } from "antd";
+import { Empty, Modal } from "antd";
 import {
   CloseOutlined,
   PictureOutlined,
   PlusOutlined,
 } from "@ant-design/icons";
+import { useDispatch, useSelector } from "react-redux";
+import { MY_REVIEW_REQUEST } from "../../reducers/review";
 
 const List = styled(Wrapper)`
   height: 60px;
@@ -108,19 +110,47 @@ const Circle = styled(Wrapper)`
 
 const Review = () => {
   ////// GLOBAL STATE //////
-  const [isModal, setIsModal] = useState(false);
   const [deleteModal, setDeleteModal] = useState(false);
   const [uModal, setUModal] = useState(false);
 
+  const { myReviewList, lastPage } = useSelector((state) => state.review);
+  const [currentTab, setCurrentTab] = useState(1);
+
+  const [isVisible, setIsVisible] = useState(false);
+  const [visibleId, setVisibleId] = useState(null);
+
   ////// HOOKS //////
   const width = useWidth();
+  const dispatch = useDispatch();
 
   ////// REDUX //////
   ////// USEEFFECT //////
+  useEffect(() => {
+    dispatch({
+      type: MY_REVIEW_REQUEST,
+      data: {
+        page: currentTab,
+      },
+    });
+  }, [currentTab]);
+
   ////// TOGGLE //////
-  const modalToggle = useCallback(() => {
-    setIsModal((prev) => !prev);
-  }, [isModal]);
+  const modalToggle = useCallback(
+    (data) => {
+      if (data.id === visibleId) {
+        setIsVisible(false);
+        setVisibleId(null);
+
+        return;
+      }
+
+      if (data) {
+        setVisibleId(data.id);
+        setIsVisible(true);
+      }
+    },
+    [isVisible, visibleId]
+  );
 
   const deletemodalToggle = useCallback(() => {
     setDeleteModal((prev) => !prev);
@@ -131,6 +161,21 @@ const Review = () => {
   }, [uModal]);
 
   ////// HANDLER //////
+  const nextPageCall = useCallback(
+    (changePage) => {
+      setCurrentTab(changePage);
+    },
+    [currentTab]
+  );
+
+  const deleteHandler = useCallback(() => {
+    dispatch({
+      type: REVIEW_DELETE_REQUEST,
+      data: {
+        id: data.id,
+      },
+    });
+  }, []);
   ////// DATAVIEW //////
 
   return (
@@ -166,95 +211,119 @@ const Review = () => {
               <Wrapper width={width < 700 ? `75%` : `85%`}>리뷰 제목</Wrapper>
               <Wrapper width={width < 700 ? `25%` : `15%`}>작성 날짜</Wrapper>
             </Wrapper>
-            <List onClick={modalToggle}>
-              <TextWrapper>
-                <Text maxWidth={width < 700 ? `80%` : `52%`} isEllipsis isHover>
-                  리뷰의 내용이 30자로 들어오게 됩니다. 제목의 역할을 하게
-                  됩니다. 내용이 더 들어오게 된다면 이렇게 나타납니다. 내용이 더
-                  들어오게 된다면 이렇게 나타납니다. 내용이 더 들어오게 된다면
-                  이렇게 나타납니다. 내용이 더 들어오게 된다면 이렇게
-                  나타납니다.
-                </Text>
-                <Wrapper width={`auto`} color={Theme.lightGrey_C}>
-                  <PictureOutlined />
-                </Wrapper>
-              </TextWrapper>
-              <Wrapper
-                width={width < 700 ? `25%` : `15%`}
-                color={Theme.lightGrey_C}
-              >
-                2022.12.31
+            {myReviewList && myReviewList.length === 0 ? (
+              <Wrapper padding={`50px 0`}>
+                <Empty description="조회된 리뷰 내역이 없습니다." />
               </Wrapper>
-            </List>
+            ) : (
+              myReviewList.map((data) => {
+                return (
+                  <Wrapper key={data.id}>
+                    <List onClick={() => modalToggle(data)}>
+                      <TextWrapper>
+                        <Text
+                          maxWidth={width < 700 ? `80%` : `52%`}
+                          isEllipsis
+                          isHover
+                        >
+                          {data.title}
+                        </Text>
+                        <Wrapper width={`auto`} color={Theme.lightGrey_C}>
+                          <PictureOutlined />
+                        </Wrapper>
+                      </TextWrapper>
+                      <Wrapper
+                        width={width < 700 ? `25%` : `15%`}
+                        color={Theme.lightGrey_C}
+                      >
+                        {data.viewCreatedAt}
+                      </Wrapper>
+                    </List>
+                    {visibleId === data.id && isVisible && (
+                      <Wrapper
+                        bgColor={Theme.lightGrey3_C}
+                        padding={width < 700 ? `15px` : `30px`}
+                      >
+                        <Wrapper
+                          dr={`row`}
+                          ju={`space-between`}
+                          padding={`0 0 14px`}
+                        >
+                          <Text fontSize={`16px`}>작성자 : {data.UserId}</Text>
+                          <Text color={Theme.lightGrey_C}>
+                            {data.viewCreatedAt}
+                          </Text>
+                        </Wrapper>
+                        <Wrapper dr={`row`} ju={`flex-start`}>
+                          <Image
+                            alt="리뷰 사진"
+                            src={data.imagePath1}
+                            width={width < 700 ? `95px` : `122px`}
+                            height={width < 700 ? `95px` : `122px`}
+                            margin={`0 11px 10px 0`}
+                          />
+                          <Image
+                            alt="리뷰 사진"
+                            src={data.imagePath2}
+                            width={width < 700 ? `95px` : `122px`}
+                            height={width < 700 ? `95px` : `122px`}
+                            margin={`0 11px 10px 0`}
+                          />
+                          <Image
+                            alt="리뷰 사진"
+                            src={data.imagePath3}
+                            width={width < 700 ? `95px` : `122px`}
+                            height={width < 700 ? `95px` : `122px`}
+                            margin={`0 11px 10px 0`}
+                          />
+                          <Image
+                            alt="리뷰 사진"
+                            src={data.imagePath4}
+                            width={width < 700 ? `95px` : `122px`}
+                            height={width < 700 ? `95px` : `122px`}
+                            margin={`0 11px 10px 0`}
+                          />
+                        </Wrapper>
 
-            {isModal && (
-              <Wrapper
-                bgColor={Theme.lightGrey3_C}
-                padding={width < 700 ? `15px` : `30px`}
-              >
-                <Wrapper dr={`row`} ju={`space-between`} padding={`0 0 14px`}>
-                  <Text fontSize={`16px`}>작성자 : imnickname</Text>
-                  <Text color={Theme.lightGrey_C}>2022.12.21</Text>
-                </Wrapper>
-                <Wrapper dr={`row`} ju={`flex-start`}>
-                  <Image
-                    alt="리뷰 사진"
-                    src={`https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/bmm/assets/images/sample-img/review.png`}
-                    width={width < 700 ? `95px` : `122px`}
-                    height={width < 700 ? `95px` : `122px`}
-                    margin={`0 11px 10px 0`}
-                  />
-                  <Image
-                    alt="리뷰 사진"
-                    src={`https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/bmm/assets/images/sample-img/review.png`}
-                    width={width < 700 ? `95px` : `122px`}
-                    height={width < 700 ? `95px` : `122px`}
-                    margin={`0 11px 10px 0`}
-                  />
-                  <Image
-                    alt="리뷰 사진"
-                    src={`https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/bmm/assets/images/sample-img/review.png`}
-                    width={width < 700 ? `95px` : `122px`}
-                    height={width < 700 ? `95px` : `122px`}
-                    margin={`0 11px 10px 0`}
-                  />
-                  <Image
-                    alt="리뷰 사진"
-                    src={`https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/bmm/assets/images/sample-img/review.png`}
-                    width={width < 700 ? `95px` : `122px`}
-                    height={width < 700 ? `95px` : `122px`}
-                    margin={`0 11px 10px 0`}
-                  />
-                </Wrapper>
-
-                <Wrapper margin={`0 0 55px`} color={Theme.grey_C}>
-                  <Text>
-                    리뷰의 내용이 30자로 들어오게 됩니다. 제목의 역할을 하게
-                    됩니다. 내용이 더 들어오게 된다면 이렇게 나타납니다. 내용이
-                    더 들어오게 된다면 이렇게 나타납니다. 내용이 더 들어오게
-                    된다면 이렇게 나타납니다. 내용이 더 들어오게 된다면 이렇게
-                    나타납니다.
-                  </Text>
-                </Wrapper>
-                <Wrapper dr={`row`} ju={`space-between`} fontSize={`16px`}>
-                  <Text
-                    isHover
-                    onClick={deletemodalToggle}
-                    color={Theme.lightGrey_C}
-                  >
-                    삭제
-                  </Text>
-                  <Text isHover onClick={modalToggle}>
-                    닫기
-                    <SpanText margin={`0 0 0 5px`} color={Theme.basicTheme_C}>
-                      <CloseOutlined />
-                    </SpanText>
-                  </Text>
-                </Wrapper>
-              </Wrapper>
+                        <Wrapper margin={`0 0 55px`} color={Theme.grey_C}>
+                          <Text>{data.content}</Text>
+                        </Wrapper>
+                        <Wrapper
+                          dr={`row`}
+                          ju={`space-between`}
+                          fontSize={`16px`}
+                        >
+                          <Text
+                            isHover
+                            onClick={deletemodalToggle}
+                            color={Theme.lightGrey_C}
+                          >
+                            삭제
+                          </Text>
+                          <Text isHover onClick={modalToggle}>
+                            닫기
+                            <SpanText
+                              margin={`0 0 0 5px`}
+                              color={Theme.basicTheme_C}
+                            >
+                              <CloseOutlined />
+                            </SpanText>
+                          </Text>
+                        </Wrapper>
+                      </Wrapper>
+                    )}
+                  </Wrapper>
+                );
+              })
             )}
 
-            <CustomPage />
+            <CustomPage
+              defaultCurrent={1}
+              current={parseInt(currentTab)}
+              total={lastPage * 10}
+              pageSize={10}
+              onChange={(page) => nextPageCall(page)}
+            />
           </RsWrapper>
 
           <Modal
@@ -296,9 +365,7 @@ const Review = () => {
                   </Text>
                 </Wrapper>
                 <Wrapper dr={`row`} ju={`space-between`}>
-                  <BeforeBtn onClick={deletemodalToggle}>
-                    리뷰삭제하기
-                  </BeforeBtn>
+                  <BeforeBtn onClick={deleteHandler}>리뷰삭제하기</BeforeBtn>
                   <CommonButton
                     fontSize={width < 500 ? `16px` : `18px`}
                     fontWeight={`600`}

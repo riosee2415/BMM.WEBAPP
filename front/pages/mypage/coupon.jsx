@@ -18,8 +18,9 @@ import {
 } from "../../components/commonComponents";
 import styled from "styled-components";
 import MypageTop from "../../components/MypageTop";
-import { Modal } from "antd";
+import { Empty, Modal } from "antd";
 import { CloseOutlined } from "@ant-design/icons";
+import { useDispatch, useSelector } from "react-redux";
 
 const List = styled(Wrapper)`
   height: 60px;
@@ -90,9 +91,12 @@ const CheckBtn = styled.button`
 const Coupon = () => {
   ////// GLOBAL STATE //////
   const [isModal, setIsModal] = useState(false);
+  const [cpModal, setCpModal] = useState(false);
+  const { couponSearchList } = useSelector((state) => state.coupon);
 
   ////// HOOKS //////
   const width = useWidth();
+  const dispatch = useDispatch();
 
   ////// REDUX //////
   ////// USEEFFECT //////
@@ -100,6 +104,10 @@ const Coupon = () => {
   const modalToggle = useCallback(() => {
     setIsModal((prev) => !prev);
   }, [isModal]);
+
+  const cpModalToggle = useCallback(() => {
+    setCpModal((prev) => !prev);
+  }, [cpModal]);
 
   ////// HANDLER //////
   ////// DATAVIEW //////
@@ -155,48 +163,61 @@ const Coupon = () => {
               <Wrapper width={`192px`}>조건 금액</Wrapper>
               <Wrapper width={`193px`}>할인 금액</Wrapper>
             </Wrapper>
-            {width < 800 ? (
-              <Wrapper>
-                <MobileList>
-                  <Wrapper al={`flex-start`} fontSize={`16px`}>
-                    쿠폰 번호 : AB542354
-                  </Wrapper>
-                  <Wrapper al={`flex-start`} color={Theme.grey_C}>
-                    사용기간 : 2022.12.01 ~ 2022.01.31
-                  </Wrapper>
-                  <Wrapper al={`flex-start`} color={Theme.grey_C}>
-                    조건 금액 : 최소 20,000원 이상 구매
-                  </Wrapper>
-                  <Wrapper al={`flex-start`} color={Theme.grey_C}>
-                    할인 금액 : 2,000원
-                  </Wrapper>
-                </MobileList>
+            {couponSearchList && couponSearchList.length === 0 ? (
+              <Wrapper padding={`50px 0`}>
+                <Empty description="조회된 쿠폰 내역이 없습니다." />
               </Wrapper>
             ) : (
-              <List>
-                <Wrapper width={`127px`} color={Theme.grey_C}>
-                  10
-                </Wrapper>
-                <Wrapper
-                  width={`calc(100% - 127px - 192px - 192px - 193px)`}
-                  fontSize={`18px`}
-                  padding={`0 50px`}
-                  al={`flex-start`}
-                >
-                  쿠폰 번호 : AB542354
-                </Wrapper>
-                <Wrapper width={`192px`} color={Theme.grey_C}>
-                  2022.12.01 ~ 2022.01.31
-                </Wrapper>
-                <Wrapper width={`192px`} color={Theme.grey_C}>
-                  최소 20,000원 이상 구매
-                </Wrapper>
-                <Wrapper width={`193px`} fontSize={`16px`} fontWeight={`600`}>
-                  2,000원
-                </Wrapper>
-              </List>
+              couponSearchList.map((data) => {
+                return (
+                  <Wrapper key={data.id}>
+                    {width < 800 ? (
+                      <MobileList key={data.id}>
+                        <Wrapper al={`flex-start`} fontSize={`16px`}>
+                          쿠폰 번호 : {data.cuponNumber}
+                        </Wrapper>
+                        <Wrapper al={`flex-start`} color={Theme.grey_C}>
+                          사용기간 :{data.limitDate}
+                        </Wrapper>
+                        <Wrapper al={`flex-start`} color={Theme.grey_C}>
+                          조건 금액 : {data.minimunPay}
+                        </Wrapper>
+                        <Wrapper al={`flex-start`} color={Theme.grey_C}>
+                          할인 금액 : {data.discountPay}
+                        </Wrapper>
+                      </MobileList>
+                    ) : (
+                      <List>
+                        <Wrapper width={`127px`} color={Theme.grey_C}>
+                          10
+                        </Wrapper>
+                        <Wrapper
+                          width={`calc(100% - 127px - 192px - 192px - 193px)`}
+                          fontSize={`18px`}
+                          padding={`0 50px`}
+                          al={`flex-start`}
+                        >
+                          쿠폰 번호 :{data.cuponNumber}
+                        </Wrapper>
+                        <Wrapper width={`192px`} color={Theme.grey_C}>
+                          {data.limitDate}
+                        </Wrapper>
+                        <Wrapper width={`192px`} color={Theme.grey_C}>
+                          {data.minimunPay}
+                        </Wrapper>
+                        <Wrapper
+                          width={`193px`}
+                          fontSize={`16px`}
+                          fontWeight={`600`}
+                        >
+                          {data.discountPay}
+                        </Wrapper>
+                      </List>
+                    )}
+                  </Wrapper>
+                );
+              })
             )}
-
             <CustomPage />
           </RsWrapper>
 
@@ -246,7 +267,7 @@ const Coupon = () => {
                       height={`46px`}
                       placeholder="쿠폰번호를 입력해주세요."
                     />
-                    <CheckBtn>확인</CheckBtn>
+                    <CheckBtn onChange={cpModalToggle}>확인</CheckBtn>
                   </Wrapper>
                 </Wrapper>
                 <Wrapper dr={`row`} ju={`space-between`}>
@@ -267,8 +288,8 @@ const Coupon = () => {
           </Modal>
 
           <Modal
-            onCancel={modalToggle}
-            visible={isModal}
+            onCancel={cpModalToggle}
+            visible={cpModal}
             footer={null}
             closable={null}
             width={`570px`}
@@ -290,7 +311,7 @@ const Coupon = () => {
                   color={Theme.grey_C}
                   isHover
                   fontSize={`20px`}
-                  onClick={modalToggle}
+                  onClick={cpModalToggle}
                 >
                   <CloseOutlined />
                 </Text>
@@ -330,14 +351,14 @@ const Coupon = () => {
                   </Wrapper>
                 </Wrapper>
                 <Wrapper dr={`row`} ju={`space-between`}>
-                  <BeforeBtn onClick={modalToggle}>쇼핑계속하기</BeforeBtn>
+                  <BeforeBtn onClick={cpModalToggle}>쇼핑계속하기</BeforeBtn>
                   <CommonButton
                     fontSize={width < 500 ? `16px` : `18px`}
                     fontWeight={`600`}
                     kindOf={`white`}
                     width={width < 700 ? `150px` : `230px`}
                     height={`54px`}
-                    onClick={modalToggle}
+                    onClick={cpModalToggle}
                   >
                     등록하기
                   </CommonButton>
