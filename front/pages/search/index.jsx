@@ -18,8 +18,15 @@ import {
   Wrapper,
 } from "../../components/commonComponents";
 import Theme from "../../components/Theme";
-import { Select } from "antd";
+import { Empty, Select } from "antd";
 import styled from "styled-components";
+import useInput from "../../hooks/useInput";
+import { useEffect } from "react";
+import { useRouter } from "next/router";
+import { useState } from "react";
+import { PRODUCT_LIST_REQUEST } from "../../reducers/product";
+import { useDispatch, useSelector } from "react-redux";
+import { useCallback } from "react";
 
 const CustomSelect = styled(Wrapper)`
   width: ${(props) => props.width || `145px`};
@@ -52,63 +59,62 @@ const CustomSelect = styled(Wrapper)`
 
 const Index = () => {
   ////// GLOBAL STATE //////
+  const { productList, productPage } = useSelector((state) => state.product);
   ////// HOOKS //////
   const width = useWidth();
+  const [orderType, setOrderType] = useState(1);
+  const [currentPage, setCurrentPage] = useState(1);
+
   ////// REDUX //////
+  const router = useRouter();
+  const dispatch = useDispatch();
   ////// USEEFFECT //////
+
+  // 검색어 세팅
+  useEffect(() => {
+    if (router.query.search) {
+      dispatch({
+        type: PRODUCT_LIST_REQUEST,
+        data: {
+          searchTitle: router.query.search,
+          orderType,
+        },
+      });
+    }
+  }, [router.query.search]);
   ////// TOGGLE //////
   ////// HANDLER //////
+
+  // 페이지네이션
+  const otherPageCall = useCallback(
+    (changePage) => {
+      setCurrentPage(changePage);
+
+      dispatch({
+        type: PRODUCT_LIST_REQUEST,
+        data: {
+          page: changePage,
+        },
+      });
+    },
+    [currentPage]
+  );
+
+  // 최신순/오래된순
+  const orderTypeHandler = useCallback(
+    (data) => {
+      setOrderType(data);
+      dispatch({
+        type: PRODUCT_LIST_REQUEST,
+        data: {
+          orderType: data,
+        },
+      });
+    },
+    [orderType]
+  );
+
   ////// DATAVIEW //////
-  const bannerData = [
-    {
-      img: "https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/bmm/assets/images/main/img_3nd_banner1.png",
-      name: "베진카 300정",
-      content: "일본 위장약 소화제 위염약",
-      price: "9,000원",
-      sale: "9,000원",
-      persent: "10%",
-    },
-    {
-      img: "https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/bmm/assets/images/main/img_3nd_banner1.png",
-      name: "베진카 300정",
-      content: "일본 위장약 소화제 위염약",
-      price: "9,000원",
-      sale: "9,000원",
-      persent: "10%",
-    },
-    {
-      img: "https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/bmm/assets/images/main/img_3nd_banner1.png",
-      name: "베진카 300정",
-      content: "일본 위장약 소화제 위염약",
-      price: "9,000원",
-      sale: "9,000원",
-      persent: "10%",
-    },
-    {
-      img: "https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/bmm/assets/images/main/img_3nd_banner1.png",
-      name: "베진카 300정",
-      content: "일본 위장약 소화제 위염약",
-      price: "9,000원",
-      sale: "9,000원",
-      persent: "10%",
-    },
-    {
-      img: "https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/bmm/assets/images/main/img_3nd_banner1.png",
-      name: "베진카 300정",
-      content: "일본 위장약 소화제 위염약",
-      price: "9,000원",
-      sale: "9,000원",
-      persent: "10%",
-    },
-    {
-      img: "https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/bmm/assets/images/main/img_3nd_banner1.png",
-      name: "베진카 300정",
-      content: "일본 위장약 소화제 위염약",
-      price: "9,000원",
-      sale: "9,000원",
-      persent: "10%",
-    },
-  ];
 
   return (
     <>
@@ -152,33 +158,41 @@ const Index = () => {
               >
                 총&nbsp;
                 <SpanText fontWeight={`500`} color={Theme.black_C}>
-                  43
+                  {productList.length}
                 </SpanText>
                 개의 상품이 있습니다.
               </Text>
 
               <CustomSelect>
-                <Select placeholder={`선택해주세요.`}>
-                  <Select.Option>추천순</Select.Option>
-                  <Select.Option>조회순</Select.Option>
+                <Select
+                  placeholder={`선택해주세요.`}
+                  value={orderType}
+                  onChange={orderTypeHandler}
+                >
+                  <Select.Option value={1}>추천순</Select.Option>
+                  <Select.Option value={2}>조회순</Select.Option>
                 </Select>
               </CustomSelect>
             </Wrapper>
 
             <Wrapper dr={`row`} ju={`flex-start`} al={`flex-start`}>
-              {bannerData &&
-                bannerData.map((data, idx) => {
+              {productList.length === 0 ? (
+                <Wrapper height={`200px`}>
+                  <Empty description="조회된 상품이 없습니다." />
+                </Wrapper>
+              ) : (
+                productList.map((data) => {
                   return (
-                    <ProductWrapper key={idx}>
+                    <ProductWrapper key={data.id}>
                       <SquareBox position={`relative`}>
-                        <Image alt="thumbnail" src={data.img} />
+                        <Image alt="thumbnail" src={data.thumbnail1} />
                       </SquareBox>
                       <Text
                         fontSize={width < 800 ? `14px` : `16px`}
                         fontWeight={`600`}
                         margin={width < 800 ? `10px 0 5px` : `18px 0 8px`}
                       >
-                        {data.name}
+                        {data.title}
                       </Text>
                       <Text
                         color={Theme.grey_C}
@@ -187,7 +201,7 @@ const Index = () => {
                         width={`100%`}
                         isEllipsis
                       >
-                        {data.content}
+                        {data.description}
                       </Text>
                       <Wrapper dr={`row`} ju={`space-between`}>
                         <Wrapper
@@ -199,7 +213,7 @@ const Index = () => {
                             fontSize={width < 800 ? `13px` : `18px`}
                             fontWeight={`600`}
                           >
-                            {data.price}
+                            {data.marketPrice}
                           </Text>
                           <Text
                             color={Theme.lightGrey_C}
@@ -207,14 +221,14 @@ const Index = () => {
                             margin={`0 5px`}
                             className="line"
                           >
-                            {data.sale}
+                            {data.memberPrice}
                           </Text>
                           <Text
                             fontSize={width < 800 ? `13px` : `18px`}
                             fontWeight={`600`}
                             color={Theme.red_C}
                           >
-                            {data.persent}
+                            {data.discount}
                           </Text>
                         </Wrapper>
                         <Wrapper
@@ -238,9 +252,15 @@ const Index = () => {
                       </Wrapper>
                     </ProductWrapper>
                   );
-                })}
+                })
+              )}
 
-              <CustomPage />
+              <CustomPage
+                defaultCurrent={1}
+                current={parseInt(currentPage)}
+                onChange={(page) => otherPageCall(page)}
+                total={productPage * 10}
+              />
             </Wrapper>
           </RsWrapper>
         </WholeWrapper>

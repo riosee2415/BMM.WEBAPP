@@ -15,12 +15,13 @@ import Theme from "./Theme";
 import { MenuOutlined } from "@ant-design/icons";
 import { useRouter } from "next/router";
 import useWidth from "../hooks/useWidth";
-import { Drawer, Badge } from "antd";
+import { Drawer, Badge, message } from "antd";
 import Link from "next/link";
 import { useDispatch, useSelector } from "react-redux";
 import { LOGO_GET_REQUEST } from "../reducers/logo";
 import { LOAD_MY_INFO_REQUEST } from "../reducers/user";
 import { ALL_LIST_REQUEST } from "../reducers/category";
+import useInput from "../hooks/useInput";
 
 const WebRow = styled(RowWrapper)`
   z-index: 100;
@@ -190,7 +191,19 @@ const AppHeader = () => {
   const router = useRouter();
   const dispatch = useDispatch();
 
+  // 검색어
+  const searchInput = useInput(``);
+
   ///////////// - EVENT HANDLER- ////////////
+
+  // 검색어 입력하기
+  const searchHandler = useCallback(() => {
+    if (searchInput.value === "") {
+      return message.error("검색어를 입력해주세요.");
+    }
+
+    router.push(`/search?search=${searchInput.value}`);
+  }, [searchInput.value]);
 
   const handleScroll = useCallback(() => {
     const { pageYOffset } = window;
@@ -324,6 +337,8 @@ const AppHeader = () => {
                   placeholder={`검색어를 입력해주세요.`}
                   radius={`46px`}
                   padding={`0 40px 0 20px`}
+                  {...searchInput}
+                  onKeyDown={(e) => e.keyCode === 13 && searchHandler()}
                 />
                 <Wrapper
                   width={`auto`}
@@ -331,6 +346,7 @@ const AppHeader = () => {
                   top={`0`}
                   right={`15px`}
                   height={`100%`}
+                  onClick={searchHandler}
                 >
                   <Image
                     width={`24px`}
