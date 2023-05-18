@@ -21,6 +21,7 @@ import coupon from "./coupon";
 import searchTag from "./searchTag";
 import wish from "./wish";
 import product from "./product";
+import review from "./review";
 
 const rootReducer = (state, action) => {
   switch (action.type) {
@@ -50,6 +51,7 @@ const rootReducer = (state, action) => {
         searchTag,
         wish,
         product,
+        review,
       });
       return combinedReducer(state, action);
     }

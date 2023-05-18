@@ -110,7 +110,7 @@ const Review = () => {
   ////// GLOBAL STATE //////
   const [isModal, setIsModal] = useState(false);
   const [deleteModal, setDeleteModal] = useState(false);
-  const [uModal, setUModal] = useState(true);
+  const [uModal, setUModal] = useState(false);
 
   ////// HOOKS //////
   const width = useWidth();
