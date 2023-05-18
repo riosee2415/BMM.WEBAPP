@@ -330,6 +330,7 @@ router.post("/list", async (req, res, next) => {
     return res.status(200).json({
       product: product[0],
       lastPage: parseInt(lastPage),
+      productLen: parseInt(productLen),
     });
   } catch (error) {
     console.error(error);
