@@ -151,7 +151,9 @@ const Index = () => {
               >
                 찜목록
               </Text>
-              <DBtn onClick={() => likeDeleteHandler()}>목록 전체 삭제</DBtn>
+              {likeList && likeList.length === 0 ? null : (
+                <DBtn onClick={() => likeDeleteHandler()}>목록 전체 삭제</DBtn>
+              )}
             </Wrapper>
             <Wrapper dr={`row`} ju={`flex-start`} al={`flex-start`}>
               {likeList && likeList.length === 0 ? (
