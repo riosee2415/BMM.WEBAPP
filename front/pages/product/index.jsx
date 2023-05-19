@@ -103,8 +103,7 @@ const Index = () => {
   const { productList, productPage } = useSelector((state) => state.product);
   const { st_likeCreateDone } = useSelector((state) => state.like);
   const { allList } = useSelector((state) => state.category);
-
-  console.log(productList);
+  const { me } = useSelector((state) => state.user);
 
   ////// HOOKS //////
   const width = useWidth();
@@ -171,14 +170,18 @@ const Index = () => {
 
   const likeCreateHandler = useCallback(
     (data) => {
-      setIsLikeState(data.isLike);
+      if (me) {
+        setIsLikeState(data.isLike);
 
-      dispatch({
-        type: LIKE_CREATE_REQUEST,
-        data: {
-          ProductId: data.ProductId,
-        },
-      });
+        dispatch({
+          type: LIKE_CREATE_REQUEST,
+          data: {
+            ProductId: data.ProductId,
+          },
+        });
+      } else {
+        message.error("로그인이 필요한 서비스입니다.");
+      }
     },
     [isLikeState]
   );
