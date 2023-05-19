@@ -111,7 +111,7 @@ const Index = () => {
   const router = useRouter();
   const dispatch = useDispatch();
 
-  const [type, setType] = useState(0);
+  const [type, setType] = useState(null);
   const [orderType, setOrderType] = useState(1);
   const [currentPage, setCurrentPage] = useState(1);
   const [isLikeState, setIsLikeState] = useState(false);
@@ -152,7 +152,7 @@ const Index = () => {
         },
       });
     }
-  }, [router.query, type, currentPage]);
+  }, [router.query, type, currentPage, orderType]);
 
   ////// TOGGLE //////
   ////// HANDLER //////
@@ -167,20 +167,6 @@ const Index = () => {
       setCurrentPage(changePage);
     },
     [currentPage]
-  );
-
-  // 최신순/오래된순
-  const orderTypeHandler = useCallback(
-    (data) => {
-      setOrderType(data);
-      dispatch({
-        type: PRODUCT_LIST_REQUEST,
-        data: {
-          orderType: data,
-        },
-      });
-    },
-    [orderType]
   );
 
   const likeCreateHandler = useCallback(
@@ -200,14 +186,25 @@ const Index = () => {
   const typeHandler = useCallback(
     (data) => {
       if (router.query) {
-        router.push(`/product?parent=${router.query.parent}&target=${data.id}`);
-        setType(parseInt(data));
+        if (!data) {
+          setType(data);
+
+          router.push(`/product?parent=${router.query.parent}`);
+        } else {
+          setType(parseInt(data));
+
+          router.push(
+            `/product?parent=${router.query.parent}&target=${data.id}`
+          );
+        }
       }
     },
     [type, router.query]
   );
 
   ////// DATAVIEW //////
+
+  console.log(type);
 
   return (
     <>
@@ -239,6 +236,7 @@ const Index = () => {
                 <Text color={Theme.grey_C} margin={`0 6px`}>
                   HOME
                 </Text>
+
                 <Image
                   alt="next icon"
                   src={`https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/bmm/assets/images/icon/next.png`}
@@ -252,11 +250,15 @@ const Index = () => {
                     ).value
                   }
                 </Text>
-                <Image
-                  alt="next icon"
-                  src={`https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/bmm/assets/images/icon/next.png`}
-                  width={`5px`}
-                />
+
+                {type !== null && (
+                  <Image
+                    alt="next icon"
+                    src={`https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/bmm/assets/images/icon/next.png`}
+                    width={`5px`}
+                  />
+                )}
+
                 <Text color={Theme.grey_C} margin={`0 0 0 6px`}>
                   {allList
                     .find(
@@ -271,7 +273,9 @@ const Index = () => {
               </Wrapper>
             </Wrapper>
             <Wrapper dr={`row`} ju={`flex-start`} margin={`18px 0 0`}>
-              <Btn>전체</Btn>
+              <Btn isActive={type === null} onClick={() => typeHandler(null)}>
+                전체
+              </Btn>
 
               {allList
                 .find(
@@ -306,7 +310,7 @@ const Index = () => {
                 <Select
                   placeholder={`선택해주세요.`}
                   value={orderType}
-                  onChange={orderTypeHandler}
+                  onChange={setOrderType}
                 >
                   <Select.Option value={1}>오래된순</Select.Option>
                   <Select.Option value={2}>최신순</Select.Option>

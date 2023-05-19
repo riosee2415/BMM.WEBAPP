@@ -101,18 +101,18 @@ const Index = () => {
   );
 
   // 최신순/오래된순
-  const orderTypeHandler = useCallback(
-    (data) => {
-      setOrderType(data);
-      dispatch({
-        type: PRODUCT_LIST_REQUEST,
-        data: {
-          orderType: data,
-        },
-      });
-    },
-    [orderType]
-  );
+  // const orderTypeHandler = useCallback(
+  //   (data) => {
+  //     setOrderType(data);
+  //     dispatch({
+  //       type: PRODUCT_LIST_REQUEST,
+  //       data: {
+  //         orderType: data,
+  //       },
+  //     });
+  //   },
+  //   [orderType]
+  // );
 
   ////// DATAVIEW //////
 
