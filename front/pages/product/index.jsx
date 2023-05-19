@@ -102,6 +102,9 @@ const Index = () => {
   ////// GLOBAL STATE //////
   const { productList, productPage } = useSelector((state) => state.product);
   const { st_likeCreateDone } = useSelector((state) => state.like);
+  const { allList } = useSelector((state) => state.category);
+
+  console.log(allList);
 
   ////// HOOKS //////
   const width = useWidth();
@@ -204,7 +207,12 @@ const Index = () => {
                 fontSize={width < 800 ? `22px` : `34px`}
                 fontWeight={`bold`}
               >
-                의류
+                {
+                  allList.find(
+                    (data) =>
+                      parseInt(data.id) === parseInt(router.query.parent)
+                  ).value
+                }
               </Text>
               <Wrapper dr={`row`} width={`auto`}>
                 <Image
@@ -235,9 +243,22 @@ const Index = () => {
             </Wrapper>
             <Wrapper dr={`row`} ju={`flex-start`} margin={`18px 0 0`}>
               <Btn>전체</Btn>
-              <Btn isActive>상의</Btn>
-              <Btn>하의</Btn>
-              <Btn>악세사리</Btn>
+
+              {allList
+                .find(
+                  (data) => parseInt(data.id) === parseInt(router.query.parent)
+                )
+                .sub.map((item) => {
+                  return (
+                    <Btn
+                      isActive={
+                        parseInt(item.id) === parseInt(router.query.target)
+                      }
+                    >
+                      {item.value}
+                    </Btn>
+                  );
+                })}
             </Wrapper>
             <Wrapper dr={`row`} ju={`space-between`} margin={`30px 0 24px`}>
               <Text

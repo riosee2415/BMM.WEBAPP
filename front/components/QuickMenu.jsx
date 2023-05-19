@@ -107,6 +107,7 @@ const QuickMenu = () => {
 
   const [menu, setMenu] = useState(false);
   const [isSearch, setIsSearch] = useState(false);
+  const [parentId, setParentId] = useState(null);
   const [currentCategory, setCurrentCategory] = useState(null); // 1Depth 카테고리
 
   const menuToggle = useCallback(() => {
@@ -126,6 +127,18 @@ const QuickMenu = () => {
       type: ALL_LIST_REQUEST,
     });
   }, [router.query]);
+
+  const movePageCategory = useCallback(
+    (data) => {
+      router.push(`/product?parent=${parentId}&target=${data.id}`);
+    },
+    [parentId]
+  );
+
+  const selectCategory = useCallback((sub, parent) => {
+    setCurrentCategory(sub);
+    setParentId(parent);
+  }, []);
 
   return (
     <Wrapper
@@ -236,7 +249,7 @@ const QuickMenu = () => {
                     return (
                       <TextBox
                         key={data.id}
-                        onClick={() => setCurrentCategory("22")}
+                        onClick={() => selectCategory(data.sub, data.id)}
                       >
                         {data.value}
                       </TextBox>
@@ -253,26 +266,14 @@ const QuickMenu = () => {
                   width={`50%`}
                   bgColor={Theme.lightGrey3_C}
                 >
-                  <TwoTextBox isActive={true}>33</TwoTextBox>
-                  <TwoTextBox>33</TwoTextBox>
-                  <TwoTextBox>33</TwoTextBox>
-                  <TwoTextBox>33</TwoTextBox>
-                  <TwoTextBox>33</TwoTextBox>
-                  <TwoTextBox>33</TwoTextBox>
-                  <TwoTextBox>33</TwoTextBox>
-                  <TwoTextBox>33</TwoTextBox>
-                  <TwoTextBox>33</TwoTextBox>
-                  <TwoTextBox>33</TwoTextBox>
-                  <TwoTextBox>33</TwoTextBox>
-                  <TwoTextBox>33</TwoTextBox>
-                  <TwoTextBox>33</TwoTextBox>
-                  <TwoTextBox>33</TwoTextBox>
-                  <TwoTextBox>33</TwoTextBox>
-                  <TwoTextBox>33</TwoTextBox>
-                  <TwoTextBox>33</TwoTextBox>
-                  <TwoTextBox>33</TwoTextBox>
-                  <TwoTextBox>33</TwoTextBox>
-                  <TwoTextBox>33</TwoTextBox>
+                  {currentCategory.map((data) => {
+                    return (
+                      <TwoTextBox onClick={() => movePageCategory(data)}>
+                        {data.value}
+                      </TwoTextBox>
+                    );
+                  })}
+                  {/* <TwoTextBox isActive={true}>33</TwoTextBox> */}
                 </Wrapper>
               )}
             </Wrapper>
