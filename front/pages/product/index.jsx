@@ -332,9 +332,7 @@ const Index = () => {
                     <ProductWrapper key={idx}>
                       <SquareBox
                         position={`relative`}
-                        onClick={() =>
-                          moveLinkHandler(`/product/${data.ProductId}`)
-                        }
+                        onClick={() => moveLinkHandler(`/product/${data.id}`)}
                       >
                         <Image alt="thumbnail" src={data.thumbnail1} />
                       </SquareBox>

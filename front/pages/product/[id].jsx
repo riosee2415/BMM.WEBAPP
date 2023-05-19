@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import ClientLayout from "../../components/ClientLayout";
 import Head from "next/head";
 import wrapper from "../../store/configureStore";
@@ -26,6 +26,9 @@ import {
   PlusOutlined,
   PictureOutlined,
 } from "@ant-design/icons";
+import { useDispatch, useSelector } from "react-redux";
+import { useRouter } from "next/router";
+import { PRODUCT_DETAIL_REQUEST } from "../../reducers/product";
 
 const CustomSelect = styled(Wrapper)`
   width: ${(props) => props.width || `100%`};
@@ -169,6 +172,10 @@ const TextWrapper = styled(Wrapper)`
 
 const Index = () => {
   ////// GLOBAL STATE //////
+  const { productDetail } = useSelector((state) => state.product);
+
+  console.log(productDetail);
+
   const [reviewModal, setReviewModal] = useState(false);
   const [mobileMenu, setMobileMenu] = useState(false);
   const [limitModal, setLimitModal] = useState(false);
@@ -179,8 +186,22 @@ const Index = () => {
 
   ////// HOOKS //////
   const width = useWidth();
+  const router = useRouter();
+  const dispatch = useDispatch();
+
   ////// REDUX //////
   ////// USEEFFECT //////
+  useEffect(() => {
+    if (router.query) {
+      dispatch({
+        type: PRODUCT_DETAIL_REQUEST,
+        data: {
+          ProductId: router.query.id,
+        },
+      });
+    }
+  }, [router.query]);
+
   ////// TOGGLE //////
 
   const modalToggle = useCallback(() => {
@@ -242,7 +263,7 @@ const Index = () => {
                   width={`5px`}
                 />
                 <Text color={Theme.grey_C} margin={`0 6px`}>
-                  의류
+                  {productDetail && productDetail.detailData.upCategoryValue}
                 </Text>
                 <Image
                   alt="next icon"
@@ -250,7 +271,7 @@ const Index = () => {
                   width={`5px`}
                 />
                 <Text color={Theme.grey_C} margin={`0 0 0 6px`}>
-                  상의
+                  {productDetail && productDetail.detailData.downCategoryValue}
                 </Text>
               </Wrapper>
             </Wrapper>
