@@ -104,16 +104,16 @@ const Index = () => {
   const { st_likeCreateDone } = useSelector((state) => state.like);
   const { allList } = useSelector((state) => state.category);
 
-  console.log(allList);
+  console.log(productList);
 
   ////// HOOKS //////
   const width = useWidth();
   const router = useRouter();
   const dispatch = useDispatch();
 
-  const [tab, setTab] = useState(0);
+  const [type, setType] = useState(0);
   const [orderType, setOrderType] = useState(1);
-  const [currentTap, setCurrentTab] = useState(1);
+  const [currentPage, setCurrentPage] = useState(1);
   const [isLikeState, setIsLikeState] = useState(false);
 
   ////// REDUX //////
@@ -134,11 +134,25 @@ const Index = () => {
 
   useEffect(() => {
     if (router.query.target) {
-      setTab(parseInt(router.query.target));
+      setType(parseInt(router.query.target));
     } else {
       return;
     }
   }, [router.query.target]);
+
+  useEffect(() => {
+    if (router.query) {
+      dispatch({
+        type: PRODUCT_LIST_REQUEST,
+        data: {
+          CateUpId: router.query.parent,
+          CateDownId: type,
+          page: currentPage,
+          orderType,
+        },
+      });
+    }
+  }, [router.query, type, currentPage]);
 
   ////// TOGGLE //////
   ////// HANDLER //////
@@ -150,9 +164,9 @@ const Index = () => {
   //페이지네이션
   const nextPageCall = useCallback(
     (changePage) => {
-      setCurrentTab(changePage);
+      setCurrentPage(changePage);
     },
-    [currentTap]
+    [currentPage]
   );
 
   // 최신순/오래된순
@@ -185,10 +199,12 @@ const Index = () => {
 
   const typeHandler = useCallback(
     (data) => {
-      router.push(`/product?target=${data}`);
-      setTab(parseInt(data));
+      if (router.query) {
+        router.push(`/product?parent=${router.query.parent}&target=${data.id}`);
+        setType(parseInt(data));
+      }
     },
-    [tab]
+    [type, router.query]
   );
 
   ////// DATAVIEW //////
@@ -229,7 +245,12 @@ const Index = () => {
                   width={`5px`}
                 />
                 <Text color={Theme.grey_C} margin={`0 6px`}>
-                  의류
+                  {
+                    allList.find(
+                      (data) =>
+                        parseInt(data.id) === parseInt(router.query.parent)
+                    ).value
+                  }
                 </Text>
                 <Image
                   alt="next icon"
@@ -237,7 +258,15 @@ const Index = () => {
                   width={`5px`}
                 />
                 <Text color={Theme.grey_C} margin={`0 0 0 6px`}>
-                  상의
+                  {allList
+                    .find(
+                      (data) =>
+                        parseInt(data.id) === parseInt(router.query.parent)
+                    )
+                    .sub.map((item) => {
+                      if (parseInt(item.id) === parseInt(router.query.target))
+                        return item.value;
+                    })}
                 </Text>
               </Wrapper>
             </Wrapper>
@@ -251,6 +280,7 @@ const Index = () => {
                 .sub.map((item) => {
                   return (
                     <Btn
+                      onClick={() => typeHandler(item)}
                       isActive={
                         parseInt(item.id) === parseInt(router.query.target)
                       }
@@ -381,7 +411,7 @@ const Index = () => {
 
               <CustomPage
                 defaultCurrent={1}
-                current={parseInt(currentTap)}
+                current={parseInt(currentPage)}
                 total={productPage * 10}
                 pageSize={10}
                 onChange={(page) => nextPageCall(page)}
@@ -407,10 +437,6 @@ export const getServerSideProps = wrapper.getServerSideProps(
 
     context.store.dispatch({
       type: LOAD_MY_INFO_REQUEST,
-    });
-
-    context.store.dispatch({
-      type: PRODUCT_LIST_REQUEST,
     });
 
     context.store.dispatch({

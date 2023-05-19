@@ -131,6 +131,7 @@ const QuickMenu = () => {
   const movePageCategory = useCallback(
     (data) => {
       router.push(`/product?parent=${parentId}&target=${data.id}`);
+      menuToggle();
     },
     [parentId]
   );
@@ -273,7 +274,6 @@ const QuickMenu = () => {
                       </TwoTextBox>
                     );
                   })}
-                  {/* <TwoTextBox isActive={true}>33</TwoTextBox> */}
                 </Wrapper>
               )}
             </Wrapper>

@@ -193,6 +193,7 @@ const AppHeader = () => {
 
   // 검색어
   const searchInput = useInput(``);
+  const [parentId, setParentId] = useState(null);
 
   ///////////// - EVENT HANDLER- ////////////
 
@@ -217,8 +218,8 @@ const AppHeader = () => {
     router.push(link);
   }, []);
 
-  const moveProduct = useCallback((target) => {
-    router.push(`/product?target=${target}`);
+  const moveProduct = useCallback((data, cate) => {
+    router.push(`/product?parent=${data.id}&target=${cate.id}`);
     window.scrollTo({ top: 0, behavior: "smooth" });
   }, []);
 
@@ -414,7 +415,7 @@ const AppHeader = () => {
                               {data.sub.map((cate) => {
                                 return (
                                   <SubMenu
-                                    onClick={() => moveProduct(data.id)}
+                                    onClick={() => moveProduct(data, cate)}
                                     key={cate.id}
                                   >
                                     {cate.value}
