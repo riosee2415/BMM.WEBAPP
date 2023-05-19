@@ -121,27 +121,10 @@ const Coupon = () => {
     });
   }, [userId, type]);
 
-  useEffect(() => {
-    dispatch({
-      type: COUPON_REGIST_REQUEST,
-      data: {
-        cuponNumber: cpNumber,
-      },
-    });
-  }, [cpNumber]);
-
   ////// TOGGLE //////
-  const modalToggle = useCallback(
-    (data) => {
-      setIsModal((prev) => !prev);
-      cpNumber.setValue("");
-
-      if (data) {
-        setCurrentData(data);
-      }
-    },
-    [isModal, currentData]
-  );
+  const modalToggle = useCallback(() => {
+    setIsModal((prev) => !prev);
+  }, [isModal]);
 
   const cpModalToggle = useCallback(() => {
     setCpModal((prev) => !prev);
@@ -213,10 +196,10 @@ const Coupon = () => {
                     return (
                       <MobileList key={data.id}>
                         <Wrapper al={`flex-start`} fontSize={`16px`}>
-                          쿠폰 번호 : {data.cuponNumber}
+                          {data.title}
                         </Wrapper>
                         <Wrapper al={`flex-start`} color={Theme.grey_C}>
-                          사용기간 :{data.limitDate}
+                          사용기간 :{data.viewLimitDate}
                         </Wrapper>
                         <Wrapper al={`flex-start`} color={Theme.grey_C}>
                           조건 금액 : {data.minimunPay}
@@ -240,7 +223,7 @@ const Coupon = () => {
                     return (
                       <List key={data.id}>
                         <Wrapper width={`127px`} color={Theme.grey_C}>
-                          10
+                          {data.id}
                         </Wrapper>
                         <Wrapper
                           width={`calc(100% - 127px - 192px - 192px - 193px)`}
@@ -248,10 +231,10 @@ const Coupon = () => {
                           padding={`0 50px`}
                           al={`flex-start`}
                         >
-                          쿠폰 번호 :{data.cuponNumber}
+                          {data.title}
                         </Wrapper>
                         <Wrapper width={`192px`} color={Theme.grey_C}>
-                          {data.viewUsedAt}
+                          {data.viewLimitDate}
                         </Wrapper>
                         <Wrapper width={`192px`} color={Theme.grey_C}>
                           {data.minimunPay}
@@ -269,10 +252,8 @@ const Coupon = () => {
                 )}
               </>
             )}
-
             <CustomPage />
           </RsWrapper>
-
           <Modal
             onCancel={modalToggle}
             visible={isModal}
@@ -318,7 +299,6 @@ const Coupon = () => {
                       width={width < 700 ? `70%` : `50%`}
                       height={`46px`}
                       placeholder="쿠폰번호를 입력해주세요."
-                      {...cpNumber}
                     />
                     <CheckBtn onChange={cpModalToggle}>확인</CheckBtn>
                   </Wrapper>
