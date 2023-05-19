@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import ClientLayout from "../../components/ClientLayout";
 import Theme from "../../components/Theme";
 import Head from "next/head";
@@ -21,6 +21,11 @@ import MypageTop from "../../components/MypageTop";
 import { Empty, Modal } from "antd";
 import { CloseOutlined } from "@ant-design/icons";
 import { useDispatch, useSelector } from "react-redux";
+import {
+  COUPON_REGIST_REQUEST,
+  COUPON_SEARCH_REQUEST,
+} from "../../reducers/coupon";
+import useInput from "../../hooks/useInput";
 
 const List = styled(Wrapper)`
   height: 60px;
@@ -94,16 +99,49 @@ const Coupon = () => {
   const [cpModal, setCpModal] = useState(false);
   const { couponSearchList } = useSelector((state) => state.coupon);
 
+  const [userId, setUserId] = useState();
+  const [type, setType] = useState(0);
+  const [currentData, setCurrentData] = useState(null);
+
+  const cpNumber = useInput("");
+
   ////// HOOKS //////
   const width = useWidth();
   const dispatch = useDispatch();
 
   ////// REDUX //////
   ////// USEEFFECT //////
+  useEffect(() => {
+    dispatch({
+      type: COUPON_SEARCH_REQUEST,
+      data: {
+        UserId: userId,
+        type: type,
+      },
+    });
+  }, [userId, type]);
+
+  useEffect(() => {
+    dispatch({
+      type: COUPON_REGIST_REQUEST,
+      data: {
+        cuponNumber: cpNumber,
+      },
+    });
+  }, [cpNumber]);
+
   ////// TOGGLE //////
-  const modalToggle = useCallback(() => {
-    setIsModal((prev) => !prev);
-  }, [isModal]);
+  const modalToggle = useCallback(
+    (data) => {
+      setIsModal((prev) => !prev);
+      cpNumber.setValue("");
+
+      if (data) {
+        setCurrentData(data);
+      }
+    },
+    [isModal, currentData]
+  );
 
   const cpModalToggle = useCallback(() => {
     setCpModal((prev) => !prev);
@@ -163,15 +201,16 @@ const Coupon = () => {
               <Wrapper width={`192px`}>조건 금액</Wrapper>
               <Wrapper width={`193px`}>할인 금액</Wrapper>
             </Wrapper>
-            {couponSearchList && couponSearchList.length === 0 ? (
-              <Wrapper padding={`50px 0`}>
-                <Empty description="조회된 쿠폰 내역이 없습니다." />
-              </Wrapper>
-            ) : (
-              couponSearchList.map((data) => {
-                return (
-                  <Wrapper key={data.id}>
-                    {width < 800 ? (
+
+            {width < 800 ? (
+              <>
+                {couponSearchList && couponSearchList.length === 0 ? (
+                  <Wrapper padding={`50px 0`}>
+                    <Empty description="조회된 쿠폰 내역이 없습니다." />
+                  </Wrapper>
+                ) : (
+                  couponSearchList.map((data) => {
+                    return (
                       <MobileList key={data.id}>
                         <Wrapper al={`flex-start`} fontSize={`16px`}>
                           쿠폰 번호 : {data.cuponNumber}
@@ -186,8 +225,20 @@ const Coupon = () => {
                           할인 금액 : {data.discountPay}
                         </Wrapper>
                       </MobileList>
-                    ) : (
-                      <List>
+                    );
+                  })
+                )}
+              </>
+            ) : (
+              <>
+                {couponSearchList && couponSearchList.length === 0 ? (
+                  <Wrapper padding={`50px 0`}>
+                    <Empty description="조회된 쿠폰 내역이 없습니다." />
+                  </Wrapper>
+                ) : (
+                  couponSearchList.map((data) => {
+                    return (
+                      <List key={data.id}>
                         <Wrapper width={`127px`} color={Theme.grey_C}>
                           10
                         </Wrapper>
@@ -200,7 +251,7 @@ const Coupon = () => {
                           쿠폰 번호 :{data.cuponNumber}
                         </Wrapper>
                         <Wrapper width={`192px`} color={Theme.grey_C}>
-                          {data.limitDate}
+                          {data.viewUsedAt}
                         </Wrapper>
                         <Wrapper width={`192px`} color={Theme.grey_C}>
                           {data.minimunPay}
@@ -213,11 +264,12 @@ const Coupon = () => {
                           {data.discountPay}
                         </Wrapper>
                       </List>
-                    )}
-                  </Wrapper>
-                );
-              })
+                    );
+                  })
+                )}
+              </>
             )}
+
             <CustomPage />
           </RsWrapper>
 
@@ -266,6 +318,7 @@ const Coupon = () => {
                       width={width < 700 ? `70%` : `50%`}
                       height={`46px`}
                       placeholder="쿠폰번호를 입력해주세요."
+                      {...cpNumber}
                     />
                     <CheckBtn onChange={cpModalToggle}>확인</CheckBtn>
                   </Wrapper>
