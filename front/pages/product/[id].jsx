@@ -17,7 +17,7 @@ import {
   TextArea,
 } from "../../components/commonComponents";
 import Theme from "../../components/Theme";
-import { Drawer, Modal, Select } from "antd";
+import { Drawer, message, Modal, Select } from "antd";
 import styled from "styled-components";
 import GallerySlider from "../../components/slide/GallerySlider";
 import {
@@ -29,6 +29,7 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import { useRouter } from "next/router";
 import { PRODUCT_DETAIL_REQUEST } from "../../reducers/product";
+import { LIKE_CREATE_REQUEST } from "../../reducers/like";
 
 const CustomSelect = styled(Wrapper)`
   width: ${(props) => props.width || `100%`};
@@ -172,7 +173,9 @@ const TextWrapper = styled(Wrapper)`
 
 const Index = () => {
   ////// GLOBAL STATE //////
+  const { me } = useSelector((state) => state.user);
   const { productDetail } = useSelector((state) => state.product);
+  const { st_likeCreateDone } = useSelector((state) => state.like);
 
   console.log(productDetail);
 
@@ -183,6 +186,8 @@ const Index = () => {
   const [currentTab, setCurrentTab] = useState(0);
   const [isModal, setIsModal] = useState(false);
   const [cModal, setCModal] = useState(false);
+
+  const [isLikeState, setIsLikeState] = useState(false);
 
   ////// HOOKS //////
   const width = useWidth();
@@ -201,6 +206,20 @@ const Index = () => {
       });
     }
   }, [router.query]);
+
+  useEffect(() => {
+    if (st_likeCreateDone) {
+      dispatch({
+        type: PRODUCT_DETAIL_REQUEST,
+      });
+
+      if (isLikeState) {
+        message.success("찜목록에서 삭제되었습니다.");
+      } else {
+        message.success("찜목록에 추가되었습니다.");
+      }
+    }
+  }, [st_likeCreateDone]);
 
   ////// TOGGLE //////
 
@@ -230,6 +249,24 @@ const Index = () => {
   }, [limitModal]);
 
   ////// HANDLER //////
+  const likeCreateHandler = useCallback(
+    (data) => {
+      if (me) {
+        setIsLikeState(data.isLike);
+
+        dispatch({
+          type: LIKE_CREATE_REQUEST,
+          data: {
+            ProductId: data.id,
+          },
+        });
+      } else {
+        message.error("로그인이 필요한 서비스입니다.");
+      }
+    },
+    [isLikeState]
+  );
+
   ////// DATAVIEW //////
 
   return (
@@ -246,7 +283,7 @@ const Index = () => {
                 fontSize={width < 800 ? `22px` : `34px`}
                 fontWeight={`bold`}
               >
-                의류
+                {productDetail && productDetail.detailData.upCategoryValue}
               </Text>
               <Wrapper dr={`row`} width={`auto`}>
                 <Image
@@ -281,21 +318,23 @@ const Index = () => {
                 width={width < 900 ? `100%` : `50%`}
                 padding={width < 900 ? `0 0 50px` : `0 80px 0 0`}
               >
-                <GallerySlider />
+                <GallerySlider
+                  datum={productDetail && productDetail.detailData}
+                />
               </Wrapper>
               <Wrapper width={width < 900 ? `100%` : `50%`} al={`flex-start`}>
                 <Text
                   fontSize={width < 900 ? `20px` : `28px`}
                   fontWeight={`600`}
                 >
-                  오레오 시리즈
+                  {productDetail && productDetail.detailData.title}
                 </Text>
                 <Text
                   fontSize={width < 900 ? `15px` : `18px`}
                   margin={`10px 0 28px`}
                   color={Theme.darkGrey_C}
                 >
-                  상품설명이 들어오는 곳입니다.
+                  {productDetail && productDetail.detailData.description}
                 </Text>
 
                 <Wrapper
@@ -308,7 +347,8 @@ const Index = () => {
                     시중가
                   </Text>
                   <Text margin={`0 0 0 14px`} color={Theme.darkGrey_C}>
-                    9,900원
+                    {productDetail &&
+                      productDetail.detailData.concatMarketPrice}
                   </Text>
                 </Wrapper>
                 <Wrapper
@@ -321,7 +361,9 @@ const Index = () => {
                     회원가
                   </Text>
                   <Text margin={`0 0 0 14px`} color={Theme.darkGrey_C}>
-                    9,900원
+                    {productDetail &&
+                      productDetail.detailData.concatMemberPrice}
+                    원
                   </Text>
                 </Wrapper>
                 <Wrapper
@@ -334,7 +376,7 @@ const Index = () => {
                     브랜드
                   </Text>
                   <Text margin={`0 0 0 14px`} color={Theme.darkGrey_C}>
-                    Gelato pique
+                    {productDetail && productDetail.detailData.brandName}
                   </Text>
                 </Wrapper>
                 <Wrapper
@@ -347,7 +389,7 @@ const Index = () => {
                     무게
                   </Text>
                   <Text margin={`0 0 0 14px`} color={Theme.darkGrey_C}>
-                    450g
+                    {productDetail && productDetail.detailData.concatWeight}
                   </Text>
                 </Wrapper>
                 <Wrapper
@@ -360,7 +402,8 @@ const Index = () => {
                     구매 제한
                   </Text>
                   <Text margin={`0 0 0 14px`} color={Theme.darkGrey_C}>
-                    최소 0개 ~ 최소 000개
+                    {productDetail &&
+                      productDetail.detailData.viewBuyLimitCount}
                   </Text>
                 </Wrapper>
                 <Wrapper
@@ -370,14 +413,15 @@ const Index = () => {
                   fontSize={width < 900 ? `20px` : `26px`}
                 >
                   <Text fontWeight={`bold`} color={Theme.red_C}>
-                    10%
+                    {productDetail && productDetail.detailData.viewDiscount}
                   </Text>
                   <Wrapper width={`auto`} dr={`row`}>
                     <Text className="line" color={Theme.lightGrey_C}>
-                      9,900원
+                      {productDetail &&
+                        productDetail.detailData.concatMarketPrice}
                     </Text>
                     <Text fontWeight={`600`} margin={`0 0 0 10px`}>
-                      9,000원
+                      {productDetail && productDetail.detailData.realPrice}
                     </Text>
                   </Wrapper>
                 </Wrapper>
@@ -486,18 +530,29 @@ const Index = () => {
                     kindOf={`darkgrey`}
                     fontSize={width < 900 ? `15px` : `20px`}
                   >
-                    <Image
-                      alt="heart icon"
-                      src={`https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/bmm/assets/images/icon/heart.png`}
-                      width={`24px`}
-                    />
-
-                    {/* 색칠된 하트
-                    <Image
-                      alt="heart icon"
-                      src={`https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/bmm/assets/images/icon/heart_A.png`}
-                      width={`24px`}
-                    /> */}
+                    {productDetail && productDetail.detailData.isLike === 0 ? (
+                      <Image
+                        onClick={() =>
+                          likeCreateHandler(
+                            productDetail && productDetail.detailData
+                          )
+                        }
+                        alt="heart icon"
+                        src={`https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/bmm/assets/images/icon/heart.png`}
+                        width={`24px`}
+                      />
+                    ) : (
+                      <Image
+                        onClick={() =>
+                          likeCreateHandler(
+                            productDetail && productDetail.detailData
+                          )
+                        }
+                        alt="heart icon"
+                        src={`https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/bmm/assets/images/icon/heart_A.png`}
+                        width={`24px`}
+                      />
+                    )}
                   </CommonButton>
 
                   <CommonButton
@@ -528,7 +583,15 @@ const Index = () => {
                 검색 태그
               </Text>
               <Wrapper dr={`row`} ju={`flex-start`} margin={`30px 0 80px`}>
-                <Tag>초콜릿</Tag>
+                {productDetail && productDetail.searchTagList.length === 0 ? (
+                  <Wrapper>조회된 검색태그가 없습니다.</Wrapper>
+                ) : (
+                  productDetail &&
+                  productDetail.searchTagList &&
+                  productDetail.searchTagList.map((data) => {
+                    return <Tag key={data.id}>{data.value}</Tag>;
+                  })
+                )}
               </Wrapper>
             </Wrapper>
             <Wrapper al={`flex-start`}>
@@ -634,13 +697,17 @@ const Index = () => {
                         width={`100%`}
                         height={`100%`}
                         frameborder="0"
-                        src={`https://www.youtube.com/embed/4DZ7meQ4XIU`}
+                        src={
+                          productDetail && productDetail.detailData.youtubeLink
+                        }
                       />
                     </IFrameWrapper>
                     <Image
                       margin={`50px 0`}
                       alt="image"
-                      src={`https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/bmm/assets/images/sample-img/product.png`}
+                      src={
+                        productDetail && productDetail.detailData.detailImage
+                      }
                     />
                     <Wrapper
                       borderTop={`1px solid ${Theme.grey2_C}`}
@@ -666,7 +733,7 @@ const Index = () => {
                           al={`flex-start`}
                           padding={width < 900 ? `15px 10px` : `0 22px`}
                         >
-                          상품명
+                          {productDetail && productDetail.detailData.title}
                         </Wrapper>
                       </Wrapper>
                       <Wrapper
@@ -688,7 +755,11 @@ const Index = () => {
                           al={`flex-start`}
                           padding={width < 900 ? `15px 10px` : `0 22px`}
                         >
-                          450g
+                          {productDetail &&
+                            productDetail.detailData.concatWeight}
+                          ,
+                          {productDetail &&
+                            productDetail.detailData.viewBuyLimitCount}
                         </Wrapper>
                       </Wrapper>
                       <Wrapper
@@ -710,7 +781,7 @@ const Index = () => {
                           al={`flex-start`}
                           padding={width < 900 ? `15px 10px` : `0 22px`}
                         >
-                          일본
+                          {productDetail && productDetail.detailData.origin}
                         </Wrapper>
                       </Wrapper>
                       <Wrapper
@@ -732,7 +803,8 @@ const Index = () => {
                           al={`flex-start`}
                           padding={width < 900 ? `15px 10px` : `0 22px`}
                         >
-                          제조사명
+                          {productDetail &&
+                            productDetail.detailData.madeCompany}
                         </Wrapper>
                       </Wrapper>
                       <Wrapper
@@ -754,7 +826,7 @@ const Index = () => {
                           al={`flex-start`}
                           padding={width < 900 ? `15px 10px` : `0 22px`}
                         >
-                          일본
+                          {productDetail && productDetail.detailData.location}
                         </Wrapper>
                       </Wrapper>
                       <Wrapper
@@ -776,7 +848,7 @@ const Index = () => {
                           al={`flex-start`}
                           padding={width < 900 ? `15px 10px` : `0 22px`}
                         >
-                          사용방법
+                          {productDetail && productDetail.detailData.howToUse}
                         </Wrapper>
                       </Wrapper>
                       <Wrapper
@@ -798,7 +870,7 @@ const Index = () => {
                           al={`flex-start`}
                           padding={width < 900 ? `15px 10px` : `0 22px`}
                         >
-                          사용기한
+                          {productDetail && productDetail.detailData.madeDate}
                         </Wrapper>
                       </Wrapper>
                       <Wrapper
@@ -820,7 +892,7 @@ const Index = () => {
                           al={`flex-start`}
                           padding={width < 900 ? `15px 10px` : `0 22px`}
                         >
-                          보관방법
+                          {productDetail && productDetail.detailData.howToKeep}
                         </Wrapper>
                       </Wrapper>
                       <Wrapper
@@ -842,7 +914,7 @@ const Index = () => {
                           al={`flex-start`}
                           padding={width < 900 ? `15px 10px` : `0 22px`}
                         >
-                          02-0000-0000
+                          {productDetail && productDetail.detailData.tel}
                         </Wrapper>
                       </Wrapper>
                       <Wrapper
@@ -864,7 +936,9 @@ const Index = () => {
                           al={`flex-start`}
                           padding={width < 900 ? `15px 10px` : `0 22px`}
                         >
-                          주의 사항이 들어오는 곳입니다.
+                          <Text>
+                            {productDetail && productDetail.detailData.warning}
+                          </Text>
                         </Wrapper>
                       </Wrapper>
                     </Wrapper>
@@ -896,9 +970,10 @@ const Index = () => {
                           al={`flex-start`}
                           padding={width < 900 ? `15px 10px` : `20px 22px`}
                         >
-                          <Text>· 해당 내용이 들어오는 곳입니다.</Text>
-                          <Text>· 해당 내용이 들어오는 곳입니다.</Text>
-                          <Text>· 해당 내용이 들어오는 곳입니다.</Text>
+                          <Text>
+                            {productDetail &&
+                              productDetail.detailData.canDeliveryArea}
+                          </Text>
                         </Wrapper>
                       </Wrapper>
                       <Wrapper
@@ -921,8 +996,6 @@ const Index = () => {
                           padding={width < 900 ? `15px 10px` : `20px 22px`}
                         >
                           <Text>· 해당 내용이 들어오는 곳입니다.</Text>
-                          <Text>· 해당 내용이 들어오는 곳입니다.</Text>
-                          <Text>· 해당 내용이 들어오는 곳입니다.</Text>
                         </Wrapper>
                       </Wrapper>
                       <Wrapper
@@ -944,9 +1017,10 @@ const Index = () => {
                           al={`flex-start`}
                           padding={width < 900 ? `15px 10px` : `20px 22px`}
                         >
-                          <Text>· 해당 내용이 들어오는 곳입니다.</Text>
-                          <Text>· 해당 내용이 들어오는 곳입니다.</Text>
-                          <Text>· 해당 내용이 들어오는 곳입니다.</Text>
+                          <Text>
+                            {productDetail &&
+                              productDetail.detailData.customInfo}
+                          </Text>
                         </Wrapper>
                       </Wrapper>
                       <Wrapper
@@ -968,9 +1042,10 @@ const Index = () => {
                           al={`flex-start`}
                           padding={width < 900 ? `15px 10px` : `20px 22px`}
                         >
-                          <Text>· 해당 내용이 들어오는 곳입니다.</Text>
-                          <Text>· 해당 내용이 들어오는 곳입니다.</Text>
-                          <Text>· 해당 내용이 들어오는 곳입니다.</Text>
+                          <Text>
+                            {productDetail &&
+                              productDetail.detailData.refundInfo}
+                          </Text>
                         </Wrapper>
                       </Wrapper>
                     </Wrapper>
@@ -1126,7 +1201,7 @@ const Index = () => {
                   fontWeight={`600`}
                   margin={`0 0 18px`}
                 >
-                  오레오 시리즈
+                  {productDetail && productDetail.detailData.title}
                 </Text>
                 <CustomSelect>
                   <Select placeholder="상품을 선택해주세요.">
@@ -1146,7 +1221,7 @@ const Index = () => {
                     fontWeight={`600`}
                     margin={`0 0 18px`}
                   >
-                    오레오 시리즈
+                    {productDetail && productDetail.detailData.title}
                   </Text>
                   <Wrapper dr={`row`} ju={`space-between`}>
                     <Wrapper

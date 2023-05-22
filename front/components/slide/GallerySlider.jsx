@@ -117,7 +117,7 @@ const GalleryWrapper = styled(Wrapper)`
   }
 `;
 
-export default () => {
+export default ({ datum }) => {
   const [currentIdx, setCurrentIdx] = useState(0);
   return (
     <GalleryWrapper>

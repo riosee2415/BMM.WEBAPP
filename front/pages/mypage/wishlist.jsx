@@ -233,14 +233,14 @@ const Index = () => {
                               width={width < 800 ? `18px` : `21px`}
                               alt="like icon"
                               onClick={() => likeCreateHandler(data)}
-                              src={`https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/bmm/assets/images/icon/heart_A.png`}
+                              src={`https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/bmm/assets/images/icon/heart.png`}
                             />
                           ) : (
                             <Image
                               width={width < 800 ? `18px` : `21px`}
                               alt="like icon"
                               onClick={() => likeCreateHandler(data)}
-                              src={`https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/bmm/assets/images/icon/heart.png`}
+                              src={`https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/bmm/assets/images/icon/heart_A.png`}
                             />
                           )}
                         </Wrapper>
