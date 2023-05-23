@@ -32,7 +32,7 @@ export const initailState = {
   st_productAdminListDone: false,
   st_productAdminListError: null,
   //
-  st_productDetailLoading: false, // product 관리자 가져오기
+  st_productDetailLoading: false, // product detail 가져오기
   st_productDetailDone: false,
   st_productDetailError: null,
   //

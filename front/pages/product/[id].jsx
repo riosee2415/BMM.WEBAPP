@@ -186,6 +186,7 @@ const Index = () => {
   const [currentTab, setCurrentTab] = useState(0);
   const [isModal, setIsModal] = useState(false);
   const [cModal, setCModal] = useState(false);
+  const [option, setOption] = useState("");
 
   const [isLikeState, setIsLikeState] = useState(false);
 
@@ -431,8 +432,19 @@ const Index = () => {
                 >
                   <CustomSelect>
                     <Select placeholder="상품을 선택해주세요.">
-                      <Select.Option>옵션1</Select.Option>
-                      <Select.Option>옵션2</Select.Option>
+                      {productDetail &&
+                      productDetail.optionList.length === 0 ? (
+                        <Select.Option value="">옵션이 없습니다.</Select.Option>
+                      ) : (
+                        productDetail &&
+                        productDetail.optionList.map((data) => {
+                          return (
+                            <Select.Option key={data.id} value={data.id}>
+                              {data.value}
+                            </Select.Option>
+                          );
+                        })
+                      )}
                     </Select>
                   </CustomSelect>
                 </Wrapper>
