@@ -355,7 +355,7 @@ const QuickMenu = () => {
               padding={`40px 0 0`}
             >
               <Text fontSize={`16px`} fontWeight={`600`}>
-                인기 검색어
+                추천 검색태그
               </Text>
             </Wrapper>
 
