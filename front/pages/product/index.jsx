@@ -210,7 +210,14 @@ const Index = () => {
   return (
     <>
       <Head>
-        <title>BUY ME MINE | 상품</title>
+        <title>
+          BUY ME MINE |{" "}
+          {
+            allList.find(
+              (data) => parseInt(data.id) === parseInt(router.query.parent)
+            ).value
+          }
+        </title>
       </Head>
 
       <ClientLayout>
