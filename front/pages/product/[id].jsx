@@ -30,6 +30,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useRouter } from "next/router";
 import { PRODUCT_DETAIL_REQUEST } from "../../reducers/product";
 import { LIKE_CREATE_REQUEST } from "../../reducers/like";
+import { PRODUCT_REVIEW_REQUEST } from "../../reducers/review";
 
 const CustomSelect = styled(Wrapper)`
   width: ${(props) => props.width || `100%`};
@@ -176,8 +177,9 @@ const Index = () => {
   const { me } = useSelector((state) => state.user);
   const { productDetail } = useSelector((state) => state.product);
   const { st_likeCreateDone } = useSelector((state) => state.like);
+  const { productReviewList } = useSelector((state) => state.review);
 
-  console.log(productDetail);
+  console.log(productReviewList);
 
   const [reviewModal, setReviewModal] = useState(false);
   const [mobileMenu, setMobileMenu] = useState(false);
@@ -201,6 +203,12 @@ const Index = () => {
     if (router.query) {
       dispatch({
         type: PRODUCT_DETAIL_REQUEST,
+        data: {
+          ProductId: router.query.id,
+        },
+      });
+      dispatch({
+        type: PRODUCT_REVIEW_REQUEST,
         data: {
           ProductId: router.query.id,
         },

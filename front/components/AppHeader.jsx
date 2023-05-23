@@ -218,6 +218,11 @@ const AppHeader = () => {
     router.push(link);
   }, []);
 
+  const moveMainProduct = useCallback((data) => {
+    router.push(`/product?parent=${data.id}`);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }, []);
+
   const moveProduct = useCallback((data, cate) => {
     router.push(`/product?parent=${data.id}&target=${cate.id}`);
     window.scrollTo({ top: 0, behavior: "smooth" });
@@ -410,7 +415,12 @@ const AppHeader = () => {
                       allList.map((data) => {
                         return (
                           <SubMenuTextCol key={data.id}>
-                            {data.value}
+                            <Wrapper
+                              width={`auto`}
+                              onClick={() => moveMainProduct(data)}
+                            >
+                              {data.value}
+                            </Wrapper>
                             <InMenu>
                               {data.sub.map((cate) => {
                                 return (

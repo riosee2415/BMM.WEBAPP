@@ -16,6 +16,10 @@ import {
   REVIEW_DELETE_REQUEST,
   REVIEW_DELETE_SUCCESS,
   REVIEW_DELETE_FAILURE,
+  //
+  PRODUCT_REVIEW_REQUEST,
+  PRODUCT_REVIEW_SUCCESS,
+  PRODUCT_REVIEW_FAILURE,
 } from "../reducers/review";
 
 // ******************************************************************************************************************
@@ -37,6 +41,33 @@ function* myReviewList(action) {
     console.error(err);
     yield put({
       type: MY_REVIEW_FAILURE,
+      error: err.response.data,
+    });
+  }
+}
+// ******************************************************************************************************************
+// ******************************************************************************************************************
+// ******************************************************************************************************************
+
+// ******************************************************************************************************************
+// SAGA AREA ********************************************************************************************************
+// ******************************************************************************************************************
+async function productReviewListAPI(data) {
+  return await axios.post(`/api/review/product/list`, data);
+}
+
+function* productReviewList(action) {
+  try {
+    const result = yield call(productReviewListAPI, action.data);
+
+    yield put({
+      type: PRODUCT_REVIEW_SUCCESS,
+      data: result.data,
+    });
+  } catch (err) {
+    console.error(err);
+    yield put({
+      type: PRODUCT_REVIEW_FAILURE,
       error: err.response.data,
     });
   }
@@ -129,6 +160,9 @@ function* reviewDelete(action) {
 function* watchmyReviewList() {
   yield takeLatest(MY_REVIEW_REQUEST, myReviewList);
 }
+function* watchProductReviewList() {
+  yield takeLatest(PRODUCT_REVIEW_REQUEST, productReviewList);
+}
 function* watchreviewCreate() {
   yield takeLatest(REVIEW_CREATE_REQUEST, reviewCreate);
 }
@@ -142,6 +176,7 @@ function* watchreviewDelete() {
 //////////////////////////////////////////////////////////////
 export default function* reviewSaga() {
   yield all([
+    fork(watchProductReviewList),
     fork(watchmyReviewList),
     fork(watchreviewCreate),
     fork(watchreviewUpdate),
