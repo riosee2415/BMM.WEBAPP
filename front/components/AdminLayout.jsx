@@ -94,6 +94,23 @@ export const items = {
       useYn: true,
     },
   ],
+  상품관리: [
+    {
+      name: "카테고리관리",
+      link: "/admin/product/category",
+      useYn: true,
+    },
+    {
+      name: "브랜관리",
+      link: "/admin/product/brand",
+      useYn: true,
+    },
+    {
+      name: "상품관리",
+      link: "/admin/product/list",
+      useYn: true,
+    },
+  ],
   게시판관리: [
     {
       name: "공지사항관리",
@@ -322,6 +339,11 @@ const AdminLayout = ({ children }) => {
             right={me && me.menuRight3}
             title={`배너관리`}
             menus={items["배너관리"]}
+          />
+          <AdminMenuBox
+            right={me && me.menuRight3}
+            title={`상품관리`}
+            menus={items["상품관리"]}
           />
           <AdminMenuBox
             right={me && me.menuRight4}
