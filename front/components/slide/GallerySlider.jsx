@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Wrapper } from "../commonComponents";
 import ImageGallery from "react-image-gallery";
 import styled from "styled-components";
@@ -119,18 +119,58 @@ const GalleryWrapper = styled(Wrapper)`
 
 export default ({ datum }) => {
   const [currentIdx, setCurrentIdx] = useState(0);
+  const [viewer, setViewer] = useState(null);
+
+  useEffect(() => {
+    const arr = new Array();
+
+    if (datum) {
+      if (datum.thumbnail1) {
+        arr.push({
+          original: datum.thumbnail1,
+          thumbnail: datum.thumbnail1,
+        });
+      }
+
+      if (datum.thumbnail2) {
+        arr.push({
+          original: datum.thumbnail2,
+          thumbnail: datum.thumbnail2,
+        });
+      }
+
+      if (datum.thumbnail3) {
+        arr.push({
+          original: datum.thumbnail3,
+          thumbnail: datum.thumbnail3,
+        });
+      }
+
+      if (datum.thumbnail4) {
+        arr.push({
+          original: datum.thumbnail4,
+          thumbnail: datum.thumbnail4,
+        });
+      }
+    }
+
+    setViewer(arr);
+  }, [datum]);
+
   return (
     <GalleryWrapper>
-      <ImageGallery
-        showNav={false}
-        showPlayButton={false}
-        showFullscreenButton={false}
-        showIndex={true}
-        items={images}
-        onSlide={(index) => {
-          setCurrentIdx(index);
-        }}
-      />
+      {viewer ? (
+        <ImageGallery
+          showNav={false}
+          showPlayButton={false}
+          showFullscreenButton={false}
+          showIndex={true}
+          items={viewer}
+          onSlide={(index) => {
+            setCurrentIdx(index);
+          }}
+        />
+      ) : null}
     </GalleryWrapper>
   );
 };

@@ -30,6 +30,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { useRouter } from "next/router";
 import { PRODUCT_DETAIL_REQUEST } from "../../reducers/product";
 import { LIKE_CREATE_REQUEST } from "../../reducers/like";
+import { PRODUCT_REVIEW_REQUEST } from "../../reducers/review";
+import { numberWithCommas } from "../../components/commonUtils";
 
 const CustomSelect = styled(Wrapper)`
   width: ${(props) => props.width || `100%`};
@@ -176,7 +178,9 @@ const Index = () => {
   const { me } = useSelector((state) => state.user);
   const { productDetail } = useSelector((state) => state.product);
   const { st_likeCreateDone } = useSelector((state) => state.like);
+  const { productReviewList } = useSelector((state) => state.review);
 
+  // console.log(productReviewList);
   console.log(productDetail);
 
   const [reviewModal, setReviewModal] = useState(false);
@@ -186,7 +190,7 @@ const Index = () => {
   const [currentTab, setCurrentTab] = useState(0);
   const [isModal, setIsModal] = useState(false);
   const [cModal, setCModal] = useState(false);
-  const [option, setOption] = useState("");
+  const [option, setOption] = useState([]);
 
   const [isLikeState, setIsLikeState] = useState(false);
 
@@ -201,6 +205,12 @@ const Index = () => {
     if (router.query) {
       dispatch({
         type: PRODUCT_DETAIL_REQUEST,
+        data: {
+          ProductId: router.query.id,
+        },
+      });
+      dispatch({
+        type: PRODUCT_REVIEW_REQUEST,
         data: {
           ProductId: router.query.id,
         },
@@ -266,6 +276,76 @@ const Index = () => {
       }
     },
     [isLikeState]
+  );
+
+  const optionClickHandler = useCallback(
+    (optionId) => {
+      if (!optionId) {
+        return;
+      } else {
+        const duple = option.find(
+          (item) => parseInt(item.id) === parseInt(optionId)
+        );
+
+        if (duple) {
+          return message.info("이미 선택한 상품입니다.");
+        } else {
+          let targetData = productDetail.optionList.find(
+            (item) => parseInt(item.id) === parseInt(optionId)
+          );
+
+          targetData = { ...targetData, cnt: 1 };
+
+          setOption(option.concat(targetData));
+        }
+      }
+
+      //TODO -> clear select
+    },
+    [productDetail, option]
+  );
+
+  const quantityHandler = useCallback(
+    (type, item) => {
+      if (type === 1) {
+        if (item.cnt < 2) {
+          return message.info("1개 보다 적게 구매할 수 없습니다.");
+        } else {
+          const nextCnt = item.cnt - 1;
+          const nextItem = { ...item, cnt: nextCnt };
+
+          const findIndex = option.findIndex(
+            (element) => parseInt(element.id) == parseInt(item.id)
+          );
+          let copyArray = [...option];
+
+          copyArray[findIndex] = { ...copyArray[findIndex], cnt: nextCnt };
+
+          setOption(copyArray);
+        }
+      }
+
+      if (type === 2) {
+        if (
+          parseInt(item.cnt) >=
+          parseInt(productDetail.detailData.buyMaxLimitCount)
+        ) {
+          return message.info("최대 구매수량을 확인해주세요.");
+        } else {
+          const nextCnt = item.cnt + 1;
+
+          const findIndex = option.findIndex(
+            (element) => parseInt(element.id) == parseInt(item.id)
+          );
+          let copyArray = [...option];
+
+          copyArray[findIndex] = { ...copyArray[findIndex], cnt: nextCnt };
+
+          setOption(copyArray);
+        }
+      }
+    },
+    [option, productDetail]
   );
 
   ////// DATAVIEW //////
@@ -431,7 +511,12 @@ const Index = () => {
                   padding={`20px 0 12px`}
                 >
                   <CustomSelect>
-                    <Select placeholder="상품을 선택해주세요.">
+                    <Select
+                      value={null}
+                      allowClear
+                      placeholder="상품을 선택해주세요."
+                      onChange={optionClickHandler}
+                    >
                       {productDetail &&
                       productDetail.optionList.length === 0 ? (
                         <Select.Option value="">옵션이 없습니다.</Select.Option>
@@ -449,75 +534,84 @@ const Index = () => {
                   </CustomSelect>
                 </Wrapper>
 
-                <Wrapper
-                  padding={`20px`}
-                  bgColor={Theme.lightGrey3_C}
-                  border={`1px solid ${Theme.lightGrey2_C}`}
-                  radius={`2px`}
-                  al={`flex-start`}
-                  margin={`0 0 30px`}
-                >
-                  <Text
-                    fontSize={width < 900 ? `15px` : `18px`}
-                    fontWeight={`600`}
-                    color={Theme.grey_C}
-                    margin={`0 0 20px`}
-                  >
-                    오레오 핑크
-                  </Text>
-                  <Wrapper dr={`row`} ju={`space-between`}>
-                    <Wrapper
-                      width={`auto`}
-                      dr={`row`}
-                      border={`1px solid ${Theme.lightGrey2_C}`}
-                      bgColor={Theme.white_C}
-                    >
-                      <Wrapper
-                        width={`35px`}
-                        cursor={`pointer`}
-                        height={`35px`}
-                        fontSize={`12px`}
-                      >
-                        <MinusOutlined />
-                      </Wrapper>
-                      <Wrapper
-                        width={`68px`}
-                        height={`35px`}
-                        fontSize={width < 900 ? `14px` : `16px`}
-                        fontWeight={`600`}
-                        color={Theme.darkGrey_C}
-                        borderLeft={`1px solid ${Theme.lightGrey2_C}`}
-                        borderRight={`1px solid ${Theme.lightGrey2_C}`}
-                      >
-                        1
-                      </Wrapper>
-                      <Wrapper
-                        width={`35px`}
-                        cursor={`pointer`}
-                        height={`35px`}
-                        fontSize={`12px`}
-                      >
-                        <PlusOutlined />
-                      </Wrapper>
-                    </Wrapper>
+                {option.length !== 0
+                  ? option.map((item) => {
+                      return (
+                        <Wrapper
+                          key={item.id}
+                          padding={`20px`}
+                          bgColor={Theme.lightGrey3_C}
+                          border={`1px solid ${Theme.lightGrey2_C}`}
+                          radius={`2px`}
+                          al={`flex-start`}
+                          margin={`0 0 30px`}
+                        >
+                          <Text
+                            fontSize={width < 900 ? `15px` : `18px`}
+                            fontWeight={`600`}
+                            color={Theme.grey_C}
+                            margin={`0 0 20px`}
+                          >
+                            {item.value}
+                          </Text>
+                          <Wrapper dr={`row`} ju={`space-between`}>
+                            <Wrapper
+                              width={`auto`}
+                              dr={`row`}
+                              border={`1px solid ${Theme.lightGrey2_C}`}
+                              bgColor={Theme.white_C}
+                            >
+                              <Wrapper
+                                onClick={() => quantityHandler(1, item)}
+                                width={`35px`}
+                                cursor={`pointer`}
+                                height={`35px`}
+                                fontSize={`12px`}
+                              >
+                                <MinusOutlined />
+                              </Wrapper>
+                              <Wrapper
+                                width={`68px`}
+                                height={`35px`}
+                                fontSize={width < 900 ? `14px` : `16px`}
+                                fontWeight={`600`}
+                                color={Theme.darkGrey_C}
+                                borderLeft={`1px solid ${Theme.lightGrey2_C}`}
+                                borderRight={`1px solid ${Theme.lightGrey2_C}`}
+                              >
+                                {item.cnt}
+                              </Wrapper>
+                              <Wrapper
+                                onClick={() => quantityHandler(2, item)}
+                                width={`35px`}
+                                cursor={`pointer`}
+                                height={`35px`}
+                                fontSize={`12px`}
+                              >
+                                <PlusOutlined />
+                              </Wrapper>
+                            </Wrapper>
 
-                    <Wrapper dr={`row`} width={`auto`}>
-                      <Text
-                        fontSize={width < 900 ? `15px` : `20px`}
-                        fontWeight={`600`}
-                      >
-                        9,000원
-                      </Text>
-                      <Text
-                        isHover
-                        margin={`0 0 0 10px`}
-                        fontSize={width < 900 ? `15px` : `18px`}
-                      >
-                        <CloseOutlined />
-                      </Text>
-                    </Wrapper>
-                  </Wrapper>
-                </Wrapper>
+                            <Wrapper dr={`row`} width={`auto`}>
+                              <Text
+                                fontSize={width < 900 ? `15px` : `20px`}
+                                fontWeight={`600`}
+                              >
+                                {numberWithCommas(item.price * item.cnt)}원
+                              </Text>
+                              <Text
+                                isHover
+                                margin={`0 0 0 10px`}
+                                fontSize={width < 900 ? `15px` : `18px`}
+                              >
+                                <CloseOutlined />
+                              </Text>
+                            </Wrapper>
+                          </Wrapper>
+                        </Wrapper>
+                      );
+                    })
+                  : null}
 
                 <Wrapper dr={`row`} ju={`space-between`} margin={`0 0 30px`}>
                   <Text
