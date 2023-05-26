@@ -10,7 +10,6 @@ import {
   Input,
   Button,
   Popconfirm,
-  Drawer,
   Image,
 } from "antd";
 import { useRouter, withRouter } from "next/router";
@@ -36,16 +35,6 @@ import {
   EyeOutlined,
   CheckOutlined,
 } from "@ant-design/icons";
-import {
-  DOWN_DEL_REQUEST,
-  DOWN_LIST_REQUEST,
-  DOWN_NEW_REQUEST,
-  DOWN_UPDATE_REQUEST,
-  UP_DEL_REQUEST,
-  UP_LIST_REQUEST,
-  UP_NEW_REQUEST,
-  UP_UPDATE_REQUEST,
-} from "../../../reducers/category";
 import {
   BRAND_CREATE_REQUEST,
   BRAND_DELETE_REQUEST,
@@ -122,17 +111,6 @@ const Brand = ({}) => {
   } = useSelector((state) => state.brand);
 
   ////// HOOKS //////
-
-  // MODAL
-  const [isOneCateModal, setIsOneCateMdoal] = useState(false);
-  const [isTwoCateModal, setIsTwoCateModal] = useState(false);
-  const [isUpdateModal, setIsUpateModal] = useState(false);
-
-  // FORM
-  const [productForm] = Form.useForm();
-
-  // DATA
-  const [updateData, setUpdateData] = useState(null);
 
   // REF
   const imageRef = useRef(``);

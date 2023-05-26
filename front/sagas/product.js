@@ -49,6 +49,10 @@ import {
   PRODUCT_UPLOAD4_SUCCESS,
   PRODUCT_UPLOAD4_FAILURE,
   //
+  PRODUCT_UPLOAD5_REQUEST,
+  PRODUCT_UPLOAD5_SUCCESS,
+  PRODUCT_UPLOAD5_FAILURE,
+  //
   PRODUCT_HISTORY_LIST_REQUEST,
   PRODUCT_HISTORY_LIST_SUCCESS,
   PRODUCT_HISTORY_LIST_FAILURE,
@@ -409,6 +413,34 @@ function* productImg4(action) {
 // ******************************************************************************************************************
 // SAGA AREA ********************************************************************************************************
 // ******************************************************************************************************************
+async function productImg5API(data) {
+  return await axios.post(`/api/product/image`, data);
+}
+
+function* productImg5(action) {
+  try {
+    const result = yield call(productImg5API, action.data);
+
+    yield put({
+      type: PRODUCT_UPLOAD5_SUCCESS,
+      data: result.data,
+    });
+  } catch (err) {
+    console.error(err);
+    yield put({
+      type: PRODUCT_UPLOAD5_FAILURE,
+      error: err.response.data,
+    });
+  }
+}
+
+// ******************************************************************************************************************
+// ******************************************************************************************************************
+// ******************************************************************************************************************
+
+// ******************************************************************************************************************
+// SAGA AREA ********************************************************************************************************
+// ******************************************************************************************************************
 async function productHistoryListAPI(data) {
   return await axios.post(`/api/product/history/list`, data);
 }
@@ -632,6 +664,9 @@ function* watchProductUpload3() {
 function* watchProductUpload4() {
   yield takeLatest(PRODUCT_UPLOAD4_REQUEST, productImg4);
 }
+function* watchProductUpload5() {
+  yield takeLatest(PRODUCT_UPLOAD5_REQUEST, productImg5);
+}
 function* watchProductHistoryList() {
   yield takeLatest(PRODUCT_HISTORY_LIST_REQUEST, productHistoryList);
 }
@@ -669,6 +704,7 @@ export default function* productSaga() {
     fork(watchProductUpload2),
     fork(watchProductUpload3),
     fork(watchProductUpload4),
+    fork(watchProductUpload5),
     fork(watchProductHistoryList),
     fork(watchProductOptionList),
     fork(watchProductOptionCreate),

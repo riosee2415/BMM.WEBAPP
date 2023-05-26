@@ -16,6 +16,7 @@ export const initailState = {
   productPath2: null, // 이미지 2
   productPath3: null, // 이미지 3
   productPath4: null, // 이미지 4
+  productDetail: null, // 상세이미지
 
   productHistoryList: [],
 
@@ -67,6 +68,10 @@ export const initailState = {
   st_productUpload4Loading: false, // product 이미지 4 등록
   st_productUpload4Done: false,
   st_productUpload4Error: null,
+  //
+  st_productUpload5Loading: false, // product 이미지 5 등록
+  st_productUpload5Done: false,
+  st_productUpload5Error: null,
   //
   st_productHistoryListLoading: false, // product 이력
   st_productHistoryListDone: false,
@@ -144,6 +149,10 @@ export const PRODUCT_UPLOAD3_FAILURE = "PRODUCT_UPLOAD3_FAILURE";
 export const PRODUCT_UPLOAD4_REQUEST = "PRODUCT_UPLOAD4_REQUEST";
 export const PRODUCT_UPLOAD4_SUCCESS = "PRODUCT_UPLOAD4_SUCCESS";
 export const PRODUCT_UPLOAD4_FAILURE = "PRODUCT_UPLOAD4_FAILURE";
+
+export const PRODUCT_UPLOAD5_REQUEST = "PRODUCT_UPLOAD5_REQUEST";
+export const PRODUCT_UPLOAD5_SUCCESS = "PRODUCT_UPLOAD5_SUCCESS";
+export const PRODUCT_UPLOAD5_FAILURE = "PRODUCT_UPLOAD5_FAILURE";
 
 export const PRODUCT_HISTORY_LIST_REQUEST = "PRODUCT_HISTORY_LIST_REQUEST";
 export const PRODUCT_HISTORY_LIST_SUCCESS = "PRODUCT_HISTORY_LIST_SUCCESS";
@@ -439,6 +448,28 @@ const reducer = (state = initailState, action) =>
 
       //////////////////////////////////////////////
 
+      case PRODUCT_UPLOAD5_REQUEST: {
+        draft.st_productUpload5Loading = true;
+        draft.st_productUpload5Done = false;
+        draft.st_productUpload5Error = null;
+        break;
+      }
+      case PRODUCT_UPLOAD5_SUCCESS: {
+        draft.st_productUpload5Loading = false;
+        draft.st_productUpload5Done = true;
+        draft.st_productUpload5Error = null;
+        draft.productDetail = action.data.path;
+        break;
+      }
+      case PRODUCT_UPLOAD5_FAILURE: {
+        draft.st_productUpload5Loading = false;
+        draft.st_productUpload5Done = false;
+        draft.st_productUpload5Error = action.error;
+        break;
+      }
+
+      //////////////////////////////////////////////
+
       case PRODUCT_HISTORY_LIST_REQUEST: {
         draft.st_productHistoryListLoading = true;
         draft.st_productHistoryListDone = false;
@@ -594,6 +625,7 @@ const reducer = (state = initailState, action) =>
         draft.productPath2 = null;
         draft.productPath3 = null;
         draft.productPath4 = null;
+        draft.productDetail = null;
         break;
       }
 
