@@ -52,7 +52,7 @@ router.post("/all", async (req, res, next) => {
     return res.status(200).json(upList[0]);
   } catch (error) {
     console.error(error);
-    return res.status(400).send("잠시 후 다시 시도해주세요.");
+    return res.status(400).send("카테고리 목록을 조회할 수 없습니다.");
   }
 });
 
@@ -84,7 +84,7 @@ router.post("/up/new", isAdminCheck, async (req, res, next) => {
     if (error.errors[0].type === "unique violation") {
       return res.status(400).send("이미 존재하는 카테고리 입니다.");
     } else {
-      return res.status(400).send("잠시 후 다시 시도해주세요.");
+      return res.status(400).send("카테고리를 등록할 수 없습니다.");
     }
   }
 });
@@ -123,7 +123,7 @@ router.post("/up/list", async (req, res, next) => {
     return res.status(200).json(list[0]);
   } catch (error) {
     console.error(error);
-    return res.status(400).send("잠시 후 다시 시도해주세요.");
+    return res.status(400).send("카테고리를 조회할 수 없습니다.");
   }
 });
 
@@ -155,7 +155,7 @@ router.post("/up/update", isAdminCheck, async (req, res, next) => {
     if (error.errors[0].type === "unique violation") {
       return res.status(400).send("이미 존재하는 카테고리 입니다.");
     } else {
-      return res.status(400).send("잠시 후 다시 시도해주세요.");
+      return res.status(400).send("카테고리를 수정할 수 없습니다.");
     }
   }
 });
@@ -185,7 +185,7 @@ router.post("/up/delete", isAdminCheck, async (req, res, next) => {
     return res.status(200).json({ result: true });
   } catch (error) {
     console.error(error);
-    return res.status(400).send("잠시 후 다시 시도해주세요.");
+    return res.status(400).send("카테고리를 삭제할 수 없습니다.");
   }
 });
 
@@ -225,7 +225,7 @@ router.post("/down/new", isAdminCheck, async (req, res, next) => {
     return res.status(200).json({ result: true });
   } catch (error) {
     console.error(error);
-    return res.status(400).send("잠시 후 다시 시도해주세요.");
+    return res.status(400).send("하위 카테고리를 등록할 수 없습니다.");
   }
 });
 
@@ -264,7 +264,7 @@ router.post("/down/list", async (req, res, next) => {
     return res.status(200).json(list[0]);
   } catch (error) {
     console.error(error);
-    return res.status(400).send("잠시 후 다시 시도해주세요.");
+    return res.status(400).send("하위 카테고리 데이터를 조회할 수 없습니다.");
   }
 });
 
@@ -293,7 +293,7 @@ router.post("/down/update", isAdminCheck, async (req, res, next) => {
     return res.status(200).json({ result: true });
   } catch (error) {
     console.error(error);
-    return res.status(400).send("잠시 후 다시 시도해주세요.");
+    return res.status(400).send("하위 카테고리를 수정할 수 없습니다.");
   }
 });
 
@@ -322,7 +322,7 @@ router.post("/down/delete", isAdminCheck, async (req, res, next) => {
     return res.status(200).json({ result: true });
   } catch (error) {
     console.error(error);
-    return res.status(400).send("잠시 후 다시 시도해주세요.");
+    return res.status(400).send("하위 카테고리를 삭제할 수 없습니다.");
   }
 });
 

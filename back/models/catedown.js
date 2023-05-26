@@ -9,7 +9,6 @@ module.exports = class CateDown extends Model {
           // 10자리 임의
           type: DataTypes.STRING(50),
           allowNull: false, // 필수
-          unique: true,
         },
         isDelete: {
           type: DataTypes.BOOLEAN,
