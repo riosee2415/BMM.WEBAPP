@@ -30,21 +30,8 @@ import {
 } from "../../../components/commonComponents";
 import { LOAD_MY_INFO_REQUEST } from "../../../reducers/user";
 import Theme from "../../../components/Theme";
-import {
-  HomeOutlined,
-  RightOutlined,
-  AlertOutlined,
-  EyeOutlined,
-  CheckOutlined,
-} from "@ant-design/icons";
-import {
-  BRAND_CREATE_REQUEST,
-  BRAND_DELETE_REQUEST,
-  BRAND_IMAGE_RESET,
-  BRAND_LIST_REQUEST,
-  BRAND_UPDATE_REQUEST,
-  BRAND_UPLOAD_REQUEST,
-} from "../../../reducers/brand";
+import { HomeOutlined, RightOutlined, EyeOutlined } from "@ant-design/icons";
+import { BRAND_IMAGE_RESET, BRAND_LIST_REQUEST } from "../../../reducers/brand";
 import {
   PRODUCT_ADMIN_LIST_REQUEST,
   PRODUCT_CREATE_REQUEST,
@@ -57,20 +44,6 @@ import {
   PRODUCT_UPLOAD4_REQUEST,
 } from "../../../reducers/product";
 import { DOWN_LIST_REQUEST, UP_LIST_REQUEST } from "../../../reducers/category";
-
-const InfoTitle = styled.div`
-  font-size: 19px;
-  margin: 15px 0px 5px 0px;
-  width: 100%;
-
-  display: flex;
-  flex-direction: row;
-  justify-content: flex-start;
-  align-items: center;
-
-  padding-left: 15px;
-  color: ${(props) => props.theme.subTheme5_C};
-`;
 
 const ViewStatusIcon = styled(EyeOutlined)`
   font-size: 18px;
@@ -129,7 +102,6 @@ const Index = ({}) => {
     st_productDeleteError,
   } = useSelector((state) => state.product);
   const { upList, downList } = useSelector((state) => state.category);
-  console.log(productAdminList);
 
   ////// HOOKS //////
 
