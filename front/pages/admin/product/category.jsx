@@ -55,8 +55,14 @@ import {
 } from "@ant-design/icons";
 import {
   ALL_LIST_REQUEST,
+  DOWN_DEL_REQUEST,
+  DOWN_LIST_REQUEST,
+  DOWN_NEW_REQUEST,
+  DOWN_UPDATE_REQUEST,
+  UP_DEL_REQUEST,
   UP_LIST_REQUEST,
   UP_NEW_REQUEST,
+  UP_UPDATE_REQUEST,
 } from "../../../reducers/category";
 
 const InfoTitle = styled.div`
@@ -127,20 +133,118 @@ const Category = ({}) => {
 
   const {
     upList,
+    downList,
     //
     st_upNewDone,
     st_upNewError,
+    //
+    st_upUpdateDone,
+    st_upUpdateError,
+    //
+    st_downNewDone,
+    st_downNewError,
+    //
+    st_upDelDone,
+    st_upDelError,
+    //
+    st_downDelDone,
+    st_downDelError,
+    //
+    st_downUpdateDone,
+    st_downUpdateError,
   } = useSelector((state) => state.category);
 
   ////// HOOKS //////
 
   // MODAL
   const [isOneCateModal, setIsOneCateMdoal] = useState(false);
+  const [isTwoCateModal, setIsTwoCateModal] = useState(false);
+  const [isUpdateModal, setIsUpateModal] = useState(false);
 
   // FORM
   const [productForm] = Form.useForm();
 
+  // DATA
+  const [updateData, setUpdateData] = useState(null);
+
   ////// USEEFFECT //////
+
+  useEffect(() => {
+    if (st_downUpdateDone) {
+      setIsUpateModal(false);
+      dispatch({
+        type: DOWN_LIST_REQUEST,
+        data: {
+          CateUpId: currentData && currentData.id,
+        },
+      });
+      return message.success("하위 카테고리를 수정했습니다.");
+    }
+
+    if (st_downUpdateError) {
+      return message.error(st_downUpdateError);
+    }
+  }, [st_downUpdateDone, st_downUpdateError]);
+
+  useEffect(() => {
+    if (st_downDelDone) {
+      dispatch({
+        type: DOWN_LIST_REQUEST,
+        data: {
+          CateUpId: currentData && currentData.id,
+        },
+      });
+
+      return message.success("카테고리가 삭제되었습니다.");
+    }
+
+    if (st_downDelError) {
+      return message.error(st_downDelError);
+    }
+  }, [st_downDelDone, st_downDelError]);
+
+  useEffect(() => {
+    if (st_upDelDone) {
+      dispatch({
+        type: UP_LIST_REQUEST,
+      });
+
+      setCurrentData(null);
+      return message.success("카테고리를 삭제했습니다.");
+    }
+
+    if (st_upDelError) {
+      return message.error(st_upDelError);
+    }
+  }, [st_upDelDone, st_upDelError]);
+
+  useEffect(() => {
+    if (st_downNewDone) {
+      dispatch({
+        type: DOWN_LIST_REQUEST,
+        data: {
+          CateUpId: currentData && currentData.id,
+        },
+      });
+      setIsTwoCateModal(false);
+      productForm.resetFields();
+      return message.success("하위카테고리를 생성했습니다.");
+    }
+  }, [st_downNewDone, st_downNewError]);
+
+  useEffect(() => {
+    if (st_upUpdateDone) {
+      dispatch({
+        type: UP_LIST_REQUEST,
+      });
+
+      return message.success("카테고리가 수정되었습니다.");
+    }
+
+    if (st_upUpdateError) {
+      return message.error(st_upUpdateError);
+    }
+  }, [st_upUpdateDone, st_upUpdateError]);
 
   useEffect(() => {
     if (st_upNewDone) {
@@ -148,6 +252,8 @@ const Category = ({}) => {
         type: UP_LIST_REQUEST,
       });
       setIsOneCateMdoal(false);
+      productForm.resetFields();
+
       return message.success("카테고리를 생성했습니다.");
     }
 
@@ -158,6 +264,23 @@ const Category = ({}) => {
 
   ////// TOGGLE //////
 
+  // 2Depth Update Modal
+  const twoDepthUpdateModalToggle = useCallback(
+    (data) => {
+      setUpdateData(data);
+      setIsUpateModal(!isUpdateModal);
+      productForm.setFieldsValue({
+        value: data.value,
+      });
+    },
+    [isUpdateModal]
+  );
+
+  // 2depth 카테고리 모달
+  const twoDepthCateModalToggle = useCallback(() => {
+    setIsTwoCateModal(!isTwoCateModal);
+  }, [isTwoCateModal]);
+
   // 1depth 카테고리 모달
   const oneDepthCateModalToggle = useCallback(() => {
     setIsOneCateMdoal(!isOneCateModal);
@@ -165,33 +288,83 @@ const Category = ({}) => {
 
   ////// HANDLER //////
 
+  // 2Depth Update
+  const twoDepthUpdateHandler = useCallback(
+    (data) => {
+      dispatch({
+        type: DOWN_UPDATE_REQUEST,
+        data: {
+          id: updateData && updateData.id,
+          value: data.value,
+        },
+      });
+    },
+    [updateData]
+  );
+
+  // 2Depth Delete
+  const twoDepthDeleteHandler = useCallback((data) => {
+    dispatch({
+      type: DOWN_DEL_REQUEST,
+      data: {
+        id: data.id,
+      },
+    });
+  }, []);
+
+  // 1Depth Delete
+  const oneDepthDeleteHandler = useCallback((data, num) => {
+    dispatch({
+      type: UP_DEL_REQUEST,
+      data: {
+        id: data.id,
+      },
+    });
+  }, []);
+
+  // 2Depth Create
+  const twoDetphCreateHandler = useCallback(
+    (data) => {
+      dispatch({
+        type: DOWN_NEW_REQUEST,
+        data: {
+          value: data.value,
+          CateUpId: currentData && currentData.id,
+        },
+      });
+    },
+    [currentData]
+  );
+
+  // 1Depth Update
+  const oneCateUpdateHandler = useCallback(
+    (data) => {
+      dispatch({
+        type: UP_UPDATE_REQUEST,
+        data: {
+          id: currentData && currentData.id,
+          value: data.value,
+        },
+      });
+    },
+    [currentData]
+  );
+
+  // 데이터세팅
   const beforeSetDataHandler = useCallback(
     (record) => {
       setCurrentData(record);
 
       infoForm.setFieldsValue({
-        name: record.name,
-        englishName: record.englishName,
-        clearanceNum: record.clearanceNum,
-        postCode: record.postCode,
-        address: record.address,
-        detailAddress: record.detailAddress,
-        email: record.email,
-        tel: record.tel,
-        deliveryMessage: record.deliveryMessage,
-        payWay: record.payWay,
-        cardBankInfo: record.cardBankInfo,
-        cardInstallment: record.cardInstallment,
-        total: String(record.totalDeliveryPrice + record.totalPrice).replace(
-          /\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g,
-          ","
-        ),
-        usePoint: record.usePoint,
-        useCoupon: record.useCoupon,
-        userDiscountPrice: record.userDiscountPrice,
-        deliveryCom: record.deliveryCom,
-        deliveryNum: record.deliveryNum,
+        value: record.value,
         viewCreatedAt: record.viewCreatedAt,
+      });
+
+      dispatch({
+        type: DOWN_LIST_REQUEST,
+        data: {
+          CateUpId: record.id,
+        },
       });
     },
     [currentData, infoForm]
@@ -242,7 +415,60 @@ const Category = ({}) => {
       render: (data) => (
         <Popconfirm
           title="정말 삭제하시겠습니까?"
-          onConfirm={() => deleteBanner(data)}
+          onConfirm={() => oneDepthDeleteHandler(data)}
+          okText="삭제"
+          cancelText="취소"
+        >
+          <DelBtn />
+        </Popconfirm>
+      ),
+    },
+  ];
+  const col2 = [
+    {
+      title: "번호",
+      dataIndex: "num",
+    },
+    {
+      title: "카테고리명",
+      dataIndex: "value",
+    },
+
+    {
+      title: "생성일",
+      dataIndex: "viewCreatedAt",
+    },
+    {
+      title: "수정",
+      render: (data) => (
+        <Button
+          type="primary"
+          size="small"
+          onClick={() => twoDepthUpdateModalToggle(data)}
+        >
+          수정
+        </Button>
+      ),
+    },
+    {
+      title: "상태창",
+      render: (data) => (
+        <>
+          <ViewStatusIcon
+            active={
+              parseInt(data.id) === (currentData && parseInt(currentData.id))
+            }
+          />
+        </>
+      ),
+    },
+
+    {
+      title: "삭제",
+      render: (data) => (
+        <Popconfirm
+          title="정말 삭제하시겠습니까?"
+          onConfirm={() => twoDepthDeleteHandler(data)}
           okText="삭제"
           cancelText="취소"
         >
@@ -330,38 +556,24 @@ const Category = ({}) => {
             <>
               <InfoTitle>
                 <CheckOutlined />
-                기본정보 제어
+                기본정보
               </InfoTitle>
-              <Wrapper>
+              <Wrapper
+                padding={`0 0 10px`}
+                borderBottom={`1px solid ${Theme.lightGrey_C}`}
+              >
                 <Form
                   style={{ width: "100%" }}
-                  // form={infoForm}
+                  form={infoForm}
                   labelCol={{ span: 4 }}
                   wrapperCol={{ span: 20 }}
-                  // onFinish={updateButtonHandler}
+                  onFinish={oneCateUpdateHandler}
                 >
-                  <Form.Item label="이미지 명칭" name="title">
-                    <Input.TextArea size="small" allowClear />
+                  <Form.Item label="카테고리" name="value">
+                    <Input allowClear size="small" />
                   </Form.Item>
-
-                  <Form.Item label="텍스트 뷰" name="content">
-                    <Input.TextArea size="small" allowClear />
-                  </Form.Item>
-
-                  <Form.Item label="연결링크" name="link">
-                    <Input size="small" allowClear />
-                  </Form.Item>
-
-                  <Form.Item label="최근 작업자" name="updator">
-                    <Input size="small" allowClear readOnly />
-                  </Form.Item>
-
-                  <Form.Item label="최근 작업일" name="updatedAt">
-                    <Input size="small" allowClear readOnly />
-                  </Form.Item>
-
-                  <Form.Item label="생성일" name="createdAt">
-                    <Input size="small" allowClear readOnly />
+                  <Form.Item label="생성일" name="viewCreatedAt">
+                    <Input readOnly={true} size="small" />
                   </Form.Item>
 
                   <Wrapper al="flex-end" margin="0px 0px 20px 0px">
@@ -370,6 +582,31 @@ const Category = ({}) => {
                     </Button>
                   </Wrapper>
                 </Form>
+              </Wrapper>
+
+              <InfoTitle>
+                <CheckOutlined />
+                하위카테고리
+              </InfoTitle>
+
+              <Wrapper padding={`0 0 10px`}>
+                <Table
+                  style={{ width: "100%" }}
+                  rowKey="id"
+                  columns={col2}
+                  dataSource={downList}
+                  size="small"
+                />
+
+                <Wrapper al="flex-end" margin="0px 0px 20px 0px">
+                  <Button
+                    type="primary"
+                    size="small"
+                    onClick={twoDepthCateModalToggle}
+                  >
+                    하위카테고리 생성
+                  </Button>
+                </Wrapper>
               </Wrapper>
             </>
           ) : (
@@ -410,6 +647,62 @@ const Category = ({}) => {
           <Wrapper al={`flex-end`}>
             <Button type="primary" size="small" htmlType="submit">
               생성
+            </Button>
+          </Wrapper>
+        </Form>
+      </Drawer>
+
+      <Drawer
+        visible={isTwoCateModal}
+        onClose={twoDepthCateModalToggle}
+        width="600px"
+        title="하위 카테고리 생성"
+      >
+        <Form form={productForm} onFinish={twoDetphCreateHandler}>
+          <Form.Item
+            label={"하위카테고리 이름"}
+            name="value"
+            rules={[
+              {
+                required: true,
+                message: "하위 카테고리명을 입력해주세요.",
+              },
+            ]}
+          >
+            <Input size="small" />
+          </Form.Item>
+
+          <Wrapper al={`flex-end`}>
+            <Button type="primary" size="small" htmlType="submit">
+              생성
+            </Button>
+          </Wrapper>
+        </Form>
+      </Drawer>
+
+      <Drawer
+        visible={isUpdateModal}
+        onClose={twoDepthUpdateModalToggle}
+        width="600px"
+        title="하위 카테고리 수정"
+      >
+        <Form form={productForm} onFinish={twoDepthUpdateHandler}>
+          <Form.Item
+            label={"하위카테고리 이름"}
+            name="value"
+            rules={[
+              {
+                required: true,
+                message: "하위 카테고리명을 입력해주세요.",
+              },
+            ]}
+          >
+            <Input size="small" />
+          </Form.Item>
+
+          <Wrapper al={`flex-end`}>
+            <Button type="primary" size="small" htmlType="submit">
+              수정
             </Button>
           </Wrapper>
         </Form>
