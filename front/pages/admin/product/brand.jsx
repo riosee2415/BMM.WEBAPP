@@ -48,8 +48,11 @@ import {
 } from "../../../reducers/category";
 import {
   BRAND_CREATE_REQUEST,
+  BRAND_DELETE_REQUEST,
+  BRAND_IMAGE_RESET,
   BRAND_LIST_REQUEST,
   BRAND_UPDATE_REQUEST,
+  BRAND_UPLOAD_REQUEST,
 } from "../../../reducers/brand";
 
 const InfoTitle = styled.div`
@@ -105,32 +108,17 @@ const Brand = ({}) => {
   /////////////////////////////////////////////////////////////////////////
 
   const {
-    upList,
-    downList,
-    //
-    st_upNewDone,
-    st_upNewError,
-    //
-    st_upUpdateDone,
-    st_upUpdateError,
-    //
-    st_downNewDone,
-    st_downNewError,
-    //
-    st_upDelDone,
-    st_upDelError,
-    //
-    st_downDelDone,
-    st_downDelError,
-    //
-    st_downUpdateDone,
-    st_downUpdateError,
-  } = useSelector((state) => state.category);
-  const {
     brandList,
+    brandPath,
     //
     st_brandCreateDone,
     st_brandCreateError,
+    //
+    st_brandDeleteDone,
+    st_brandDeleteError,
+    //
+    st_brandUpdateDone,
+    st_brandUpdateError,
   } = useSelector((state) => state.brand);
 
   ////// HOOKS //////
@@ -146,7 +134,37 @@ const Brand = ({}) => {
   // DATA
   const [updateData, setUpdateData] = useState(null);
 
+  // REF
+  const imageRef = useRef(``);
+
   ////// USEEFFECT //////
+  useEffect(() => {
+    if (st_brandUpdateDone) {
+      dispatch({
+        type: BRAND_LIST_REQUEST,
+      });
+
+      return message.success("브랜드를 수정했습니다.");
+    }
+
+    if (st_brandUpdateError) {
+      return message.error(st_brandUpdateError);
+    }
+  }, [st_brandUpdateDone, st_brandUpdateError]);
+
+  useEffect(() => {
+    if (st_brandDeleteDone) {
+      dispatch({
+        type: BRAND_LIST_REQUEST,
+      });
+      setCurrentData(null);
+      return message.success("브랜드를 삭제했습니다.");
+    }
+
+    if (st_brandDeleteError) {
+      return message.error(st_brandDeleteError);
+    }
+  }, [st_brandDeleteDone, st_brandDeleteError]);
 
   useEffect(() => {
     if (st_brandCreateDone) {
@@ -164,96 +182,34 @@ const Brand = ({}) => {
 
   ////// TOGGLE //////
 
-  // 2Depth Update Modal
-  const twoDepthUpdateModalToggle = useCallback(
-    (data) => {
-      setUpdateData(data);
-      setIsUpateModal(!isUpdateModal);
-      productForm.setFieldsValue({
-        value: data.value,
-      });
-    },
-    [isUpdateModal]
-  );
-
-  // 2depth 카테고리 모달
-  const twoDepthCateModalToggle = useCallback(() => {
-    setIsTwoCateModal(!isTwoCateModal);
-  }, [isTwoCateModal]);
-
-  // 1depth 카테고리 모달
-  const oneDepthCateModalToggle = useCallback(() => {
-    setIsOneCateMdoal(!isOneCateModal);
-  }, [isOneCateModal]);
+  // 이미지 클릭
+  const imageClickToggle = useCallback(() => {
+    imageRef.current.click();
+  }, []);
 
   ////// HANDLER //////
 
-  // 2Depth Update
-  const twoDepthUpdateHandler = useCallback(
-    (data) => {
-      dispatch({
-        type: DOWN_UPDATE_REQUEST,
-        data: {
-          id: updateData && updateData.id,
-          value: data.value,
-        },
-      });
-    },
-    [updateData]
-  );
+  // 이미지 업로드
+  const onChangeImages = useCallback((e) => {
+    const formData = new FormData();
 
-  // 2Depth Delete
-  const twoDepthDeleteHandler = useCallback((data) => {
-    dispatch({
-      type: DOWN_DEL_REQUEST,
-      data: {
-        id: data.id,
-      },
+    [].forEach.call(e.target.files, (file) => {
+      formData.append("image", file);
     });
-  }, []);
 
-  // 1Depth Delete
-  const oneDepthDeleteHandler = useCallback((data, num) => {
     dispatch({
-      type: UP_DEL_REQUEST,
-      data: {
-        id: data.id,
-      },
+      type: BRAND_UPLOAD_REQUEST,
+      data: formData,
     });
-  }, []);
-
-  // 2Depth Create
-  const twoDetphCreateHandler = useCallback(
-    (data) => {
-      dispatch({
-        type: DOWN_NEW_REQUEST,
-        data: {
-          value: data.value,
-          CateUpId: currentData && currentData.id,
-        },
-      });
-    },
-    [currentData]
-  );
-
-  // 1Depth Update
-  const oneCateUpdateHandler = useCallback(
-    (data) => {
-      dispatch({
-        type: UP_UPDATE_REQUEST,
-        data: {
-          id: currentData && currentData.id,
-          value: data.value,
-        },
-      });
-    },
-    [currentData]
-  );
+  });
 
   // 데이터세팅
   const beforeSetDataHandler = useCallback(
     (record) => {
       setCurrentData(record);
+      dispatch({
+        type: BRAND_IMAGE_RESET,
+      });
 
       infoForm.setFieldsValue({
         name: record.name,
@@ -264,13 +220,32 @@ const Brand = ({}) => {
     [currentData, infoForm]
   );
 
-  //   브랜드 수정
-  const brandUpdateHandler = useCallback(() => {
+  // 브랜드 삭제
+  const brandDeleteHandler = useCallback((data) => {
     dispatch({
-      type: BRAND_UPDATE_REQUEST,
-      data: {},
+      type: BRAND_DELETE_REQUEST,
+      data: {
+        id: data.id,
+        name: data.name,
+      },
     });
   }, []);
+
+  //   브랜드 수정
+  const brandUpdateHandler = useCallback(
+    (data) => {
+      dispatch({
+        type: BRAND_UPDATE_REQUEST,
+        data: {
+          id: currentData && currentData.id,
+          imagePath: brandPath,
+          name: data.name,
+          subDesc: data.subDesc,
+        },
+      });
+    },
+    [currentData, brandPath]
+  );
 
   //   브랜드 생성
   const brandCreateHandler = useCallback(() => {
@@ -312,60 +287,7 @@ const Brand = ({}) => {
       render: (data) => (
         <Popconfirm
           title="정말 삭제하시겠습니까?"
-          onConfirm={() => oneDepthDeleteHandler(data)}
-          okText="삭제"
-          cancelText="취소"
-        >
-          <DelBtn />
-        </Popconfirm>
-      ),
-    },
-  ];
-  const col2 = [
-    {
-      title: "번호",
-      dataIndex: "num",
-    },
-    {
-      title: "카테고리명",
-      dataIndex: "value",
-    },
-
-    {
-      title: "생성일",
-      dataIndex: "viewCreatedAt",
-    },
-    {
-      title: "수정",
-      render: (data) => (
-        <Button
-          type="primary"
-          size="small"
-          onClick={() => twoDepthUpdateModalToggle(data)}
-        >
-          수정
-        </Button>
-      ),
-    },
-    {
-      title: "상태창",
-      render: (data) => (
-        <>
-          <ViewStatusIcon
-            active={
-              parseInt(data.id) === (currentData && parseInt(currentData.id))
-            }
-          />
-        </>
-      ),
-    },
-
-    {
-      title: "삭제",
-      render: (data) => (
-        <Popconfirm
-          title="정말 삭제하시겠습니까?"
-          onConfirm={() => twoDepthDeleteHandler(data)}
+          onConfirm={() => brandDeleteHandler(data)}
           okText="삭제"
           cancelText="취소"
         >
@@ -459,9 +381,28 @@ const Brand = ({}) => {
                 padding={`0 0 10px`}
                 borderBottom={`1px solid ${Theme.lightGrey_C}`}
               >
-                <Image src={currentData && currentData.imagePath} alt="image" />
+                <Image
+                  src={
+                    brandPath ? brandPath : currentData && currentData.imagePath
+                  }
+                  alt="image"
+                />
                 <Wrapper al={`flex-end`}>
-                  <Button size="small" type="primary">
+                  <input
+                    type="file"
+                    name="image"
+                    accept=".png, .jpg"
+                    // multiple
+                    hidden
+                    ref={imageRef}
+                    onChange={onChangeImages}
+                  />
+
+                  <Button
+                    size="small"
+                    type="primary"
+                    onClick={imageClickToggle}
+                  >
                     이미지 업로드
                   </Button>
                 </Wrapper>
@@ -477,7 +418,7 @@ const Brand = ({}) => {
                   form={infoForm}
                   labelCol={{ span: 4 }}
                   wrapperCol={{ span: 20 }}
-                  onFinish={oneCateUpdateHandler}
+                  onFinish={brandUpdateHandler}
                 >
                   <Form.Item label="브랜드명" name="name">
                     <Input allowClear size="small" />
