@@ -9,10 +9,7 @@ import {
   Form,
   Input,
   Button,
-  Image,
-  Modal,
   Popconfirm,
-  Switch,
   Drawer,
 } from "antd";
 import { useRouter, withRouter } from "next/router";
@@ -27,25 +24,10 @@ import {
   OtherMenu,
   GuideUl,
   GuideLi,
-  SortView,
-  UpBtn,
-  DownBtn,
   DelBtn,
 } from "../../../components/commonComponents";
 import { LOAD_MY_INFO_REQUEST } from "../../../reducers/user";
-import {
-  MAIN_BANNER_REQUEST,
-  BANNER_SORT_UPDATE_REQUEST,
-  BANNER_UPDATE_REQUEST,
-  BANNER_UPLOAD_REQUEST,
-  UPLOAD_BANNER_INIT_REQUEST,
-  BANNER_ONLY_IMAGE_REQUEST,
-  BANNER_USE_YN_REQUEST,
-  BANNER_DELETE_REQUEST,
-  BANNER_FAST_CREATE_REQUEST,
-} from "../../../reducers/banner";
 import Theme from "../../../components/Theme";
-import { items } from "../../../components/AdminLayout";
 import {
   HomeOutlined,
   RightOutlined,
@@ -54,7 +36,6 @@ import {
   CheckOutlined,
 } from "@ant-design/icons";
 import {
-  ALL_LIST_REQUEST,
   DOWN_DEL_REQUEST,
   DOWN_LIST_REQUEST,
   DOWN_NEW_REQUEST,
@@ -79,17 +60,6 @@ const InfoTitle = styled.div`
   color: ${(props) => props.theme.subTheme5_C};
 `;
 
-const FlagText = styled.div`
-  width: 120px;
-  margin: 0px 20px 0px 0px;
-`;
-
-const BannerImage = styled(Image)`
-  width: 100%;
-  height: 240px;
-  object-fit: cover;
-`;
-
 const ViewStatusIcon = styled(EyeOutlined)`
   font-size: 18px;
   color: ${(props) =>
@@ -100,14 +70,11 @@ const Category = ({}) => {
   const router = useRouter();
   const dispatch = useDispatch();
 
-  const bannerInageRef = useRef();
-
   // 상위메뉴 변수
   const [level1, setLevel1] = useState("상품관리");
   const [level2, setLevel2] = useState("");
   const [sameDepth, setSameDepth] = useState([]);
   const [currentData, setCurrentData] = useState(null);
-  const [dataIssueModal, setDataIssueModal] = useState(false);
 
   const [infoForm] = Form.useForm();
 
@@ -724,10 +691,6 @@ export const getServerSideProps = wrapper.getServerSideProps(
 
     context.store.dispatch({
       type: LOAD_MY_INFO_REQUEST,
-    });
-
-    context.store.dispatch({
-      type: MAIN_BANNER_REQUEST,
     });
 
     context.store.dispatch({
