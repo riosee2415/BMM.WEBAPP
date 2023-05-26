@@ -53,7 +53,11 @@ import {
   EyeOutlined,
   CheckOutlined,
 } from "@ant-design/icons";
-import { ALL_LIST_REQUEST, UP_NEW_REQUEST } from "../../../reducers/category";
+import {
+  ALL_LIST_REQUEST,
+  UP_LIST_REQUEST,
+  UP_NEW_REQUEST,
+} from "../../../reducers/category";
 
 const InfoTitle = styled.div`
   font-size: 19px;
@@ -121,9 +125,12 @@ const Category = ({}) => {
 
   /////////////////////////////////////////////////////////////////////////
 
-  const { st_upNewDone, st_upNewError } = useSelector(
-    (state) => state.category
-  );
+  const {
+    upList,
+    //
+    st_upNewDone,
+    st_upNewError,
+  } = useSelector((state) => state.category);
 
   ////// HOOKS //////
 
@@ -138,9 +145,14 @@ const Category = ({}) => {
   useEffect(() => {
     if (st_upNewDone) {
       dispatch({
-        type: ALL_LIST_REQUEST,
+        type: UP_LIST_REQUEST,
       });
+      setIsOneCateMdoal(false);
       return message.success("카테고리를 생성했습니다.");
+    }
+
+    if (st_upNewError) {
+      return message.error(st_upNewError);
     }
   }, [st_upNewDone, st_upNewError]);
 
@@ -152,6 +164,38 @@ const Category = ({}) => {
   }, [isOneCateModal]);
 
   ////// HANDLER //////
+
+  const beforeSetDataHandler = useCallback(
+    (record) => {
+      setCurrentData(record);
+
+      infoForm.setFieldsValue({
+        name: record.name,
+        englishName: record.englishName,
+        clearanceNum: record.clearanceNum,
+        postCode: record.postCode,
+        address: record.address,
+        detailAddress: record.detailAddress,
+        email: record.email,
+        tel: record.tel,
+        deliveryMessage: record.deliveryMessage,
+        payWay: record.payWay,
+        cardBankInfo: record.cardBankInfo,
+        cardInstallment: record.cardInstallment,
+        total: String(record.totalDeliveryPrice + record.totalPrice).replace(
+          /\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g,
+          ","
+        ),
+        usePoint: record.usePoint,
+        useCoupon: record.useCoupon,
+        userDiscountPrice: record.userDiscountPrice,
+        deliveryCom: record.deliveryCom,
+        deliveryNum: record.deliveryNum,
+        viewCreatedAt: record.viewCreatedAt,
+      });
+    },
+    [currentData, infoForm]
+  );
 
   // 1Depth create
   const oneDepthCreateHandler = useCallback((data) => {
@@ -172,8 +216,8 @@ const Category = ({}) => {
       dataIndex: "num",
     },
     {
-      title: "이미지 명칭",
-      dataIndex: "title",
+      title: "카테고리명",
+      dataIndex: "value",
     },
 
     {
@@ -268,7 +312,7 @@ const Category = ({}) => {
             style={{ width: "100%" }}
             rowKey="id"
             columns={col}
-            dataSource={[]}
+            dataSource={upList}
             size="small"
             onRow={(record, index) => {
               return {
@@ -284,95 +328,6 @@ const Category = ({}) => {
         >
           {currentData ? (
             <>
-              <Wrapper margin={`0px 0px 5px 0px`}>
-                <InfoTitle>
-                  <CheckOutlined />
-                  사용여부 제어
-                </InfoTitle>
-                <Wrapper dr={`row`} ju={`flex-start`} padding={`10px`}>
-                  <FlagText>이미지 명칭 뷰</FlagText>
-                  <Switch
-                    onChange={() => useYnUpdateHandler(1)}
-                    checked={currentData && currentData.titleUseYn}
-                  />
-                </Wrapper>
-
-                <Wrapper dr={`row`} ju={`flex-start`} padding={`10px`}>
-                  <FlagText>텍스트 뷰</FlagText>
-                  <Switch
-                    onChange={() => useYnUpdateHandler(2)}
-                    checked={currentData && currentData.contentUseYn}
-                  />
-                </Wrapper>
-
-                <Wrapper dr={`row`} ju={`flex-start`} padding={`10px`}>
-                  <FlagText>링크사용여부</FlagText>
-                  <Switch
-                    onChange={() => useYnUpdateHandler(3)}
-                    checked={currentData && currentData.linkUseYn}
-                  />
-                </Wrapper>
-              </Wrapper>
-
-              <Wrapper
-                width="100%"
-                height="1px"
-                bgColor={Theme.lightGrey_C}
-                margin={`30px 0px`}
-              ></Wrapper>
-
-              <InfoTitle>
-                <CheckOutlined />
-                베너이미지 제어
-              </InfoTitle>
-              <Wrapper margin={`0px 0px 5px 0px`}>
-                <BannerImage
-                  src={
-                    uploadBannerPath
-                      ? uploadBannerPath
-                      : currentData && currentData.imageURL
-                  }
-                />
-              </Wrapper>
-
-              <Wrapper margin={`0px 0px 10px 0px`} al={`flex-end`}>
-                <input
-                  type="file"
-                  name="image"
-                  accept=".png, .jpg"
-                  // multiple
-                  hidden
-                  ref={bannerInageRef}
-                  onChange={onChangeImages}
-                />
-                <Button
-                  type="primary"
-                  size="small"
-                  onClick={clickImageUpload}
-                  loading={st_bannerUploadLoading}
-                >
-                  이미지 업로드
-                </Button>
-
-                {uploadBannerPath && (
-                  <Button
-                    size="small"
-                    type="danger"
-                    style={{ margin: `5px 0px 0px 0px` }}
-                    onClick={applyImageUpdate}
-                  >
-                    적용하기
-                  </Button>
-                )}
-              </Wrapper>
-
-              <Wrapper
-                width="100%"
-                height="1px"
-                bgColor={Theme.lightGrey_C}
-                margin={`30px 0px`}
-              ></Wrapper>
-
               <InfoTitle>
                 <CheckOutlined />
                 기본정보 제어
@@ -380,10 +335,10 @@ const Category = ({}) => {
               <Wrapper>
                 <Form
                   style={{ width: "100%" }}
-                  form={infoForm}
+                  // form={infoForm}
                   labelCol={{ span: 4 }}
                   wrapperCol={{ span: 20 }}
-                  onFinish={updateButtonHandler}
+                  // onFinish={updateButtonHandler}
                 >
                   <Form.Item label="이미지 명칭" name="title">
                     <Input.TextArea size="small" allowClear />
@@ -483,7 +438,7 @@ export const getServerSideProps = wrapper.getServerSideProps(
     });
 
     context.store.dispatch({
-      type: ALL_LIST_REQUEST,
+      type: UP_LIST_REQUEST,
     });
 
     // 구현부 종료
