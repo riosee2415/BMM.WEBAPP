@@ -80,7 +80,12 @@ router.post("/up/new", isAdminCheck, async (req, res, next) => {
     return res.status(200).json({ result: true });
   } catch (error) {
     console.error(error);
-    return res.status(400).send("잠시 후 다시 시도해주세요.");
+
+    if (error.errors[0].type === "unique violation") {
+      return res.status(400).send("이미 존재하는 카테고리 입니다.");
+    } else {
+      return res.status(400).send("잠시 후 다시 시도해주세요.");
+    }
   }
 });
 
