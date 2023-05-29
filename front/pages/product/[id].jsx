@@ -180,9 +180,6 @@ const Index = () => {
   const { st_likeCreateDone } = useSelector((state) => state.like);
   const { productReviewList } = useSelector((state) => state.review);
 
-  // console.log(productReviewList);
-  console.log(productDetail);
-
   const [reviewModal, setReviewModal] = useState(false);
   const [mobileMenu, setMobileMenu] = useState(false);
   const [limitModal, setLimitModal] = useState(false);
@@ -191,6 +188,7 @@ const Index = () => {
   const [isModal, setIsModal] = useState(false);
   const [cModal, setCModal] = useState(false);
   const [option, setOption] = useState([]);
+  const [selectOptionPrice, setSelectOptionPrice] = useState(0);
 
   const [isLikeState, setIsLikeState] = useState(false);
 
@@ -305,6 +303,16 @@ const Index = () => {
     [productDetail, option]
   );
 
+  useEffect(() => {
+    let num = 0;
+
+    if (option.length !== 0) {
+      option.map((item) => (num += item.price * item.cnt));
+    }
+
+    setSelectOptionPrice(num);
+  }, [option]);
+
   const quantityHandler = useCallback(
     (type, item) => {
       if (type === 1) {
@@ -346,6 +354,13 @@ const Index = () => {
       }
     },
     [option, productDetail]
+  );
+
+  const removeOptionItem = useCallback(
+    (targetItem) => {
+      setOption(option.filter((item) => item.id !== targetItem.id));
+    },
+    [option]
   );
 
   ////// DATAVIEW //////
@@ -604,7 +619,9 @@ const Index = () => {
                                 margin={`0 0 0 10px`}
                                 fontSize={width < 900 ? `15px` : `18px`}
                               >
-                                <CloseOutlined />
+                                <CloseOutlined
+                                  onClick={() => removeOptionItem(item)}
+                                />
                               </Text>
                             </Wrapper>
                           </Wrapper>
@@ -624,7 +641,11 @@ const Index = () => {
                     fontSize={width < 900 ? `20px` : `32px`}
                     fontWeight={`bold`}
                   >
-                    9,000원
+                    {productDetail &&
+                      numberWithCommas(
+                        productDetail.detailData.calcPrice + selectOptionPrice
+                      )}
+                    원
                   </Text>
                 </Wrapper>
 
@@ -1535,7 +1556,8 @@ const Index = () => {
                       fontSize={width < 900 ? `15px` : `20px`}
                       fontWeight={`600`}
                     >
-                      9,000원
+                      {/* {productDetail && productDetail.detailData.calcPrice} */}
+                      aaa
                     </Text>
                     <Text
                       isHover
