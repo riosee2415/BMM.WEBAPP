@@ -17,7 +17,7 @@ import {
   TextArea,
 } from "../../components/commonComponents";
 import Theme from "../../components/Theme";
-import { Drawer, message, Modal, Select } from "antd";
+import { Drawer, Empty, message, Modal, Select } from "antd";
 import styled from "styled-components";
 import GallerySlider from "../../components/slide/GallerySlider";
 import {
@@ -179,6 +179,8 @@ const Index = () => {
   const { productDetail } = useSelector((state) => state.product);
   const { st_likeCreateDone } = useSelector((state) => state.like);
   const { productReviewList } = useSelector((state) => state.review);
+
+  console.log(productDetail);
 
   const [reviewModal, setReviewModal] = useState(false);
   const [mobileMenu, setMobileMenu] = useState(false);
@@ -732,46 +734,23 @@ const Index = () => {
                 overflow={`auto`}
                 wrap={`nowrap`}
               >
-                <ProductWrapper>
-                  <SquareBox>
-                    <Image
-                      alt="product"
-                      src={`https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/bmm/assets/images/sample-img/product.png`}
-                    />
-                  </SquareBox>
-                </ProductWrapper>
-                <ProductWrapper>
-                  <SquareBox>
-                    <Image
-                      alt="product"
-                      src={`https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/bmm/assets/images/sample-img/product.png`}
-                    />
-                  </SquareBox>
-                </ProductWrapper>
-                <ProductWrapper>
-                  <SquareBox>
-                    <Image
-                      alt="product"
-                      src={`https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/bmm/assets/images/sample-img/product.png`}
-                    />
-                  </SquareBox>
-                </ProductWrapper>
-                <ProductWrapper>
-                  <SquareBox>
-                    <Image
-                      alt="product"
-                      src={`https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/bmm/assets/images/sample-img/product.png`}
-                    />
-                  </SquareBox>
-                </ProductWrapper>
-                <ProductWrapper>
-                  <SquareBox>
-                    <Image
-                      alt="product"
-                      src={`https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/bmm/assets/images/sample-img/product.png`}
-                    />
-                  </SquareBox>
-                </ProductWrapper>
+                {productDetail &&
+                productDetail.relateProductList &&
+                productDetail.relateProductList.length === 0 ? (
+                  <Wrapper>
+                    <Empty description="조회된 관련 상품이 없습니다." />
+                  </Wrapper>
+                ) : (
+                  productDetail.relateProductList.map((data) => {
+                    return (
+                      <ProductWrapper key={data.id}>
+                        <SquareBox>
+                          <Image alt="product" src={data.thumbnail1} />
+                        </SquareBox>
+                      </ProductWrapper>
+                    );
+                  })
+                )}
               </Wrapper>
             </Wrapper>
 
@@ -1331,78 +1310,104 @@ const Index = () => {
                   {productDetail && productDetail.detailData.title}
                 </Text>
                 <CustomSelect>
-                  <Select placeholder="상품을 선택해주세요.">
-                    <Select.Option>옵션1</Select.Option>
-                    <Select.Option>옵션2</Select.Option>
+                  <Select
+                    value={null}
+                    allowClear
+                    placeholder="상품을 선택해주세요."
+                    onChange={optionClickHandler}
+                  >
+                    {productDetail && productDetail.optionList.length === 0 ? (
+                      <Select.Option value="">옵션이 없습니다.</Select.Option>
+                    ) : (
+                      productDetail &&
+                      productDetail.optionList.map((data) => {
+                        return (
+                          <Select.Option key={data.id} value={data.id}>
+                            {data.value}
+                          </Select.Option>
+                        );
+                      })
+                    )}
                   </Select>
                 </CustomSelect>
-                <Wrapper
-                  bgColor={Theme.white_C}
-                  padding={`20px`}
-                  border={`1px solid ${Theme.lightGrey2_C}`}
-                  margin={`12px 0 26px`}
-                  al={`flex-start`}
-                >
-                  <Text
-                    fontSize={width < 900 ? `15px` : `18px`}
-                    fontWeight={`600`}
-                    margin={`0 0 18px`}
-                  >
-                    {productDetail && productDetail.detailData.title}
-                  </Text>
-                  <Wrapper dr={`row`} ju={`space-between`}>
-                    <Wrapper
-                      width={`auto`}
-                      dr={`row`}
-                      border={`1px solid ${Theme.lightGrey2_C}`}
-                      bgColor={Theme.white_C}
-                    >
-                      <Wrapper
-                        width={`35px`}
-                        cursor={`pointer`}
-                        height={`35px`}
-                        fontSize={`12px`}
-                      >
-                        <MinusOutlined />
-                      </Wrapper>
-                      <Wrapper
-                        width={`68px`}
-                        height={`35px`}
-                        fontSize={width < 900 ? `14px` : `16px`}
-                        fontWeight={`600`}
-                        color={Theme.darkGrey_C}
-                        borderLeft={`1px solid ${Theme.lightGrey2_C}`}
-                        borderRight={`1px solid ${Theme.lightGrey2_C}`}
-                      >
-                        1
-                      </Wrapper>
-                      <Wrapper
-                        width={`35px`}
-                        cursor={`pointer`}
-                        height={`35px`}
-                        fontSize={`12px`}
-                      >
-                        <PlusOutlined />
-                      </Wrapper>
-                    </Wrapper>
 
-                    <Wrapper dr={`row`} width={`auto`}>
-                      <Text
-                        fontSize={width < 900 ? `15px` : `20px`}
-                        fontWeight={`600`}
-                      >
-                        9,000원
-                      </Text>
-                      <Text
-                        isHover
-                        margin={`0 0 0 10px`}
-                        fontSize={width < 900 ? `15px` : `18px`}
-                      >
-                        <CloseOutlined />
-                      </Text>
-                    </Wrapper>
-                  </Wrapper>
-                </Wrapper>
+                {option.length !== 0
+                  ? option.map((item) => {
+                      return (
+                        <Wrapper
+                          bgColor={Theme.white_C}
+                          padding={`20px`}
+                          border={`1px solid ${Theme.lightGrey2_C}`}
+                          margin={`12px 0 26px`}
+                          al={`flex-start`}
+                        >
+                          <Text
+                            fontSize={width < 900 ? `15px` : `18px`}
+                            fontWeight={`600`}
+                            margin={`0 0 18px`}
+                          >
+                            {item.value}
+                          </Text>
+                          <Wrapper dr={`row`} ju={`space-between`}>
+                            <Wrapper
+                              width={`auto`}
+                              dr={`row`}
+                              border={`1px solid ${Theme.lightGrey2_C}`}
+                              bgColor={Theme.white_C}
+                            >
+                              <Wrapper
+                                width={`35px`}
+                                cursor={`pointer`}
+                                height={`35px`}
+                                fontSize={`12px`}
+                                onClick={() => quantityHandler(1, item)}
+                              >
+                                <MinusOutlined />
+                              </Wrapper>
+                              <Wrapper
+                                width={`68px`}
+                                height={`35px`}
+                                fontSize={width < 900 ? `14px` : `16px`}
+                                fontWeight={`600`}
+                                color={Theme.darkGrey_C}
+                                borderLeft={`1px solid ${Theme.lightGrey2_C}`}
+                                borderRight={`1px solid ${Theme.lightGrey2_C}`}
+                              >
+                                {item.cnt}
+                              </Wrapper>
+                              <Wrapper
+                                width={`35px`}
+                                cursor={`pointer`}
+                                height={`35px`}
+                                fontSize={`12px`}
+                                onClick={() => quantityHandler(2, item)}
+                              >
+                                <PlusOutlined />
+                              </Wrapper>
+                            </Wrapper>
+
+                            <Wrapper dr={`row`} width={`auto`}>
+                              <Text
+                                fontSize={width < 900 ? `15px` : `20px`}
+                                fontWeight={`600`}
+                              >
+                                {numberWithCommas(item.price * item.cnt)}원
+                              </Text>
+                              <Text
+                                isHover
+                                margin={`0 0 0 10px`}
+                                fontSize={width < 900 ? `15px` : `18px`}
+                                onClick={() => removeOptionItem(item)}
+                              >
+                                <CloseOutlined />
+                              </Text>
+                            </Wrapper>
+                          </Wrapper>
+                        </Wrapper>
+                      );
+                    })
+                  : null}
+
                 <Wrapper dr={`row`} ju={`space-between`} margin={`0 0 30px`}>
                   <Text
                     fontSize={width < 900 ? `15px` : `18px`}
@@ -1414,7 +1419,11 @@ const Index = () => {
                     fontSize={width < 900 ? `20px` : `32px`}
                     fontWeight={`bold`}
                   >
-                    9,000원
+                    {productDetail &&
+                      numberWithCommas(
+                        productDetail.detailData.calcPrice + selectOptionPrice
+                      )}
+                    원
                   </Text>
                 </Wrapper>
                 <CommonButton
@@ -1493,82 +1502,107 @@ const Index = () => {
                 fontWeight={`600`}
                 margin={`0 0 18px`}
               >
-                오레오 시리즈
+                {productDetail && productDetail.detailData.title}
               </Text>
               <CustomSelect>
-                <Select placeholder="상품을 선택해주세요.">
-                  <Select.Option>옵션1</Select.Option>
-                  <Select.Option>옵션2</Select.Option>
+                <Select
+                  value={null}
+                  allowClear
+                  placeholder="상품을 선택해주세요."
+                  onChange={optionClickHandler}
+                >
+                  {productDetail && productDetail.optionList.length === 0 ? (
+                    <Select.Option value="">옵션이 없습니다.</Select.Option>
+                  ) : (
+                    productDetail &&
+                    productDetail.optionList.map((data) => {
+                      return (
+                        <Select.Option key={data.id} value={data.id}>
+                          {data.value}
+                        </Select.Option>
+                      );
+                    })
+                  )}
                 </Select>
               </CustomSelect>
-              <Wrapper
-                bgColor={Theme.white_C}
-                padding={`20px`}
-                border={`1px solid ${Theme.lightGrey2_C}`}
-                margin={`12px 0 26px`}
-                al={`flex-start`}
-              >
-                <Text
-                  fontSize={width < 900 ? `15px` : `18px`}
-                  fontWeight={`600`}
-                  margin={`0 0 18px`}
-                >
-                  오레오 시리즈
-                </Text>
-                <Wrapper dr={`row`} ju={`space-between`}>
-                  <Wrapper
-                    width={`auto`}
-                    dr={`row`}
-                    border={`1px solid ${Theme.lightGrey2_C}`}
-                    bgColor={Theme.white_C}
-                  >
-                    <Wrapper
-                      width={`35px`}
-                      cursor={`pointer`}
-                      height={`35px`}
-                      fontSize={`12px`}
-                    >
-                      <MinusOutlined />
-                    </Wrapper>
-                    <Wrapper
-                      width={`68px`}
-                      height={`35px`}
-                      fontSize={width < 900 ? `14px` : `16px`}
-                      fontWeight={`600`}
-                      color={Theme.darkGrey_C}
-                      borderLeft={`1px solid ${Theme.lightGrey2_C}`}
-                      borderRight={`1px solid ${Theme.lightGrey2_C}`}
-                    >
-                      1
-                    </Wrapper>
-                    <Wrapper
-                      width={`35px`}
-                      cursor={`pointer`}
-                      height={`35px`}
-                      fontSize={`12px`}
-                    >
-                      <PlusOutlined />
-                    </Wrapper>
-                  </Wrapper>
 
-                  <Wrapper dr={`row`} width={`auto`}>
-                    <Text
-                      fontSize={width < 900 ? `15px` : `20px`}
-                      fontWeight={`600`}
-                    >
-                      {/* {productDetail && productDetail.detailData.calcPrice} */}
-                      aaa
-                    </Text>
-                    <Text
-                      isHover
-                      margin={`0 0 0 10px`}
-                      fontSize={width < 900 ? `15px` : `18px`}
-                    >
-                      <CloseOutlined />
-                    </Text>
-                  </Wrapper>
-                </Wrapper>
-              </Wrapper>
+              {option.length !== 0
+                ? option.map((item) => {
+                    return (
+                      <Wrapper
+                        bgColor={Theme.white_C}
+                        padding={`20px`}
+                        border={`1px solid ${Theme.lightGrey2_C}`}
+                        margin={`12px 0 26px`}
+                        al={`flex-start`}
+                      >
+                        <Text
+                          fontSize={width < 900 ? `15px` : `18px`}
+                          fontWeight={`600`}
+                          margin={`0 0 18px`}
+                        >
+                          {item.value}
+                        </Text>
+                        <Wrapper dr={`row`} ju={`space-between`}>
+                          <Wrapper
+                            width={`auto`}
+                            dr={`row`}
+                            border={`1px solid ${Theme.lightGrey2_C}`}
+                            bgColor={Theme.white_C}
+                          >
+                            <Wrapper
+                              width={`35px`}
+                              cursor={`pointer`}
+                              height={`35px`}
+                              fontSize={`12px`}
+                              onClick={() => quantityHandler(1, item)}
+                            >
+                              <MinusOutlined />
+                            </Wrapper>
+                            <Wrapper
+                              width={`68px`}
+                              height={`35px`}
+                              fontSize={width < 900 ? `14px` : `16px`}
+                              fontWeight={`600`}
+                              color={Theme.darkGrey_C}
+                              borderLeft={`1px solid ${Theme.lightGrey2_C}`}
+                              borderRight={`1px solid ${Theme.lightGrey2_C}`}
+                            >
+                              {item.cnt}
+                            </Wrapper>
+                            <Wrapper
+                              width={`35px`}
+                              cursor={`pointer`}
+                              height={`35px`}
+                              fontSize={`12px`}
+                              onClick={() => quantityHandler(2, item)}
+                            >
+                              <PlusOutlined />
+                            </Wrapper>
+                          </Wrapper>
+
+                          <Wrapper dr={`row`} width={`auto`}>
+                            <Text
+                              fontSize={width < 900 ? `15px` : `20px`}
+                              fontWeight={`600`}
+                            >
+                              {numberWithCommas(item.price * item.cnt)}원
+                            </Text>
+                            <Text
+                              isHover
+                              margin={`0 0 0 10px`}
+                              fontSize={width < 900 ? `15px` : `18px`}
+                              onClick={() => removeOptionItem(item)}
+                            >
+                              <CloseOutlined />
+                            </Text>
+                          </Wrapper>
+                        </Wrapper>
+                      </Wrapper>
+                    );
+                  })
+                : null}
+
               <Wrapper dr={`row`} ju={`space-between`} margin={`0 0 20px`}>
                 <Text
                   fontSize={width < 900 ? `15px` : `18px`}
@@ -1580,7 +1614,11 @@ const Index = () => {
                   fontSize={width < 900 ? `20px` : `32px`}
                   fontWeight={`bold`}
                 >
-                  9,000원
+                  {productDetail &&
+                    numberWithCommas(
+                      productDetail.detailData.calcPrice + selectOptionPrice
+                    )}
+                  원
                 </Text>
               </Wrapper>
               <Wrapper dr={`row`} ju={`space-between`}>
