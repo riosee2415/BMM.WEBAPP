@@ -19,15 +19,15 @@ module.exports = class Review extends Model {
           allowNull: true,
         },
         imagePath2: {
-          type: DataTypes.STRING(600), // 이미지1
+          type: DataTypes.STRING(600), // 이미지2
           allowNull: true,
         },
         imagePath3: {
-          type: DataTypes.STRING(600), // 이미지1
+          type: DataTypes.STRING(600), // 이미지3
           allowNull: true,
         },
         imagePath4: {
-          type: DataTypes.STRING(600), // 이미지1
+          type: DataTypes.STRING(600), // 이미지4
           allowNull: true,
         },
         isDelete: {
