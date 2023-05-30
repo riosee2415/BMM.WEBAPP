@@ -7,6 +7,7 @@ import axios from "axios";
 import { END } from "redux-saga";
 import useWidth from "../../hooks/useWidth";
 import {
+  CommonButton,
   CustomPage,
   Image,
   ProductWrapper,
@@ -27,6 +28,7 @@ import { useState } from "react";
 import { PRODUCT_LIST_REQUEST } from "../../reducers/product";
 import { useDispatch, useSelector } from "react-redux";
 import { useCallback } from "react";
+import { SEARCHTAG_LIST_REQUEST } from "../../reducers/searchTag";
 
 const CustomSelect = styled(Wrapper)`
   width: ${(props) => props.width || `145px`};
@@ -60,6 +62,7 @@ const CustomSelect = styled(Wrapper)`
 const Index = () => {
   ////// GLOBAL STATE //////
   const { productList, productPage } = useSelector((state) => state.product);
+  const { searchTagList } = useSelector((state) => state.searchTag);
   ////// HOOKS //////
   const width = useWidth();
   const [orderType, setOrderType] = useState(1);
@@ -151,6 +154,26 @@ const Index = () => {
                 </Text>
               </Wrapper>
             </Wrapper>
+
+            <Wrapper
+              dr={`row`}
+              ju={`flex-start`}
+              display={width < 700 ? `none` : `flex`}
+            >
+              {searchTagList.map((data) => {
+                return (
+                  <CommonButton
+                    width={`auto`}
+                    radius={`30px`}
+                    padding={`5px 10px`}
+                    margin={`0 5px 0 0`}
+                    kindOf={`grey`}
+                  >
+                    {data.value}
+                  </CommonButton>
+                );
+              })}
+            </Wrapper>
             <Wrapper dr={`row`} ju={`space-between`} margin={`28px 0 24px`}>
               <Text
                 fontSize={width < 800 ? `14px` : `16px`}
@@ -169,8 +192,8 @@ const Index = () => {
                   value={orderType}
                   onChange={orderTypeHandler}
                 >
-                  <Select.Option value={1}>추천순</Select.Option>
-                  <Select.Option value={2}>조회순</Select.Option>
+                  <Select.Option value={1}>최신순</Select.Option>
+                  <Select.Option value={2}>오래된순</Select.Option>
                 </Select>
               </CustomSelect>
             </Wrapper>
@@ -282,6 +305,10 @@ export const getServerSideProps = wrapper.getServerSideProps(
 
     context.store.dispatch({
       type: LOAD_MY_INFO_REQUEST,
+    });
+
+    context.store.dispatch({
+      type: SEARCHTAG_LIST_REQUEST,
     });
 
     // 구현부 종료

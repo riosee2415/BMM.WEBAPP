@@ -25,6 +25,8 @@ import { LOGO_GET_REQUEST } from "../reducers/logo";
 import { useDispatch, useSelector } from "react-redux";
 import { Badge } from "antd";
 import { ALL_LIST_REQUEST } from "../reducers/category";
+import { SEARCHTAG_LIST_REQUEST } from "../reducers/searchTag";
+import useInput from "../hooks/useInput";
 
 const Circle = styled(Wrapper)`
   width: 56px;
@@ -100,6 +102,7 @@ const TwoTextBox = styled(Wrapper)`
 const QuickMenu = () => {
   const { logos } = useSelector((state) => state.logo);
   const { allList } = useSelector((state) => state.category);
+  const { searchTagList } = useSelector((state) => state.searchTag);
 
   const width = useWidth();
   const router = useRouter();
@@ -116,6 +119,9 @@ const QuickMenu = () => {
 
   const searchToggle = useCallback(() => {
     setIsSearch((prev) => !prev);
+    dispatch({
+      type: SEARCHTAG_LIST_REQUEST,
+    });
   }, [isSearch]);
 
   useEffect(() => {
@@ -140,6 +146,68 @@ const QuickMenu = () => {
     setCurrentCategory(sub);
     setParentId(parent);
   }, []);
+
+  // 검색
+  const searchInput = useInput(``);
+  const [searchData, setSearchData] = useState([]); // 최근검색어
+
+  useEffect(() => {
+    const data = sessionStorage.getItem("search")
+      ? JSON.parse(sessionStorage.getItem("search"))
+      : null;
+
+    if (data) {
+      setSearchData(data);
+    }
+  }, []);
+
+  console.log(searchData);
+
+  // 최근검색어 삭제하기
+  const searchDeleteHandler = useCallback(
+    (data) => {
+      let arr = searchData ? searchData.map((value) => value) : [];
+      const currentValue = arr.findIndex((value) => value === data);
+
+      arr.splice(currentValue, 1);
+      setSearchData(arr);
+
+      sessionStorage.setItem("search", JSON.stringify(arr));
+    },
+    [searchData]
+  );
+
+  // 최근검색어 추가하기
+  const searchHandler = useCallback(
+    (data) => {
+      let arr = searchData ? searchData.map((value) => value) : [];
+      if (data) {
+        const currentValue = arr.findIndex((value) => value === data.value);
+        if (currentValue === -1) {
+          arr.push(data.value);
+        } else {
+          arr.splice(currentValue, 1);
+          arr.unshift(data.value);
+        }
+      } else {
+        const currentValue = arr.findIndex(
+          (value) => value === searchInput.value
+        );
+        if (currentValue === -1) {
+          arr.push(searchInput.value);
+        } else {
+          arr.splice(currentValue, 1);
+          arr.unshift(searchInput.value);
+        }
+      }
+
+      setSearchData(arr);
+      sessionStorage.setItem("search", JSON.stringify(arr));
+      setIsSearch(false);
+      router.push(`/search?search=${data ? data.value : searchInput.value}`);
+    },
+    [searchData, searchInput]
+  );
 
   return (
     <Wrapper
@@ -295,6 +363,7 @@ const QuickMenu = () => {
                   placeholder="강사, 강의, 키워드로 검색해보세요."
                   width={`100%`}
                   radius={`50px`}
+                  {...searchInput}
                 />
 
                 <Wrapper
@@ -304,6 +373,7 @@ const QuickMenu = () => {
                   top={`0`}
                   right={`10px`}
                   fontSize={`18px`}
+                  onClick={searchHandler}
                 >
                   <SearchOutlined />
                 </Wrapper>
@@ -324,28 +394,22 @@ const QuickMenu = () => {
             </Wrapper>
 
             <Wrapper dr={`row`} al={`flex-start`} ju={`flex-start`}>
-              <Wrapper
-                width={`auto`}
-                height={`27px`}
-                border={`1px solid ${Theme.grey3_C}`}
-                radius={`27px`}
-                dr={`row`}
-                padding={`0 10px`}
-                margin={`0 10px 10px 0`}
-              >
-                #블라블라 <CloseOutlined />
-              </Wrapper>
-              <Wrapper
-                width={`auto`}
-                height={`27px`}
-                border={`1px solid ${Theme.grey3_C}`}
-                radius={`27px`}
-                dr={`row`}
-                padding={`0 10px`}
-                margin={`0 10px 10px 0`}
-              >
-                #블라블라 <CloseOutlined />
-              </Wrapper>
+              {searchData.map((data) => {
+                return (
+                  <Wrapper
+                    width={`auto`}
+                    height={`27px`}
+                    border={`1px solid ${Theme.grey3_C}`}
+                    radius={`27px`}
+                    dr={`row`}
+                    padding={`0 10px`}
+                    margin={`0 10px 10px 0`}
+                  >
+                    {data}{" "}
+                    <CloseOutlined onClick={() => searchDeleteHandler(data)} />
+                  </Wrapper>
+                );
+              })}
             </Wrapper>
 
             <Wrapper
@@ -359,136 +423,28 @@ const QuickMenu = () => {
               </Text>
             </Wrapper>
 
-            <Wrapper
-              dr={`row`}
-              ju={`flex-start`}
-              margin={`0 0 10px`}
-              fontSize={`16px`}
-            >
-              <Text width={`15%`} textAlign={`center`}>
-                1
-              </Text>
-              <Text width={`85%`} isEllipsis>
-                이렇게 저렇게
-              </Text>
-            </Wrapper>
-            <Wrapper
-              dr={`row`}
-              ju={`flex-start`}
-              margin={`0 0 10px`}
-              fontSize={`16px`}
-            >
-              <Text width={`15%`} textAlign={`center`}>
-                2
-              </Text>
-              <Text width={`85%`} isEllipsis>
-                검색키워드가 아주아주아주 길어졌을때는 이렇게 나오게 됩니다.
-              </Text>
-            </Wrapper>
-            <Wrapper
-              dr={`row`}
-              ju={`flex-start`}
-              margin={`0 0 10px`}
-              fontSize={`16px`}
-            >
-              <Text width={`15%`} textAlign={`center`}>
-                3
-              </Text>
-              <Text width={`85%`} isEllipsis>
-                이렇게 저렇게
-              </Text>
-            </Wrapper>
-            <Wrapper
-              dr={`row`}
-              ju={`flex-start`}
-              margin={`0 0 10px`}
-              fontSize={`16px`}
-            >
-              <Text width={`15%`} textAlign={`center`}>
-                4
-              </Text>
-              <Text width={`85%`} isEllipsis>
-                이렇게 저렇게
-              </Text>
-            </Wrapper>
-            <Wrapper
-              dr={`row`}
-              ju={`flex-start`}
-              margin={`0 0 10px`}
-              fontSize={`16px`}
-            >
-              <Text width={`15%`} textAlign={`center`}>
-                5
-              </Text>
-              <Text width={`85%`} isEllipsis>
-                이렇게 저렇게
-              </Text>
-            </Wrapper>
-            <Wrapper
-              dr={`row`}
-              ju={`flex-start`}
-              margin={`0 0 10px`}
-              fontSize={`16px`}
-            >
-              <Text width={`15%`} textAlign={`center`}>
-                6
-              </Text>
-              <Text width={`85%`} isEllipsis>
-                이렇게 저렇게
-              </Text>
-            </Wrapper>
-            <Wrapper
-              dr={`row`}
-              ju={`flex-start`}
-              margin={`0 0 10px`}
-              fontSize={`16px`}
-            >
-              <Text width={`15%`} textAlign={`center`}>
-                7
-              </Text>
-              <Text width={`85%`} isEllipsis>
-                이렇게 저렇게
-              </Text>
-            </Wrapper>
-            <Wrapper
-              dr={`row`}
-              ju={`flex-start`}
-              margin={`0 0 10px`}
-              fontSize={`16px`}
-            >
-              <Text width={`15%`} textAlign={`center`}>
-                8
-              </Text>
-              <Text width={`85%`} isEllipsis>
-                이렇게 저렇게
-              </Text>
-            </Wrapper>
-            <Wrapper
-              dr={`row`}
-              ju={`flex-start`}
-              margin={`0 0 10px`}
-              fontSize={`16px`}
-            >
-              <Text width={`15%`} textAlign={`center`}>
-                9
-              </Text>
-              <Text width={`85%`} isEllipsis>
-                이렇게 저렇게
-              </Text>
-            </Wrapper>
-            <Wrapper
-              dr={`row`}
-              ju={`flex-start`}
-              margin={`0 0 10px`}
-              fontSize={`16px`}
-            >
-              <Text width={`15%`} textAlign={`center`}>
-                10
-              </Text>
-              <Text width={`85%`} isEllipsis>
-                이렇게 저렇게
-              </Text>
-            </Wrapper>
+            {searchTagList.map((data, idx) => {
+              return (
+                <Wrapper
+                  dr={`row`}
+                  ju={`flex-start`}
+                  margin={`0 0 10px`}
+                  fontSize={`16px`}
+                >
+                  <Text width={`15%`} textAlign={`center`}>
+                    {idx + 1}
+                  </Text>
+                  <Text
+                    width={`85%`}
+                    isEllipsis
+                    isHover
+                    onClick={() => searchHandler(data)}
+                  >
+                    {data.value}
+                  </Text>
+                </Wrapper>
+              );
+            })}
           </RsWrapper>
         </MenuWrapper>
       )}

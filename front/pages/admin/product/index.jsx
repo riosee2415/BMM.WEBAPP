@@ -711,7 +711,7 @@ const Index = ({}) => {
     {
       title: "상품썸네일",
       render: (data) => <Image src={data.thumbnail1} alt="image" />,
-      width: `15%`,
+      width: `100px`,
     },
     {
       title: "브랜명",

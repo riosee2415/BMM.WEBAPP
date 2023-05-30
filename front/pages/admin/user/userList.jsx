@@ -19,6 +19,7 @@ import {
   notification,
   Input,
   Form,
+  Drawer,
 } from "antd";
 import {
   HomeText,
@@ -99,19 +100,22 @@ const UserList = ({}) => {
     st_userListUpdateError,
   } = useSelector((state) => state.user);
 
-  const [sameDepth, setSameDepth] = useState([]);
-
-  const [updateData, setUpdateData] = useState(null);
-
   const [sData, setSData] = useState("");
-
-  const [levelForm] = Form.useForm();
-  const [sForm] = Form.useForm();
-
+  const [sameDepth, setSameDepth] = useState([]);
+  const [updateData, setUpdateData] = useState(null);
   const [currentTab, setCurrentTab] = useState(0);
+
+  const [sForm] = Form.useForm();
+  const [levelForm] = Form.useForm();
 
   const [level1, setLevel1] = useState("회원관리");
   const [level2, setLevel2] = useState("");
+
+  // 모달
+  const [isCartModal, setIsCartModal] = useState(false); // 장바구니 모달
+
+  // DATA
+  const [currentData, setCurrentData] = useState(null);
 
   ////// USEEFFECT //////
 
@@ -167,16 +171,14 @@ const UserList = ({}) => {
   }, [currentTab, sData]);
 
   ////// TOGGLE //////
-  const updateModalOpen = useCallback(
-    (data) => {
-      dispatch({
-        type: UPDATE_MODAL_OPEN_REQUEST,
-      });
 
-      setUpdateData(data);
-      levelForm.setFieldsValue({ level: data.level });
+  // 장바구니 모달
+  const cartModalToggle = useCallback(
+    (data) => {
+      setIsCartModal(!isCartModal);
+      setCurrentData(data);
     },
-    [updateModal]
+    [isCartModal]
   );
 
   const updateModalClose = useCallback(() => {
@@ -241,6 +243,29 @@ const UserList = ({}) => {
 
   ////// DATAVIEW //////
 
+  const cartCol = [
+    {
+      title: "번호",
+      dataIndex: "num",
+    },
+    {
+      title: "번호",
+      dataIndex: "num",
+    },
+    {
+      title: "번호",
+      dataIndex: "num",
+    },
+    {
+      title: "번호",
+      dataIndex: "num",
+    },
+    {
+      title: "번호",
+      dataIndex: "num",
+    },
+  ];
+
   const levelArr = [
     {
       id: 1,
@@ -279,8 +304,8 @@ const UserList = ({}) => {
       render: (data) => <div>{data.username}</div>,
     },
     {
-      title: "닉네임",
-      render: (data) => <div>{data.nickname}</div>,
+      title: "회원아이디",
+      render: (data) => <div>{data.userId}</div>,
     },
     {
       title: "이메일",
@@ -291,23 +316,31 @@ const UserList = ({}) => {
       render: (data) => <div>{data.mobile}</div>,
     },
     {
+      title: "등급",
+      dataIndex: "gradeName",
+    },
+    {
+      title: "보유포인트",
+      dataIndex: "formatPoint",
+    },
+    {
       title: "가입일",
       render: (data) => <div>{data.viewCreatedAt}</div>,
     },
+    // {
+    //   title: "권한",
+    //   render: (data) => <div>{data.viewLevel}</div>,
+    // },
     {
-      title: "권한",
-      render: (data) => <div>{data.viewLevel}</div>,
-    },
-    {
-      title: "권한수정",
+      title: "장바구니",
       render: (data) => (
-        <SettingBtn
-          size="small"
+        <Button
           type="primary"
-          onClick={() => updateModalOpen(data)}
+          size="small"
+          onClick={() => cartModalToggle(data)}
         >
-          수정
-        </SettingBtn>
+          장바구니
+        </Button>
       ),
     },
   ];
@@ -381,7 +414,7 @@ const UserList = ({}) => {
         </SearchForm>
       </Wrapper>
 
-      <Wrapper
+      {/* <Wrapper
         padding="0px 20px"
         dr="row"
         ju="flex-start"
@@ -405,7 +438,7 @@ const UserList = ({}) => {
             {data.name}
           </TypeButton>
         ))}
-      </Wrapper>
+      </Wrapper> */}
 
       <Wrapper padding={`0px 20px`}>
         <Table
@@ -463,6 +496,26 @@ const UserList = ({}) => {
           </Form.Item>
         </Form>
       </Modal>
+
+      <Drawer
+        width="900px"
+        visible={isCartModal}
+        title="장바구니"
+        onClose={() => setIsCartModal(false)}
+      >
+        <Wrapper al={`flex-end`} margin={`0 0 10px`}>
+          <Button size="small" type="primary">
+            추가하기
+          </Button>
+        </Wrapper>
+        <Table
+          style={{ width: "100%" }}
+          rowKey="id"
+          columns={cartCol}
+          dataSource={[]}
+          size="small"
+        />
+      </Drawer>
     </AdminLayout>
   );
 };
