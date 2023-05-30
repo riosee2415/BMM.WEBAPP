@@ -67,11 +67,24 @@ const Index = () => {
   const width = useWidth();
   const [orderType, setOrderType] = useState(1);
   const [currentPage, setCurrentPage] = useState(1);
+  const [currentSearch, setCurrentSearch] = useState(null); // 검색어
+  const [searchData, setSearchData] = useState(null);
 
   ////// REDUX //////
   const router = useRouter();
   const dispatch = useDispatch();
   ////// USEEFFECT //////
+
+  // 최근검색어
+  useEffect(() => {
+    const data = sessionStorage.getItem("search")
+      ? JSON.parse(sessionStorage.getItem("search"))
+      : null;
+
+    if (data) {
+      setSearchData(data);
+    }
+  }, []);
 
   // 검색어 세팅
   useEffect(() => {
@@ -87,6 +100,39 @@ const Index = () => {
   }, [router.query.search]);
   ////// TOGGLE //////
   ////// HANDLER //////
+
+  // 검색태그
+  const searchTagHandler = useCallback(
+    (data) => {
+      router.push(`/search`);
+      setCurrentSearch(data);
+
+      dispatch({
+        type: PRODUCT_LIST_REQUEST,
+        data: {
+          searchTitle: data.value,
+          orderType,
+        },
+      });
+
+      // 최근검색어
+      const arr = searchData ? searchData.map((data) => data) : [];
+      const currentValue = arr.findIndex((value) => value === data.value);
+
+      if (currentValue === -1) {
+        arr.push(data.value);
+      } else {
+        arr.splice(currentValue, 1);
+        arr.unshift(data.value);
+      }
+
+      setSearchData(arr);
+      sessionStorage.setItem("search", JSON.stringify(arr));
+    },
+    [orderType, searchData]
+  );
+
+  console.log(searchData);
 
   // 페이지네이션
   const otherPageCall = useCallback(
@@ -110,11 +156,14 @@ const Index = () => {
       dispatch({
         type: PRODUCT_LIST_REQUEST,
         data: {
+          searchTitle: router.query.search
+            ? router.query.search
+            : currentSearch,
           orderType: data,
         },
       });
     },
-    [orderType]
+    [orderType, currentSearch, router.query.search]
   );
 
   ////// DATAVIEW //////
@@ -168,6 +217,7 @@ const Index = () => {
                     padding={`5px 10px`}
                     margin={`0 5px 0 0`}
                     kindOf={`grey`}
+                    onClick={() => searchTagHandler(data)}
                   >
                     {data.value}
                   </CommonButton>
@@ -206,7 +256,10 @@ const Index = () => {
               ) : (
                 productList.map((data) => {
                   return (
-                    <ProductWrapper key={data.id}>
+                    <ProductWrapper
+                      key={data.id}
+                      onClick={() => router.push(`/product/${data.id}`)}
+                    >
                       <SquareBox position={`relative`}>
                         <Image alt="thumbnail" src={data.thumbnail1} />
                       </SquareBox>
