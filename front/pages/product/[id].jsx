@@ -735,22 +735,22 @@ const Index = () => {
                 wrap={`nowrap`}
               >
                 {productDetail &&
-                productDetail.relateProductList &&
-                productDetail.relateProductList.length === 0 ? (
-                  <Wrapper>
-                    <Empty description="조회된 관련 상품이 없습니다." />
-                  </Wrapper>
-                ) : (
-                  productDetail.relateProductList.map((data) => {
-                    return (
-                      <ProductWrapper key={data.id}>
-                        <SquareBox>
-                          <Image alt="product" src={data.thumbnail1} />
-                        </SquareBox>
-                      </ProductWrapper>
-                    );
-                  })
-                )}
+                  (productDetail.relateProductList &&
+                  productDetail.relateProductList.length === 0 ? (
+                    <Wrapper>
+                      <Empty description="조회된 관련 상품이 없습니다." />
+                    </Wrapper>
+                  ) : (
+                    productDetail.relateProductList.map((data) => {
+                      return (
+                        <ProductWrapper key={data.id}>
+                          <SquareBox>
+                            <Image alt="product" src={data.thumbnail1} />
+                          </SquareBox>
+                        </ProductWrapper>
+                      );
+                    })
+                  ))}
               </Wrapper>
             </Wrapper>
 
