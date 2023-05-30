@@ -97,9 +97,18 @@ export const initailState = {
   st_productTagListDone: false,
   st_productTagListError: null,
   //
-  st_productTagModifyLoading: false, // product 태그 생성 및 수정
-  st_productTagModifyDone: false,
-  st_productTagModifyError: null,
+  st_productTagCreateLoading: false, // product 태그 생성
+  st_productTagCreateDone: false,
+  st_productTagCreateError: null,
+  //
+  st_productTagUpdateLoading: false, // product 태그 수정
+  st_productTagUpdateDone: false,
+  st_productTagUpdateError: null,
+  //
+  st_productTagDeleteLoading: false, // product 태그 삭제
+  st_productTagDeleteDone: false,
+  st_productTagDeleteError: null,
+  //
 };
 
 export const PRODUCT_LIST_REQUEST = "PRODUCT_LIST_REQUEST";
@@ -178,9 +187,17 @@ export const PRODUCT_TAG_LIST_REQUEST = "PRODUCT_TAG_LIST_REQUEST";
 export const PRODUCT_TAG_LIST_SUCCESS = "PRODUCT_TAG_LIST_SUCCESS";
 export const PRODUCT_TAG_LIST_FAILURE = "PRODUCT_TAG_LIST_FAILURE";
 
-export const PRODUCT_TAG_MODIFY_REQUEST = "PRODUCT_TAG_MODIFY_REQUEST";
-export const PRODUCT_TAG_MODIFY_SUCCESS = "PRODUCT_TAG_MODIFY_SUCCESS";
-export const PRODUCT_TAG_MODIFY_FAILURE = "PRODUCT_TAG_MODIFY_FAILURE";
+export const PRODUCT_TAG_CREATE_REQUEST = "PRODUCT_TAG_CREATE_REQUEST";
+export const PRODUCT_TAG_CREATE_SUCCESS = "PRODUCT_TAG_CREATE_SUCCESS";
+export const PRODUCT_TAG_CREATE_FAILURE = "PRODUCT_TAG_CREATE_FAILURE";
+
+export const PRODUCT_TAG_UPDATE_REQUEST = "PRODUCT_TAG_UPDATE_REQUEST";
+export const PRODUCT_TAG_UPDATE_SUCCESS = "PRODUCT_TAG_UPDATE_SUCCESS";
+export const PRODUCT_TAG_UPDATE_FAILURE = "PRODUCT_TAG_UPDATE_FAILURE";
+
+export const PRODUCT_TAG_DELETE_REQUEST = "PRODUCT_TAG_DELETE_REQUEST";
+export const PRODUCT_TAG_DELETE_SUCCESS = "PRODUCT_TAG_DELETE_SUCCESS";
+export const PRODUCT_TAG_DELETE_FAILURE = "PRODUCT_TAG_DELETE_FAILURE";
 
 export const PRODUCT_IMAGE_RESET = "PRODUCT_IMAGE_RESET";
 
@@ -599,22 +616,64 @@ const reducer = (state = initailState, action) =>
 
       //////////////////////////////////////////////
 
-      case PRODUCT_TAG_MODIFY_REQUEST: {
-        draft.st_productTagModifyLoading = true;
-        draft.st_productTagModifyDone = false;
-        draft.st_productTagModifyError = null;
+      case PRODUCT_TAG_CREATE_REQUEST: {
+        draft.st_productTagCreateLoading = true;
+        draft.st_productTagCreateDone = false;
+        draft.st_productTagCreateError = null;
         break;
       }
-      case PRODUCT_TAG_MODIFY_SUCCESS: {
-        draft.st_productTagModifyLoading = false;
-        draft.st_productTagModifyDone = true;
-        draft.st_productTagModifyError = null;
+      case PRODUCT_TAG_CREATE_SUCCESS: {
+        draft.st_productTagCreateLoading = false;
+        draft.st_productTagCreateDone = true;
+        draft.st_productTagCreateError = null;
         break;
       }
-      case PRODUCT_TAG_MODIFY_FAILURE: {
-        draft.st_productTagModifyLoading = false;
-        draft.st_productTagModifyDone = false;
-        draft.st_productTagModifyError = action.error;
+      case PRODUCT_TAG_CREATE_FAILURE: {
+        draft.st_productTagCreateLoading = false;
+        draft.st_productTagCreateDone = false;
+        draft.st_productTagCreateError = action.error;
+        break;
+      }
+
+      //////////////////////////////////////////////
+
+      case PRODUCT_TAG_UPDATE_REQUEST: {
+        draft.st_productTagUpdateLoading = true;
+        draft.st_productTagUpdateDone = false;
+        draft.st_productTagUpdateError = null;
+        break;
+      }
+      case PRODUCT_TAG_UPDATE_SUCCESS: {
+        draft.st_productTagUpdateLoading = false;
+        draft.st_productTagUpdateDone = true;
+        draft.st_productTagUpdateError = null;
+        break;
+      }
+      case PRODUCT_TAG_UPDATE_FAILURE: {
+        draft.st_productTagUpdateLoading = false;
+        draft.st_productTagUpdateDone = false;
+        draft.st_productTagUpdateError = action.error;
+        break;
+      }
+
+      //////////////////////////////////////////////
+
+      case PRODUCT_TAG_DELETE_REQUEST: {
+        draft.st_productTagDeleteLoading = true;
+        draft.st_productTagDeleteDone = false;
+        draft.st_productTagDeleteError = null;
+        break;
+      }
+      case PRODUCT_TAG_DELETE_SUCCESS: {
+        draft.st_productTagDeleteLoading = false;
+        draft.st_productTagDeleteDone = true;
+        draft.st_productTagDeleteError = null;
+        break;
+      }
+      case PRODUCT_TAG_DELETE_FAILURE: {
+        draft.st_productTagDeleteLoading = false;
+        draft.st_productTagDeleteDone = false;
+        draft.st_productTagDeleteError = action.error;
         break;
       }
 

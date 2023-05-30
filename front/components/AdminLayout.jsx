@@ -101,13 +101,18 @@ export const items = {
       useYn: true,
     },
     {
-      name: "브랜관리",
+      name: "브랜드관리",
       link: "/admin/product/brand",
       useYn: true,
     },
     {
+      name: "검색태그관리",
+      link: "/admin/product/tag",
+      useYn: true,
+    },
+    {
       name: "상품관리",
-      link: "/admin/product/list",
+      link: "/admin/product",
       useYn: true,
     },
   ],

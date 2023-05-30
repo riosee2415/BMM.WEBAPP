@@ -77,9 +77,17 @@ import {
   PRODUCT_TAG_LIST_SUCCESS,
   PRODUCT_TAG_LIST_FAILURE,
   //
-  PRODUCT_TAG_MODIFY_REQUEST,
-  PRODUCT_TAG_MODIFY_SUCCESS,
-  PRODUCT_TAG_MODIFY_FAILURE,
+  PRODUCT_TAG_CREATE_REQUEST,
+  PRODUCT_TAG_CREATE_SUCCESS,
+  PRODUCT_TAG_CREATE_FAILURE,
+  //
+  PRODUCT_TAG_UPDATE_REQUEST,
+  PRODUCT_TAG_UPDATE_SUCCESS,
+  PRODUCT_TAG_UPDATE_FAILURE,
+  //
+  PRODUCT_TAG_DELETE_REQUEST,
+  PRODUCT_TAG_DELETE_SUCCESS,
+  PRODUCT_TAG_DELETE_FAILURE,
 } from "../reducers/product";
 
 // ******************************************************************************************************************
@@ -603,22 +611,76 @@ function* productTagList(action) {
 // ******************************************************************************************************************
 // SAGA AREA ********************************************************************************************************
 // ******************************************************************************************************************
-async function productTagModifyAPI(data) {
-  return await axios.post(`/api/product/tag/modify`, data);
+async function productTagCreateAPI(data) {
+  return await axios.post(`/api/product/tag/create`, data);
 }
 
-function* productTagModify(action) {
+function* productTagCreate(action) {
   try {
-    const result = yield call(productTagModifyAPI, action.data);
+    const result = yield call(productTagCreateAPI, action.data);
 
     yield put({
-      type: PRODUCT_TAG_MODIFY_SUCCESS,
+      type: PRODUCT_TAG_CREATE_SUCCESS,
       data: result.data,
     });
   } catch (err) {
     console.error(err);
     yield put({
-      type: PRODUCT_TAG_MODIFY_FAILURE,
+      type: PRODUCT_TAG_CREATE_FAILURE,
+      error: err.response.data,
+    });
+  }
+}
+// ******************************************************************************************************************
+// ******************************************************************************************************************
+// ******************************************************************************************************************
+
+// ******************************************************************************************************************
+// SAGA AREA ********************************************************************************************************
+// ******************************************************************************************************************
+async function productTagUpdateAPI(data) {
+  return await axios.post(`/api/product/tag/update`, data);
+}
+
+function* productTagUpdate(action) {
+  try {
+    const result = yield call(productTagUpdateAPI, action.data);
+
+    yield put({
+      type: PRODUCT_TAG_UPDATE_SUCCESS,
+      data: result.data,
+    });
+  } catch (err) {
+    console.error(err);
+    yield put({
+      type: PRODUCT_TAG_UPDATE_FAILURE,
+      error: err.response.data,
+    });
+  }
+}
+// ******************************************************************************************************************
+// ******************************************************************************************************************
+// ******************************************************************************************************************
+
+// ******************************************************************************************************************
+// SAGA AREA ********************************************************************************************************
+// ******************************************************************************************************************
+async function productTagDeleteAPI(data) {
+  return await axios.post(`/api/product/tag/delete`, data);
+}
+
+function* productTagDelete(action) {
+  try {
+    const result = yield call(productTagDeleteAPI, action.data);
+
+    yield put({
+      type: PRODUCT_TAG_DELETE_SUCCESS,
+      data: result.data,
+    });
+  } catch (err) {
+    console.error(err);
+    yield put({
+      type: PRODUCT_TAG_DELETE_FAILURE,
       error: err.response.data,
     });
   }
@@ -685,8 +747,14 @@ function* watchProductOptionDelete() {
 function* watchProductTagList() {
   yield takeLatest(PRODUCT_TAG_LIST_REQUEST, productTagList);
 }
-function* watchProductTagModify() {
-  yield takeLatest(PRODUCT_TAG_MODIFY_REQUEST, productTagModify);
+function* watchProductTagCreate() {
+  yield takeLatest(PRODUCT_TAG_CREATE_REQUEST, productTagCreate);
+}
+function* watchProductTagUpdate() {
+  yield takeLatest(PRODUCT_TAG_UPDATE_REQUEST, productTagUpdate);
+}
+function* watchProductTagDelete() {
+  yield takeLatest(PRODUCT_TAG_DELETE_REQUEST, productTagDelete);
 }
 
 //////////////////////////////////////////////////////////////
@@ -711,7 +779,9 @@ export default function* productSaga() {
     fork(watchProductOptionUpdate),
     fork(watchProductOptionDelete),
     fork(watchProductTagList),
-    fork(watchProductTagModify),
+    fork(watchProductTagCreate),
+    fork(watchProductTagUpdate),
+    fork(watchProductTagDelete),
 
     //
   ]);

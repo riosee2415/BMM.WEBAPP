@@ -1,6 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import AdminLayout from "../../../components/AdminLayout";
-import styled from "styled-components";
 import { useDispatch, useSelector } from "react-redux";
 import {
   Popover,
@@ -13,6 +12,7 @@ import {
   Drawer,
   Image,
   Select,
+  Switch,
 } from "antd";
 import { useRouter, withRouter } from "next/router";
 import wrapper from "../../../store/configureStore";
@@ -37,19 +37,23 @@ import {
   PRODUCT_CREATE_REQUEST,
   PRODUCT_DELETE_REQUEST,
   PRODUCT_IMAGE_RESET,
+  PRODUCT_LECO_UPDATE_REQUEST,
+  PRODUCT_OPTION_CREATE_REQUEST,
+  PRODUCT_OPTION_DELETE_REQUEST,
+  PRODUCT_OPTION_LIST_REQUEST,
+  PRODUCT_OPTION_UPDATE_REQUEST,
+  PRODUCT_TAG_CREATE_REQUEST,
+  PRODUCT_TAG_DELETE_REQUEST,
+  PRODUCT_TAG_LIST_REQUEST,
   PRODUCT_UPDATE_REQUEST,
   PRODUCT_UPLOAD1_REQUEST,
   PRODUCT_UPLOAD2_REQUEST,
   PRODUCT_UPLOAD3_REQUEST,
   PRODUCT_UPLOAD4_REQUEST,
+  PRODUCT_UPLOAD5_REQUEST,
 } from "../../../reducers/product";
 import { DOWN_LIST_REQUEST, UP_LIST_REQUEST } from "../../../reducers/category";
-
-const ViewStatusIcon = styled(EyeOutlined)`
-  font-size: 18px;
-  color: ${(props) =>
-    props.active ? props.theme.subTheme5_C : props.theme.lightGrey_C};
-`;
+import { SEARCHTAG_LIST_REQUEST } from "../../../reducers/searchTag";
 
 const Index = ({}) => {
   const router = useRouter();
@@ -91,6 +95,8 @@ const Index = ({}) => {
     productPath3,
     productPath4,
     productDetail,
+    productOptionList,
+    productTagList,
     //
     st_productCreateDone,
     st_productCreateError,
@@ -100,19 +106,45 @@ const Index = ({}) => {
     //
     st_productDeleteDone,
     st_productDeleteError,
+    //
+    st_productOptionCreateDone,
+    st_productOptionCreateError,
+    //
+    st_productOptionUpdateDone,
+    st_productOptionUpdateError,
+    //
+    st_productOptionDeleteDone,
+    st_productOptionDeleteError,
+    //
+    st_productTagCreateDone,
+    st_productTagCreateError,
+    //
+    st_productTagDeleteDone,
+    st_productTagDeleteError,
+    //
+    st_productLecoUpdateDone,
+    st_productLecoUpdateError,
   } = useSelector((state) => state.product);
   const { upList, downList } = useSelector((state) => state.category);
+  const { searchTagList } = useSelector((state) => state.searchTag);
 
   ////// HOOKS //////
 
   //   MODAL
+  const [isTagModal, setIsTagModal] = useState(false); // 상품태그
   const [isCreateModal, setIsCreateModal] = useState(false); // 생성
   const [isUpdateModal, setIsUpdateModal] = useState(false); // 수정
+  const [isOptionModal, setIsOptionModal] = useState(false); // 옵션 리스트
+  const [isOptionUpdateModal, setIsOptionUpdateModal] = useState(false); // 옵션 수정리스트
 
   //   DATA
+  const [currentTagData, setCurrentTagData] = useState(null); // 태그 데이터
+  const [currentOptionData, setCurrentOptionData] = useState(null); // 옵션 데이터
 
   //   FORM
+  const [optionForm] = Form.useForm();
   const [productForm] = Form.useForm();
+  const [searchForm] = Form.useForm();
 
   //   REF
   const imageRef = useRef();
@@ -122,6 +154,105 @@ const Index = ({}) => {
   const image5Ref = useRef();
 
   ////// USEEFFECT //////
+
+  useEffect(() => {
+    if (st_productLecoUpdateDone) {
+      dispatch({
+        type: PRODUCT_ADMIN_LIST_REQUEST,
+      });
+
+      return message.success("추천상품 여부가 수정되었습니다.");
+    }
+    if (st_productLecoUpdateError) {
+      return message.error(st_productLecoUpdateError);
+    }
+  }, [st_productLecoUpdateDone, st_productLecoUpdateError]);
+
+  useEffect(() => {
+    if (st_productTagDeleteDone) {
+      dispatch({
+        type: PRODUCT_TAG_LIST_REQUEST,
+        data: {
+          ProductId: currentData && currentData.id,
+        },
+      });
+
+      return message.success("상품 검색태그를 삭제했습니다.");
+    }
+
+    if (st_productTagDeleteError) {
+      return message.error(st_productTagDeleteError);
+    }
+  }, [st_productTagDeleteDone, st_productTagDeleteError]);
+
+  useEffect(() => {
+    if (st_productTagCreateDone) {
+      dispatch({
+        type: PRODUCT_TAG_LIST_REQUEST,
+        data: {
+          ProductId: currentData && currentData.id,
+        },
+      });
+
+      setCurrentTagData(null);
+
+      return message.success("상품 검색태그를 추가했습니다.");
+    }
+
+    if (st_productTagCreateError) {
+      return message.error(st_productTagCreateError);
+    }
+  }, [st_productTagCreateDone, st_productTagCreateError]);
+
+  useEffect(() => {
+    if (st_productOptionDeleteDone) {
+      dispatch({
+        type: PRODUCT_OPTION_LIST_REQUEST,
+        data: {
+          ProductId: currentData && currentData.id,
+        },
+      });
+
+      return message.success("상품의 옵션이 삭제되었습니다.");
+    }
+
+    if (st_productOptionDeleteError) {
+      return message.error(st_productOptionDeleteError);
+    }
+  }, [st_productOptionDeleteDone, st_productOptionDeleteError]);
+
+  useEffect(() => {
+    if (st_productOptionUpdateDone) {
+      dispatch({
+        type: PRODUCT_OPTION_LIST_REQUEST,
+        data: {
+          ProductId: currentData && currentData.id,
+        },
+      });
+
+      setIsOptionUpdateModal(false);
+      setIsOptionModal(true);
+
+      return message.success("상품의 옵션이 수정되었습니다.");
+    }
+  }, [st_productOptionUpdateDone, st_productOptionUpdateError]);
+
+  useEffect(() => {
+    if (st_productOptionCreateDone) {
+      dispatch({
+        type: PRODUCT_OPTION_LIST_REQUEST,
+        data: {
+          ProductId: currentData && currentData.id,
+        },
+      });
+
+      return message.success("상품의 옵션을 생성했습니다.");
+    }
+
+    if (st_productOptionCreateError) {
+      return message.error(st_productOptionCreateError);
+    }
+  }, [st_productOptionCreateDone, st_productOptionCreateError]);
 
   useEffect(() => {
     if (st_productDeleteDone) {
@@ -170,6 +301,37 @@ const Index = ({}) => {
 
   ////// TOGGLE //////
 
+  // 상품 태그 토글
+  const tagModalToggle = useCallback(
+    (data) => {
+      setIsTagModal(!isTagModal);
+      setCurrentData(data);
+      dispatch({
+        type: PRODUCT_TAG_LIST_REQUEST,
+        data: {
+          ProductId: data.id,
+        },
+      });
+      setCurrentTagData(null);
+    },
+    [isTagModal]
+  );
+
+  // 상품 옵션 수정 토글
+  const optionUpdateToggle = useCallback(
+    (data) => {
+      setIsOptionUpdateModal(!isOptionUpdateModal);
+      setIsOptionModal(false);
+      setCurrentOptionData(data);
+
+      optionForm.setFieldsValue({
+        value: data.value,
+        price: data.price,
+      });
+    },
+    [isOptionUpdateModal]
+  );
+
   // 상품 생성 토글
   const productCreateToggle = useCallback(() => {
     productForm.resetFields();
@@ -191,6 +353,116 @@ const Index = ({}) => {
     }
   }, []);
   ////// HANDLER //////
+
+  // 검색 초기화
+  const searchResetHandler = useCallback(() => {
+    dispatch({
+      type: PRODUCT_ADMIN_LIST_REQUEST,
+    });
+    searchForm.resetFields();
+  }, []);
+
+  // 검색하기
+  const searchHandler = useCallback((data) => {
+    dispatch({
+      type: PRODUCT_ADMIN_LIST_REQUEST,
+      data: {
+        searchTitle: data.searchTitle,
+        CateUpId: data.CateUpId,
+        CateDownId: data.CateDownId,
+        BrandId: data.BrandId,
+      },
+    });
+  }, []);
+
+  // 검색 카테고리 선택
+  const categoryHnadler = useCallback((data) => {
+    dispatch({
+      type: DOWN_LIST_REQUEST,
+      data: {
+        CateUpId: data,
+      },
+    });
+  }, []);
+
+  // 추천여부 설정하기
+  const recommendHandler = useCallback((data) => {
+    dispatch({
+      type: PRODUCT_LECO_UPDATE_REQUEST,
+      data: {
+        id: data.id,
+        title: data.title,
+        isRecommend: !data.isRecommend,
+      },
+    });
+  }, []);
+
+  // 태그 삭제하기
+  const tagDeleteHandler = useCallback(
+    (data) => {
+      dispatch({
+        type: PRODUCT_TAG_DELETE_REQUEST,
+        data: {
+          id: data.id,
+          productTitle: currentData && currentData.title,
+        },
+      });
+    },
+    [currentData]
+  );
+
+  // 태그 생성하기
+  const tagCreateHandler = useCallback(() => {
+    if (!currentTagData) {
+      return message.error("검색태그를 선택해주세요.");
+    }
+
+    dispatch({
+      type: PRODUCT_TAG_CREATE_REQUEST,
+      data: {
+        ProductId: currentData && currentData.id,
+        SearchTagId: currentTagData,
+        productTitle: currentData && currentData.title,
+      },
+    });
+  }, [currentData, currentTagData]);
+
+  // 옵션 삭제하기
+  const optionDeleteHandler = useCallback((data) => {
+    dispatch({
+      type: PRODUCT_OPTION_DELETE_REQUEST,
+      data: {
+        id: data.id,
+      },
+    });
+  }, []);
+
+  // 옵션 수정하기
+  const optionUpdateHandler = useCallback(
+    (data) => {
+      dispatch({
+        type: PRODUCT_OPTION_UPDATE_REQUEST,
+        data: {
+          id: currentOptionData && currentOptionData.id,
+          value: data.value,
+          price: data.price,
+          productTitle: currentData && currentData.title,
+        },
+      });
+    },
+    [currentOptionData, currentData]
+  );
+
+  // 옵션 생성하기
+  const optionCreateHandler = useCallback(() => {
+    dispatch({
+      type: PRODUCT_OPTION_CREATE_REQUEST,
+      data: {
+        ProductId: currentData && currentData.id,
+        productTitle: currentData && currentData.title,
+      },
+    });
+  }, [currentData]);
 
   // 이미지 업로드
   const onChangeImages = useCallback((e, num) => {
@@ -215,13 +487,34 @@ const Index = ({}) => {
         type: PRODUCT_UPLOAD3_REQUEST,
         data: formData,
       });
-    } else {
+    } else if (num === 4) {
       dispatch({
         type: PRODUCT_UPLOAD4_REQUEST,
         data: formData,
       });
+    } else {
+      dispatch({
+        type: PRODUCT_UPLOAD5_REQUEST,
+        data: formData,
+      });
     }
   });
+
+  // 옵션정보
+  const optionModalToggle = useCallback(
+    (data) => {
+      setIsOptionModal(true);
+      setCurrentData(data);
+
+      dispatch({
+        type: PRODUCT_OPTION_LIST_REQUEST,
+        data: {
+          ProductId: data.id,
+        },
+      });
+    },
+    [isOptionModal]
+  );
 
   // 데이터세팅
   const beforeSetDataHandler = useCallback(
@@ -287,10 +580,18 @@ const Index = ({}) => {
         type: PRODUCT_UPDATE_REQUEST,
         data: {
           id: currentData && currentData.id,
-          thumbnail1: productPath1,
-          thumbnail2: productPath2 ? productPath2 : null,
-          thumbnail3: productPath3 ? productPath3 : null,
-          thumbnail4: productPath4 ? productPath4 : null,
+          thumbnail1: productPath1
+            ? productPath1
+            : currentData && currentData.thumbnail1,
+          thumbnail2: productPath2
+            ? productPath2
+            : currentData && currentData.thumbnail2,
+          thumbnail3: productPath3
+            ? productPath3
+            : currentData && currentData.thumbnail3,
+          thumbnail4: productPath4
+            ? productPath4
+            : currentData && currentData.thumbnail4,
           detailImage: productDetail
             ? productDetail
             : currentData && currentData.detailImage,
@@ -345,13 +646,70 @@ const Index = ({}) => {
   ////// DATAVIEW //////
 
   ////// DATA COLUMNS //////
+
+  const tagCol = [
+    { title: "번호", dataIndex: "num" },
+    { title: "태그명", dataIndex: "value" },
+    {
+      title: "삭제",
+      render: (data) => (
+        <Popconfirm
+          title="삭제하시겠습니까?"
+          okText="삭제"
+          cancelText="취소"
+          onConfirm={() => tagDeleteHandler(data)}
+        >
+          <Button type="danger" size="small">
+            삭제
+          </Button>
+        </Popconfirm>
+      ),
+      width: `10%`,
+    },
+  ];
+
+  const optionCol = [
+    { title: "번호", dataIndex: "num" },
+    { title: "옵션명", dataIndex: "value" },
+    { title: "옵션가격", dataIndex: "concatPrice" },
+    {
+      title: "수정",
+      render: (data) => (
+        <Button
+          type="primary"
+          size="small"
+          onClick={() => optionUpdateToggle(data)}
+        >
+          수정
+        </Button>
+      ),
+      width: `10%`,
+    },
+    {
+      title: "삭제",
+      render: (data) => (
+        <Popconfirm
+          title="삭제하시겠습니까?"
+          okText="삭제"
+          cancelText="취소"
+          onConfirm={() => optionDeleteHandler(data)}
+        >
+          <Button type="danger" size="small">
+            삭제
+          </Button>
+        </Popconfirm>
+      ),
+      width: `10%`,
+    },
+  ];
+
   const col = [
     {
       title: "번호",
       dataIndex: "num",
     },
     {
-      title: "상품명",
+      title: "상품썸네일",
       render: (data) => <Image src={data.thumbnail1} alt="image" />,
       width: `15%`,
     },
@@ -363,7 +721,6 @@ const Index = ({}) => {
       title: "카테고리명",
       dataIndex: "upCategoryValue",
     },
-
     {
       title: "상품명",
       dataIndex: "title",
@@ -389,15 +746,48 @@ const Index = ({}) => {
       dataIndex: "viewCreatedAt",
     },
     {
-      title: "상태창",
+      title: "추천여부",
       render: (data) => (
-        <>
-          <ViewStatusIcon
-            active={
-              parseInt(data.id) === (currentData && parseInt(currentData.id))
-            }
-          />
-        </>
+        <Switch
+          checked={data.isRecommend}
+          onChange={() => recommendHandler(data)}
+        />
+      ),
+    },
+    {
+      title: "옵션정보",
+      render: (data) => (
+        <Button
+          size="small"
+          type="primary"
+          onClick={() => optionModalToggle(data)}
+        >
+          옵션
+        </Button>
+      ),
+    },
+    {
+      title: "상품태그",
+      render: (data) => (
+        <Button
+          size="small"
+          type="primary"
+          onClick={() => tagModalToggle(data)}
+        >
+          상품태그
+        </Button>
+      ),
+    },
+    {
+      title: "상세보기",
+      render: (data) => (
+        <Button
+          size="small"
+          type="primary"
+          onClick={() => beforeSetDataHandler(data)}
+        >
+          상세보기
+        </Button>
       ),
     },
     {
@@ -460,6 +850,76 @@ const Index = ({}) => {
       </Wrapper>
 
       <Wrapper dr="row" padding="0px 20px" al="flex-start">
+        <Wrapper
+          dr={`row`}
+          ju={`flex-start`}
+          padding={`10px`}
+          radius={`5px`}
+          bgColor={`rgba(0,0,0,0.5)`}
+          margin={`0 0 10px`}
+        >
+          <Form size="small" form={searchForm} onFinish={searchHandler}>
+            <Wrapper dr={`row`}>
+              <Form.Item
+                style={{ width: `250px`, margin: `0 5px 0 0` }}
+                name="searchTitle"
+              >
+                <Input placeholder="상품명을 입력해주세요." />
+              </Form.Item>
+              <Form.Item
+                style={{ width: `250px`, margin: `0 5px 0 0` }}
+                name="CateUpId"
+              >
+                <Select
+                  placeholder="상위 카테고리를 선택해주세요."
+                  onChange={categoryHnadler}
+                >
+                  {upList.map((data) => {
+                    return (
+                      <Select.Option key={data.id} value={data.id}>
+                        {data.value}
+                      </Select.Option>
+                    );
+                  })}
+                </Select>
+              </Form.Item>
+              <Form.Item
+                style={{ width: `250px`, margin: `0 5px 0 0` }}
+                name="CateDownId"
+              >
+                <Select placeholder="하위 카테고리를 선택해주세요.">
+                  {downList.map((data) => {
+                    return (
+                      <Select.Option key={data.id} value={data.id}>
+                        {data.value}
+                      </Select.Option>
+                    );
+                  })}
+                </Select>
+              </Form.Item>
+              <Form.Item
+                style={{ width: `250px`, margin: `0 5px 0 0` }}
+                name="BrandId"
+              >
+                <Select placeholder="브랜드를 선택해주세요.">
+                  {brandList.map((data) => {
+                    return (
+                      <Select.Option key={data.id} value={data.id}>
+                        {data.name}
+                      </Select.Option>
+                    );
+                  })}
+                </Select>
+              </Form.Item>
+              <Button size="small" type="primary" htmlType="submit">
+                검색
+              </Button>
+              <Button size="small" type="default" onClick={searchResetHandler}>
+                초기화
+              </Button>
+            </Wrapper>
+          </Form>
+        </Wrapper>
         <Wrapper shadow={`3px 3px 6px ${Theme.lightGrey_C}`}>
           <Wrapper margin={`10px 0px`} al={`flex-end`} padding={`0 10px`}>
             <Button size="small" type="primary" onClick={productCreateToggle}>
@@ -472,11 +932,11 @@ const Index = ({}) => {
             columns={col}
             dataSource={productAdminList}
             size="small"
-            onRow={(record, index) => {
-              return {
-                onClick: (e) => beforeSetDataHandler(record),
-              };
-            }}
+            // onRow={(record, index) => {
+            //   return {
+            //     onClick: (e) => beforeSetDataHandler(record),
+            //   };
+            // }}
           />
         </Wrapper>
       </Wrapper>
@@ -625,7 +1085,7 @@ const Index = ({}) => {
               src={
                 productPath2
                   ? productPath2
-                  : currentData && currentData.thumbnail2
+                  : currentData && currentData.thumbnail2 !== null
                   ? currentData && currentData.thumbnail2
                   : "http://via.placeholder.com/562"
               }
@@ -655,7 +1115,7 @@ const Index = ({}) => {
               src={
                 productPath3
                   ? productPath3
-                  : currentData && currentData.thumbnail3
+                  : currentData && currentData.thumbnail3 !== null
                   ? currentData && currentData.thumbnail3
                   : "http://via.placeholder.com/562"
               }
@@ -685,7 +1145,7 @@ const Index = ({}) => {
               src={
                 productPath4
                   ? productPath4
-                  : currentData && currentData.thumbnail4
+                  : currentData && currentData.thumbnail4 !== null
                   ? currentData && currentData.thumbnail4
                   : "http://via.placeholder.com/562"
               }
@@ -1062,6 +1522,102 @@ const Index = ({}) => {
           </Form.Item>
         </Form>
       </Drawer>
+
+      <Drawer
+        visible={isOptionModal}
+        title="옵션정보"
+        width="600px"
+        onClose={() => setIsOptionModal(false)}
+      >
+        <Wrapper al={`flex-end`} margin={`0 0 10px`}>
+          <Button size="small" type="primary" onClick={optionCreateHandler}>
+            생성하기
+          </Button>
+        </Wrapper>
+        <Table
+          style={{ width: "100%" }}
+          rowKey="id"
+          columns={optionCol}
+          dataSource={productOptionList}
+          size="small"
+        />
+      </Drawer>
+
+      <Drawer
+        visible={isOptionUpdateModal}
+        onClose={optionUpdateToggle}
+        title="옵션 수정하기"
+        width="600px"
+      >
+        <Form size="small" form={optionForm} onFinish={optionUpdateHandler}>
+          <Form.Item
+            rules={[
+              {
+                required: true,
+                message: "옵션명을 입력해주세요.",
+              },
+            ]}
+            label="옵션명"
+            name="value"
+          >
+            <Input />
+          </Form.Item>
+          <Form.Item
+            rules={[
+              {
+                required: true,
+                message: "옵션가격을 입력해주세요.",
+              },
+            ]}
+            label="옵션가격"
+            name="price"
+          >
+            <Input type="number" />
+          </Form.Item>
+          <Wrapper al={`flex-end`}>
+            <Button type="primary" size="small" htmlType="submit">
+              수정하기
+            </Button>
+          </Wrapper>
+        </Form>
+      </Drawer>
+
+      <Drawer
+        visible={isTagModal}
+        title="상품태그"
+        width="600px"
+        onClose={() => setIsTagModal(false)}
+      >
+        <Wrapper al={`flex-end`} margin={`0 0 10px`}>
+          <Wrapper dr={`row`}>
+            <Select
+              style={{ width: `calc(100% - 100px)` }}
+              size="small"
+              placeholder="검색 태그를 선택해주세요."
+              onChange={(data) => setCurrentTagData(data)}
+              value={currentTagData}
+            >
+              {searchTagList.map((data) => {
+                return (
+                  <Select.Option key={data.id} value={data.id}>
+                    {data.value}
+                  </Select.Option>
+                );
+              })}
+            </Select>
+            <Button size="small" type="primary" onClick={tagCreateHandler}>
+              추가하기
+            </Button>
+          </Wrapper>
+        </Wrapper>
+        <Table
+          style={{ width: "100%" }}
+          rowKey="id"
+          columns={tagCol}
+          dataSource={productTagList}
+          size="small"
+        />
+      </Drawer>
     </AdminLayout>
   );
 };
@@ -1091,6 +1647,10 @@ export const getServerSideProps = wrapper.getServerSideProps(
 
     context.store.dispatch({
       type: BRAND_LIST_REQUEST,
+    });
+
+    context.store.dispatch({
+      type: SEARCHTAG_LIST_REQUEST,
     });
 
     // 구현부 종료
