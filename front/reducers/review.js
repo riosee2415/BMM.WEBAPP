@@ -32,9 +32,9 @@ export const initailState = {
   st_myReviewUpdateDone: false,
   st_myReviewUpdateError: null,
   //
-  st_questionDeleteLoading: false, // 리뷰 삭제하기
-  st_questionDeleteDone: false,
-  st_questionDeleteError: null,
+  st_myReviewDeleteLoading: false, // 리뷰 삭제하기
+  st_myReviewDeleteDone: false,
+  st_myReviewDeleteError: null,
 };
 
 export const MY_REVIEW_REQUEST = "MY_REVIEW_REQUEST"; // 나의 리뷰내역 가져오기
@@ -177,21 +177,21 @@ const reducer = (state = initailState, action) =>
       //////////////////////////////////////////////
 
       case REVIEW_DELETE_REQUEST: {
-        draft.st_questionDeleteLoading = true;
-        draft.st_questionDeleteDone = false;
-        draft.st_questionDeleteError = null;
+        draft.st_myReviewDeleteLoading = true;
+        draft.st_myReviewDeleteDone = false;
+        draft.st_myReviewDeleteError = null;
         break;
       }
       case REVIEW_DELETE_SUCCESS: {
-        draft.st_questionDeleteLoading = false;
-        draft.st_questionDeleteDone = true;
-        draft.st_questionDeleteError = null;
+        draft.st_myReviewDeleteLoading = false;
+        draft.st_myReviewDeleteDone = true;
+        draft.st_myReviewDeleteError = null;
         break;
       }
       case REVIEW_DELETE_FAILURE: {
-        draft.st_questionDeleteLoading = false;
-        draft.st_questionDeleteDone = false;
-        draft.st_questionDeleteError = action.error;
+        draft.st_myReviewDeleteLoading = false;
+        draft.st_myReviewDeleteDone = false;
+        draft.st_myReviewDeleteError = action.error;
         break;
       }
 

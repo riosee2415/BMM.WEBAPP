@@ -18,7 +18,7 @@ import {
 } from "../../components/commonComponents";
 import styled from "styled-components";
 import MypageTop from "../../components/MypageTop";
-import { Empty, Modal } from "antd";
+import { Empty, Modal, message } from "antd";
 import { CloseOutlined } from "@ant-design/icons";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -103,7 +103,7 @@ const Coupon = () => {
   const [type, setType] = useState(0);
   const [currentData, setCurrentData] = useState(null);
 
-  const cpNumber = useInput("");
+  const cuponNumber = useInput("");
 
   ////// HOOKS //////
   const width = useWidth();
@@ -122,15 +122,31 @@ const Coupon = () => {
   }, [userId, type]);
 
   ////// TOGGLE //////
-  const modalToggle = useCallback(() => {
-    setIsModal((prev) => !prev);
-  }, [isModal]);
+  const modalToggle = useCallback(
+    (data) => {
+      setIsModal((prev) => !prev);
+      cuponNumber.setValue("");
+
+      if (data) {
+        setCurrentData(data);
+      }
+    },
+    [isModal, currentData]
+  );
 
   const cpModalToggle = useCallback(() => {
     setCpModal((prev) => !prev);
   }, [cpModal]);
 
   ////// HANDLER //////
+  const cuponNumberHandler = useCallback((data) => {
+    if (!cuponNumber.value || cuponNumber.value.trim().length === "") {
+      return message.error("쿠폰번호를 입력해주세요.");
+    }
+
+    if (cuponNumber.value !== currentData.cuponNumber) {
+    }
+  });
   ////// DATAVIEW //////
 
   return (
@@ -299,8 +315,9 @@ const Coupon = () => {
                       width={width < 700 ? `70%` : `50%`}
                       height={`46px`}
                       placeholder="쿠폰번호를 입력해주세요."
+                      {...cuponNumber}
                     />
-                    <CheckBtn onChange={cpModalToggle}>확인</CheckBtn>
+                    <CheckBtn onClick={cuponNumberHandler}>확인</CheckBtn>
                   </Wrapper>
 
                   <Wrapper

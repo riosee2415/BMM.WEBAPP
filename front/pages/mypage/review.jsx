@@ -20,14 +20,17 @@ import {
 } from "../../components/commonComponents";
 import styled from "styled-components";
 import MypageTop from "../../components/MypageTop";
-import { Empty, Modal } from "antd";
+import { Empty, Modal, message } from "antd";
 import {
   CloseOutlined,
   PictureOutlined,
   PlusOutlined,
 } from "@ant-design/icons";
 import { useDispatch, useSelector } from "react-redux";
-import { MY_REVIEW_REQUEST } from "../../reducers/review";
+import {
+  MY_REVIEW_REQUEST,
+  REVIEW_DELETE_REQUEST,
+} from "../../reducers/review";
 
 const List = styled(Wrapper)`
   height: 60px;
@@ -113,7 +116,12 @@ const Review = () => {
   const [deleteModal, setDeleteModal] = useState(false);
   const [uModal, setUModal] = useState(false);
 
-  const { myReviewList, lastPage } = useSelector((state) => state.review);
+  const {
+    myReviewList,
+    lastPage,
+    st_myReviewDeleteDone,
+    st_myReviewDeleteError,
+  } = useSelector((state) => state.review);
   const [currentTab, setCurrentTab] = useState(1);
 
   const [isVisible, setIsVisible] = useState(false);
@@ -133,6 +141,22 @@ const Review = () => {
       },
     });
   }, [currentTab]);
+
+  useEffect(() => {
+    if (st_myReviewDeleteDone) {
+      message.success("리뷰가 삭제되었습니다.");
+
+      dispatch({
+        type: MY_REVIEW_REQUEST,
+      });
+    }
+  }, [st_myReviewDeleteDone]);
+
+  useEffect(() => {
+    if (st_myReviewDeleteError) {
+      return message.error(st_myReviewDeleteError);
+    }
+  }, [st_myReviewDeleteError]);
 
   ////// TOGGLE //////
   const modalToggle = useCallback(
@@ -168,7 +192,7 @@ const Review = () => {
     [currentTab]
   );
 
-  const deleteHandler = useCallback(() => {
+  const deleteHandler = useCallback((data) => {
     dispatch({
       type: REVIEW_DELETE_REQUEST,
       data: {
@@ -226,7 +250,7 @@ const Review = () => {
                           isEllipsis
                           isHover
                         >
-                          {data.title}
+                          {data.content}
                         </Text>
                         <Wrapper width={`auto`} color={Theme.lightGrey_C}>
                           <PictureOutlined />
@@ -249,7 +273,9 @@ const Review = () => {
                           ju={`space-between`}
                           padding={`0 0 14px`}
                         >
-                          <Text fontSize={`16px`}>작성자 : {data.UserId}</Text>
+                          <Text fontSize={`16px`}>
+                            작성자 : {data.username}
+                          </Text>
                           <Text color={Theme.lightGrey_C}>
                             {data.viewCreatedAt}
                           </Text>
@@ -285,7 +311,11 @@ const Review = () => {
                           />
                         </Wrapper>
 
-                        <Wrapper margin={`0 0 55px`} color={Theme.grey_C}>
+                        <Wrapper
+                          margin={`0 0 55px`}
+                          al={`flex-start`}
+                          color={Theme.grey_C}
+                        >
                           <Text>{data.content}</Text>
                         </Wrapper>
                         <Wrapper
