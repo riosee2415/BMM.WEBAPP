@@ -16,7 +16,6 @@ const router = express.Router();
                 productDiscount,
                 productTitle,
                 productThumbnail,
-                productDelPrice,
                 productWeight,
                 optionList: [
                   {
@@ -38,15 +37,14 @@ router.post("/item/create", isLoggedIn, async (req, res, next) => {
     productDiscount,
     productTitle,
     productThumbnail,
-    productDelPrice,
     productWeight,
     optionList,
   } = req.body;
 
   const findWishList = `
   SELECT  id
-  FROM  wishList
-  WHERE  UserId = ${req.user.id}
+    FROM  wishList
+   WHERE  UserId = ${req.user.id}
   `;
 
   if (!Array.isArray(optionList)) {
@@ -114,7 +112,6 @@ router.post("/item/create", isLoggedIn, async (req, res, next) => {
             productDiscount,
             productTitle,
             productThumbnail,
-            productDelPrice,
             productWeight,
             optionName,
             optionPrice,
@@ -131,7 +128,6 @@ router.post("/item/create", isLoggedIn, async (req, res, next) => {
             ${productDiscount},
             "${productTitle}",
             "${productThumbnail}",
-            ${productDelPrice},
             ${productWeight},
             "${data.optionName}",
             ${data.optionPrice},
@@ -160,8 +156,6 @@ router.post("/item/create", isLoggedIn, async (req, res, next) => {
             CONCAT(FORMAT(A.productPrice, 0), "원")								                                                                                  AS viewProductPrice,
             A.productDiscount,
             CONCAT(A.productDiscount, "%")                                                                                                          AS viewProductDiscount,
-            A.productDelPrice,
-            CONCAT(FORMAT(A.productDelPrice, 0), "원")                                                                                               AS viewProdDelPrice,
             A.productWeight,
             CONCAT(A.productWeight, "KG")                                                                                                           AS concatProductWeight,
             A.productTitle,
@@ -171,12 +165,12 @@ router.post("/item/create", isLoggedIn, async (req, res, next) => {
             FORMAT((A.productPrice * (A.productDiscount / 100) * A.qun), 0)					                                                                AS formatCalDiscount,
             CONCAT(FORMAT((A.productPrice * (A.productDiscount / 100) * A.qun), 0), "원")		                                                        AS viewCalDiscount,
             CASE
-                WHEN	A.productDiscount = 0 THEN	(A.productPrice * A.qun + A.optionPrice) + A.productDelPrice
-                ELSE	A.productPrice * A.qun - (A.productPrice * (A.productDiscount / 100) * A.qun) + A.optionPrice + A.productDelPrice
+                WHEN	A.productDiscount = 0 THEN	(A.productPrice * A.qun + A.optionPrice)
+                ELSE	A.productPrice * A.qun - (A.productPrice * (A.productDiscount / 100) * A.qun) + A.optionPrice
             END														                                          	                                                              AS originRealPrice,
             CASE
-                WHEN	A.productDiscount = 0 THEN	CONCAT(FORMAT(A.productPrice * A.qun + A.optionPrice + A.productDelPrice , 0), "원")
-                ELSE	CONCAT(FORMAT(A.productPrice * A.qun - (A.productPrice * (A.productDiscount / 100) * A.qun) + A.optionPrice + A.productDelPrice, 0), "원")
+                WHEN	A.productDiscount = 0 THEN	CONCAT(FORMAT(A.productPrice * A.qun + A.optionPrice , 0), "원")
+                ELSE	CONCAT(FORMAT(A.productPrice * A.qun - (A.productPrice * (A.productDiscount / 100) * A.qun) + A.optionPrice, 0), "원")
             END														                                          	                                                              AS realPrice,
             A.optionName,
             A.optionPrice,
@@ -320,8 +314,6 @@ router.post("/list/view", isLoggedIn, async (req, res, next) => {
                 CONCAT(FORMAT(A.productPrice, 0), "원")								                                                                                  AS viewProductPrice,
                 A.productDiscount,
                 CONCAT(A.productDiscount, "%")                                                                                                          AS viewProductDiscount,
-                A.productDelPrice,
-                CONCAT(FORMAT(A.productDelPrice, 0), "원")                                                                                               AS viewProdDelPrice,
                 A.productWeight,
                 CONCAT(A.productWeight, "KG")                                                                                                           AS concatProductWeight,
                 A.productTitle,
@@ -331,12 +323,12 @@ router.post("/list/view", isLoggedIn, async (req, res, next) => {
                 FORMAT((A.productPrice * (A.productDiscount / 100) * A.qun), 0)					                                                                AS formatCalDiscount,
                 CONCAT(FORMAT((A.productPrice * (A.productDiscount / 100) * A.qun), 0), "원")		                                                        AS viewCalDiscount,
                 CASE
-                    WHEN	A.productDiscount = 0 THEN	(A.productPrice * A.qun + A.optionPrice) + A.productDelPrice
-                    ELSE	A.productPrice * A.qun - (A.productPrice * (A.productDiscount / 100) * A.qun) + A.optionPrice + A.productDelPrice
+                    WHEN	A.productDiscount = 0 THEN	(A.productPrice * A.qun + A.optionPrice)
+                    ELSE	A.productPrice * A.qun - (A.productPrice * (A.productDiscount / 100) * A.qun) + A.optionPrice
                 END														                                          	                                                              AS originRealPrice,
                 CASE
-                    WHEN	A.productDiscount = 0 THEN	CONCAT(FORMAT(A.productPrice * A.qun + A.optionPrice + A.productDelPrice , 0), "원")
-                    ELSE	CONCAT(FORMAT(A.productPrice * A.qun - (A.productPrice * (A.productDiscount / 100) * A.qun) + A.optionPrice + A.productDelPrice, 0), "원")
+                    WHEN	A.productDiscount = 0 THEN	CONCAT(FORMAT(A.productPrice * A.qun + A.optionPrice , 0), "원")
+                    ELSE	CONCAT(FORMAT(A.productPrice * A.qun - (A.productPrice * (A.productDiscount / 100) * A.qun) + A.optionPrice, 0), "원")
                 END														                                          	                                                              AS realPrice,
                 A.optionName,
                 A.optionPrice,
@@ -392,8 +384,6 @@ router.post("/admin/list/view", isLoggedIn, async (req, res, next) => {
                 CONCAT(FORMAT(A.productPrice, 0), "원")								                                                                                  AS viewProductPrice,
                 A.productDiscount,
                 CONCAT(A.productDiscount, "%")                                                                                                          AS viewProductDiscount,
-                A.productDelPrice,
-                CONCAT(FORMAT(A.productDelPrice, 0), "원")                                                                                               AS viewProdDelPrice,
                 A.productWeight,
                 CONCAT(A.productWeight, "KG")                                                                                                           AS concatProductWeight,
                 A.productTitle,
@@ -403,12 +393,12 @@ router.post("/admin/list/view", isLoggedIn, async (req, res, next) => {
                 FORMAT((A.productPrice * (A.productDiscount / 100) * A.qun), 0)					                                                                AS formatCalDiscount,
                 CONCAT(FORMAT((A.productPrice * (A.productDiscount / 100) * A.qun), 0), "원")		                                                        AS viewCalDiscount,
                 CASE
-                    WHEN	A.productDiscount = 0 THEN	(A.productPrice * A.qun + A.optionPrice) + A.productDelPrice
-                    ELSE	A.productPrice * A.qun - (A.productPrice * (A.productDiscount / 100) * A.qun) + A.optionPrice + A.productDelPrice
+                    WHEN	A.productDiscount = 0 THEN	(A.productPrice * A.qun + A.optionPrice)
+                    ELSE	A.productPrice * A.qun - (A.productPrice * (A.productDiscount / 100) * A.qun) + A.optionPrice
                 END														                                          	                                                              AS originRealPrice,
                 CASE
-                    WHEN	A.productDiscount = 0 THEN	CONCAT(FORMAT(A.productPrice * A.qun + A.optionPrice + A.productDelPrice , 0), "원")
-                    ELSE	CONCAT(FORMAT(A.productPrice * A.qun - (A.productPrice * (A.productDiscount / 100) * A.qun) + A.optionPrice + A.productDelPrice, 0), "원")
+                    WHEN	A.productDiscount = 0 THEN	CONCAT(FORMAT(A.productPrice * A.qun + A.optionPrice , 0), "원")
+                    ELSE	CONCAT(FORMAT(A.productPrice * A.qun - (A.productPrice * (A.productDiscount / 100) * A.qun) + A.optionPrice, 0), "원")
                 END														                                          	                                                              AS realPrice,
                 A.optionName,
                 A.optionPrice,
@@ -569,8 +559,6 @@ router.post("/bought/list", isLoggedIn, async (req, res, next) => {
           CONCAT(FORMAT(A.productPrice, 0), "원")								                                                                                  AS viewProductPrice,
           A.productDiscount,
           CONCAT(A.productDiscount, "%")                                                                                                          AS viewProductDiscount,
-          A.productDelPrice,
-          CONCAT(FORMAT(A.productDelPrice, 0), "원")                                                                                               AS viewProdDelPrice,
           A.productWeight,
           CONCAT(A.productWeight, "KG")                                                                                                           AS concatProductWeight,
           A.productTitle,
@@ -580,12 +568,12 @@ router.post("/bought/list", isLoggedIn, async (req, res, next) => {
           FORMAT((A.productPrice * (A.productDiscount / 100) * A.qun), 0)					                                                                AS formatCalDiscount,
           CONCAT(FORMAT((A.productPrice * (A.productDiscount / 100) * A.qun), 0), "원")		                                                        AS viewCalDiscount,
           CASE
-              WHEN	A.productDiscount = 0 THEN	(A.productPrice * A.qun + A.optionPrice) + A.productDelPrice
-              ELSE	A.productPrice * A.qun - (A.productPrice * (A.productDiscount / 100) * A.qun) + A.optionPrice + A.productDelPrice
+              WHEN	A.productDiscount = 0 THEN	(A.productPrice * A.qun + A.optionPrice)
+              ELSE	A.productPrice * A.qun - (A.productPrice * (A.productDiscount / 100) * A.qun) + A.optionPrice
           END														                                          	                                                              AS originRealPrice,
           CASE
-              WHEN	A.productDiscount = 0 THEN	CONCAT(FORMAT(A.productPrice * A.qun + A.optionPrice + A.productDelPrice , 0), "원")
-              ELSE	CONCAT(FORMAT(A.productPrice * A.qun - (A.productPrice * (A.productDiscount / 100) * A.qun) + A.optionPrice + A.productDelPrice, 0), "원")
+              WHEN	A.productDiscount = 0 THEN	CONCAT(FORMAT(A.productPrice * A.qun + A.optionPrice , 0), "원")
+              ELSE	CONCAT(FORMAT(A.productPrice * A.qun - (A.productPrice * (A.productDiscount / 100) * A.qun) + A.optionPrice, 0), "원")
           END														                                          	                                                              AS realPrice,
           A.optionName,
           A.optionPrice,
@@ -739,8 +727,6 @@ router.post("/bought/admin/list", isAdminCheck, async (req, res, next) => {
                 CONCAT(FORMAT(A.productPrice, 0), "원")								                                                                                  AS viewProductPrice,
                 A.productDiscount,
                 CONCAT(A.productDiscount, "%")                                                                                                          AS viewProductDiscount,
-                A.productDelPrice,
-                CONCAT(FORMAT(A.productDelPrice, 0), "원")                                                                                               AS viewProdDelPrice,
                 A.productWeight,
                 CONCAT(A.productWeight, "KG")                                                                                                           AS concatProductWeight,
                 A.productTitle,
@@ -750,12 +736,12 @@ router.post("/bought/admin/list", isAdminCheck, async (req, res, next) => {
                 FORMAT((A.productPrice * (A.productDiscount / 100) * A.qun), 0)					                                                                AS formatCalDiscount,
                 CONCAT(FORMAT((A.productPrice * (A.productDiscount / 100) * A.qun), 0), "원")		                                                        AS viewCalDiscount,
                 CASE
-                    WHEN	A.productDiscount = 0 THEN	(A.productPrice * A.qun + A.optionPrice) + A.productDelPrice
-                    ELSE	A.productPrice * A.qun - (A.productPrice * (A.productDiscount / 100) * A.qun) + A.optionPrice + A.productDelPrice
+                    WHEN	A.productDiscount = 0 THEN	(A.productPrice * A.qun + A.optionPrice)
+                    ELSE	A.productPrice * A.qun - (A.productPrice * (A.productDiscount / 100) * A.qun) + A.optionPrice
                 END														                                          	                                                              AS originRealPrice,
                 CASE
-                    WHEN	A.productDiscount = 0 THEN	CONCAT(FORMAT(A.productPrice * A.qun + A.optionPrice + A.productDelPrice , 0), "원")
-                    ELSE	CONCAT(FORMAT(A.productPrice * A.qun - (A.productPrice * (A.productDiscount / 100) * A.qun) + A.optionPrice + A.productDelPrice, 0), "원")
+                    WHEN	A.productDiscount = 0 THEN	CONCAT(FORMAT(A.productPrice * A.qun + A.optionPrice , 0), "원")
+                    ELSE	CONCAT(FORMAT(A.productPrice * A.qun - (A.productPrice * (A.productDiscount / 100) * A.qun) + A.optionPrice, 0), "원")
                 END														                                          	                                                              AS realPrice,
                 A.optionName,
                 A.optionPrice,

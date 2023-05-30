@@ -26,11 +26,6 @@ module.exports = class WishItem extends Model {
           type: DataTypes.STRING(600), // 상품 썸네일
           allowNull: false,
         },
-        productDelPrice: {
-          type: DataTypes.INTEGER, // 상품 배송비
-          allowNull: false,
-          defaultValue: 0,
-        },
         productWeight: {
           type: DataTypes.FLOAT, // 상품 무게
           allowNull: false,
