@@ -7,6 +7,7 @@ export const initailState = {
   productAdminList: [], // 관리자 상품 리스트
   productNewList: [], // new 상품 리스트
   productBestList: [], // best 상품 리스트
+  productBestCategory: [], // best 상품 카테고리
 
   productDetail: null, // 상품 상세
 
@@ -787,7 +788,8 @@ const reducer = (state = initailState, action) =>
         draft.st_productBestListLoading = false;
         draft.st_productBestListDone = true;
         draft.st_productBestListError = null;
-        draft.productBestList = action.data;
+        draft.productBestCategory = action.data.types;
+        draft.productBestList = action.data.productList;
         break;
       }
       case PRODUCT_BEST_LIST_FAILURE: {

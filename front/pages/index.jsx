@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useCallback, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { LOAD_MY_INFO_REQUEST } from "../reducers/user";
 import useInput from "../hooks/useInput";
@@ -31,11 +31,14 @@ import { ConsoleSqlOutlined, RightOutlined } from "@ant-design/icons";
 import { ADVERTISE_LIST_REQUEST } from "../reducers/advertise";
 import { EVENT_LIST_REQUEST } from "../reducers/event";
 import Link from "next/dist/client/link";
-import { Empty } from "antd";
+import { Empty, message } from "antd";
 import {
+  PRODUCT_BEST_LIST_REQUEST,
   PRODUCT_LECO_LIST_REQUEST,
   PRODUCT_NEW_LIST_REQUEST,
 } from "../reducers/product";
+import { useState } from "react";
+import { LIKE_CREATE_REQUEST } from "../reducers/like";
 
 const Btn = styled(Wrapper)`
   width: auto;
@@ -103,68 +106,65 @@ const Home = ({}) => {
   ////// GLOBAL STATE //////
   const { advertiseList } = useSelector((state) => state.advertise);
   const { eventList } = useSelector((state) => state.event);
-  const { productLecoList, productNewList } = useSelector(
-    (state) => state.product
-  );
+  const {
+    productLecoList,
+    productNewList,
+    productBestList,
+    productBestCategory,
+  } = useSelector((state) => state.product);
+  const { st_likeCreateDone } = useSelector((state) => state.like);
+  const { me } = useSelector((state) => state.user);
 
   ////// HOOKS //////
   const width = useWidth();
 
+  const [isLikeState, setIsLikeState] = useState(false);
+  const [currentBestType, setCurrentBestType] = useState(null);
+
   ////// REDUX //////
+  const dispatch = useDispatch();
   ////// USEEFFECT //////
+
+  useEffect(() => {
+    if (st_likeCreateDone) {
+      dispatch({
+        type: PRODUCT_BEST_LIST_REQUEST,
+      });
+
+      if (isLikeState) {
+        message.success("찜목록에서 삭제되었습니다.");
+      } else {
+        message.success("찜목록에 추가되었습니다.");
+      }
+    }
+  }, [st_likeCreateDone]);
+
+  useEffect(() => {
+    if (productBestCategory.length !== 0) {
+      setCurrentBestType(productBestCategory[0].id);
+    }
+  }, [productBestCategory]);
   ////// TOGGLE //////
   ////// HANDLER //////
+
+  const likeCreateHandler = useCallback(
+    (data) => {
+      if (me) {
+        setIsLikeState(data.isLike);
+        dispatch({
+          type: LIKE_CREATE_REQUEST,
+          data: {
+            ProductId: data.id,
+          },
+        });
+      } else {
+        message.error("로그인이 필요한 서비스입니다.");
+      }
+    },
+    [isLikeState, me]
+  );
+
   ////// DATAVIEW //////
-  const bannerData = [
-    {
-      img: "https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/bmm/assets/images/main/img_3nd_banner1.png",
-      name: "베진카 300정",
-      content: "일본 위장약 소화제 위염약",
-      price: "9,000원",
-      sale: "9,000원",
-      persent: "10%",
-    },
-    {
-      img: "https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/bmm/assets/images/main/img_3nd_banner1.png",
-      name: "베진카 300정",
-      content: "일본 위장약 소화제 위염약",
-      price: "9,000원",
-      sale: "9,000원",
-      persent: "10%",
-    },
-    {
-      img: "https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/bmm/assets/images/main/img_3nd_banner1.png",
-      name: "베진카 300정",
-      content: "일본 위장약 소화제 위염약",
-      price: "9,000원",
-      sale: "9,000원",
-      persent: "10%",
-    },
-    {
-      img: "https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/bmm/assets/images/main/img_3nd_banner1.png",
-      name: "베진카 300정",
-      content: "일본 위장약 소화제 위염약",
-      price: "9,000원",
-      sale: "9,000원",
-      persent: "10%",
-    },
-    {
-      img: "https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/bmm/assets/images/main/img_3nd_banner1.png",
-      name: "베진카 300정",
-      content: "일본 위장약 소화제 위염약",
-      price: "9,000원",
-      sale: "9,000원",
-      persent: "10%",
-    },
-    {
-      img: "https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/bmm/assets/images/main/img_3nd_banner1.png",
-      name: "베진카 300정",
-      content: "일본 위장약 소화제 위염약",
-      price: "9,000원",
-      sale: "9,000원",
-      persent: "10%",
-    },
-  ];
 
   return (
     <>
@@ -223,85 +223,108 @@ const Home = ({}) => {
             </Text>
 
             <Wrapper dr={`row`} margin={`0 0 40px`}>
-              <Btn isActive>건강</Btn>
-              <Btn>뷰티</Btn>
-              <Btn>다이어트</Btn>
+              {productBestCategory &&
+                productBestCategory.map((data, idx) => {
+                  return (
+                    <Btn
+                      onClick={() => setCurrentBestType(data.id)}
+                      key={data.id}
+                      isActive={currentBestType === data.id ? true : false}
+                    >
+                      {data.value}
+                    </Btn>
+                  );
+                })}
             </Wrapper>
 
             <Wrapper dr={`row`} ju={`flex-start`} al={`flex-start`}>
               {/* 최대 8개 */}
-              {bannerData &&
-                bannerData.map((data, idx) => {
-                  return (
-                    <ProductWrapper key={idx}>
-                      <SquareBox position={`relative`}>
-                        <Image alt="thumbnail" src={data.img} />
-                      </SquareBox>
-                      <Text
-                        fontSize={width < 800 ? `14px` : `16px`}
-                        fontWeight={`600`}
-                        margin={width < 800 ? `10px 0 5px` : `18px 0 8px`}
-                      >
-                        {data.name}
-                      </Text>
-                      <Text
-                        color={Theme.grey_C}
-                        fontSize={width < 800 ? `14px` : `16px`}
-                        margin={width < 700 ? `0 0 5px` : `0 0 15px`}
-                        width={`100%`}
-                        isEllipsis
-                      >
-                        {data.content}
-                      </Text>
-                      <Wrapper dr={`row`} ju={`space-between`}>
-                        <Wrapper
-                          width={width < 800 ? `100%` : `auto`}
-                          dr={`row`}
-                          ju={width < 800 && `flex-start`}
+              {productBestList &&
+                productBestList.map((data, idx) => {
+                  if (data.CateDownId === currentBestType) {
+                    return (
+                      <ProductWrapper key={idx}>
+                        <SquareBox position={`relative`}>
+                          <Image alt="thumbnail" src={data.thumbnail1} />
+                        </SquareBox>
+                        <Text
+                          fontSize={width < 800 ? `14px` : `16px`}
+                          fontWeight={`600`}
+                          margin={width < 800 ? `10px 0 5px` : `18px 0 8px`}
                         >
-                          <Text
-                            fontSize={width < 800 ? `13px` : `18px`}
-                            fontWeight={`600`}
-                          >
-                            {data.price}
-                          </Text>
-                          <Text
-                            color={Theme.lightGrey_C}
-                            fontSize={width < 800 ? `12px` : `16px`}
-                            margin={`0 5px`}
-                            className="line"
-                          >
-                            {data.sale}
-                          </Text>
-                          <Text
-                            fontSize={width < 800 ? `13px` : `18px`}
-                            fontWeight={`600`}
-                            color={Theme.red_C}
-                          >
-                            {data.persent}
-                          </Text>
-                        </Wrapper>
-                        <Wrapper
-                          width={width < 800 ? `100%` : `auto`}
-                          dr={`row`}
-                          ju={width < 800 && `flex-end`}
-                          margin={width < 800 ? `5px 0 0` : `0`}
+                          {data.title}
+                        </Text>
+                        <Text
+                          color={Theme.grey_C}
+                          fontSize={width < 800 ? `14px` : `16px`}
+                          margin={width < 700 ? `0 0 5px` : `0 0 15px`}
+                          width={`100%`}
+                          isEllipsis
                         >
-                          <Image
-                            width={width < 800 ? `18px` : `21px`}
-                            alt="cart icon"
-                            margin={`0 14px 0 0`}
-                            src={`https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/bmm/assets/images/header/icon_cart.png`}
-                          />
-                          <Image
-                            width={width < 800 ? `18px` : `21px`}
-                            alt="like icon"
-                            src={`https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/bmm/assets/images/icon/heart.png`}
-                          />
+                          {data.description}
+                        </Text>
+                        <Wrapper dr={`row`} ju={`space-between`}>
+                          <Wrapper
+                            width={width < 800 ? `100%` : `auto`}
+                            dr={`row`}
+                            ju={width < 800 && `flex-start`}
+                          >
+                            <Text
+                              fontSize={width < 800 ? `13px` : `18px`}
+                              fontWeight={`600`}
+                            >
+                              {data.concatMemberPrice}
+                            </Text>
+                            <Text
+                              color={Theme.lightGrey_C}
+                              fontSize={width < 800 ? `12px` : `16px`}
+                              margin={`0 5px`}
+                              className="line"
+                            >
+                              {data.realPrice}
+                            </Text>
+                            <Text
+                              fontSize={width < 800 ? `13px` : `18px`}
+                              fontWeight={`600`}
+                              color={Theme.red_C}
+                            >
+                              {data.viewDiscount}
+                            </Text>
+                          </Wrapper>
+                          <Wrapper
+                            width={width < 800 ? `100%` : `auto`}
+                            dr={`row`}
+                            ju={width < 800 && `flex-end`}
+                            margin={width < 800 ? `5px 0 0` : `0`}
+                          >
+                            <Image
+                              width={width < 800 ? `18px` : `21px`}
+                              alt="cart icon"
+                              margin={`0 14px 0 0`}
+                              src={`https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/bmm/assets/images/header/icon_cart.png`}
+                            />
+                            {data.isLike === 0 ? (
+                              <Image
+                                cursor={`pointer`}
+                                width={width < 800 ? `18px` : `21px`}
+                                alt="like icon"
+                                onClick={() => likeCreateHandler(data)}
+                                src={`https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/bmm/assets/images/icon/heart.png`}
+                              />
+                            ) : (
+                              <Image
+                                cursor={`pointer`}
+                                width={width < 800 ? `18px` : `21px`}
+                                alt="like icon"
+                                onClick={() => likeCreateHandler(data)}
+                                src={`https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/bmm/assets/images/icon/heart_A.png`}
+                              />
+                            )}
+                          </Wrapper>
                         </Wrapper>
-                      </Wrapper>
-                    </ProductWrapper>
-                  );
+                      </ProductWrapper>
+                    );
+                  }
                 })}
             </Wrapper>
 
@@ -394,6 +417,10 @@ export const getServerSideProps = wrapper.getServerSideProps(
 
     context.store.dispatch({
       type: PRODUCT_NEW_LIST_REQUEST,
+    });
+
+    context.store.dispatch({
+      type: PRODUCT_BEST_LIST_REQUEST,
     });
 
     // 구현부 종료
