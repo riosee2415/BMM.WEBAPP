@@ -334,6 +334,7 @@ const Home = ({}) => {
               fontSize={width < 800 ? `16px` : `20px`}
               kindOf={`grey`}
               margin={width < 800 ? `30px 0 50px` : `0 0 100px`}
+              // onClick={() => router.push(`/product?parent=22&target=24`)}
             >
               해당 카테고리 상품 더보기 +
             </CommonButton>
