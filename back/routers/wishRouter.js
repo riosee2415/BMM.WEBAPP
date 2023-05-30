@@ -309,6 +309,78 @@ router.post("/list/view", isLoggedIn, async (req, res, next) => {
   }
 });
 
+/**
+ * SUBJECT : 관리자 특정 사용자 장바구니 조회
+ * PARAMETERS : UserId
+ * ORDER BY : -
+ * STATEMENT : -
+ * DEVELOPMENT : 신태섭
+ * DEV DATE : 2023/05/10
+ */
+router.post("/admin/list/view", isLoggedIn, async (req, res, next) => {
+  const { UserId } = req.body;
+
+  const findWishList = `
+    SELECT  id
+      FROM  wishList
+     WHERE  UserId = ${UserId}
+    `;
+
+  try {
+    const findResult = await models.sequelize.query(findWishList);
+
+    if (findResult[0].length === 0) {
+      return res.status(200).json([]);
+    }
+
+    const selectQuery = `
+        SELECT  A.id,
+                A.ProductId,
+                A.productPrice,
+                CONCAT(FORMAT(A.productPrice, 0), "원")								                                                                                  AS viewProductPrice,
+                A.productDiscount,
+                CONCAT(A.productDiscount, "%")                                                                                                          AS viewProductDiscount,
+                A.productDelPrice,
+                CONCAT(FORMAT(A.productDelPrice, 0), "원")                                                                                               AS viewProdDelPrice,
+                A.productWeight,
+                CONCAT(A.productWeight, "KG")                                                                                                           AS concatProductWeight,
+                A.productTitle,
+                A.productThumbnail,
+                A.qun,
+                (A.productPrice * (A.productDiscount / 100) * A.qun)					                                                                          AS originCalDiscount,
+                FORMAT((A.productPrice * (A.productDiscount / 100) * A.qun), 0)					                                                                AS formatCalDiscount,
+                CONCAT(FORMAT((A.productPrice * (A.productDiscount / 100) * A.qun), 0), "원")		                                                        AS viewCalDiscount,
+                CASE
+                    WHEN	A.productDiscount = 0 THEN	(A.productPrice * A.qun + A.optionPrice) + A.productDelPrice
+                    ELSE	A.productPrice * A.qun - (A.productPrice * (A.productDiscount / 100) * A.qun) + A.optionPrice + A.productDelPrice
+                END														                                          	                                                              AS originRealPrice,
+                CASE
+                    WHEN	A.productDiscount = 0 THEN	CONCAT(FORMAT(A.productPrice * A.qun + A.optionPrice + A.productDelPrice , 0), "원")
+                    ELSE	CONCAT(FORMAT(A.productPrice * A.qun - (A.productPrice * (A.productDiscount / 100) * A.qun) + A.optionPrice + A.productDelPrice, 0), "원")
+                END														                                          	                                                              AS realPrice,
+                A.optionName,
+                A.optionPrice,
+                FORMAT(A.optionPrice, 0)                                                                                                                AS formatOptionPrice,
+                CONCAT(FORMAT(A.optionPrice, 0), "원")                                                                                                   AS viewOptionPrice,
+                A.isWrite,
+                A.optionId
+          FROM  wishItem			     A
+         INNER
+          JOIN  wishList           B
+            ON  A.WishListId = B.id
+         WHERE  A.BoughtHistoryId IS NULL
+           AND  A.WishListId = ${findResult[0][0].id}
+            `;
+
+    const list = await models.sequelize.query(selectQuery);
+
+    return res.status(200).json(list[0]);
+  } catch (error) {
+    console.error(error);
+    return res.status(401).send("장바구니 목록을 불러올 수 없습니다.");
+  }
+});
+
 /////////////🍀🍀🍀🍀🍀🍀🍀🍀🍀🍀🍀🍀🍀🍀🍀🍀🍀🍀🍀🍀🍀🍀🍀🍀🍀🍀🍀🍀🍀🍀🍀🍀🍀🍀🍀🍀🍀🍀🍀🍀🍀🍀🍀🍀🍀🍀🍀🍀🍀🍀🍀🍀🍀🍀🍀🍀🍀🍀🍀🍀
 //  BOUGHT   🍀🍀🍀🍀🍀🍀🍀🍀🍀🍀🍀🍀🍀🍀🍀🍀🍀🍀🍀🍀🍀🍀🍀🍀🍀🍀🍀🍀🍀🍀🍀🍀🍀🍀🍀🍀🍀🍀🍀🍀🍀🍀🍀🍀🍀🍀🍀🍀🍀🍀🍀🍀🍀🍀🍀🍀🍀🍀🍀🍀
 /////////////🍀🍀🍀🍀🍀🍀🍀🍀🍀🍀🍀🍀🍀🍀🍀🍀🍀🍀🍀🍀🍀🍀🍀🍀🍀🍀🍀🍀🍀🍀🍀🍀🍀🍀🍀🍀🍀🍀🍀🍀🍀🍀🍀🍀🍀🍀🍀🍀🍀🍀🍀🍀🍀🍀🍀🍀🍀🍀🍀🍀
