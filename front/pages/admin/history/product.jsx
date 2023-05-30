@@ -168,7 +168,7 @@ const Product = ({}) => {
       {/* GUIDE */}
       <Wrapper margin={`10px 0px 0px 0px`}>
         <GuideUl>
-          <GuideLi>검색태그 제어이력을 확인할 수 있습니다.</GuideLi>
+          <GuideLi>상품 제어이력을 확인할 수 있습니다.</GuideLi>
           <GuideLi isImpo={true}>
             전체조회가 기본이지만, 특정날짜를 선택하여 조회할 수 있습니다.
           </GuideLi>
