@@ -76,7 +76,8 @@ const reducer = (state = initailState, action) =>
         draft.st_myReviewListLoading = false;
         draft.st_myReviewListDone = true;
         draft.st_myReviewListError = null;
-        draft.lastPage = action.data.page;
+        draft.myReviewList = action.data.reviews;
+        draft.lastPage = action.data.lastPage;
 
         break;
       }

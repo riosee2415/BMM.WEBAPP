@@ -124,6 +124,16 @@ module.exports = class Product extends Model {
           allowNull: false,
           defaultValue: false,
         },
+        isNew: {
+          type: DataTypes.BOOLEAN, // 추천상품 여부
+          allowNull: false,
+          defaultValue: false,
+        },
+        isBest: {
+          type: DataTypes.BOOLEAN, // 추천상품 여부
+          allowNull: false,
+          defaultValue: false,
+        },
       },
       {
         modelName: "Product",

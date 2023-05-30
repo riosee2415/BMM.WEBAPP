@@ -2,16 +2,7 @@ import React, { useCallback, useEffect, useRef, useState } from "react";
 import AdminLayout from "../../../components/AdminLayout";
 import styled from "styled-components";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  Popover,
-  Table,
-  message,
-  Form,
-  Input,
-  Button,
-  Popconfirm,
-  Image,
-} from "antd";
+import { Popover, Table, message, Form, Input, Button, Popconfirm } from "antd";
 import { useRouter, withRouter } from "next/router";
 import wrapper from "../../../store/configureStore";
 import { END } from "redux-saga";
@@ -36,19 +27,12 @@ import {
   CheckOutlined,
 } from "@ant-design/icons";
 import {
-  BRAND_CREATE_REQUEST,
-  BRAND_DELETE_REQUEST,
-  BRAND_IMAGE_RESET,
-  BRAND_LIST_REQUEST,
-  BRAND_UPDATE_REQUEST,
-  BRAND_UPLOAD_REQUEST,
-} from "../../../reducers/brand";
-import {
   SEARCHTAG_LIST_REQUEST,
   SEARCHTAG_CREATE_REQUEST,
   SEARCHTAG_UPDATE_REQUEST,
   SEARCHTAG_DELETE_REQUEST,
 } from "../../../reducers/searchTag";
+import { items } from "../../../components/AdminLayout";
 
 const InfoTitle = styled.div`
   font-size: 19px;
@@ -71,6 +55,8 @@ const ViewStatusIcon = styled(EyeOutlined)`
 `;
 
 const Tag = ({}) => {
+  const { me, st_loadMyInfoDone } = useSelector((state) => state.user);
+
   const router = useRouter();
   const dispatch = useDispatch();
 
@@ -99,6 +85,31 @@ const Tag = ({}) => {
       })}
     </PopWrapper>
   );
+
+  useEffect(() => {
+    if (st_loadMyInfoDone) {
+      if (!me || parseInt(me.level) < 3) {
+        moveLinkHandler(`/admin`);
+      }
+
+      if (!(me && me.menuRight7)) {
+        message.error("접근권한이 없는 페이지 입니다.");
+        moveLinkHandler(`/admin`);
+      }
+    }
+  }, [st_loadMyInfoDone]);
+
+  useEffect(() => {
+    const currentMenus = items[level1];
+
+    setSameDepth(currentMenus);
+
+    currentMenus.map((data) => {
+      if (data.link === router.pathname) {
+        setLevel2(data.name);
+      }
+    });
+  }, []);
 
   /////////////////////////////////////////////////////////////////////////
 
@@ -169,9 +180,6 @@ const Tag = ({}) => {
   const beforeSetDataHandler = useCallback(
     (record) => {
       setCurrentData(record);
-      dispatch({
-        type: BRAND_IMAGE_RESET,
-      });
 
       infoForm.setFieldsValue({
         value: record.value,

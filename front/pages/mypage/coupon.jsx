@@ -234,7 +234,7 @@ const Coupon = () => {
                           {data.title}
                         </Wrapper>
                         <Wrapper width={`192px`} color={Theme.grey_C}>
-                          {data.viewLimitDate}
+                          {data.viewUsedAt}
                         </Wrapper>
                         <Wrapper width={`192px`} color={Theme.grey_C}>
                           {data.minimunPay}
@@ -285,7 +285,7 @@ const Coupon = () => {
               </Wrapper>
               <Wrapper>
                 <Wrapper
-                  margin={width < 700 ? `50px 0 50px` : `50px 0 78px`}
+                  margin={width < 700 ? `50px 0` : `50px 0 78px`}
                   al={`flex-start`}
                 >
                   <Text
@@ -302,7 +302,27 @@ const Coupon = () => {
                     />
                     <CheckBtn onChange={cpModalToggle}>확인</CheckBtn>
                   </Wrapper>
+
+                  <Wrapper
+                    margin={`11px 0 0`}
+                    dr={`row`}
+                    ju={`flex-start`}
+                    color={Theme.darkGrey_C}
+                  >
+                    <Wrapper
+                      width={`9px`}
+                      height={`9px`}
+                      border={`1px solid ${Theme.basicTheme_C}`}
+                      radius={`100%`}
+                    ></Wrapper>
+                    <Text padding={`0 5px`}>[쿠폰명]10,000원 할인 쿠폰</Text>
+                  </Wrapper>
+                  <Wrapper dr={`row`} ju={`flex-start`} color={Theme.red_C}>
+                    <CloseOutlined />
+                    <Text padding={`0 5px`}>쿠폰 번호가 틀렸습니다.</Text>
+                  </Wrapper>
                 </Wrapper>
+
                 <Wrapper dr={`row`} ju={`space-between`}>
                   <BeforeBtn onClick={modalToggle}>이전으로</BeforeBtn>
                   <CommonButton
@@ -320,7 +340,7 @@ const Coupon = () => {
             </Wrapper>
           </Modal>
 
-          <Modal
+          {/* <Modal
             onCancel={cpModalToggle}
             visible={cpModal}
             footer={null}
@@ -398,7 +418,7 @@ const Coupon = () => {
                 </Wrapper>
               </Wrapper>
             </Wrapper>
-          </Modal>
+          </Modal> */}
         </WholeWrapper>
       </ClientLayout>
     </>

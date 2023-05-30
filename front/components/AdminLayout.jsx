@@ -56,16 +56,16 @@ export const items = {
       link: "/admin/info/category",
       useYn: true,
     },
-    {
-      name: "브랜드관리",
-      link: "/admin/info/brand",
-      useYn: true,
-    },
-    {
-      name: "검색태그관리",
-      link: "/admin/info/searchTag",
-      useYn: true,
-    },
+    // {
+    //   name: "브랜드관리",
+    //   link: "/admin/info/brand",
+    //   useYn: true,
+    // },
+    // {
+    //   name: "검색태그관리",
+    //   link: "/admin/info/searchTag",
+    //   useYn: true,
+    // },
     {
       name: "쿠폰관리",
       link: "/admin/info/coupon",
@@ -226,6 +226,11 @@ export const items = {
     {
       name: "검색태그이력관리",
       link: "/admin/history/searchTag",
+      useYn: true,
+    },
+    {
+      name: "상품이력관리",
+      link: "/admin/history/product",
       useYn: true,
     },
   ],
