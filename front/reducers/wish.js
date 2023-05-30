@@ -2,6 +2,7 @@ import produce from "../util/produce";
 
 export const initailState = {
   boughtAdminList: [], // 결제내역목록(관리자)
+  items: [], // 장바구니 상품
   //
   st_itemCreateLoading: false, // 장바구니 상품 추가
   st_itemCreateDone: false,
@@ -59,7 +60,7 @@ const reducer = (state = initailState, action) =>
         draft.st_itemCreateLoading = false;
         draft.st_itemCreateDone = true;
         draft.st_itemCreateError = null;
-
+        draft.items = action.data.items;
         break;
       }
       case ITEM_CREATE_FAILURE: {

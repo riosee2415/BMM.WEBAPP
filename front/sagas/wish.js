@@ -26,7 +26,7 @@ import {
 // SAGA AREA ********************************************************************************************************
 // ******************************************************************************************************************
 async function itemCreateAPI(data) {
-  return await axios.post(`/api/item/create`, data);
+  return await axios.post(`/api/wish/item/create`, data);
 }
 
 function* itemCreate(action) {
@@ -49,7 +49,7 @@ function* itemCreate(action) {
 // ******************************************************************************************************************
 // ******************************************************************************************************************
 async function itemUpdateAPI(data) {
-  return await axios.post(`/api/item/update`, data);
+  return await axios.post(`/api/wish/item/update`, data);
 }
 
 function* itemUpdate(action) {
@@ -72,7 +72,7 @@ function* itemUpdate(action) {
 // ******************************************************************************************************************
 // ******************************************************************************************************************
 async function itemDeleteAPI(data) {
-  return await axios.post(`/api/wish/item/delete`, data);
+  return await axios.post(`/api/wish/wish/item/delete`, data);
 }
 
 function* itemDelete(action) {
@@ -95,7 +95,7 @@ function* itemDelete(action) {
 // ******************************************************************************************************************
 // ******************************************************************************************************************
 async function itemDeleteAllAPI(data) {
-  return await axios.post(`/api/wish/item/deleteAll`, data);
+  return await axios.post(`/api/wish/wish/item/deleteAll`, data);
 }
 
 function* itemDeleteAll(action) {
@@ -118,7 +118,7 @@ function* itemDeleteAll(action) {
 // ******************************************************************************************************************
 // ******************************************************************************************************************
 async function boughtAdminListAPI(data) {
-  return await axios.post(`/api/wish/bought/admin/list`, data);
+  return await axios.post(`/api/wish/wish/bought/admin/list`, data);
 }
 
 function* boughtAdminList(action) {
@@ -163,7 +163,7 @@ function* watchBoughtAdminList() {
 export default function* wishSaga() {
   yield all([
     fork(watchItemCreate),
-    fork(watchItemCreate),
+    fork(watchItemUpdate),
     fork(watchItemDelete),
     fork(watchItemDeleteAll),
     fork(watchBoughtAdminList),

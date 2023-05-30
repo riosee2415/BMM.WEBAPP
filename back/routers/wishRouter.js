@@ -18,10 +18,14 @@ const router = express.Router();
                 productThumbnail,
                 productDelPrice,
                 productWeight,
-                optionName,
-                optionPrice,
-                optionId,
-                qun,
+                optionList: [
+                  {
+                    optionName,
+                    optionPrice,
+                    optionId,
+                    qun,
+                  },
+                ]
  * ORDER BY : -
  * STATEMENT : -
  * DEVELOPMENT : 신태섭
@@ -36,17 +40,18 @@ router.post("/item/create", isLoggedIn, async (req, res, next) => {
     productThumbnail,
     productDelPrice,
     productWeight,
-    optionName,
-    optionPrice,
-    optionId,
-    qun,
+    optionList,
   } = req.body;
 
   const findWishList = `
-    SELECT  id
-      FROM  wishList
-     WHERE  UserId = ${req.user.id}
-    `;
+  SELECT  id
+  FROM  wishList
+  WHERE  UserId = ${req.user.id}
+  `;
+
+  if (!Array.isArray(optionList)) {
+    return res.status(400).send("잘못 된 요청입니다. 다시 시도해주세요.");
+  }
 
   try {
     const findResult = await models.sequelize.query(findWishList);
@@ -97,52 +102,99 @@ router.post("/item/create", isLoggedIn, async (req, res, next) => {
       }
     }
 
-    const insertQuery = `
-    INSERT    INTO    wishItem
-    (
-        ProductId,
-        productPrice,
-        productDiscount,
-        productTitle,
-        productThumbnail,
-        productDelPrice,
-        productWeight,
-        optionName,
-        optionPrice,
-        optionId,
-        qun,
-        WishListId,
-        createdAt,
-        updatedAt
-    )
-    VALUES
-    (
-        ${ProductId},
-        ${productPrice},
-        ${productDiscount},
-        "${productTitle}",
-        "${productThumbnail}",
-        ${productDelPrice},
-        ${productWeight},
-        "${optionName}",
-        ${optionPrice},
-        ${optionId},
-        ${
-          findResult[0].length !== 0
-            ? findResult[0][0].id
-            : createResult[0].insertId
-        },
-        ${qun},
-        NOW(),
-        NOW()
-    )
+    let insertItems = [];
+
+    await Promise.all(
+      optionList.map(async (data) => {
+        const insertQuery = `
+        INSERT    INTO    wishItem
+        (
+            ProductId,
+            productPrice,
+            productDiscount,
+            productTitle,
+            productThumbnail,
+            productDelPrice,
+            productWeight,
+            optionName,
+            optionPrice,
+            optionId,
+            qun,
+            WishListId,
+            createdAt,
+            updatedAt
+        )
+        VALUES
+        (
+            ${ProductId},
+            ${productPrice},
+            ${productDiscount},
+            "${productTitle}",
+            "${productThumbnail}",
+            ${productDelPrice},
+            ${productWeight},
+            "${data.optionName}",
+            ${data.optionPrice},
+            ${data.optionId},
+            ${
+              findResult[0].length !== 0
+                ? findResult[0][0].id
+                : createResult[0].insertId
+            },
+            ${data.qun},
+            NOW(),
+            NOW()
+        )
+        `;
+
+        const itemInsertResult = await models.sequelize.query(insertQuery);
+
+        insertItems.push(itemInsertResult[0].insertId);
+      })
+    );
+
+    const selectItemQuery = `
+    SELECT  A.id,
+            A.ProductId,
+            A.productPrice,
+            CONCAT(FORMAT(A.productPrice, 0), "원")								                                                                                  AS viewProductPrice,
+            A.productDiscount,
+            CONCAT(A.productDiscount, "%")                                                                                                          AS viewProductDiscount,
+            A.productDelPrice,
+            CONCAT(FORMAT(A.productDelPrice, 0), "원")                                                                                               AS viewProdDelPrice,
+            A.productWeight,
+            CONCAT(A.productWeight, "KG")                                                                                                           AS concatProductWeight,
+            A.productTitle,
+            A.productThumbnail,
+            A.qun,
+            (A.productPrice * (A.productDiscount / 100) * A.qun)					                                                                          AS originCalDiscount,
+            FORMAT((A.productPrice * (A.productDiscount / 100) * A.qun), 0)					                                                                AS formatCalDiscount,
+            CONCAT(FORMAT((A.productPrice * (A.productDiscount / 100) * A.qun), 0), "원")		                                                        AS viewCalDiscount,
+            CASE
+                WHEN	A.productDiscount = 0 THEN	(A.productPrice * A.qun + A.optionPrice) + A.productDelPrice
+                ELSE	A.productPrice * A.qun - (A.productPrice * (A.productDiscount / 100) * A.qun) + A.optionPrice + A.productDelPrice
+            END														                                          	                                                              AS originRealPrice,
+            CASE
+                WHEN	A.productDiscount = 0 THEN	CONCAT(FORMAT(A.productPrice * A.qun + A.optionPrice + A.productDelPrice , 0), "원")
+                ELSE	CONCAT(FORMAT(A.productPrice * A.qun - (A.productPrice * (A.productDiscount / 100) * A.qun) + A.optionPrice + A.productDelPrice, 0), "원")
+            END														                                          	                                                              AS realPrice,
+            A.optionName,
+            A.optionPrice,
+            FORMAT(A.optionPrice, 0)                                                                                                                AS formatOptionPrice,
+            CONCAT(FORMAT(A.optionPrice, 0), "원")                                                                                                   AS viewOptionPrice,
+            A.isWrite,
+            A.optionId
+      FROM  wishItem           A
+     INNER
+      JOIN  wishList           B
+        ON  A.WishListId = B.id
+     WHERE  A.BoughtHistoryId IS NULL
+       AND  A.id IN (${insertItems.map((data) => data)})
     `;
 
-    const itemInsertResult = await models.sequelize.query(insertQuery);
+    const selectItemResult = await models.sequelize.query(selectItemQuery);
 
-    return res
-      .status(201)
-      .json({ result: true, itemId: itemInsertResult[0].insertId });
+    return res.status(201).json({ result: true, items: selectItemResult[0] });
   } catch (error) {
     console.error(error);
     return res.status(401).send("장바구니에 상품을 추가할 수 없습니다.");

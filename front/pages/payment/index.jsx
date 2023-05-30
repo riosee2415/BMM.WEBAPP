@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import ClientLayout from "../../components/ClientLayout";
 import Theme from "../../components/Theme";
 import Head from "next/head";
@@ -54,6 +54,8 @@ const Index = () => {
   const [value, setValue] = useState(1);
   const [payvalue, setPayValue] = useState(1);
 
+  const [orderData, setOrderData] = useState(null);
+
   ////// HOOKS //////
   const width = useWidth();
 
@@ -69,6 +71,17 @@ const Index = () => {
 
   ////// REDUX //////
   ////// USEEFFECT //////
+
+  useEffect(() => {
+    const orderSession = sessionStorage.getItem("BMM_ORDER")
+      ? JSON.parse(sessionStorage.getItem("BMM_ORDER"))
+      : [];
+
+    setOrderData(orderSession);
+  }, []);
+
+  console.log(orderData);
+
   ////// TOGGLE //////
   ////// HANDLER //////
   ////// DATAVIEW //////
@@ -129,71 +142,76 @@ const Index = () => {
                   <Wrapper width={`15%`}>상품금액</Wrapper>
                   <Wrapper width={`15%`}>무게</Wrapper>
                 </Wrapper>
-                {width < 1100 ? (
-                  <Wrapper>
-                    <MobileList>
-                      <Wrapper
-                        al={`flex-start`}
-                        fontSize={width < 800 ? `14px` : `16px`}
-                        fontWeight={`600`}
-                        margin={`0 0 13px`}
-                      >
-                        오레오 시리즈
+                {orderData &&
+                  orderData.map((data, idx) => {
+                    return width < 1100 ? (
+                      <Wrapper key={idx}>
+                        <MobileList>
+                          <Wrapper
+                            al={`flex-start`}
+                            fontSize={width < 800 ? `14px` : `16px`}
+                            fontWeight={`600`}
+                            margin={`0 0 13px`}
+                          >
+                            {data.productTitle}
+                          </Wrapper>
+                          <Wrapper
+                            dr={`row`}
+                            ju={`flex-start`}
+                            color={Theme.darkGrey_C}
+                            fontSize={`14px`}
+                            margin={`0 0 10px`}
+                          >
+                            <Image
+                              alt="thumbnail"
+                              src={data.productThumbnail}
+                              width={`70px`}
+                              height={`70px`}
+                            />
+                            <Wrapper
+                              width={`auto`}
+                              al={`flex-start`}
+                              padding={`0 0 0 20px`}
+                            >
+                              <Text>주문수량 : {data.qun}</Text>
+                              <Text>무게: {data.concatProductWeight}</Text>
+                              <Text>상품금액: {data.realPrice}</Text>
+                            </Wrapper>
+                          </Wrapper>
+                        </MobileList>
                       </Wrapper>
-                      <Wrapper
-                        dr={`row`}
-                        ju={`flex-start`}
-                        color={Theme.darkGrey_C}
-                        fontSize={`14px`}
-                        margin={`0 0 10px`}
-                      >
-                        <Image
-                          alt="샘플사진"
-                          src={`https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/bmm/assets/images/sample-img/review.png`}
-                          width={`70px`}
-                          height={`70px`}
-                        />
-                        <Wrapper
-                          width={`auto`}
-                          al={`flex-start`}
-                          padding={`0 0 0 20px`}
-                        >
-                          <Text>주문수량 : 1</Text>
-                          <Text>무게: 420g</Text>
-                          <Text>상품금액: 9,000원</Text>
-                        </Wrapper>
-                      </Wrapper>
-                    </MobileList>
-                  </Wrapper>
-                ) : (
-                  <>
-                    <List>
-                      <Wrapper
-                        width={`55%`}
-                        dr={`row`}
-                        ju={`flex-start`}
-                        fontSize={`18px`}
-                        fontWeight={`600`}
-                        padding={`0 0 0 14px`}
-                      >
-                        <Image
-                          alt="샘플사진"
-                          src={`https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/bmm/assets/images/sample-img/review.png`}
-                          width={`64px`}
-                          height={`64px`}
-                        />
-                        <Text padding={`0 0 0 14px`}>오레오 시리즈</Text>
-                      </Wrapper>
-                      <Wrapper width={`15%`}>1</Wrapper>
-                      <Wrapper color={Theme.darkGrey_C} width={`15%`}>
-                        9,000원
-                      </Wrapper>
-                      <Wrapper color={Theme.darkGrey_C} width={`15%`}>
-                        420g
-                      </Wrapper>
-                    </List>
-                  </>
-                )}
+                    ) : (
+                      <>
+                        <List key={idx}>
+                          <Wrapper
+                            width={`55%`}
+                            dr={`row`}
+                            ju={`flex-start`}
+                            fontSize={`18px`}
+                            fontWeight={`600`}
+                            padding={`0 0 0 14px`}
+                          >
+                            <Image
+                              alt="thumbnail"
+                              src={data.productThumbnail}
+                              width={`64px`}
+                              height={`64px`}
+                            />
+                            <Text padding={`0 0 0 14px`}>
+                              {data.productTitle}
+                            </Text>
+                          </Wrapper>
+                          <Wrapper width={`15%`}>{data.qun}</Wrapper>
+                          <Wrapper color={Theme.darkGrey_C} width={`15%`}>
+                            {data.realPrice}
+                          </Wrapper>
+                          <Wrapper color={Theme.darkGrey_C} width={`15%`}>
+                            {data.concatProductWeight}
+                          </Wrapper>
+                        </List>
+                      </>
+                    );
+                  })}
 
                 <Wrapper
                   al={`flex-start`}

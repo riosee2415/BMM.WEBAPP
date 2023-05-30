@@ -32,6 +32,7 @@ import { PRODUCT_DETAIL_REQUEST } from "../../reducers/product";
 import { LIKE_CREATE_REQUEST } from "../../reducers/like";
 import { PRODUCT_REVIEW_REQUEST } from "../../reducers/review";
 import { numberWithCommas } from "../../components/commonUtils";
+import { ITEM_CREATE_REQUEST } from "../../reducers/wish";
 
 const CustomSelect = styled(Wrapper)`
   width: ${(props) => props.width || `100%`};
@@ -179,8 +180,8 @@ const Index = () => {
   const { productDetail } = useSelector((state) => state.product);
   const { st_likeCreateDone } = useSelector((state) => state.like);
   const { productReviewList } = useSelector((state) => state.review);
-
-  console.log(productDetail);
+  const { items, st_itemCreateLoading, st_itemCreateDone, st_itemCreateError } =
+    useSelector((state) => state.wish);
 
   const [reviewModal, setReviewModal] = useState(false);
   const [mobileMenu, setMobileMenu] = useState(false);
@@ -193,6 +194,8 @@ const Index = () => {
   const [selectOptionPrice, setSelectOptionPrice] = useState(0);
 
   const [isLikeState, setIsLikeState] = useState(false);
+
+  const [buyType, setBuyType] = useState(null);
 
   ////// HOOKS //////
   const width = useWidth();
@@ -231,6 +234,23 @@ const Index = () => {
       }
     }
   }, [st_likeCreateDone]);
+
+  useEffect(() => {
+    if (st_itemCreateDone) {
+      if (buyType === 1) {
+        setCartModal(true);
+        setOption([]);
+      } else {
+        sessionStorage.setItem("BMM_ORDER", JSON.stringify(items));
+        router.push("/payment");
+      }
+      return;
+    }
+
+    if (st_itemCreateError) {
+      return message.error(st_itemCreateError);
+    }
+  }, [st_itemCreateDone, st_itemCreateError]);
 
   ////// TOGGLE //////
 
@@ -278,6 +298,7 @@ const Index = () => {
     [isLikeState]
   );
 
+  // 옵션 선택
   const optionClickHandler = useCallback(
     (optionId) => {
       if (!optionId) {
@@ -315,6 +336,7 @@ const Index = () => {
     setSelectOptionPrice(num);
   }, [option]);
 
+  // 갯수 선택
   const quantityHandler = useCallback(
     (type, item) => {
       if (type === 1) {
@@ -358,11 +380,72 @@ const Index = () => {
     [option, productDetail]
   );
 
+  // 옵션 삭제
   const removeOptionItem = useCallback(
     (targetItem) => {
       setOption(option.filter((item) => item.id !== targetItem.id));
     },
     [option]
+  );
+
+  // 배송비 계산
+  const weightDeliveryPrice = (weight, benefit) => {
+    let price = 0;
+
+    if (weight === 0.5) {
+      price = 9900;
+    } else if (weight > 0.5 && weight < 15.5) {
+      price = 10000 + ((weight - 0.5) / 0.5) * 2000;
+    } else {
+      price = 70000 + ((weight - 15.5) / 0.5) * 1500;
+    }
+
+    return price - price * (benefit / 100);
+  };
+
+  // 장바구니 담기
+  const itemCreateHandler = useCallback(
+    (type) => {
+      if (!me) {
+        router.push("/user/login");
+        return message.error("로그인 후 이용해주세요.");
+      }
+
+      if (!productDetail) {
+        return message.error("잠시 후 다시 시도해주세요.");
+      }
+
+      if (!option || option.length === 0) {
+        return message.info("상품을 선택해주세요.");
+      }
+
+      const deliveryPrice = weightDeliveryPrice(
+        productDetail.detailData.weight,
+        me.benefit
+      );
+
+      setBuyType(type);
+
+      dispatch({
+        type: ITEM_CREATE_REQUEST,
+        data: {
+          ProductId: productDetail.detailData.id,
+          productPrice: productDetail.detailData.marketPrice,
+          productDiscount: productDetail.detailData.discount,
+          productTitle: productDetail.detailData.title,
+          productThumbnail: productDetail.detailData.thumbnail1,
+          productDelPrice: deliveryPrice,
+          productWeight: productDetail.detailData.weight,
+          optionList: option.map((data) => ({
+            optionName: data.value,
+            optionPrice: data.price,
+            optionId: data.id,
+            qun: data.cnt,
+          })),
+        },
+      });
+    },
+    [productDetail, me, option]
   );
 
   ////// DATAVIEW //////
@@ -461,7 +544,6 @@ const Index = () => {
                   <Text margin={`0 0 0 14px`} color={Theme.darkGrey_C}>
                     {productDetail &&
                       productDetail.detailData.concatMemberPrice}
-                    원
                   </Text>
                 </Wrapper>
                 <Wrapper
@@ -690,7 +772,9 @@ const Index = () => {
                     kindOf={`darkgrey`}
                     fontSize={width < 900 ? `15px` : `18px`}
                     fontWeight={`600`}
-                    onClick={cartModalToggle}
+                    // onClick={cartModalToggle}
+                    onClick={() => itemCreateHandler(1)}
+                    loading={st_itemCreateLoading}
                   >
                     장바구니
                   </CommonButton>
@@ -700,6 +784,8 @@ const Index = () => {
                     kindOf={`white`}
                     fontSize={width < 900 ? `15px` : `18px`}
                     fontWeight={`600`}
+                    onClick={() => itemCreateHandler(2)}
+                    loading={st_itemCreateLoading}
                   >
                     바로구매
                   </CommonButton>
@@ -1433,6 +1519,8 @@ const Index = () => {
                   fontSize={width < 900 ? `15px` : `18px`}
                   fontWeight={`600`}
                   margin={`0 0 10px`}
+                  onClick={() => itemCreateHandler(2)}
+                  loading={st_itemCreateLoading}
                 >
                   바로구매
                 </CommonButton>
@@ -1442,7 +1530,9 @@ const Index = () => {
                   kindOf={`darkgrey`}
                   fontSize={width < 900 ? `15px` : `18px`}
                   fontWeight={`600`}
-                  onClick={cartModalToggle}
+                  // onClick={cartModalToggle}
+                  onClick={() => itemCreateHandler(1)}
+                  loading={st_itemCreateLoading}
                 >
                   장바구니
                 </CommonButton>
@@ -1627,6 +1717,8 @@ const Index = () => {
                   height={`54px`}
                   kindOf={`white`}
                   fontWeight={`600`}
+                  onClick={() => itemCreateHandler(2)}
+                  loading={st_itemCreateLoading}
                 >
                   바로구매
                 </CommonButton>
@@ -1635,7 +1727,9 @@ const Index = () => {
                   height={`54px`}
                   kindOf={`darkgrey`}
                   fontWeight={`600`}
-                  onClick={cartModalToggle}
+                  // onClick={cartModalToggle}
+                  onClick={() => itemCreateHandler(1)}
+                  loading={st_itemCreateLoading}
                 >
                   장바구니
                 </CommonButton>
@@ -1893,7 +1987,7 @@ const Index = () => {
                   kindOf={`white`}
                   width={`49%`}
                   height={`54px`}
-                  onClick={() => router.push(`/cart`)}
+                  onClick={() => router.push(`/payment/cartlist`)}
                 >
                   장바구니 확인
                 </CommonButton>
