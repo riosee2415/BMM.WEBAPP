@@ -306,11 +306,25 @@ router.post("/list", async (req, res, next) => {
   ORDER BY num DESC
  `;
 
+  const tagQuery = `
+  SELECT    ROW_NUMBER()    OVER(ORDER  BY A.createdAt)     AS  num,
+            A.id,
+            B.value,
+            A.ProductId,
+            A.SearchTagId
+    FROM    productSearchTag                A
+   INNER
+    JOIN    searchTag                       B
+      ON    A.SearchTagId = B.id
+   ORDER    BY num DESC
+  `;
+
   try {
     const lengths = await models.sequelize.query(lengthQuery);
     const product = await models.sequelize.query(selectQuery);
 
     const options = await models.sequelize.query(optionQuery);
+    const tags = await models.sequelize.query(tagQuery);
 
     product[0].map((ele) => {
       ele["options"] = [];
@@ -318,6 +332,16 @@ router.post("/list", async (req, res, next) => {
       options[0].map((innerItem) => {
         if (parseInt(ele.id) === parseInt(innerItem.ProductId)) {
           ele.options.push(innerItem);
+        }
+      });
+    });
+
+    product[0].map((item) => {
+      item["tags"] = [];
+
+      tags[0].map((innerItem) => {
+        if (parseInt(item.id) === parseInt(innerItem.ProductId)) {
+          item.tags.push(innerItem);
         }
       });
     });
@@ -464,9 +488,23 @@ SELECT	ROW_NUMBER()	OVER(ORDER	BY	A.createdAt)														AS num,
   ORDER BY num DESC
  `;
 
+  const tagQuery = `
+  SELECT    ROW_NUMBER()    OVER(ORDER  BY A.createdAt)     AS  num,
+            A.id,
+            B.value,
+            A.ProductId,
+            A.SearchTagId
+    FROM    productSearchTag                A
+   INNER
+    JOIN    searchTag                       B
+      ON    A.SearchTagId = B.id
+   ORDER    BY num DESC
+  `;
+
   try {
     const product = await models.sequelize.query(selectQuery);
     const options = await models.sequelize.query(optionQuery);
+    const tags = await models.sequelize.query(tagQuery);
 
     product[0].map((ele) => {
       ele["options"] = [];
@@ -474,6 +512,16 @@ SELECT	ROW_NUMBER()	OVER(ORDER	BY	A.createdAt)														AS num,
       options[0].map((innerItem) => {
         if (parseInt(ele.id) === parseInt(innerItem.ProductId)) {
           ele.options.push(innerItem);
+        }
+      });
+    });
+
+    product[0].map((item) => {
+      item["tags"] = [];
+
+      tags[0].map((innerItem) => {
+        if (parseInt(item.id) === parseInt(innerItem.ProductId)) {
+          item.tags.push(innerItem);
         }
       });
     });
@@ -605,9 +653,23 @@ SELECT	ROW_NUMBER()	OVER(ORDER	BY	A.createdAt)														    AS num,
   ORDER BY num DESC
  `;
 
+  const tagQuery = `
+  SELECT    ROW_NUMBER()    OVER(ORDER  BY A.createdAt)     AS  num,
+            A.id,
+            B.value,
+            A.ProductId,
+            A.SearchTagId
+    FROM    productSearchTag                A
+   INNER
+    JOIN    searchTag                       B
+      ON    A.SearchTagId = B.id
+   ORDER    BY num DESC
+  `;
+
   try {
     const product = await models.sequelize.query(selectQuery);
     const options = await models.sequelize.query(optionQuery);
+    const tags = await models.sequelize.query(tagQuery);
 
     product[0].map((ele) => {
       ele["options"] = [];
@@ -615,6 +677,16 @@ SELECT	ROW_NUMBER()	OVER(ORDER	BY	A.createdAt)														    AS num,
       options[0].map((innerItem) => {
         if (parseInt(ele.id) === parseInt(innerItem.ProductId)) {
           ele.options.push(innerItem);
+        }
+      });
+    });
+
+    product[0].map((item) => {
+      item["tags"] = [];
+
+      tags[0].map((innerItem) => {
+        if (parseInt(item.id) === parseInt(innerItem.ProductId)) {
+          item.tags.push(innerItem);
         }
       });
     });
@@ -1430,51 +1502,98 @@ router.post("/tag/list", async (req, res, next) => {
 });
 
 /**
- * SUBJECT : 상품 검색 태그 수정 (등록도 이 API를 사용하시면 됩니다.)
- * PARAMETERS : ProductId, searchTagIds, productTitle
+ * SUBJECT : 상품 검색 태그 등록
+ * PARAMETERS : ProductId, SearchTagId, productTitle
  * ORDER BY : -
  * STATEMENT : -
  * DEVELOPMENT : 신태섭
  * DEV DATE : 2023/05/04
  */
-router.post("/tag/modify", isAdminCheck, async (req, res, next) => {
-  const { ProductId, searchTagIds, productTitle } = req.body;
+router.post("/tag/create", isAdminCheck, async (req, res, next) => {
+  const { ProductId, SearchTagId, productTitle } = req.body;
 
-  if (!Array.isArray(searchTagIds)) {
-    return res.status(401).send("잘못된 요청입니다.");
-  }
-
-  const deleteQuery = `
-  DELETE
-    FROM    productSearchTag
-   WHERE    ProductId = ${ProductId}
+  const findQuery = `
+  SELECT  id
+    FROM  productSearchTag
+   WHERE  ProductId = ${ProductId}
+     AND  SearchTagId = ${SearchTagId}
   `;
 
   try {
-    await models.sequelize.query(deleteQuery);
+    const findResult = await models.sequelize.query(findQuery);
 
-    await Promise.all(
-      searchTagIds.map(async (data) => {
-        const insertQuery = `
-            INSERT  INTO    productSearchTag
-            (
-                ProductId,
-                SearchTagId,
-                createdAt,
-                updatedAt
-            )
-            VALUES
-            (
-                ${ProductId},
-                ${data},
-                NOW(),
-                NOW()
-            )
-            `;
+    if (findResult[0].length !== 0) {
+      return res
+        .status(401)
+        .send("이미 해당 상품에 선택한 태그가 등록되어 있습니다.");
+    }
 
-        await models.sequelize.query(insertQuery);
-      })
-    );
+    const insertQuery = `
+    INSERT  INTO    productSearchTag
+    (
+        ProductId,
+        SearchTagId,
+        createdAt,
+        updatedAt
+    )
+    VALUES
+    (
+        ${ProductId},
+        ${SearchTagId},
+        NOW(),
+        NOW()
+    )
+    `;
+
+    await models.sequelize.query(insertQuery);
+
+    const historyInsertQuery = `
+    INSERT  INTO   productHistory
+    (
+      title,
+      content,
+      updator,
+      createdAt,
+      updatedAt
+    ) 
+    VALUES
+    (
+      "상품 검색 태그 등록",
+      "${productTitle}",
+      ${req.user.id},
+      NOW(),
+      NOW()
+    )
+    `;
+
+    await models.sequelize.query(historyInsertQuery);
+
+    return res.status(200).json({ result: true });
+  } catch (error) {
+    console.error(error);
+    return res.status(401).send("상품 검색 태그를 등록할 수 없습니다.");
+  }
+});
+
+/**
+ * SUBJECT : 상품 검색 태그 수정
+ * PARAMETERS : id,  SearchTagId, productTitle
+ * ORDER BY : -
+ * STATEMENT : -
+ * DEVELOPMENT : 신태섭
+ * DEV DATE : 2023/05/04
+ */
+router.post("/tag/update", isAdminCheck, async (req, res, next) => {
+  const { id, SearchTagId, productTitle } = req.body;
+
+  try {
+    const updateQuery = `
+    UPDATE  productSearchTag
+       SET  SearchTagId = ${SearchTagId}
+     WHERE  id = ${id}
+    `;
+
+    await models.sequelize.query(updateQuery);
 
     const historyInsertQuery = `
     INSERT  INTO   productHistory
@@ -1500,7 +1619,55 @@ router.post("/tag/modify", isAdminCheck, async (req, res, next) => {
     return res.status(200).json({ result: true });
   } catch (error) {
     console.error(error);
-    return res.status(401).send("상품 검색 태그 목록을 불러올 수 없습니다.");
+    return res.status(401).send("상품 검색 태그를 수정할 수 없습니다.");
+  }
+});
+
+/**
+ * SUBJECT : 상품 검색 태그 삭제
+ * PARAMETERS : id,  productTitle
+ * ORDER BY : -
+ * STATEMENT : -
+ * DEVELOPMENT : 신태섭
+ * DEV DATE : 2023/05/04
+ */
+router.post("/tag/delete", isAdminCheck, async (req, res, next) => {
+  const { id, productTitle } = req.body;
+
+  try {
+    const deleteQuery = `
+    DELETE  
+      FROM  productSearchTag
+     WHERE  id = ${id}
+    `;
+
+    await models.sequelize.query(deleteQuery);
+
+    const historyInsertQuery = `
+    INSERT  INTO   productHistory
+    (
+        title,
+        content,
+        updator,
+        createdAt,
+        updatedAt
+    ) 
+    VALUES
+    (
+        "상품 검색 태그 삭제",
+        "${productTitle}",
+        ${req.user.id},
+        NOW(),
+        NOW()
+    )
+    `;
+
+    await models.sequelize.query(historyInsertQuery);
+
+    return res.status(200).json({ result: true });
+  } catch (error) {
+    console.error(error);
+    return res.status(401).send("상품 검색 태그를 삭제할 수 없습니다.");
   }
 });
 
