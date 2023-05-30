@@ -29,6 +29,10 @@ export const initailState = {
   st_couponUseDone: false,
   st_couponUseError: null,
   //
+  st_couponCheckRegistLoading: false, // coupon  쿠폰 번호 조회하기
+  st_couponCheckRegistDone: false,
+  st_couponCheckRegistError: null,
+  //
   st_couponRegistLoading: false, // coupon 쿠폰 번호로 쿠폰 등록하기
   st_couponRegistDone: false,
   st_couponRegistError: null,
@@ -57,6 +61,10 @@ export const COUPON_SEARCH_FAILURE = "COUPON_SEARCH_FAILURE";
 export const COUPON_USE_REQUEST = "COUPON_USE_REQUEST";
 export const COUPON_USE_SUCCESS = "COUPON_USE_SUCCESS";
 export const COUPON_USE_FAILURE = "COUPON_USE_FAILURE";
+
+export const COUPON_CHECK_REGIST_REQUEST = "COUPON_CHECK_REGIST_REQUEST";
+export const COUPON_CHECK_REGIST_SUCCESS = "COUPON_CHECK_REGIST_SUCCESS";
+export const COUPON_CHECK_REGIST_FAILURE = "COUPON_CHECK_REGIST_FAILURE";
 
 export const COUPON_REGIST_REQUEST = "COUPON_REGIST_REQUEST";
 export const COUPON_REGIST_SUCCESS = "COUPON_REGIST_SUCCESS";
@@ -192,7 +200,28 @@ const reducer = (state = initailState, action) =>
       }
 
       //////////////////////////////////////////////
+      //////////////////////////////////////////////
 
+      case COUPON_CHECK_REGIST_REQUEST: {
+        draft.st_couponCheckRegistLoading = true;
+        draft.st_couponCheckRegistDone = false;
+        draft.st_couponCheckRegistError = null;
+        break;
+      }
+      case COUPON_CHECK_REGIST_SUCCESS: {
+        draft.st_couponCheckRegistLoading = false;
+        draft.st_couponCheckRegistDone = true;
+        draft.st_couponCheckRegistError = null;
+        break;
+      }
+      case COUPON_CHECK_REGIST_FAILURE: {
+        draft.st_couponCheckRegistLoading = false;
+        draft.st_couponCheckRegistDone = false;
+        draft.st_couponCheckRegistError = action.error;
+        break;
+      }
+
+      //////////////////////////////////////////////
       //////////////////////////////////////////////
 
       default:

@@ -25,6 +25,10 @@ import {
   COUPON_USE_SUCCESS,
   COUPON_USE_FAILURE,
   //
+  COUPON_CHECK_REGIST_REQUEST,
+  COUPON_CHECK_REGIST_SUCCESS,
+  COUPON_CHECK_REGIST_FAILURE,
+  //
   COUPON_REGIST_REQUEST,
   COUPON_REGIST_SUCCESS,
   COUPON_REGIST_FAILURE,
@@ -195,6 +199,33 @@ function* couponUse(action) {
 // ******************************************************************************************************************
 // SAGA AREA ********************************************************************************************************
 // ******************************************************************************************************************
+async function couponCheckRegistAPI(data) {
+  return await axios.post(`/api/cp/check/number`, data);
+}
+
+function* couponCheckRegist(action) {
+  try {
+    const result = yield call(couponCheckRegistAPI, action.data);
+
+    yield put({
+      type: COUPON_CHECK_REGIST_SUCCESS,
+      data: result.data,
+    });
+  } catch (err) {
+    console.error(err);
+    yield put({
+      type: COUPON_CHECK_REGIST_FAILURE,
+      error: err.response.data,
+    });
+  }
+}
+// ******************************************************************************************************************
+// ******************************************************************************************************************
+// ******************************************************************************************************************
+
+// ******************************************************************************************************************
+// SAGA AREA ********************************************************************************************************
+// ******************************************************************************************************************
 async function couponRegistAPI(data) {
   return await axios.post(`/api/cp/regist`, data);
 }
@@ -238,6 +269,9 @@ function* watchCouponSearch() {
 function* watchCouponUse() {
   yield takeLatest(COUPON_USE_REQUEST, couponUse);
 }
+function* watchCouponCheckRegist() {
+  yield takeLatest(COUPON_CHECK_REGIST_REQUEST, couponCheckRegist);
+}
 function* watchCouponRegist() {
   yield takeLatest(COUPON_REGIST_REQUEST, couponRegist);
 }
@@ -251,6 +285,7 @@ export default function* couponSaga() {
     fork(watchCouponGrant),
     fork(watchCouponSearch),
     fork(watchCouponUse),
+    fork(watchCouponCheckRegist),
     fork(watchCouponRegist),
 
     //

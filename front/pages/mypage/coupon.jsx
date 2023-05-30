@@ -22,6 +22,7 @@ import { Empty, Modal, message } from "antd";
 import { CloseOutlined } from "@ant-design/icons";
 import { useDispatch, useSelector } from "react-redux";
 import {
+  COUPON_CHECK_REGIST_REQUEST,
   COUPON_REGIST_REQUEST,
   COUPON_SEARCH_REQUEST,
 } from "../../reducers/coupon";
@@ -95,13 +96,23 @@ const CheckBtn = styled.button`
 
 const Coupon = () => {
   ////// GLOBAL STATE //////
+  const {
+    couponSearchList,
+    //
+
+    st_couponCheckRegistDone,
+    st_couponCheckRegistError,
+    //
+
+    st_couponRegistDone,
+    st_couponRegistError,
+  } = useSelector((state) => state.coupon);
+
   const [isModal, setIsModal] = useState(false);
-  const [cpModal, setCpModal] = useState(false);
-  const { couponSearchList } = useSelector((state) => state.coupon);
 
   const [userId, setUserId] = useState();
   const [type, setType] = useState(0);
-  const [currentData, setCurrentData] = useState(null);
+  const [checkNum, setCheckNum] = useState(0);
 
   const cuponNumber = useInput("");
 
@@ -121,31 +132,72 @@ const Coupon = () => {
     });
   }, [userId, type]);
 
-  ////// TOGGLE //////
-  const modalToggle = useCallback(
-    (data) => {
+  useEffect(() => {
+    if (st_couponRegistDone) {
+      dispatch({
+        type: COUPON_SEARCH_REQUEST,
+        data: {
+          UserId: userId,
+          type: type,
+        },
+      });
       setIsModal((prev) => !prev);
       cuponNumber.setValue("");
+      setCheckNum(0);
+      return;
+    }
+    if (st_couponRegistError) {
+      return message.error(st_couponRegistError);
+    }
+  }, [st_couponRegistDone, st_couponRegistError]);
 
-      if (data) {
-        setCurrentData(data);
-      }
-    },
-    [isModal, currentData]
-  );
+  useEffect(() => {
+    if (st_couponCheckRegistDone) {
+      setCheckNum(1);
+      dispatch({
+        type: COUPON_SEARCH_REQUEST,
+        data: {
+          UserId: userId,
+          type: type,
+        },
+      });
+      return;
+    }
+    if (st_couponCheckRegistError) {
+      setCheckNum(2);
+      return;
+    }
+  }, [st_couponCheckRegistDone, st_couponCheckRegistError]);
 
-  const cpModalToggle = useCallback(() => {
-    setCpModal((prev) => !prev);
-  }, [cpModal]);
+  ////// TOGGLE //////
+  const modalToggle = useCallback(() => {
+    setIsModal((prev) => !prev);
+    cuponNumber.setValue("");
+    setCheckNum(0);
+  }, [isModal]);
 
   ////// HANDLER //////
   const cuponNumberHandler = useCallback((data) => {
     if (!cuponNumber.value || cuponNumber.value.trim().length === "") {
       return message.error("쿠폰번호를 입력해주세요.");
     }
-
-    if (cuponNumber.value !== currentData.cuponNumber) {
+    dispatch({
+      type: COUPON_CHECK_REGIST_REQUEST,
+      data: {
+        cuponNumber: cuponNumber.value,
+      },
+    });
+  });
+  const checkNumHandler = useCallback(() => {
+    if (!st_couponCheckRegistDone) {
+      return message.error("쿠폰 번호를 확인해주세요.");
     }
+    dispatch({
+      type: COUPON_REGIST_REQUEST,
+      data: {
+        cuponNumber: cuponNumber.value,
+      },
+    });
   });
   ////// DATAVIEW //////
 
@@ -320,35 +372,50 @@ const Coupon = () => {
                     <CheckBtn onClick={cuponNumberHandler}>확인</CheckBtn>
                   </Wrapper>
 
-                  <Wrapper
-                    margin={`11px 0 0`}
-                    dr={`row`}
-                    ju={`flex-start`}
-                    color={Theme.darkGrey_C}
-                  >
-                    <Wrapper
-                      width={`9px`}
-                      height={`9px`}
-                      border={`1px solid ${Theme.basicTheme_C}`}
-                      radius={`100%`}
-                    ></Wrapper>
-                    <Text padding={`0 5px`}>[쿠폰명]10,000원 할인 쿠폰</Text>
-                  </Wrapper>
-                  <Wrapper dr={`row`} ju={`flex-start`} color={Theme.red_C}>
-                    <CloseOutlined />
-                    <Text padding={`0 5px`}>쿠폰 번호가 틀렸습니다.</Text>
-                  </Wrapper>
+                  {checkNum === 1 && (
+                    <>
+                      <Wrapper
+                        margin={`11px 0 0`}
+                        dr={`row`}
+                        ju={`flex-start`}
+                        color={Theme.darkGrey_C}
+                      >
+                        <Wrapper
+                          width={`9px`}
+                          height={`9px`}
+                          border={`1px solid ${Theme.basicTheme_C}`}
+                          radius={`100%`}
+                        ></Wrapper>
+                        <Text padding={`0 5px`}>
+                          [쿠폰명]10,000원 할인 쿠폰
+                        </Text>
+                      </Wrapper>
+                    </>
+                  )}
+
+                  {checkNum === 2 && (
+                    <>
+                      <Wrapper dr={`row`} ju={`flex-start`} color={Theme.red_C}>
+                        <CloseOutlined />
+                        <Text padding={`0 5px`}>
+                          {st_couponCheckRegistError}
+                        </Text>
+                      </Wrapper>
+                    </>
+                  )}
                 </Wrapper>
 
                 <Wrapper dr={`row`} ju={`space-between`}>
-                  <BeforeBtn onClick={modalToggle}>이전으로</BeforeBtn>
+                  <BeforeBtn onClick={modalToggle}>
+                    {checkNum === 0 ? "이전으로" : "쇼핑계속하기"}
+                  </BeforeBtn>
                   <CommonButton
                     fontSize={width < 700 ? `16px` : `18px`}
                     fontWeight={`600`}
                     kindOf={`white`}
                     width={`49%`}
                     height={`54px`}
-                    onClick={modalToggle}
+                    onClick={checkNumHandler}
                   >
                     등록하기
                   </CommonButton>

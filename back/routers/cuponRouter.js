@@ -291,6 +291,38 @@ router.post("/use", async (req, res, next) => {
     return res.status(400).send("잠시 후 다시 시도해주세요.");
   }
 });
+/**
+ * SUBJECT : 쿠폰 번호 확인
+ * PARAMETERS : cuponNumber
+ * ORDER BY : -
+ * STATEMENT : -
+ * DEVELOPMENT :
+ * DEV DATE : 2023/05/30
+ *
+ */
+router.post("/check/number", async (req, res, next) => {
+  const { cuponNumber } = req.body;
+
+  try {
+    const exQ = `
+  SELECT	id,
+          title
+    FROM	cupon
+   WHERE	cuponNumber = "${cuponNumber}";
+  `;
+
+    const ex = await models.sequelize.query(exQ);
+
+    if (ex[0].length < 1) {
+      return res.status(400).send("쿠폰 번호가 틀렸습니다.");
+    }
+
+    return res.status(200).json({ result: true });
+  } catch (e) {
+    console.error(e);
+    return res.status(400).send("쿠폰 번호가 틀렸습니다.");
+  }
+});
 
 /**
  * SUBJECT : 쿠폰 번호로 쿠폰 등록하기
