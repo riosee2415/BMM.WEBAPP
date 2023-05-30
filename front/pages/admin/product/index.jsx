@@ -776,8 +776,12 @@ const Index = ({}) => {
       dataIndex: "brandName",
     },
     {
-      title: "카테고리명",
+      title: "상위카테고리명",
       dataIndex: "upCategoryValue",
+    },
+    {
+      title: "하위카테고리명",
+      dataIndex: "downCategoryValue",
     },
     {
       title: "상품명",
