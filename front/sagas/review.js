@@ -107,7 +107,7 @@ function* reviewCreate(action) {
 // SAGA AREA ********************************************************************************************************
 // ******************************************************************************************************************
 async function reviewUpdateAPI(data) {
-  return await axios.post(`/api/review/create`, data);
+  return await axios.post(`/api/review/update`, data);
 }
 
 function* reviewUpdate(action) {
@@ -134,7 +134,7 @@ function* reviewUpdate(action) {
 // SAGA AREA ********************************************************************************************************
 // ******************************************************************************************************************
 async function reviewDeleteAPI(data) {
-  return await axios.post(`/api/review/create`, data);
+  return await axios.post(`/api/review/delete`, data);
 }
 
 function* reviewDelete(action) {
@@ -176,8 +176,8 @@ function* watchreviewDelete() {
 //////////////////////////////////////////////////////////////
 export default function* reviewSaga() {
   yield all([
-    fork(watchProductReviewList),
     fork(watchmyReviewList),
+    fork(watchProductReviewList),
     fork(watchreviewCreate),
     fork(watchreviewUpdate),
     fork(watchreviewDelete),

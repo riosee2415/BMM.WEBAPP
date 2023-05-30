@@ -234,7 +234,7 @@ const Coupon = () => {
                           {data.title}
                         </Wrapper>
                         <Wrapper width={`192px`} color={Theme.grey_C}>
-                          {data.viewLimitDate}
+                          {data.viewUsedAt}
                         </Wrapper>
                         <Wrapper width={`192px`} color={Theme.grey_C}>
                           {data.minimunPay}
