@@ -1,11 +1,13 @@
-import React, { useEffect, useCallback } from "react";
+import React, { useEffect, useCallback, useState } from "react";
 import { Wrapper, Image, Text, SquareBox } from "../commonComponents";
 import styled from "styled-components";
 import { useDispatch, useSelector } from "react-redux";
 import Theme from "../Theme";
-import { Carousel } from "antd";
+import { Carousel, message } from "antd";
 import useWidth from "../../hooks/useWidth";
 import { useRouter } from "next/router";
+import { LIKE_CREATE_REQUEST } from "../../reducers/like";
+import { PRODUCT_LECO_LIST_REQUEST } from "../../reducers/product";
 
 const MainRecommandSliderWrapper = styled(Wrapper)`
   justify-content: flex-start;
@@ -98,8 +100,45 @@ const SliderWrapper = styled(Carousel)`
 `;
 
 const MainRecommandSlider = ({ datum }) => {
+  const { me } = useSelector((state) => state.user);
+  const { st_likeCreateDone } = useSelector((state) => state.like);
+
+  const [isLikeState, setIsLikeState] = useState(false);
+
   const width = useWidth();
   const router = useRouter();
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    if (st_likeCreateDone) {
+      dispatch({
+        type: PRODUCT_LECO_LIST_REQUEST,
+      });
+
+      if (isLikeState) {
+        message.success("찜목록에서 삭제되었습니다.");
+      } else {
+        message.success("찜목록에 추가되었습니다.");
+      }
+    }
+  }, [st_likeCreateDone]);
+
+  const likeCreateHandler = useCallback(
+    (data) => {
+      if (me) {
+        setIsLikeState(data.isLike);
+        dispatch({
+          type: LIKE_CREATE_REQUEST,
+          data: {
+            ProductId: data.id,
+          },
+        });
+      } else {
+        message.error("로그인이 필요한 서비스입니다.");
+      }
+    },
+    [isLikeState, me]
+  );
 
   return (
     <MainRecommandSliderWrapper
@@ -186,11 +225,23 @@ const MainRecommandSlider = ({ datum }) => {
                       margin={`0 14px 0 0`}
                       src={`https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/bmm/assets/images/header/icon_cart.png`}
                     />
-                    <Image
-                      width={width < 800 ? `18px` : `21px`}
-                      alt="like icon"
-                      src={`https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/bmm/assets/images/icon/heart.png`}
-                    />
+                    {data.isLike === 0 ? (
+                      <Image
+                        cursor={`pointer`}
+                        width={width < 800 ? `18px` : `21px`}
+                        alt="like icon"
+                        onClick={() => likeCreateHandler(data)}
+                        src={`https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/bmm/assets/images/icon/heart.png`}
+                      />
+                    ) : (
+                      <Image
+                        cursor={`pointer`}
+                        width={width < 800 ? `18px` : `21px`}
+                        alt="like icon"
+                        onClick={() => likeCreateHandler(data)}
+                        src={`https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/bmm/assets/images/icon/heart_A.png`}
+                      />
+                    )}
                   </Wrapper>
                 </Wrapper>
               </Wrapper>

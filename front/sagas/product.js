@@ -88,6 +88,22 @@ import {
   PRODUCT_TAG_DELETE_REQUEST,
   PRODUCT_TAG_DELETE_SUCCESS,
   PRODUCT_TAG_DELETE_FAILURE,
+  //
+  PRODUCT_NEW_UPDATE_REQUEST,
+  PRODUCT_NEW_UPDATE_SUCCESS,
+  PRODUCT_NEW_UPDATE_FAILURE,
+  //
+  PRODUCT_BEST_UPDATE_REQUEST,
+  PRODUCT_BEST_UPDATE_SUCCESS,
+  PRODUCT_BEST_UPDATE_FAILURE,
+  //
+  PRODUCT_NEW_LIST_REQUEST,
+  PRODUCT_NEW_LIST_SUCCESS,
+  PRODUCT_NEW_LIST_FAILURE,
+  //
+  PRODUCT_BEST_LIST_REQUEST,
+  PRODUCT_BEST_LIST_SUCCESS,
+  PRODUCT_BEST_LIST_FAILURE,
 } from "../reducers/product";
 
 // ******************************************************************************************************************
@@ -689,6 +705,114 @@ function* productTagDelete(action) {
 // ******************************************************************************************************************
 // ******************************************************************************************************************
 
+// ******************************************************************************************************************
+// SAGA AREA ********************************************************************************************************
+// ******************************************************************************************************************
+async function productNewUpdateAPI(data) {
+  return await axios.post(`/api/product/new/update`, data);
+}
+
+function* productNewUpdate(action) {
+  try {
+    const result = yield call(productNewUpdateAPI, action.data);
+
+    yield put({
+      type: PRODUCT_NEW_UPDATE_SUCCESS,
+      data: result.data,
+    });
+  } catch (err) {
+    console.error(err);
+    yield put({
+      type: PRODUCT_NEW_UPDATE_FAILURE,
+      error: err.response.data,
+    });
+  }
+}
+// ******************************************************************************************************************
+// ******************************************************************************************************************
+// ******************************************************************************************************************
+
+// ******************************************************************************************************************
+// SAGA AREA ********************************************************************************************************
+// ******************************************************************************************************************
+async function productBestUpdateAPI(data) {
+  return await axios.post(`/api/product/best/update`, data);
+}
+
+function* productBestUpdate(action) {
+  try {
+    const result = yield call(productBestUpdateAPI, action.data);
+
+    yield put({
+      type: PRODUCT_BEST_UPDATE_SUCCESS,
+      data: result.data,
+    });
+  } catch (err) {
+    console.error(err);
+    yield put({
+      type: PRODUCT_BEST_UPDATE_FAILURE,
+      error: err.response.data,
+    });
+  }
+}
+// ******************************************************************************************************************
+// ******************************************************************************************************************
+// ******************************************************************************************************************
+
+// ******************************************************************************************************************
+// SAGA AREA ********************************************************************************************************
+// ******************************************************************************************************************
+async function productBestListAPI(data) {
+  return await axios.post(`/api/product/best/list`, data);
+}
+
+function* productBestList(action) {
+  try {
+    const result = yield call(productBestListAPI, action.data);
+
+    yield put({
+      type: PRODUCT_BEST_LIST_SUCCESS,
+      data: result.data,
+    });
+  } catch (err) {
+    console.error(err);
+    yield put({
+      type: PRODUCT_BEST_LIST_FAILURE,
+      error: err.response.data,
+    });
+  }
+}
+// ******************************************************************************************************************
+// ******************************************************************************************************************
+// ******************************************************************************************************************
+
+// ******************************************************************************************************************
+// SAGA AREA ********************************************************************************************************
+// ******************************************************************************************************************
+async function productNewListAPI(data) {
+  return await axios.post(`/api/product/new/list`, data);
+}
+
+function* productNewList(action) {
+  try {
+    const result = yield call(productNewListAPI, action.data);
+
+    yield put({
+      type: PRODUCT_NEW_LIST_SUCCESS,
+      data: result.data,
+    });
+  } catch (err) {
+    console.error(err);
+    yield put({
+      type: PRODUCT_NEW_LIST_FAILURE,
+      error: err.response.data,
+    });
+  }
+}
+// ******************************************************************************************************************
+// ******************************************************************************************************************
+// ******************************************************************************************************************
+
 //////////////////////////////////////////////////////////////
 function* watchProductList() {
   yield takeLatest(PRODUCT_LIST_REQUEST, productList);
@@ -756,6 +880,18 @@ function* watchProductTagUpdate() {
 function* watchProductTagDelete() {
   yield takeLatest(PRODUCT_TAG_DELETE_REQUEST, productTagDelete);
 }
+function* watchProductNewUpdate() {
+  yield takeLatest(PRODUCT_NEW_UPDATE_REQUEST, productNewUpdate);
+}
+function* watchProductBestUpdate() {
+  yield takeLatest(PRODUCT_BEST_UPDATE_REQUEST, productBestUpdate);
+}
+function* watchProductBestList() {
+  yield takeLatest(PRODUCT_BEST_LIST_REQUEST, productBestList);
+}
+function* watchProductNewList() {
+  yield takeLatest(PRODUCT_NEW_LIST_REQUEST, productNewList);
+}
 
 //////////////////////////////////////////////////////////////
 export default function* productSaga() {
@@ -782,6 +918,10 @@ export default function* productSaga() {
     fork(watchProductTagCreate),
     fork(watchProductTagUpdate),
     fork(watchProductTagDelete),
+    fork(watchProductNewUpdate),
+    fork(watchProductBestUpdate),
+    fork(watchProductBestList),
+    fork(watchProductNewList),
 
     //
   ]);

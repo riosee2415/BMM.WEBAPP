@@ -5,6 +5,8 @@ export const initailState = {
   productPage: 1, // 상품 리스트 페이지
   productLecoList: [], // 추천 상품 리스트
   productAdminList: [], // 관리자 상품 리스트
+  productNewList: [], // new 상품 리스트
+  productBestList: [], // best 상품 리스트
 
   productDetail: null, // 상품 상세
 
@@ -109,6 +111,22 @@ export const initailState = {
   st_productTagDeleteDone: false,
   st_productTagDeleteError: null,
   //
+  st_productNewUpdateLoading: false, // product New 상품 업데이트
+  st_productNewUpdateDone: false,
+  st_productNewUpdateError: null,
+  //
+  st_productBestUpdateLoading: false, // product best 상품 업데이트
+  st_productBestUpdateDone: false,
+  st_productBestUpdateError: null,
+  //
+  st_productNewListLoading: false, // product New 상품 가져오기
+  st_productNewListDone: false,
+  st_productNewListError: null,
+  //
+  st_productBestListLoading: false, // product best 상품 가져오기
+  st_productBestListDone: false,
+  st_productBestListError: null,
+  //
 };
 
 export const PRODUCT_LIST_REQUEST = "PRODUCT_LIST_REQUEST";
@@ -198,6 +216,22 @@ export const PRODUCT_TAG_UPDATE_FAILURE = "PRODUCT_TAG_UPDATE_FAILURE";
 export const PRODUCT_TAG_DELETE_REQUEST = "PRODUCT_TAG_DELETE_REQUEST";
 export const PRODUCT_TAG_DELETE_SUCCESS = "PRODUCT_TAG_DELETE_SUCCESS";
 export const PRODUCT_TAG_DELETE_FAILURE = "PRODUCT_TAG_DELETE_FAILURE";
+
+export const PRODUCT_NEW_UPDATE_REQUEST = "PRODUCT_NEW_UPDATE_REQUEST";
+export const PRODUCT_NEW_UPDATE_SUCCESS = "PRODUCT_NEW_UPDATE_SUCCESS";
+export const PRODUCT_NEW_UPDATE_FAILURE = "PRODUCT_NEW_UPDATE_FAILURE";
+
+export const PRODUCT_BEST_UPDATE_REQUEST = "PRODUCT_BEST_UPDATE_REQUEST";
+export const PRODUCT_BEST_UPDATE_SUCCESS = "PRODUCT_BEST_UPDATE_SUCCESS";
+export const PRODUCT_BEST_UPDATE_FAILURE = "PRODUCT_BEST_UPDATE_FAILURE";
+
+export const PRODUCT_NEW_LIST_REQUEST = "PRODUCT_NEW_LIST_REQUEST";
+export const PRODUCT_NEW_LIST_SUCCESS = "PRODUCT_NEW_LIST_SUCCESS";
+export const PRODUCT_NEW_LIST_FAILURE = "PRODUCT_NEW_LIST_FAILURE";
+
+export const PRODUCT_BEST_LIST_REQUEST = "PRODUCT_BEST_LIST_REQUEST";
+export const PRODUCT_BEST_LIST_SUCCESS = "PRODUCT_BEST_LIST_SUCCESS";
+export const PRODUCT_BEST_LIST_FAILURE = "PRODUCT_BEST_LIST_FAILURE";
 
 export const PRODUCT_IMAGE_RESET = "PRODUCT_IMAGE_RESET";
 
@@ -674,6 +708,92 @@ const reducer = (state = initailState, action) =>
         draft.st_productTagDeleteLoading = false;
         draft.st_productTagDeleteDone = false;
         draft.st_productTagDeleteError = action.error;
+        break;
+      }
+
+      //////////////////////////////////////////////
+
+      case PRODUCT_NEW_UPDATE_REQUEST: {
+        draft.st_productNewUpdateLoading = true;
+        draft.st_productNewUpdateDone = false;
+        draft.st_productNewUpdateError = null;
+        break;
+      }
+      case PRODUCT_NEW_UPDATE_SUCCESS: {
+        draft.st_productNewUpdateLoading = false;
+        draft.st_productNewUpdateDone = true;
+        draft.st_productNewUpdateError = null;
+        break;
+      }
+      case PRODUCT_NEW_UPDATE_FAILURE: {
+        draft.st_productNewUpdateLoading = false;
+        draft.st_productNewUpdateDone = false;
+        draft.st_productNewUpdateError = action.error;
+        break;
+      }
+
+      //////////////////////////////////////////////
+
+      case PRODUCT_BEST_UPDATE_REQUEST: {
+        draft.st_productBestUpdateLoading = true;
+        draft.st_productBestUpdateDone = false;
+        draft.st_productBestUpdateError = null;
+        break;
+      }
+      case PRODUCT_BEST_UPDATE_SUCCESS: {
+        draft.st_productBestUpdateLoading = false;
+        draft.st_productBestUpdateDone = true;
+        draft.st_productBestUpdateError = null;
+        break;
+      }
+      case PRODUCT_BEST_UPDATE_FAILURE: {
+        draft.st_productBestUpdateLoading = false;
+        draft.st_productBestUpdateDone = false;
+        draft.st_productBestUpdateError = action.error;
+        break;
+      }
+
+      //////////////////////////////////////////////
+
+      case PRODUCT_NEW_LIST_REQUEST: {
+        draft.st_productNewListLoading = true;
+        draft.st_productNewListDone = false;
+        draft.st_productNewListError = null;
+        break;
+      }
+      case PRODUCT_NEW_LIST_SUCCESS: {
+        draft.st_productNewListLoading = false;
+        draft.st_productNewListDone = true;
+        draft.st_productNewListError = null;
+        draft.productNewList = action.data;
+        break;
+      }
+      case PRODUCT_NEW_LIST_FAILURE: {
+        draft.st_productNewListLoading = false;
+        draft.st_productNewListDone = false;
+        draft.st_productNewListError = action.error;
+        break;
+      }
+
+      //////////////////////////////////////////////
+
+      case PRODUCT_BEST_LIST_REQUEST: {
+        draft.st_productBestListLoading = true;
+        draft.st_productBestListDone = false;
+        draft.st_productBestListError = null;
+        break;
+      }
+      case PRODUCT_BEST_LIST_SUCCESS: {
+        draft.st_productBestListLoading = false;
+        draft.st_productBestListDone = true;
+        draft.st_productBestListError = null;
+        draft.productBestList = action.data;
+        break;
+      }
+      case PRODUCT_BEST_LIST_FAILURE: {
+        draft.st_productBestListLoading = false;
+        draft.st_productBestListDone = false;
+        draft.st_productBestListError = action.error;
         break;
       }
 
