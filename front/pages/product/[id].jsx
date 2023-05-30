@@ -388,21 +388,6 @@ const Index = () => {
     [option]
   );
 
-  // 배송비 계산
-  const weightDeliveryPrice = (weight, benefit) => {
-    let price = 0;
-
-    if (weight === 0.5) {
-      price = 9900;
-    } else if (weight > 0.5 && weight < 15.5) {
-      price = 10000 + ((weight - 0.5) / 0.5) * 2000;
-    } else {
-      price = 70000 + ((weight - 15.5) / 0.5) * 1500;
-    }
-
-    return price - price * (benefit / 100);
-  };
-
   // 장바구니 담기
   const itemCreateHandler = useCallback(
     (type) => {
@@ -419,11 +404,6 @@ const Index = () => {
         return message.info("상품을 선택해주세요.");
       }
 
-      const deliveryPrice = weightDeliveryPrice(
-        productDetail.detailData.weight,
-        me.benefit
-      );
-
       setBuyType(type);
 
       dispatch({
@@ -434,7 +414,6 @@ const Index = () => {
           productDiscount: productDetail.detailData.discount,
           productTitle: productDetail.detailData.title,
           productThumbnail: productDetail.detailData.thumbnail1,
-          productDelPrice: deliveryPrice,
           productWeight: productDetail.detailData.weight,
           optionList: option.map((data) => ({
             optionName: data.value,

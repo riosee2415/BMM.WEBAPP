@@ -132,12 +132,12 @@ router.post("/item/create", isLoggedIn, async (req, res, next) => {
             "${data.optionName}",
             ${data.optionPrice},
             ${data.optionId},
+            ${data.qun},
             ${
               findResult[0].length !== 0
                 ? findResult[0][0].id
                 : createResult[0].insertId
             },
-            ${data.qun},
             NOW(),
             NOW()
         )
