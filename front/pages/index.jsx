@@ -32,6 +32,7 @@ import { ADVERTISE_LIST_REQUEST } from "../reducers/advertise";
 import { EVENT_LIST_REQUEST } from "../reducers/event";
 import Link from "next/dist/client/link";
 import { Empty } from "antd";
+import { PRODUCT_LECO_LIST_REQUEST } from "../reducers/product";
 
 const Btn = styled(Wrapper)`
   width: auto;
@@ -99,6 +100,7 @@ const Home = ({}) => {
   ////// GLOBAL STATE //////
   const { advertiseList } = useSelector((state) => state.advertise);
   const { eventList } = useSelector((state) => state.event);
+  const { productLecoList } = useSelector((state) => state.product);
 
   ////// HOOKS //////
   const width = useWidth();
@@ -204,7 +206,7 @@ const Home = ({}) => {
               바이미마인의 추천!
             </Text>
 
-            <MainRecommandSlider />
+            <MainRecommandSlider datum={productLecoList} />
 
             <Text
               margin={width < 800 ? `50px 0 20px` : `100px 0 30px`}
@@ -379,6 +381,10 @@ export const getServerSideProps = wrapper.getServerSideProps(
 
     context.store.dispatch({
       type: EVENT_LIST_REQUEST,
+    });
+
+    context.store.dispatch({
+      type: PRODUCT_LECO_LIST_REQUEST,
     });
 
     // 구현부 종료

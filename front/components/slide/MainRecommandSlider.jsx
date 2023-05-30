@@ -93,53 +93,18 @@ const SliderWrapper = styled(Carousel)`
 
   & .slick-list {
     width: auto;
+    height: 449px;
   }
 `;
 
-const MainRecommandSlider = () => {
+const MainRecommandSlider = ({ datum }) => {
   const width = useWidth();
   const router = useRouter();
-  const dispatch = useDispatch();
-
-  const bannerData = [
-    {
-      img: "https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/bmm/assets/images/main/img_3nd_banner1.png",
-      name: "베진카 300정",
-      content: "일본 위장약 소화제 위염약",
-      price: "9,000원",
-      sale: "9,000원",
-      persent: "10%",
-    },
-    {
-      img: "https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/bmm/assets/images/main/img_3nd_banner1.png",
-      name: "베진카 300정",
-      content: "일본 위장약 소화제 위염약",
-      price: "9,000원",
-      sale: "9,000원",
-      persent: "10%",
-    },
-    {
-      img: "https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/bmm/assets/images/main/img_3nd_banner1.png",
-      name: "베진카 300정",
-      content: "일본 위장약 소화제 위염약",
-      price: "9,000원",
-      sale: "9,000원",
-      persent: "10%",
-    },
-    {
-      img: "https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/bmm/assets/images/main/img_3nd_banner1.png",
-      name: "베진카 300정",
-      content: "일본 위장약 소화제 위염약",
-      price: "9,000원",
-      sale: "9,000원",
-      persent: "10%",
-    },
-  ];
 
   return (
     <MainRecommandSliderWrapper
-      overflow={bannerData && bannerData.length < 4 && `hidden`}
-      height={bannerData && bannerData.length < 4 && `420px`}
+      overflow={datum && datum.length < 4 && `hidden`}
+      height={datum && datum.length < 4 && `420px`}
     >
       <SliderWrapper
         autoplay={true}
@@ -149,8 +114,8 @@ const MainRecommandSlider = () => {
         dots={false}
         arrows={true}
       >
-        {bannerData &&
-          bannerData.map((data, idx) => {
+        {datum &&
+          datum.map((data, idx) => {
             return (
               <Wrapper
                 key={idx}
@@ -159,15 +124,18 @@ const MainRecommandSlider = () => {
                 al={`flex-start`}
                 padding={`0 10px 30px`}
               >
-                <SquareBox position={`relative`}>
-                  <Image alt="thumbnail" src={data.img} />
+                <SquareBox
+                  position={`relative`}
+                  onClick={() => router.push(`/product/${data.id}`)}
+                >
+                  <Image alt="thumbnail" src={data.thumbnail1} />
                 </SquareBox>
                 <Text
                   fontSize={width < 800 ? `14px` : `16px`}
                   fontWeight={`600`}
                   margin={width < 800 ? `10px 0 5px` : `18px 0 8px`}
                 >
-                  {data.name}
+                  {data.title}
                 </Text>
                 <Text
                   color={Theme.grey_C}
@@ -176,7 +144,7 @@ const MainRecommandSlider = () => {
                   width={`100%`}
                   isEllipsis
                 >
-                  {data.content}
+                  {data.description}
                 </Text>
                 <Wrapper dr={`row`} ju={`space-between`}>
                   <Wrapper
@@ -188,7 +156,7 @@ const MainRecommandSlider = () => {
                       fontSize={width < 800 ? `13px` : `18px`}
                       fontWeight={`600`}
                     >
-                      {data.price}
+                      {data.concatMemberPrice}
                     </Text>
                     <Text
                       color={Theme.lightGrey_C}
@@ -196,14 +164,14 @@ const MainRecommandSlider = () => {
                       margin={`0 5px`}
                       className="line"
                     >
-                      {data.sale}
+                      {data.realPrice}
                     </Text>
                     <Text
                       fontSize={width < 800 ? `13px` : `18px`}
                       fontWeight={`600`}
                       color={Theme.red_C}
                     >
-                      {data.persent}
+                      {data.viewDiscount}
                     </Text>
                   </Wrapper>
                   <Wrapper
