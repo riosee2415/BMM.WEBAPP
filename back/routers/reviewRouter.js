@@ -51,6 +51,7 @@ const upload = multer({
  * DEVELOPMENT : 장혜정
  * DEV DATE : 2023/05/31
  */
+
 router.post("/image", isAdminCheck, async (req, res, next) => {
   const uploadImage = upload.single("image");
 

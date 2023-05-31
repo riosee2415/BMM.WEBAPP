@@ -40,6 +40,10 @@ export const initailState = {
   st_questionDeleteLoading: false, // 리뷰 삭제하기
   st_questionDeleteDone: false,
   st_questionDeleteError: null,
+  //
+  st_reviewImage1UploadLoading: false, // 리뷰 이미지1 업로드
+  st_reviewImage1UploadDone: false,
+  st_reviewImage1UploadError: null,
 };
 
 export const MY_REVIEW_REQUEST = "MY_REVIEW_REQUEST"; // 나의 리뷰내역 가져오기
@@ -65,6 +69,10 @@ export const REVIEW_UPDATE_FAILURE = "REVIEW_UPDATE_FAILURE";
 export const REVIEW_DELETE_REQUEST = "REVIEW_DELETE_REQUEST"; // 리뷰 삭제하기
 export const REVIEW_DELETE_SUCCESS = "REVIEW_DELETE_SUCCESS";
 export const REVIEW_DELETE_FAILURE = "REVIEW_DELETE_FAILURE";
+
+export const REVIEW_IMAGE1_UPLOAD_REQUEST = "REVIEW_IMAGE1_UPLOAD_REQUEST"; // 리뷰 이미지1 업로드
+export const REVIEW_IMAGE1_UPLOAD_SUCCESS = "REVIEW_IMAGE1_UPLOAD_SUCCESS";
+export const REVIEW_IMAGE1_UPLOAD_FAILURE = "REVIEW_IMAGE1_UPLOAD_FAILURE";
 //
 export const REVIEW_IMAGE_RESET = "REVIEW_IMAGE_RESET";
 
@@ -199,6 +207,29 @@ const reducer = (state = initailState, action) =>
         draft.st_questionDeleteLoading = false;
         draft.st_questionDeleteDone = false;
         draft.st_questionDeleteError = action.error;
+        break;
+      }
+
+      //////////////////////////////////////////////
+
+      case REVIEW_IMAGE1_UPLOAD_REQUEST: {
+        draft.st_reviewImage1UploadLoading = true;
+        draft.st_reviewImage1UploadDone = false;
+        draft.st_reviewImage1UploadError = null;
+        break;
+      }
+      case REVIEW_IMAGE1_UPLOAD_SUCCESS: {
+        draft.st_reviewImage1UploadLoading = false;
+        draft.st_reviewImage1UploadDone = true;
+        draft.st_reviewImage1UploadError = null;
+        // console.log(action.data.path);
+        draft.reviewImage1Path = action.data.path;
+        break;
+      }
+      case REVIEW_IMAGE1_UPLOAD_FAILURE: {
+        draft.st_reviewImage1UploadLoading = false;
+        draft.st_reviewImage1UploadDone = false;
+        draft.st_reviewImage1UploadError = action.error;
         break;
       }
 

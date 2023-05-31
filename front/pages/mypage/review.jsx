@@ -30,6 +30,7 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   MY_REVIEW_REQUEST,
   REVIEW_DELETE_REQUEST,
+  REVIEW_IMAGE1_UPLOAD_REQUEST,
   REVIEW_UPDATE_REQUEST,
 } from "../../reducers/review";
 import { current } from "immer";
@@ -119,13 +120,15 @@ const Review = () => {
   const {
     myReviewList,
     lastPage,
-
+    reviewImage1Path,
+    //
     st_myReviewDeleteDone,
     st_myReviewDeleteError,
-
+    //
     st_myReviewUpdateDone,
     st_myReviewUpdateError,
   } = useSelector((state) => state.review);
+  console.log(reviewImage1Path);
 
   const [deleteModal, setDeleteModal] = useState(false);
   const [uModal, setUModal] = useState(false);
@@ -139,6 +142,7 @@ const Review = () => {
   const width = useWidth();
   const dispatch = useDispatch();
 
+  // reviewImage
   const review1Ref = useRef();
 
   ////// REDUX //////
@@ -233,6 +237,12 @@ const Review = () => {
 
   ////// HANDLER //////
 
+  // 이미지1 클릭
+  const reviewImage1ClickHandler = useCallback(() => {
+    review1Ref.current.click();
+  }, [review1Ref]);
+
+  // 이미지1 업로드
   const onChangeImages = useCallback((e) => {
     const formData = new FormData();
 
@@ -241,7 +251,7 @@ const Review = () => {
     });
 
     dispatch({
-      type: BANNER_UPLOAD_REQUEST,
+      type: REVIEW_IMAGE1_UPLOAD_REQUEST,
       data: formData,
     });
   });
@@ -580,17 +590,16 @@ const Review = () => {
                     ju={`space-between`}
                     margin={`8px 0 25px`}
                   >
-                    <PictureWrapper>
-                      <input
-                        type="file"
-                        name="image"
-                        accept=".png, .jpg"
-                        // multiple
-                        hidden
-                        ref={review1Ref}
-                        onChange={onChangeImages}
-                      />
-
+                    <input
+                      type="file"
+                      name="image"
+                      accept=".png, .jpg"
+                      // multiple
+                      hidden
+                      ref={review1Ref}
+                      onChange={onChangeImages}
+                    />
+                    <PictureWrapper onClick={reviewImage1ClickHandler}>
                       <Text fontSize={width < 700 ? `14px` : `20px`}>
                         <PlusOutlined />
                       </Text>

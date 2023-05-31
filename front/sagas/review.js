@@ -20,6 +20,10 @@ import {
   PRODUCT_REVIEW_REQUEST,
   PRODUCT_REVIEW_SUCCESS,
   PRODUCT_REVIEW_FAILURE,
+  //
+  REVIEW_IMAGE1_UPLOAD_REQUEST,
+  REVIEW_IMAGE1_UPLOAD_SUCCESS,
+  REVIEW_IMAGE1_UPLOAD_FAILURE,
 } from "../reducers/review";
 
 // ******************************************************************************************************************
@@ -133,6 +137,33 @@ function* reviewUpdate(action) {
 // ******************************************************************************************************************
 // SAGA AREA ********************************************************************************************************
 // ******************************************************************************************************************
+async function reviewImage1UploadAPI(data) {
+  return await axios.post(`/api/review/image`, data);
+}
+
+function* reviewImage1Upload(action) {
+  try {
+    const result = yield call(reviewImage1UploadAPI, action.data);
+
+    yield put({
+      type: REVIEW_IMAGE1_UPLOAD_SUCCESS,
+      data: result.data,
+    });
+  } catch (err) {
+    console.error(err);
+    yield put({
+      type: REVIEW_IMAGE1_UPLOAD_FAILURE,
+      error: err.response.data,
+    });
+  }
+}
+// ******************************************************************************************************************
+// ******************************************************************************************************************
+// ******************************************************************************************************************
+
+// ******************************************************************************************************************
+// SAGA AREA ********************************************************************************************************
+// ******************************************************************************************************************
 async function reviewDeleteAPI(data) {
   return await axios.post(`/api/review/delete`, data);
 }
@@ -172,6 +203,9 @@ function* watchreviewUpdate() {
 function* watchreviewDelete() {
   yield takeLatest(REVIEW_DELETE_REQUEST, reviewDelete);
 }
+function* watchreviewImage1Upload() {
+  yield takeLatest(REVIEW_IMAGE1_UPLOAD_REQUEST, reviewImage1Upload);
+}
 
 //////////////////////////////////////////////////////////////
 export default function* reviewSaga() {
@@ -181,6 +215,7 @@ export default function* reviewSaga() {
     fork(watchreviewCreate),
     fork(watchreviewUpdate),
     fork(watchreviewDelete),
+    fork(watchreviewImage1Upload),
 
     //
   ]);
