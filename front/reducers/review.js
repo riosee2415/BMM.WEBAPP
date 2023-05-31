@@ -44,6 +44,18 @@ export const initailState = {
   st_reviewImage1UploadLoading: false, // 리뷰 이미지1 업로드
   st_reviewImage1UploadDone: false,
   st_reviewImage1UploadError: null,
+  //
+  st_reviewImage2UploadLoading: false, // 리뷰 이미지2 업로드
+  st_reviewImage2UploadDone: false,
+  st_reviewImage2UploadError: null,
+  //
+  st_reviewImage3UploadLoading: false, // 리뷰 이미지3 업로드
+  st_reviewImage3UploadDone: false,
+  st_reviewImage3UploadError: null,
+  //
+  st_reviewImage4UploadLoading: false, // 리뷰 이미지4 업로드
+  st_reviewImage4UploadDone: false,
+  st_reviewImage4UploadError: null,
 };
 
 export const MY_REVIEW_REQUEST = "MY_REVIEW_REQUEST"; // 나의 리뷰내역 가져오기
@@ -73,8 +85,24 @@ export const REVIEW_DELETE_FAILURE = "REVIEW_DELETE_FAILURE";
 export const REVIEW_IMAGE1_UPLOAD_REQUEST = "REVIEW_IMAGE1_UPLOAD_REQUEST"; // 리뷰 이미지1 업로드
 export const REVIEW_IMAGE1_UPLOAD_SUCCESS = "REVIEW_IMAGE1_UPLOAD_SUCCESS";
 export const REVIEW_IMAGE1_UPLOAD_FAILURE = "REVIEW_IMAGE1_UPLOAD_FAILURE";
+
+export const REVIEW_IMAGE2_UPLOAD_REQUEST = "REVIEW_IMAGE2_UPLOAD_REQUEST"; // 리뷰 이미지2 업로드
+export const REVIEW_IMAGE2_UPLOAD_SUCCESS = "REVIEW_IMAGE2_UPLOAD_SUCCESS";
+export const REVIEW_IMAGE2_UPLOAD_FAILURE = "REVIEW_IMAGE2_UPLOAD_FAILURE";
+
+export const REVIEW_IMAGE3_UPLOAD_REQUEST = "REVIEW_IMAGE3_UPLOAD_REQUEST"; // 리뷰 이미지3 업로드
+export const REVIEW_IMAGE3_UPLOAD_SUCCESS = "REVIEW_IMAGE3_UPLOAD_SUCCESS";
+export const REVIEW_IMAGE3_UPLOAD_FAILURE = "REVIEW_IMAGE3_UPLOAD_FAILURE";
+
+export const REVIEW_IMAGE4_UPLOAD_REQUEST = "REVIEW_IMAGE4_UPLOAD_REQUEST"; // 리뷰 이미지4 업로드
+export const REVIEW_IMAGE4_UPLOAD_SUCCESS = "REVIEW_IMAGE4_UPLOAD_SUCCESS";
+export const REVIEW_IMAGE4_UPLOAD_FAILURE = "REVIEW_IMAGE4_UPLOAD_FAILURE";
 //
 export const REVIEW_IMAGE1_RESET = "REVIEW_IMAGE1_RESET";
+export const REVIEW_IMAGE2_RESET = "REVIEW_IMAGE2_RESET";
+export const REVIEW_IMAGE3_RESET = "REVIEW_IMAGE3_RESET";
+export const REVIEW_IMAGE4_RESET = "REVIEW_IMAGE4_RESET";
+
 export const REVIEW_ALL_RESET = "REVIEW_ALL_RESET";
 
 // export const DATA = "DATA";
@@ -223,14 +251,79 @@ const reducer = (state = initailState, action) =>
         draft.st_reviewImage1UploadLoading = false;
         draft.st_reviewImage1UploadDone = true;
         draft.st_reviewImage1UploadError = null;
-        // console.log(action.data.path);
-        draft.reviewImage1Path = action.data.path;
+        draft.reviewImage2Path = action.data.path;
         break;
       }
       case REVIEW_IMAGE1_UPLOAD_FAILURE: {
         draft.st_reviewImage1UploadLoading = false;
         draft.st_reviewImage1UploadDone = false;
         draft.st_reviewImage1UploadError = action.error;
+        break;
+      }
+
+      //////////////////////////////////////////////
+
+      case REVIEW_IMAGE2_UPLOAD_REQUEST: {
+        draft.st_reviewImage2UploadLoading = true;
+        draft.st_reviewImage2UploadDone = false;
+        draft.st_reviewImage2UploadError = null;
+        break;
+      }
+      case REVIEW_IMAGE2_UPLOAD_SUCCESS: {
+        draft.st_reviewImage2UploadLoading = false;
+        draft.st_reviewImage2UploadDone = true;
+        draft.st_reviewImage2UploadError = null;
+        draft.reviewImage2Path = action.data.path;
+        break;
+      }
+      case REVIEW_IMAGE2_UPLOAD_FAILURE: {
+        draft.st_reviewImage2UploadLoading = false;
+        draft.st_reviewImage2UploadDone = false;
+        draft.st_reviewImage2UploadError = action.error;
+        break;
+      }
+
+      //////////////////////////////////////////////
+
+      case REVIEW_IMAGE3_UPLOAD_REQUEST: {
+        draft.st_reviewImage1UploadLoading = true;
+        draft.st_reviewImage1UploadDone = false;
+        draft.st_reviewImage1UploadError = null;
+        break;
+      }
+      case REVIEW_IMAGE3_UPLOAD_SUCCESS: {
+        draft.st_reviewImage3UploadLoading = false;
+        draft.st_reviewImage3UploadDone = true;
+        draft.st_reviewImage3UploadError = null;
+        draft.reviewImage3Path = action.data.path;
+        break;
+      }
+      case REVIEW_IMAGE3_UPLOAD_FAILURE: {
+        draft.st_reviewImage3UploadLoading = false;
+        draft.st_reviewImage3UploadDone = false;
+        draft.st_reviewImage3UploadError = action.error;
+        break;
+      }
+
+      //////////////////////////////////////////////
+
+      case REVIEW_IMAGE4_UPLOAD_REQUEST: {
+        draft.st_reviewImage4UploadLoading = true;
+        draft.st_reviewImage4UploadDone = false;
+        draft.st_reviewImage4UploadError = null;
+        break;
+      }
+      case REVIEW_IMAGE4_UPLOAD_SUCCESS: {
+        draft.st_reviewImage4UploadLoading = false;
+        draft.st_reviewImage4UploadDone = true;
+        draft.st_reviewImage4UploadError = null;
+        draft.reviewImage4Path = action.data.path;
+        break;
+      }
+      case REVIEW_IMAGE4_UPLOAD_FAILURE: {
+        draft.st_reviewImage4UploadLoading = false;
+        draft.st_reviewImage4UploadDone = false;
+        draft.st_reviewImage4UploadError = action.error;
         break;
       }
 
@@ -245,6 +338,15 @@ const reducer = (state = initailState, action) =>
 
       case REVIEW_IMAGE1_RESET: {
         draft.reviewImage1Path = null;
+      }
+      case REVIEW_IMAGE2_RESET: {
+        draft.reviewImage2Path = null;
+      }
+      case REVIEW_IMAGE3_RESET: {
+        draft.reviewImage3Path = null;
+      }
+      case REVIEW_IMAGE4_RESET: {
+        draft.reviewImage4Path = null;
       }
       //   case REQUEST_DATA: {
       //     draft.requestData = action.data;

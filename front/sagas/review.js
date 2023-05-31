@@ -24,6 +24,18 @@ import {
   REVIEW_IMAGE1_UPLOAD_REQUEST,
   REVIEW_IMAGE1_UPLOAD_SUCCESS,
   REVIEW_IMAGE1_UPLOAD_FAILURE,
+  //
+  REVIEW_IMAGE2_UPLOAD_REQUEST,
+  REVIEW_IMAGE2_UPLOAD_SUCCESS,
+  REVIEW_IMAGE2_UPLOAD_FAILURE,
+  //
+  REVIEW_IMAGE3_UPLOAD_REQUEST,
+  REVIEW_IMAGE3_UPLOAD_SUCCESS,
+  REVIEW_IMAGE3_UPLOAD_FAILURE,
+  //
+  REVIEW_IMAGE4_UPLOAD_REQUEST,
+  REVIEW_IMAGE4_UPLOAD_SUCCESS,
+  REVIEW_IMAGE4_UPLOAD_FAILURE,
 } from "../reducers/review";
 
 // ******************************************************************************************************************
@@ -164,6 +176,86 @@ function* reviewImage1Upload(action) {
 // ******************************************************************************************************************
 // SAGA AREA ********************************************************************************************************
 // ******************************************************************************************************************
+async function reviewImage2UploadAPI(data) {
+  return await axios.post(`/api/review/image`, data);
+}
+
+function* reviewImage2Upload(action) {
+  try {
+    const result = yield call(reviewImage2UploadAPI, action.data);
+
+    yield put({
+      type: REVIEW_IMAGE2_UPLOAD_SUCCESS,
+      data: result.data,
+    });
+  } catch (err) {
+    console.error(err);
+    yield put({
+      type: REVIEW_IMAGE2_UPLOAD_FAILURE,
+      error: err.response.data,
+    });
+  }
+}
+// ******************************************************************************************************************
+// ******************************************************************************************************************
+// ******************************************************************************************************************
+
+// ******************************************************************************************************************
+// SAGA AREA ********************************************************************************************************
+// ******************************************************************************************************************
+async function reviewImage3UploadAPI(data) {
+  return await axios.post(`/api/review/image`, data);
+}
+
+function* reviewImage3Upload(action) {
+  try {
+    const result = yield call(reviewImage3UploadAPI, action.data);
+
+    yield put({
+      type: REVIEW_IMAGE3_UPLOAD_SUCCESS,
+      data: result.data,
+    });
+  } catch (err) {
+    console.error(err);
+    yield put({
+      type: REVIEW_IMAGE3_UPLOAD_FAILURE,
+      error: err.response.data,
+    });
+  }
+}
+// ******************************************************************************************************************
+// ******************************************************************************************************************
+// ******************************************************************************************************************
+
+// ******************************************************************************************************************
+// SAGA AREA ********************************************************************************************************
+// ******************************************************************************************************************
+async function reviewImage4UploadAPI(data) {
+  return await axios.post(`/api/review/image`, data);
+}
+
+function* reviewImage4Upload(action) {
+  try {
+    const result = yield call(reviewImage4UploadAPI, action.data);
+
+    yield put({
+      type: REVIEW_IMAGE4_UPLOAD_SUCCESS,
+      data: result.data,
+    });
+  } catch (err) {
+    console.error(err);
+    yield put({
+      type: REVIEW_IMAGE4_UPLOAD_FAILURE,
+      error: err.response.data,
+    });
+  }
+}
+// ******************************************************************************************************************
+// ******************************************************************************************************************
+// ******************************************************************************************************************
+// ******************************************************************************************************************
+// SAGA AREA ********************************************************************************************************
+// ******************************************************************************************************************
 async function reviewDeleteAPI(data) {
   return await axios.post(`/api/review/delete`, data);
 }
@@ -206,7 +298,15 @@ function* watchreviewDelete() {
 function* watchreviewImage1Upload() {
   yield takeLatest(REVIEW_IMAGE1_UPLOAD_REQUEST, reviewImage1Upload);
 }
-
+function* watchreviewImage2Upload() {
+  yield takeLatest(REVIEW_IMAGE2_UPLOAD_REQUEST, reviewImage2Upload);
+}
+function* watchreviewImage3Upload() {
+  yield takeLatest(REVIEW_IMAGE3_UPLOAD_REQUEST, reviewImage3Upload);
+}
+function* watchreviewImage4Upload() {
+  yield takeLatest(REVIEW_IMAGE4_UPLOAD_REQUEST, reviewImage4Upload);
+}
 //////////////////////////////////////////////////////////////
 export default function* reviewSaga() {
   yield all([
@@ -216,6 +316,9 @@ export default function* reviewSaga() {
     fork(watchreviewUpdate),
     fork(watchreviewDelete),
     fork(watchreviewImage1Upload),
+    fork(watchreviewImage2Upload),
+    fork(watchreviewImage3Upload),
+    fork(watchreviewImage4Upload),
 
     //
   ]);

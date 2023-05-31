@@ -34,6 +34,12 @@ import {
   REVIEW_IMAGE1_RESET,
   REVIEW_UPDATE_REQUEST,
   REVIEW_ALL_RESET,
+  REVIEW_IMAGE2_RESET,
+  REVIEW_IMAGE3_RESET,
+  REVIEW_IMAGE4_RESET,
+  REVIEW_IMAGE2_UPLOAD_REQUEST,
+  REVIEW_IMAGE3_UPLOAD_REQUEST,
+  REVIEW_IMAGE4_UPLOAD_REQUEST,
 } from "../../reducers/review";
 import { current } from "immer";
 import { useRef } from "react";
@@ -124,6 +130,9 @@ const Review = () => {
     myReviewList,
     lastPage,
     reviewImage1Path,
+    reviewImage2Path,
+    reviewImage3Path,
+    reviewImage4Path,
     //
     st_myReviewDeleteDone,
     st_myReviewDeleteError,
@@ -143,6 +152,9 @@ const Review = () => {
   const [currentTab, setCurrentTab] = useState(1);
   const [currentData, setCurrentData] = useState(null);
   const [image1Data, setImage1Data] = useState(null);
+  const [image2Data, setImage2Data] = useState(null);
+  const [image3Data, setImage3Data] = useState(null);
+  const [image4Data, setImage4Data] = useState(null);
 
   ////// HOOKS //////
   const width = useWidth();
@@ -153,6 +165,9 @@ const Review = () => {
 
   // reviewImage
   const review1Ref = useRef();
+  const review2Ref = useRef();
+  const review3Ref = useRef();
+  const review4Ref = useRef();
 
   ////// REDUX //////
   ////// USEEFFECT //////
@@ -203,12 +218,6 @@ const Review = () => {
     }
   }, [st_myReviewUpdateDone, st_myReviewUpdateError]);
 
-  useEffect(() => {
-    if (st_myReviewUpdateError) {
-      return message.error(st_myReviewUpdateError);
-    }
-  }, [st_myReviewUpdateError]);
-
   ////// TOGGLE //////
   const modalToggle = useCallback(
     (data) => {
@@ -247,6 +256,15 @@ const Review = () => {
         if (data.imagePath1) {
           setImage1Data(data.imagePath1);
         }
+        if (data.imagePath2) {
+          setImage2Data(data.imagePath2);
+        }
+        if (data.imagePath3) {
+          setImage3Data(data.imagePath3);
+        }
+        if (data.imagePath4) {
+          setImage4Data(data.imagePath4);
+        }
       } else {
         setCurrentData(null);
       }
@@ -256,11 +274,32 @@ const Review = () => {
 
   ////// HANDLER //////
 
-  // 이미지 리셋
+  // 이미지 리셋1
   const reviewImage1ResetHandler = useCallback(() => {
     setImage1Data(null);
     dispatch({
       type: REVIEW_IMAGE1_RESET,
+    });
+  }, []);
+  // 이미지 리셋2
+  const reviewImage2ResetHandler = useCallback(() => {
+    setImage2Data(null);
+    dispatch({
+      type: REVIEW_IMAGE2_RESET,
+    });
+  }, []);
+  // 이미지 리셋3
+  const reviewImage3ResetHandler = useCallback(() => {
+    setImage3Data(null);
+    dispatch({
+      type: REVIEW_IMAGE3_RESET,
+    });
+  }, []);
+  // 이미지 리셋4
+  const reviewImage4ResetHandler = useCallback(() => {
+    setImage4Data(null);
+    dispatch({
+      type: REVIEW_IMAGE4_RESET,
     });
   }, []);
 
@@ -268,6 +307,21 @@ const Review = () => {
   const reviewImage1ClickHandler = useCallback(() => {
     review1Ref.current.click();
   }, [review1Ref]);
+
+  // 이미지2 클릭
+  const reviewImage2ClickHandler = useCallback(() => {
+    review2Ref.current.click();
+  }, [review2Ref]);
+
+  // 이미지3 클릭
+  const reviewImage3ClickHandler = useCallback(() => {
+    review3Ref.current.click();
+  }, [review3Ref]);
+
+  // 이미지4 클릭
+  const reviewImage4ClickHandler = useCallback(() => {
+    review4Ref.current.click();
+  }, [review4Ref]);
 
   // 이미지1 업로드
   const onChangeImages = useCallback((e) => {
@@ -283,6 +337,49 @@ const Review = () => {
     });
   });
 
+  // 이미지2 업로드
+  const onChangeImages2 = useCallback((e) => {
+    const formData = new FormData();
+
+    [].forEach.call(e.target.files, (file) => {
+      formData.append("image", file);
+    });
+
+    dispatch({
+      type: REVIEW_IMAGE2_UPLOAD_REQUEST,
+      data: formData,
+    });
+  });
+
+  // 이미지3 업로드
+  const onChangeImages3 = useCallback((e) => {
+    const formData = new FormData();
+
+    [].forEach.call(e.target.files, (file) => {
+      formData.append("image", file);
+    });
+
+    dispatch({
+      type: REVIEW_IMAGE3_UPLOAD_REQUEST,
+      data: formData,
+    });
+  });
+
+  // 이미지4 업로드
+  const onChangeImages4 = useCallback((e) => {
+    const formData = new FormData();
+
+    [].forEach.call(e.target.files, (file) => {
+      formData.append("image", file);
+    });
+
+    dispatch({
+      type: REVIEW_IMAGE4_UPLOAD_REQUEST,
+      data: formData,
+    });
+  });
+
+  //페이지네이션
   const nextPageCall = useCallback(
     (changePage) => {
       setCurrentTab(changePage);
@@ -302,12 +399,20 @@ const Review = () => {
         id: currentData && currentData.id,
         content: reviewInput.value,
         imagePath1: reviewImage1Path ? reviewImage1Path : image1Data,
-        imagePath2: currentData.imagePath2,
-        imagePath3: currentData.imagePath3,
-        imagePath4: currentData.imagePath4,
+        imagePath2: reviewImage2Path ? reviewImage2Path : image2Data,
+        imagePath3: reviewImage3Path ? reviewImage3Path : image3Data,
+        imagePath4: reviewImage4Path ? reviewImage4Path : image4Data,
       },
     });
-  }, [currentData, reviewInput, reviewImage1Path, image1Data]);
+  }, [
+    currentData,
+    reviewInput,
+    reviewImage1Path,
+    image1Data,
+    image2Data,
+    image3Data,
+    image4Data,
+  ]);
 
   const deleteHandler = useCallback(
     (data) => {
@@ -630,6 +735,7 @@ const Review = () => {
                           width={width < 600 ? `150px` : `111px`}
                         >
                           <Image
+                            radius={`5%`}
                             height={width < 600 ? `150px` : `111px`}
                             alt="리뷰 사진"
                             src={
@@ -660,25 +766,120 @@ const Review = () => {
                         </PictureWrapper>
                       </>
                     )}
-
-                    <PictureWrapper>
-                      <Text fontSize={width < 700 ? `14px` : `20px`}>
-                        <PlusOutlined />
-                      </Text>
-                      <Text>첨부하기</Text>
-                    </PictureWrapper>
-                    <PictureWrapper margin={width < 700 ? `10px 0 0` : `0`}>
-                      <Text fontSize={width < 700 ? `14px` : `20px`}>
-                        <PlusOutlined />
-                      </Text>
-                      <Text>첨부하기</Text>
-                    </PictureWrapper>
-                    <PictureWrapper margin={width < 700 ? `10px 0 0` : `0`}>
-                      <Text fontSize={width < 700 ? `14px` : `20px`}>
-                        <PlusOutlined />
-                      </Text>
-                      <Text>첨부하기</Text>
-                    </PictureWrapper>
+                    {reviewImage2Path || image2Data ? (
+                      <>
+                        <Wrapper
+                          position={`relative`}
+                          width={width < 600 ? `150px` : `111px`}
+                        >
+                          <Image
+                            radius={`5%`}
+                            height={width < 600 ? `150px` : `111px`}
+                            alt="리뷰 사진"
+                            src={
+                              reviewImage2Path ? reviewImage2Path : image2Data
+                            }
+                          />
+                          <Circle onClick={reviewImage2ResetHandler}>
+                            <CloseOutlined />
+                          </Circle>
+                        </Wrapper>
+                      </>
+                    ) : (
+                      <>
+                        <input
+                          type="file"
+                          name="image"
+                          accept=".png, .jpg"
+                          // multiple
+                          hidden
+                          ref={review2Ref}
+                          onChange={onChangeImages2}
+                        />
+                        <PictureWrapper onClick={reviewImage2ClickHandler}>
+                          <Text fontSize={width < 700 ? `14px` : `20px`}>
+                            <PlusOutlined />
+                          </Text>
+                          <Text>첨부하기</Text>
+                        </PictureWrapper>
+                      </>
+                    )}
+                    {reviewImage3Path || image3Data ? (
+                      <>
+                        <Wrapper
+                          position={`relative`}
+                          width={width < 600 ? `150px` : `111px`}
+                        >
+                          <Image
+                            radius={`5%`}
+                            height={width < 600 ? `150px` : `111px`}
+                            alt="리뷰 사진"
+                            src={
+                              reviewImage3Path ? reviewImage3Path : image3Data
+                            }
+                          />
+                          <Circle onClick={reviewImage3ResetHandler}>
+                            <CloseOutlined />
+                          </Circle>
+                        </Wrapper>
+                      </>
+                    ) : (
+                      <>
+                        <input
+                          type="file"
+                          name="image"
+                          accept=".png, .jpg"
+                          // multiple
+                          hidden
+                          ref={review3Ref}
+                          onChange={onChangeImages3}
+                        />
+                        <PictureWrapper onClick={reviewImage3ClickHandler}>
+                          <Text fontSize={width < 700 ? `14px` : `20px`}>
+                            <PlusOutlined />
+                          </Text>
+                          <Text>첨부하기</Text>
+                        </PictureWrapper>
+                      </>
+                    )}
+                    {reviewImage4Path || image4Data ? (
+                      <>
+                        <Wrapper
+                          position={`relative`}
+                          width={width < 600 ? `150px` : `111px`}
+                        >
+                          <Image
+                            radius={`5%`}
+                            height={width < 600 ? `150px` : `111px`}
+                            alt="리뷰 사진"
+                            src={
+                              reviewImage4Path ? reviewImage4Path : image4Data
+                            }
+                          />
+                          <Circle onClick={reviewImage4ResetHandler}>
+                            <CloseOutlined />
+                          </Circle>
+                        </Wrapper>
+                      </>
+                    ) : (
+                      <>
+                        <input
+                          type="file"
+                          name="image"
+                          accept=".png, .jpg"
+                          // multiple
+                          hidden
+                          ref={review4Ref}
+                          onChange={onChangeImages4}
+                        />
+                        <PictureWrapper onClick={reviewImage4ClickHandler}>
+                          <Text fontSize={width < 700 ? `14px` : `20px`}>
+                            <PlusOutlined />
+                          </Text>
+                          <Text>첨부하기</Text>
+                        </PictureWrapper>
+                      </>
+                    )}
                   </Wrapper>
                 </Wrapper>
                 <Wrapper dr={`row`} ju={`space-between`}>
