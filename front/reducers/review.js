@@ -74,7 +74,8 @@ export const REVIEW_IMAGE1_UPLOAD_REQUEST = "REVIEW_IMAGE1_UPLOAD_REQUEST"; // ë
 export const REVIEW_IMAGE1_UPLOAD_SUCCESS = "REVIEW_IMAGE1_UPLOAD_SUCCESS";
 export const REVIEW_IMAGE1_UPLOAD_FAILURE = "REVIEW_IMAGE1_UPLOAD_FAILURE";
 //
-export const REVIEW_IMAGE_RESET = "REVIEW_IMAGE_RESET";
+export const REVIEW_IMAGE1_RESET = "REVIEW_IMAGE1_RESET";
+export const REVIEW_ALL_RESET = "REVIEW_ALL_RESET";
 
 // export const DATA = "DATA";
 
@@ -235,11 +236,15 @@ const reducer = (state = initailState, action) =>
 
       //////////////////////////////////////////////
 
-      case REVIEW_IMAGE_RESET: {
+      case REVIEW_ALL_RESET: {
         draft.reviewImage1Path = null;
         draft.reviewImage2Path = null;
         draft.reviewImage3Path = null;
         draft.reviewImage4Path = null;
+      }
+
+      case REVIEW_IMAGE1_RESET: {
+        draft.reviewImage1Path = null;
       }
       //   case REQUEST_DATA: {
       //     draft.requestData = action.data;

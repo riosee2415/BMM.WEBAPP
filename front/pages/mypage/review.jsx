@@ -31,10 +31,13 @@ import {
   MY_REVIEW_REQUEST,
   REVIEW_DELETE_REQUEST,
   REVIEW_IMAGE1_UPLOAD_REQUEST,
+  REVIEW_IMAGE1_RESET,
   REVIEW_UPDATE_REQUEST,
+  REVIEW_ALL_RESET,
 } from "../../reducers/review";
 import { current } from "immer";
 import { useRef } from "react";
+import useInput from "../../hooks/useInput";
 
 const List = styled(Wrapper)`
   height: 60px;
@@ -128,19 +131,25 @@ const Review = () => {
     st_myReviewUpdateDone,
     st_myReviewUpdateError,
   } = useSelector((state) => state.review);
-  console.log(reviewImage1Path);
 
+  // MODAL
   const [deleteModal, setDeleteModal] = useState(false);
-  const [uModal, setUModal] = useState(false);
-  const [currentTab, setCurrentTab] = useState(1);
+  const [uModal, setUModal] = useState(false); // 수정모달
 
   const [isVisible, setIsVisible] = useState(false);
   const [visibleId, setVisibleId] = useState(null);
+
+  // DATA
+  const [currentTab, setCurrentTab] = useState(1);
   const [currentData, setCurrentData] = useState(null);
+  const [image1Data, setImage1Data] = useState(null);
 
   ////// HOOKS //////
   const width = useWidth();
   const dispatch = useDispatch();
+
+  // INPUT
+  const reviewInput = useInput(``);
 
   // reviewImage
   const review1Ref = useRef();
@@ -167,26 +176,32 @@ const Review = () => {
         },
       });
     }
-  }, [st_myReviewDeleteDone]);
 
-  useEffect(() => {
     if (st_myReviewDeleteError) {
       return message.error(st_myReviewDeleteError);
     }
-  }, [st_myReviewDeleteError]);
+  }, [st_myReviewDeleteDone, st_myReviewDeleteError]);
 
   useEffect(() => {
     if (st_myReviewUpdateDone) {
-      message.success("리뷰가 수정되었습니다.");
-
       dispatch({
         type: MY_REVIEW_REQUEST,
         data: {
           page: currentTab,
         },
       });
+      setUModal(false);
+      dispatch({
+        type: REVIEW_ALL_RESET,
+      });
+
+      return message.success("리뷰가 수정되었습니다.");
     }
-  }, [st_myReviewUpdateDone]);
+
+    if (st_myReviewUpdateError) {
+      return message.error(st_myReviewUpdateError);
+    }
+  }, [st_myReviewUpdateDone, st_myReviewUpdateError]);
 
   useEffect(() => {
     if (st_myReviewUpdateError) {
@@ -228,6 +243,10 @@ const Review = () => {
       setUModal((prev) => !prev);
       if (data) {
         setCurrentData(data);
+        reviewInput.setValue(data.content);
+        if (data.imagePath1) {
+          setImage1Data(data.imagePath1);
+        }
       } else {
         setCurrentData(null);
       }
@@ -236,6 +255,14 @@ const Review = () => {
   );
 
   ////// HANDLER //////
+
+  // 이미지 리셋
+  const reviewImage1ResetHandler = useCallback(() => {
+    setImage1Data(null);
+    dispatch({
+      type: REVIEW_IMAGE1_RESET,
+    });
+  }, []);
 
   // 이미지1 클릭
   const reviewImage1ClickHandler = useCallback(() => {
@@ -263,19 +290,24 @@ const Review = () => {
     [currentTab]
   );
 
+  // 리뷰 수정하기
   const updateHandler = useCallback(() => {
+    if (!reviewInput.value) {
+      return message.error("리뷰 내용을 입력해주세요.");
+    }
+
     dispatch({
       type: REVIEW_UPDATE_REQUEST,
       data: {
-        id: currentData.id,
-        content: currentData.content,
-        imagePath1: currentData.imagePath1,
+        id: currentData && currentData.id,
+        content: reviewInput.value,
+        imagePath1: reviewImage1Path ? reviewImage1Path : image1Data,
         imagePath2: currentData.imagePath2,
         imagePath3: currentData.imagePath3,
         imagePath4: currentData.imagePath4,
       },
     });
-  }, [currentData]);
+  }, [currentData, reviewInput, reviewImage1Path, image1Data]);
 
   const deleteHandler = useCallback(
     (data) => {
@@ -580,6 +612,7 @@ const Review = () => {
                       width={width < 700 ? `100%` : `80%`}
                       height={`145px`}
                       placeholder="리뷰를 작성해주세요."
+                      {...reviewInput}
                     />
                   </Wrapper>
                   <Wrapper al={`flex-start`}>
@@ -590,34 +623,43 @@ const Review = () => {
                     ju={`space-between`}
                     margin={`8px 0 25px`}
                   >
-                    <input
-                      type="file"
-                      name="image"
-                      accept=".png, .jpg"
-                      // multiple
-                      hidden
-                      ref={review1Ref}
-                      onChange={onChangeImages}
-                    />
-                    <PictureWrapper onClick={reviewImage1ClickHandler}>
-                      <Text fontSize={width < 700 ? `14px` : `20px`}>
-                        <PlusOutlined />
-                      </Text>
-                      <Text>첨부하기</Text>
-                    </PictureWrapper>
-                    {/* <Wrapper
-                      position={`relative`}
-                      width={width < 600 ? `150px` : `111px`}
-                    >
-                      <Image
-                        height={width < 600 ? `150px` : `111px`}
-                        alt="리뷰 사진"
-                        src={`https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/bmm/assets/images/sample-img/review.png`}
-                      />
-                      <Circle>
-                        <CloseOutlined />
-                      </Circle>
-                    </Wrapper> */}
+                    {reviewImage1Path || image1Data ? (
+                      <>
+                        <Wrapper
+                          position={`relative`}
+                          width={width < 600 ? `150px` : `111px`}
+                        >
+                          <Image
+                            height={width < 600 ? `150px` : `111px`}
+                            alt="리뷰 사진"
+                            src={
+                              reviewImage1Path ? reviewImage1Path : image1Data
+                            }
+                          />
+                          <Circle onClick={reviewImage1ResetHandler}>
+                            <CloseOutlined />
+                          </Circle>
+                        </Wrapper>
+                      </>
+                    ) : (
+                      <>
+                        <input
+                          type="file"
+                          name="image"
+                          accept=".png, .jpg"
+                          // multiple
+                          hidden
+                          ref={review1Ref}
+                          onChange={onChangeImages}
+                        />
+                        <PictureWrapper onClick={reviewImage1ClickHandler}>
+                          <Text fontSize={width < 700 ? `14px` : `20px`}>
+                            <PlusOutlined />
+                          </Text>
+                          <Text>첨부하기</Text>
+                        </PictureWrapper>
+                      </>
+                    )}
 
                     <PictureWrapper>
                       <Text fontSize={width < 700 ? `14px` : `20px`}>
