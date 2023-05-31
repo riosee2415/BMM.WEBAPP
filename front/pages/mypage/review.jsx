@@ -20,7 +20,7 @@ import {
 } from "../../components/commonComponents";
 import styled from "styled-components";
 import MypageTop from "../../components/MypageTop";
-import { Empty, Modal, message } from "antd";
+import { Empty, Form, Modal, message } from "antd";
 import {
   CloseOutlined,
   PictureOutlined,
@@ -30,6 +30,7 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   MY_REVIEW_REQUEST,
   REVIEW_DELETE_REQUEST,
+  REVIEW_UPDATE_REQUEST,
 } from "../../reducers/review";
 import { current } from "immer";
 
@@ -117,8 +118,12 @@ const Review = () => {
   const {
     myReviewList,
     lastPage,
+
     st_myReviewDeleteDone,
     st_myReviewDeleteError,
+
+    st_myReviewUpdateDone,
+    st_myReviewUpdateError,
   } = useSelector((state) => state.review);
 
   const [deleteModal, setDeleteModal] = useState(false);
@@ -163,6 +168,25 @@ const Review = () => {
     }
   }, [st_myReviewDeleteError]);
 
+  useEffect(() => {
+    if (st_myReviewUpdateDone) {
+      message.success("리뷰가 수정되었습니다.");
+
+      dispatch({
+        type: MY_REVIEW_REQUEST,
+        data: {
+          page: currentTab,
+        },
+      });
+    }
+  }, [st_myReviewUpdateDone]);
+
+  useEffect(() => {
+    if (st_myReviewUpdateError) {
+      return message.error(st_myReviewUpdateError);
+    }
+  }, [st_myReviewUpdateError]);
+
   ////// TOGGLE //////
   const modalToggle = useCallback(
     (data) => {
@@ -172,7 +196,6 @@ const Review = () => {
 
         return;
       }
-
       if (data) {
         setVisibleId(data.id);
         setIsVisible(true);
@@ -193,9 +216,17 @@ const Review = () => {
     [deleteModal, currentData]
   );
 
-  const uModalToggle = useCallback(() => {
-    setUModal((prev) => !prev);
-  }, [uModal]);
+  const uModalToggle = useCallback(
+    (data) => {
+      setUModal((prev) => !prev);
+      if (data) {
+        setCurrentData(data);
+      } else {
+        setCurrentData(null);
+      }
+    },
+    [uModal, currentData]
+  );
 
   ////// HANDLER //////
   const nextPageCall = useCallback(
@@ -204,6 +235,20 @@ const Review = () => {
     },
     [currentTab]
   );
+
+  const updateHandler = useCallback(() => {
+    dispatch({
+      type: REVIEW_UPDATE_REQUEST,
+      data: {
+        id: currentData.id,
+        content: currentData.content,
+        imagePath1: currentData.imagePath1,
+        imagePath2: currentData.imagePath2,
+        imagePath3: currentData.imagePath3,
+        imagePath4: currentData.imagePath4,
+      },
+    });
+  }, [currentData]);
 
   const deleteHandler = useCallback(
     (data) => {
@@ -352,7 +397,7 @@ const Review = () => {
                               color={Theme.lightGrey_C}
                               isHover
                               margin={`0 10px 0 0`}
-                              onClick={uModalToggle}
+                              onClick={() => uModalToggle(data)}
                             >
                               수정
                             </Text>
@@ -452,115 +497,121 @@ const Review = () => {
             closable={null}
             width={`570px`}
           >
-            <Wrapper padding={width < 600 ? `20px 0px` : `20px`}>
-              <Wrapper
-                dr={`row`}
-                ju={`space-between`}
-                borderBottom={`1px solid ${Theme.lightGrey2_C}`}
-                padding={`0 0 17px`}
-                margin={`0 0 23px`}
-              >
-                <Text
-                  fontSize={width < 700 ? `20px` : `24px`}
-                  fontWeight={`600`}
-                >
-                  리뷰 수정하기
-                </Text>
-                <Text
-                  color={Theme.grey_C}
-                  isHover
-                  fontSize={`20px`}
-                  onClick={uModalToggle}
-                >
-                  <CloseOutlined />
-                </Text>
-              </Wrapper>
-              <Wrapper>
-                <Wrapper dr={`row`} ju={`space-between`} margin={`0 0 15px`}>
-                  <Text lineHeight={`46px`} fontSize={`16px`}>
-                    작성자
-                  </Text>
-                  <Wrapper
-                    width={width < 700 ? `100%` : `80%`}
-                    height={`46px`}
-                    al={`flex-start`}
-                    border={`1px solid ${Theme.lightGrey3_C}`}
-                    bgColor={Theme.lightGrey3_C}
-                    color={Theme.lightGrey_C}
-                    padding={`0 11px`}
-                    fontSize={width < 900 ? `14px` : `16px`}
-                  >
-                    <Text>imnickname</Text>
-                  </Wrapper>
-                </Wrapper>
+            {visibleId === currentData.id && isVisible && (
+              <Wrapper padding={width < 600 ? `20px 0px` : `20px`}>
                 <Wrapper
                   dr={`row`}
                   ju={`space-between`}
-                  margin={`0 0 20px`}
-                  al={`flex-start`}
+                  borderBottom={`1px solid ${Theme.lightGrey2_C}`}
+                  padding={`0 0 17px`}
+                  margin={`0 0 23px`}
                 >
-                  <Text fontSize={`16px`} lineHeight={`46px`}>
-                    리뷰 내용
-                  </Text>
-
-                  <TextArea
-                    width={width < 700 ? `100%` : `80%`}
-                    height={`145px`}
-                    placeholder="리뷰를 작성해주세요."
-                  />
-                </Wrapper>
-                <Wrapper al={`flex-start`}>
-                  <Text fontSize={`16px`}>사진 첨부</Text>
-                </Wrapper>
-                <Wrapper dr={`row`} ju={`space-between`} margin={`8px 0 25px`}>
-                  <Wrapper
-                    position={`relative`}
-                    width={width < 600 ? `150px` : `111px`}
+                  <Text
+                    fontSize={width < 700 ? `20px` : `24px`}
+                    fontWeight={`600`}
                   >
-                    <Image
-                      height={width < 600 ? `150px` : `111px`}
-                      alt="리뷰 사진"
-                      src={`https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/bmm/assets/images/sample-img/review.png`}
-                    />
-                    <Circle>
-                      <CloseOutlined />
-                    </Circle>
+                    리뷰 수정하기
+                  </Text>
+                  <Text
+                    color={Theme.grey_C}
+                    isHover
+                    fontSize={`20px`}
+                    onClick={uModalToggle}
+                  >
+                    <CloseOutlined />
+                  </Text>
+                </Wrapper>
+                <Wrapper>
+                  <Wrapper dr={`row`} ju={`space-between`} margin={`0 0 15px`}>
+                    <Text lineHeight={`46px`} fontSize={`16px`}>
+                      작성자
+                    </Text>
+                    <Wrapper
+                      width={width < 700 ? `100%` : `80%`}
+                      height={`46px`}
+                      al={`flex-start`}
+                      border={`1px solid ${Theme.lightGrey3_C}`}
+                      bgColor={Theme.lightGrey3_C}
+                      color={Theme.lightGrey_C}
+                      padding={`0 11px`}
+                      fontSize={width < 900 ? `14px` : `16px`}
+                    >
+                      <Text>{currentData.UserId}</Text>
+                    </Wrapper>
                   </Wrapper>
+                  <Wrapper
+                    dr={`row`}
+                    ju={`space-between`}
+                    margin={`0 0 20px`}
+                    al={`flex-start`}
+                  >
+                    <Text fontSize={`16px`} lineHeight={`46px`}>
+                      리뷰 내용
+                    </Text>
 
-                  <PictureWrapper>
-                    <Text fontSize={width < 700 ? `14px` : `20px`}>
-                      <PlusOutlined />
-                    </Text>
-                    <Text>첨부하기</Text>
-                  </PictureWrapper>
-                  <PictureWrapper margin={width < 700 ? `10px 0 0` : `0`}>
-                    <Text fontSize={width < 700 ? `14px` : `20px`}>
-                      <PlusOutlined />
-                    </Text>
-                    <Text>첨부하기</Text>
-                  </PictureWrapper>
-                  <PictureWrapper margin={width < 700 ? `10px 0 0` : `0`}>
-                    <Text fontSize={width < 700 ? `14px` : `20px`}>
-                      <PlusOutlined />
-                    </Text>
-                    <Text>첨부하기</Text>
-                  </PictureWrapper>
+                    <TextArea
+                      width={width < 700 ? `100%` : `80%`}
+                      height={`145px`}
+                      placeholder="리뷰를 작성해주세요."
+                    />
+                  </Wrapper>
+                  <Wrapper al={`flex-start`}>
+                    <Text fontSize={`16px`}>사진 첨부</Text>
+                  </Wrapper>
+                  <Wrapper
+                    dr={`row`}
+                    ju={`space-between`}
+                    margin={`8px 0 25px`}
+                  >
+                    <Wrapper
+                      position={`relative`}
+                      width={width < 600 ? `150px` : `111px`}
+                    >
+                      <Image
+                        height={width < 600 ? `150px` : `111px`}
+                        alt="리뷰 사진"
+                        src={`https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/bmm/assets/images/sample-img/review.png`}
+                      />
+                      <Circle>
+                        <CloseOutlined />
+                      </Circle>
+                    </Wrapper>
+
+                    <PictureWrapper>
+                      <Text fontSize={width < 700 ? `14px` : `20px`}>
+                        <PlusOutlined />
+                      </Text>
+                      <Text>첨부하기</Text>
+                    </PictureWrapper>
+                    <PictureWrapper margin={width < 700 ? `10px 0 0` : `0`}>
+                      <Text fontSize={width < 700 ? `14px` : `20px`}>
+                        <PlusOutlined />
+                      </Text>
+                      <Text>첨부하기</Text>
+                    </PictureWrapper>
+                    <PictureWrapper margin={width < 700 ? `10px 0 0` : `0`}>
+                      <Text fontSize={width < 700 ? `14px` : `20px`}>
+                        <PlusOutlined />
+                      </Text>
+                      <Text>첨부하기</Text>
+                    </PictureWrapper>
+                  </Wrapper>
+                </Wrapper>
+                <Wrapper dr={`row`} ju={`space-between`}>
+                  <BeforeBtn onClick={uModalToggle}>이전으로</BeforeBtn>
+                  <CommonButton
+                    fontSize={width < 500 ? `16px` : `18px`}
+                    fontWeight={`600`}
+                    kindOf={`white`}
+                    width={`49%`}
+                    height={`54px`}
+                    onClick={updateHandler}
+                  >
+                    수정하기
+                  </CommonButton>
                 </Wrapper>
               </Wrapper>
-              <Wrapper dr={`row`} ju={`space-between`}>
-                <BeforeBtn onClick={modalToggle}>이전으로</BeforeBtn>
-                <CommonButton
-                  fontSize={width < 500 ? `16px` : `18px`}
-                  fontWeight={`600`}
-                  kindOf={`white`}
-                  width={`49%`}
-                  height={`54px`}
-                  onClick={modalToggle}
-                >
-                  수정하기
-                </CommonButton>
-              </Wrapper>
-            </Wrapper>
+            )}
           </Modal>
         </WholeWrapper>
       </ClientLayout>
