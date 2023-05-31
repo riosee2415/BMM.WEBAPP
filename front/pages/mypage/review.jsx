@@ -297,34 +297,42 @@ const Review = () => {
                           </Text>
                         </Wrapper>
                         <Wrapper dr={`row`} ju={`flex-start`}>
-                          <Image
-                            alt="리뷰 사진"
-                            src={data.imagePath1}
-                            width={width < 700 ? `95px` : `122px`}
-                            height={width < 700 ? `95px` : `122px`}
-                            margin={`0 11px 10px 0`}
-                          />
-                          <Image
-                            alt="리뷰 사진"
-                            src={data.imagePath2}
-                            width={width < 700 ? `95px` : `122px`}
-                            height={width < 700 ? `95px` : `122px`}
-                            margin={`0 11px 10px 0`}
-                          />
-                          <Image
-                            alt="리뷰 사진"
-                            src={data.imagePath3}
-                            width={width < 700 ? `95px` : `122px`}
-                            height={width < 700 ? `95px` : `122px`}
-                            margin={`0 11px 10px 0`}
-                          />
-                          <Image
-                            alt="리뷰 사진"
-                            src={data.imagePath4}
-                            width={width < 700 ? `95px` : `122px`}
-                            height={width < 700 ? `95px` : `122px`}
-                            margin={`0 11px 10px 0`}
-                          />
+                          {data.imagePath1 && (
+                            <Image
+                              alt="리뷰 사진"
+                              src={data.imagePath1}
+                              width={width < 700 ? `95px` : `122px`}
+                              height={width < 700 ? `95px` : `122px`}
+                              margin={`0 11px 10px 0`}
+                            />
+                          )}
+                          {data.imagePath2 && (
+                            <Image
+                              alt="리뷰 사진"
+                              src={data.imagePath2}
+                              width={width < 700 ? `95px` : `122px`}
+                              height={width < 700 ? `95px` : `122px`}
+                              margin={`0 11px 10px 0`}
+                            />
+                          )}
+                          {data.imagePath3 && (
+                            <Image
+                              alt="리뷰 사진"
+                              src={data.imagePath3}
+                              width={width < 700 ? `95px` : `122px`}
+                              height={width < 700 ? `95px` : `122px`}
+                              margin={`0 11px 10px 0`}
+                            />
+                          )}
+                          {data.imagePath4 && (
+                            <Image
+                              alt="리뷰 사진"
+                              src={data.imagePath4}
+                              width={width < 700 ? `95px` : `122px`}
+                              height={width < 700 ? `95px` : `122px`}
+                              margin={`0 11px 10px 0`}
+                            />
+                          )}
                         </Wrapper>
 
                         <Wrapper
@@ -339,13 +347,23 @@ const Review = () => {
                           ju={`space-between`}
                           fontSize={`16px`}
                         >
-                          <Text
-                            isHover
-                            onClick={() => deletemodalToggle(data)}
-                            color={Theme.lightGrey_C}
-                          >
-                            삭제
-                          </Text>
+                          <Wrapper dr={`row`} width={`auto`}>
+                            <Text
+                              color={Theme.lightGrey_C}
+                              isHover
+                              margin={`0 10px 0 0`}
+                              onClick={uModalToggle}
+                            >
+                              수정
+                            </Text>
+                            <Text
+                              isHover
+                              onClick={() => deletemodalToggle(data)}
+                              color={Theme.lightGrey_C}
+                            >
+                              삭제
+                            </Text>
+                          </Wrapper>
                           <Text isHover onClick={modalToggle}>
                             닫기
                             <SpanText
