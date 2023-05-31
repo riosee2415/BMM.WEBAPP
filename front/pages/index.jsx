@@ -225,6 +225,7 @@ const Home = ({}) => {
             <Wrapper dr={`row`} margin={`0 0 40px`}>
               {productBestCategory &&
                 productBestCategory.map((data, idx) => {
+                  console.log(data);
                   return (
                     <Btn
                       onClick={() => setCurrentBestType(data.id)}
