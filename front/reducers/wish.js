@@ -3,6 +3,7 @@ import produce from "../util/produce";
 export const initailState = {
   boughtAdminList: [], // 결제내역목록(관리자)
   items: [], // 장바구니 상품
+  itemListView: [], // 장바구니 리스트
   //
   st_itemCreateLoading: false, // 장바구니 상품 추가
   st_itemCreateDone: false,
@@ -19,6 +20,10 @@ export const initailState = {
   st_itemDeleteAllLoading: false, // 장바구니 상품 전체삭제
   st_itemDeleteAllDone: false,
   st_itemDeleteAllError: null,
+  //
+  st_itemListViewLoading: false, // 장바구니 리스트
+  st_itemListViewDone: false,
+  st_itemListViewError: null,
   //
   st_boughtAdminListLoading: false, // 결제내역 목록(관리자)
   st_boughtAdminListDone: false,
@@ -42,6 +47,10 @@ export const ITEM_DELETE_FAILURE = "ITEM_DELETE_FAILURE";
 export const ITEM_DELETE_ALL_REQUEST = "ITEM_DELETE_ALL_REQUEST";
 export const ITEM_DELETE_ALL_SUCCESS = "ITEM_DELETE_ALL_SUCCESS";
 export const ITEM_DELETE_ALL_FAILURE = "ITEM_DELETE_ALL_FAILURE";
+// 장바구니 상품 리스트
+export const ITEM_LIST_VIEW_REQUEST = "ITEM_LIST_VIEW_REQUEST";
+export const ITEM_LIST_VIEW_SUCCESS = "ITEM_LIST_VIEW_SUCCESS";
+export const ITEM_LIST_VIEW_FAILURE = "ITEM_LIST_VIEW_FAILURE";
 // 결제내역목록 (관리자)
 export const BOUGHT_ADMIN_LIST_REQUEST = "BOUGHT_ADMIN_LIST_REQUEST";
 export const BOUGHT_ADMIN_LIST_SUCCESS = "BOUGHT_ADMIN_LIST_SUCCESS";
@@ -130,6 +139,28 @@ const reducer = (state = initailState, action) =>
         draft.st_itemDeleteAllLoading = false;
         draft.st_itemDeleteAllDone = false;
         draft.st_itemDeleteAllError = action.error;
+        break;
+      }
+
+      //////////////////////////////////////////////
+      case ITEM_LIST_VIEW_REQUEST: {
+        draft.st_itemListViewLoading = true;
+        draft.st_itemListViewDone = false;
+        draft.st_itemListViewError = null;
+        break;
+      }
+      case ITEM_LIST_VIEW_SUCCESS: {
+        draft.st_itemListViewLoading = false;
+        draft.st_itemListViewDone = true;
+        draft.st_itemListViewError = null;
+        draft.itemListView = action.data;
+
+        break;
+      }
+      case ITEM_LIST_VIEW_FAILURE: {
+        draft.st_itemListViewLoading = false;
+        draft.st_itemListViewDone = false;
+        draft.st_itemListViewError = action.error;
         break;
       }
 
