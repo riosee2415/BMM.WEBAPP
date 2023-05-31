@@ -33,6 +33,7 @@ import {
   REVIEW_UPDATE_REQUEST,
 } from "../../reducers/review";
 import { current } from "immer";
+import { useRef } from "react";
 
 const List = styled(Wrapper)`
   height: 60px;
@@ -138,6 +139,8 @@ const Review = () => {
   const width = useWidth();
   const dispatch = useDispatch();
 
+  const review1Ref = useRef();
+
   ////// REDUX //////
   ////// USEEFFECT //////
   useEffect(() => {
@@ -229,6 +232,20 @@ const Review = () => {
   );
 
   ////// HANDLER //////
+
+  const onChangeImages = useCallback((e) => {
+    const formData = new FormData();
+
+    [].forEach.call(e.target.files, (file) => {
+      formData.append("image", file);
+    });
+
+    dispatch({
+      type: BANNER_UPLOAD_REQUEST,
+      data: formData,
+    });
+  });
+
   const nextPageCall = useCallback(
     (changePage) => {
       setCurrentTab(changePage);
@@ -497,7 +514,7 @@ const Review = () => {
             closable={null}
             width={`570px`}
           >
-            {visibleId === currentData.id && isVisible && (
+            {visibleId === (currentData && currentData.id) && isVisible && (
               <Wrapper padding={width < 600 ? `20px 0px` : `20px`}>
                 <Wrapper
                   dr={`row`}
@@ -563,7 +580,23 @@ const Review = () => {
                     ju={`space-between`}
                     margin={`8px 0 25px`}
                   >
-                    <Wrapper
+                    <PictureWrapper>
+                      <input
+                        type="file"
+                        name="image"
+                        accept=".png, .jpg"
+                        // multiple
+                        hidden
+                        ref={review1Ref}
+                        onChange={onChangeImages}
+                      />
+
+                      <Text fontSize={width < 700 ? `14px` : `20px`}>
+                        <PlusOutlined />
+                      </Text>
+                      <Text>첨부하기</Text>
+                    </PictureWrapper>
+                    {/* <Wrapper
                       position={`relative`}
                       width={width < 600 ? `150px` : `111px`}
                     >
@@ -575,7 +608,7 @@ const Review = () => {
                       <Circle>
                         <CloseOutlined />
                       </Circle>
-                    </Wrapper>
+                    </Wrapper> */}
 
                     <PictureWrapper>
                       <Text fontSize={width < 700 ? `14px` : `20px`}>

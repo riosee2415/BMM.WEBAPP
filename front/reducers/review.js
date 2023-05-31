@@ -11,6 +11,11 @@ export const initailState = {
 
   //   requestData: null, // 상품요청 데이터
 
+  reviewImage1Path: null,
+  reviewImage2Path: null,
+  reviewImage3Path: null,
+  reviewImage4Path: null,
+
   //
   st_myReviewListLoading: false, // 나의 리뷰내역 가져오기
   st_myReviewListDone: false,
@@ -60,6 +65,8 @@ export const REVIEW_UPDATE_FAILURE = "REVIEW_UPDATE_FAILURE";
 export const REVIEW_DELETE_REQUEST = "REVIEW_DELETE_REQUEST"; // 리뷰 삭제하기
 export const REVIEW_DELETE_SUCCESS = "REVIEW_DELETE_SUCCESS";
 export const REVIEW_DELETE_FAILURE = "REVIEW_DELETE_FAILURE";
+//
+export const REVIEW_IMAGE_RESET = "REVIEW_IMAGE_RESET";
 
 // export const DATA = "DATA";
 
@@ -196,6 +203,13 @@ const reducer = (state = initailState, action) =>
       }
 
       //////////////////////////////////////////////
+
+      case REVIEW_IMAGE_RESET: {
+        draft.reviewImage1Path = null;
+        draft.reviewImage2Path = null;
+        draft.reviewImage3Path = null;
+        draft.reviewImage4Path = null;
+      }
       //   case REQUEST_DATA: {
       //     draft.requestData = action.data;
       //   }
