@@ -536,7 +536,7 @@ const Review = () => {
                       padding={`0 11px`}
                       fontSize={width < 900 ? `14px` : `16px`}
                     >
-                      <Text>{currentData.UserId}</Text>
+                      <Text>{currentData.username}</Text>
                     </Wrapper>
                   </Wrapper>
                   <Wrapper
