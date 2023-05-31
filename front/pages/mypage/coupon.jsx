@@ -302,7 +302,7 @@ const Coupon = () => {
                           {data.title}
                         </Wrapper>
                         <Wrapper width={`192px`} color={Theme.grey_C}>
-                          {data.viewUsedAt}
+                          {data.viewLimitDate}
                         </Wrapper>
                         <Wrapper width={`192px`} color={Theme.grey_C}>
                           {data.minimunPay}
@@ -522,6 +522,10 @@ export const getServerSideProps = wrapper.getServerSideProps(
 
     context.store.dispatch({
       type: LOAD_MY_INFO_REQUEST,
+    });
+
+    context.store.dispatch({
+      type: COUPON_SEARCH_REQUEST,
     });
 
     // 구현부 종료

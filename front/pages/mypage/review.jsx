@@ -31,6 +31,7 @@ import {
   MY_REVIEW_REQUEST,
   REVIEW_DELETE_REQUEST,
 } from "../../reducers/review";
+import { current } from "immer";
 
 const List = styled(Wrapper)`
   height: 60px;
@@ -113,19 +114,20 @@ const Circle = styled(Wrapper)`
 
 const Review = () => {
   ////// GLOBAL STATE //////
-  const [deleteModal, setDeleteModal] = useState(false);
-  const [uModal, setUModal] = useState(false);
-
   const {
     myReviewList,
     lastPage,
     st_myReviewDeleteDone,
     st_myReviewDeleteError,
   } = useSelector((state) => state.review);
+
+  const [deleteModal, setDeleteModal] = useState(false);
+  const [uModal, setUModal] = useState(false);
   const [currentTab, setCurrentTab] = useState(1);
 
   const [isVisible, setIsVisible] = useState(false);
   const [visibleId, setVisibleId] = useState(null);
+  const [currentData, setCurrentData] = useState(null);
 
   ////// HOOKS //////
   const width = useWidth();
@@ -148,6 +150,9 @@ const Review = () => {
 
       dispatch({
         type: MY_REVIEW_REQUEST,
+        data: {
+          page: currentTab,
+        },
       });
     }
   }, [st_myReviewDeleteDone]);
@@ -176,9 +181,17 @@ const Review = () => {
     [isVisible, visibleId]
   );
 
-  const deletemodalToggle = useCallback(() => {
-    setDeleteModal((prev) => !prev);
-  }, [deleteModal]);
+  const deletemodalToggle = useCallback(
+    (data) => {
+      setDeleteModal((prev) => !prev);
+      if (data) {
+        setCurrentData(data);
+      } else {
+        setCurrentData(null);
+      }
+    },
+    [deleteModal, currentData]
+  );
 
   const uModalToggle = useCallback(() => {
     setUModal((prev) => !prev);
@@ -192,14 +205,17 @@ const Review = () => {
     [currentTab]
   );
 
-  const deleteHandler = useCallback((data) => {
-    dispatch({
-      type: REVIEW_DELETE_REQUEST,
-      data: {
-        id: data.id,
-      },
-    });
-  }, []);
+  const deleteHandler = useCallback(
+    (data) => {
+      dispatch({
+        type: REVIEW_DELETE_REQUEST,
+        data: {
+          id: currentData.id,
+        },
+      });
+    },
+    [currentData]
+  );
   ////// DATAVIEW //////
 
   return (
@@ -325,7 +341,7 @@ const Review = () => {
                         >
                           <Text
                             isHover
-                            onClick={deletemodalToggle}
+                            onClick={() => deletemodalToggle(data)}
                             color={Theme.lightGrey_C}
                           >
                             삭제

@@ -211,10 +211,11 @@ router.post("/search", async (req, res, next) => {
             DATE_FORMAT(A.createdAt, '%Y년 %m월 %d일')			AS viewCreatedAt,
             A.CuponId,
             A.usedAt,
-            DATE_FORMAT(A.usedAt, '%Y년 %m월 %d일')			AS viewUsedAt,
+            DATE_FORMAT(A.usedAt, '%Y년 %m월 %d일')			    AS viewUsedAt,
             B.title,
             B.cuponNumber,
             B.limitDate,
+            DATE_FORMAT(limitDate, '%Y년 %m월 %d일')			  AS viewLimitDate,
             B.minimunPay,
             B.discountPay
     FROM	cuponuser 	A
