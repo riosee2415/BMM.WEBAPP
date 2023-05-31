@@ -7,7 +7,7 @@ module.exports = class WishItem extends Model {
       {
         ProductId: {
           type: DataTypes.INTEGER, // 상품 아이디
-          allowNull: false,
+          allowNull: true,
         },
         productPrice: {
           type: DataTypes.INTEGER, // 상품 가격
@@ -60,6 +60,10 @@ module.exports = class WishItem extends Model {
           type: DataTypes.BOOLEAN, // 리뷰 작성 여부
           allowNull: false,
           defaultValue: false,
+        },
+        isExist: {
+          type: DataTypes.BOOLEAN, // 사이트 내 존재 상품 여부
+          allowNull: false,
         },
       },
       {

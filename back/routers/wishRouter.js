@@ -124,6 +124,7 @@ router.post("/item/create", isLoggedIn, async (req, res, next) => {
                 FORMAT(A.optionPrice, 0)                                                                                                                AS formatOptionPrice,
                 CONCAT(FORMAT(A.optionPrice, 0), "원")                                                                                                   AS viewOptionPrice,
                 A.isWrite,
+                A.isExist,
                 A.optionId
           FROM  wishItem           A
          INNER
@@ -159,6 +160,7 @@ router.post("/item/create", isLoggedIn, async (req, res, next) => {
             optionId,
             qun,
             WishListId,
+            isExist,
             createdAt,
             updatedAt
         )
@@ -179,6 +181,7 @@ router.post("/item/create", isLoggedIn, async (req, res, next) => {
                 ? findResult[0][0].id
                 : createResult[0].insertId
             },
+            1,
             NOW(),
             NOW()
         )
@@ -218,6 +221,7 @@ router.post("/item/create", isLoggedIn, async (req, res, next) => {
             FORMAT(A.optionPrice, 0)                                                                                                                AS formatOptionPrice,
             CONCAT(FORMAT(A.optionPrice, 0), "원")                                                                                                   AS viewOptionPrice,
             A.isWrite,
+            A.isExist,
             A.optionId
       FROM  wishItem           A
      INNER
@@ -230,6 +234,131 @@ router.post("/item/create", isLoggedIn, async (req, res, next) => {
     const selectItemResult = await models.sequelize.query(selectItemQuery);
 
     return res.status(201).json({ result: true, items: selectItemResult[0] });
+  } catch (error) {
+    console.error(error);
+    return res.status(401).send("장바구니에 상품을 추가할 수 없습니다.");
+  }
+});
+
+/**
+ * SUBJECT : 관리자 장바구니 상품 추가 (사이트 내에 존재하지 않는 상품)
+ * PARAMETERS : UserId,
+                productPrice,
+                productDiscount,
+                productTitle,
+                productThumbnail,
+                productWeight,
+                optionName,
+                optionPrice,
+                optionId,
+                qun,
+ * ORDER BY : -
+ * STATEMENT : -
+ * DEVELOPMENT : 신태섭
+ * DEV DATE : 2023/05/31
+ */
+router.post("/item/admin/create", isAdminCheck, async (req, res, next) => {
+  const {
+    UserId,
+    productPrice,
+    productDiscount,
+    productTitle,
+    productThumbnail,
+    productWeight,
+    qun,
+  } = req.body;
+
+  const findUserQuery = `
+  SELECT  id
+    FROM  users
+   WHERE  id = ${UserId}
+     AND  isExit = 0
+  `;
+
+  const findWishList = `
+      SELECT  id
+        FROM  wishList
+       WHERE  UserId = ${UserId}
+      `;
+
+  try {
+    const findUserResult = await models.sequelize.query(findUserQuery);
+
+    if (findUserResult[0].length === 0) {
+      return res.status(401).send("존재하지 않는 사용자 정보입니다.");
+    }
+
+    const findResult = await models.sequelize.query(findWishList);
+
+    let createResult = [];
+
+    if (findResult[0].length === 0) {
+      const createWishListQuery = `
+      INSERT  INTO    wishList
+      (
+          createdAt,
+          updatedAt,
+          UserId
+      )
+      VALUES
+      (   
+          NOW(),
+          NOW(),
+          ${UserId}
+      )
+      `;
+
+      createResult = await models.sequelize.query(createWishListQuery);
+    }
+
+    const insertQuery = `
+    INSERT    INTO    wishItem
+    (
+        ProductId,
+        productPrice,
+        productDiscount,
+        productTitle,
+        productThumbnail,
+        productWeight,
+        optionName,
+        optionPrice,
+        optionId,
+        qun,
+        isWrite,
+        isExist,
+        createdAt,
+        updatedAt,
+        WishListId
+    )
+    VALUES
+    (
+        NULL,
+        ${productPrice},
+        ${productDiscount},
+        "${productTitle}",
+        "${productThumbnail}",
+        ${productWeight},
+        NULL,
+        0,
+        NULL,
+        ${qun},
+        0,
+        0,
+        NOW(),
+        NOW(),
+        ${
+          findResult[0].length !== 0
+            ? findResult[0][0].id
+            : createResult[0].insertId
+        }
+    )
+    `;
+
+    const itemInsertResult = await models.sequelize.query(insertQuery);
+
+    return res
+      .status(201)
+      .json({ result: true, itemId: itemInsertResult[0].insertId });
   } catch (error) {
     console.error(error);
     return res.status(401).send("장바구니에 상품을 추가할 수 없습니다.");
@@ -376,6 +505,7 @@ router.post("/list/view", isLoggedIn, async (req, res, next) => {
                 FORMAT(A.optionPrice, 0)                                                                                                                AS formatOptionPrice,
                 CONCAT(FORMAT(A.optionPrice, 0), "원")                                                                                                   AS viewOptionPrice,
                 A.isWrite,
+                A.isExist,
                 A.optionId
           FROM  wishItem			     A
          INNER
@@ -446,6 +576,7 @@ router.post("/admin/list/view", isLoggedIn, async (req, res, next) => {
                 FORMAT(A.optionPrice, 0)                                                                                                                AS formatOptionPrice,
                 CONCAT(FORMAT(A.optionPrice, 0), "원")                                                                                                   AS viewOptionPrice,
                 A.isWrite,
+                A.isExist,
                 A.optionId
           FROM  wishItem			     A
          INNER
@@ -621,6 +752,7 @@ router.post("/bought/list", isLoggedIn, async (req, res, next) => {
           FORMAT(A.optionPrice, 0)                                                                                                                AS formatOptionPrice,
           CONCAT(FORMAT(A.optionPrice, 0), "원")                                                                                                   AS viewOptionPrice,
           A.isWrite,
+          A.isExist,
           A.optionId,
           A.BoughtHistoryId
     FROM  wishItem			     A
@@ -789,6 +921,7 @@ router.post("/bought/admin/list", isAdminCheck, async (req, res, next) => {
                 FORMAT(A.optionPrice, 0)                                                                                                                AS formatOptionPrice,
                 CONCAT(FORMAT(A.optionPrice, 0), "원")                                                                                                   AS viewOptionPrice,
                 A.isWrite,
+                A.isExist,
                 A.optionId,
                 A.BoughtHistoryId
           FROM  wishItem			     A
