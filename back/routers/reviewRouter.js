@@ -397,11 +397,11 @@ router.post("/update", isLoggedIn, async (req, res, next) => {
 
   const updateQuery = `
   UPDATE    review
-     SET    "${content}",
-            ${imagePath1 ? `"${imagePath1}"` : null},
-            ${imagePath2 ? `"${imagePath2}"` : null},
-            ${imagePath3 ? `"${imagePath3}"` : null},
-            ${imagePath4 ? `"${imagePath4}"` : null},
+     SET    content = "${content}",
+            imagePath1 = ${imagePath1 ? `"${imagePath1}"` : null},
+            imagePath2 = ${imagePath2 ? `"${imagePath2}"` : null},
+            imagePath3 = ${imagePath3 ? `"${imagePath3}"` : null},
+            imagePath4 = ${imagePath4 ? `"${imagePath4}"` : null},
             updatedAt = NOW()
    WHERE    id = ${id}
   `;
