@@ -1,7 +1,6 @@
 import React, { useCallback, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { LOAD_MY_INFO_REQUEST } from "../reducers/user";
-import useInput from "../hooks/useInput";
 import ClientLayout from "../components/ClientLayout";
 import axios from "axios";
 import wrapper from "../store/configureStore";
@@ -27,7 +26,7 @@ import MainEventSlider from "../components/slide/MainEventSlider";
 import MainNewSlider from "../components/slide/MainNewSlider";
 import MainBrandSlider from "../components/slide/MainBrandSlider";
 import MainRecommandSlider from "../components/slide/MainRecommandSlider";
-import { ConsoleSqlOutlined, RightOutlined } from "@ant-design/icons";
+import { RightOutlined } from "@ant-design/icons";
 import { ADVERTISE_LIST_REQUEST } from "../reducers/advertise";
 import { EVENT_LIST_REQUEST } from "../reducers/event";
 import Link from "next/dist/client/link";
@@ -225,7 +224,6 @@ const Home = ({}) => {
             <Wrapper dr={`row`} margin={`0 0 40px`}>
               {productBestCategory &&
                 productBestCategory.map((data, idx) => {
-                  console.log(data);
                   return (
                     <Btn
                       onClick={() => setCurrentBestType(data.id)}
