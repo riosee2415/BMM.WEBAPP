@@ -2,8 +2,70 @@ const express = require("express");
 const models = require("../models");
 const isAdminCheck = require("../middlewares/isAdminCheck");
 const isLoggedIn = require("../middlewares/isLoggedIn");
+const AWS = require("aws-sdk");
+const multerS3 = require("multer-s3");
+const fs = require("fs");
+const multer = require("multer");
 
 const router = express.Router();
+
+try {
+  fs.accessSync("uploads");
+} catch (error) {
+  console.log(
+    "uploads 폴더가 존재하지 않습니다. 새로 uploads 폴더를 생성합니다."
+  );
+  fs.mkdirSync("uploads");
+}
+
+AWS.config.update({
+  accessKeyId: process.env.S3_ACCESS_KEY_Id,
+  secretAccessKey: process.env.S3_SECRET_ACCESS_KEY,
+  region: "ap-northeast-2",
+});
+
+const upload = multer({
+  storage: multerS3({
+    s3: new AWS.S3(),
+    bucket: process.env.S3_BUCKET_NAME,
+    key(req, file, cb) {
+      cb(
+        null,
+        `${
+          process.env.S3_STORAGE_FOLDER_NAME
+        }/original/${Date.now()}_${path.basename(file.originalname)}`
+      );
+    },
+  }),
+  limits: { fileSize: 5 * 1024 * 1024 }, // 5MB
+});
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+/**
+ * SUBJECT : 리뷰 이미지
+ * PARAMETERS : -
+ * ORDER BY : -
+ * STATEMENT : -
+ * DEVELOPMENT : 장혜정
+ * DEV DATE : 2023/05/31
+ */
+router.post("/image", isAdminCheck, async (req, res, next) => {
+  const uploadImage = upload.single("image");
+
+  await uploadImage(req, res, (err) => {
+    if (err instanceof multer.MulterError) {
+      return res.status(401).send("첨부 가능한 용량을 초과했습니다.");
+    } else if (err) {
+      return res.status(401).send("업로드 중 문제가 발생했습니다.");
+    }
+
+    return res.json({
+      path: req.file.location,
+    });
+  });
+});
 
 /**
  * SUBJECT : 상품 별 리뷰 리스트

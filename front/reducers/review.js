@@ -2,7 +2,7 @@ import produce from "../util/produce";
 
 export const initailState = {
   myReviewList: [], //나의리뷰내역리스트
-  lastPage: 1,
+  page: 1,
   reviewAdminList: [], //관리자리스트
   myReviewDetail: null, //나의리뷰내역상세
   productReviewList: [], //상품 별 리뷰 리스트
@@ -37,9 +37,9 @@ export const initailState = {
   st_myReviewUpdateDone: false,
   st_myReviewUpdateError: null,
   //
-  st_myReviewDeleteLoading: false, // 리뷰 삭제하기
-  st_myReviewDeleteDone: false,
-  st_myReviewDeleteError: null,
+  st_questionDeleteLoading: false, // 리뷰 삭제하기
+  st_questionDeleteDone: false,
+  st_questionDeleteError: null,
 };
 
 export const MY_REVIEW_REQUEST = "MY_REVIEW_REQUEST"; // 나의 리뷰내역 가져오기
@@ -83,8 +83,8 @@ const reducer = (state = initailState, action) =>
         draft.st_myReviewListLoading = false;
         draft.st_myReviewListDone = true;
         draft.st_myReviewListError = null;
+        draft.page = action.data.lastPage;
         draft.myReviewList = action.data.reviews;
-        draft.lastPage = action.data.lastPage;
 
         break;
       }
@@ -184,21 +184,21 @@ const reducer = (state = initailState, action) =>
       //////////////////////////////////////////////
 
       case REVIEW_DELETE_REQUEST: {
-        draft.st_myReviewDeleteLoading = true;
-        draft.st_myReviewDeleteDone = false;
-        draft.st_myReviewDeleteError = null;
+        draft.st_questionDeleteLoading = true;
+        draft.st_questionDeleteDone = false;
+        draft.st_questionDeleteError = null;
         break;
       }
       case REVIEW_DELETE_SUCCESS: {
-        draft.st_myReviewDeleteLoading = false;
-        draft.st_myReviewDeleteDone = true;
-        draft.st_myReviewDeleteError = null;
+        draft.st_questionDeleteLoading = false;
+        draft.st_questionDeleteDone = true;
+        draft.st_questionDeleteError = null;
         break;
       }
       case REVIEW_DELETE_FAILURE: {
-        draft.st_myReviewDeleteLoading = false;
-        draft.st_myReviewDeleteDone = false;
-        draft.st_myReviewDeleteError = action.error;
+        draft.st_questionDeleteLoading = false;
+        draft.st_questionDeleteDone = false;
+        draft.st_questionDeleteError = action.error;
         break;
       }
 
