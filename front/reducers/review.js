@@ -251,7 +251,7 @@ const reducer = (state = initailState, action) =>
         draft.st_reviewImage1UploadLoading = false;
         draft.st_reviewImage1UploadDone = true;
         draft.st_reviewImage1UploadError = null;
-        draft.reviewImage2Path = action.data.path;
+        draft.reviewImage1Path = action.data.path;
         break;
       }
       case REVIEW_IMAGE1_UPLOAD_FAILURE: {
