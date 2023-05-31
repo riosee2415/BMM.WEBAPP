@@ -1,11 +1,12 @@
 const express = require("express");
+const fs = require("fs");
+const multer = require("multer");
+const path = require("path");
 const models = require("../models");
 const isAdminCheck = require("../middlewares/isAdminCheck");
 const isLoggedIn = require("../middlewares/isLoggedIn");
 const AWS = require("aws-sdk");
 const multerS3 = require("multer-s3");
-const fs = require("fs");
-const multer = require("multer");
 
 const router = express.Router();
 
@@ -51,7 +52,6 @@ const upload = multer({
  * DEVELOPMENT : 장혜정
  * DEV DATE : 2023/05/31
  */
-
 router.post("/image", isAdminCheck, async (req, res, next) => {
   const uploadImage = upload.single("image");
 
