@@ -20,11 +20,12 @@ import {
   ATag,
 } from "../../components/commonComponents";
 import styled from "styled-components";
-import { Checkbox, Form, Radio, Select, Modal } from "antd";
+import { Checkbox, Form, Radio, Select, Modal, message } from "antd";
 import DaumPostcode from "react-daum-postcode";
 import { useSelector } from "react-redux";
 import { COUPON_SEARCH_REQUEST } from "../../reducers/coupon";
 import { numberWithCommas } from "../../components/commonUtils";
+import { useRouter } from "next/router";
 
 const List = styled(Wrapper)`
   height: 100px;
@@ -69,6 +70,7 @@ const Index = () => {
 
   ////// HOOKS //////
   const width = useWidth();
+  const router = useRouter();
 
   const [form] = Form.useForm();
 
@@ -82,7 +84,44 @@ const Index = () => {
   const [agree2, setAgree2] = useState(false);
   const [agree3, setAgree3] = useState(false);
 
+  // 쿠폰 선택
+  const [selectCoupon, setSelectCoupon] = useState(null);
+
+  // 포이트 사용
+  const [usePoint, setUsePoint] = useState(null);
+
+  // 총 상품금액
+  const [totalPrice, setTotalPrice] = useState(0);
+  // 총 무게
+  const [totalWeight, setTotalWeight] = useState(0);
+  // 총 배송비
+  const [totalDelPrice, setTotalDelPrice] = useState(0);
+  // 총 할인 금액
+  const [totalDiscountPrice, setTotalDiscountPrice] = useState({
+    delDiscountPrice: 0,
+    userDiscountPrice: 0,
+    couponDiscountPrice: 0,
+    pointDiscountPrice: 0,
+  });
+  // 총 결제 금액
+  const [totalBuyPrice, setTotalBuyPrice] = useState(0);
   ////// REDUX //////
+
+  // 배송비 계산
+  const weightDeliveryPrice = (weight) => {
+    let price = 0;
+
+    if (weight === 0.5) {
+      price = 9900;
+    } else if (weight > 0.5 && weight < 15.5) {
+      price = 10000 + ((weight - 0.5) / 0.5) * 2000;
+    } else {
+      price = 70000 + ((weight - 15.5) / 0.5) * 1500;
+    }
+
+    return price;
+  };
+
   ////// USEEFFECT //////
 
   useEffect(() => {
@@ -91,7 +130,14 @@ const Index = () => {
       : [];
 
     setOrderData(orderSession);
-  }, []);
+  }, [router.query]);
+
+  useEffect(() => {
+    if (!me) {
+      router.push("/user/login");
+      return message.error("로그인 후 이용해주세요.");
+    }
+  }, [me]);
 
   useEffect(() => {
     if (value === 1) {
@@ -107,6 +153,58 @@ const Index = () => {
       form.resetFields();
     }
   }, [value]);
+
+  // 금액 측정
+  useEffect(() => {
+    if (orderData && me) {
+      const wieghtDelPrice = weightDeliveryPrice(
+        orderData.map((data) => data.productWeight).reduce((a, b) => a + b)
+      );
+
+      // 총 상품긍맥
+      setTotalPrice(
+        orderData.map((data) => data.originRealPrice).reduce((a, b) => a + b)
+      );
+
+      // 총 무게
+      setTotalWeight(
+        orderData.map((data) => data.productWeight).reduce((a, b) => a + b)
+      );
+
+      // 총 배송비
+      setTotalDelPrice(wieghtDelPrice - wieghtDelPrice * (me.benefit / 100));
+
+      // 총 할인 금액
+      setTotalDiscountPrice({
+        // 배송 할인금액
+        delDiscountPrice: wieghtDelPrice * (me.benefit / 100),
+
+        // 회원 할인 금액
+        userDiscountPrice: 0,
+
+        // 쿠폰 사용
+        couponDiscountPrice: selectCoupon
+          ? couponSearchList.find((data) => data.id === selectCoupon)
+              .discountPay
+          : 0,
+
+        // 포인트 사용
+        pointDiscountPrice: usePoint ? usePoint : 0,
+      });
+    }
+  }, [orderData, selectCoupon, usePoint, me]);
+
+  // 총 결제 금액
+  useEffect(() => {
+    setTotalBuyPrice(
+      totalPrice +
+        totalDelPrice -
+        (totalDiscountPrice.delDiscountPrice +
+          totalDiscountPrice.userDiscountPrice +
+          totalDiscountPrice.couponDiscountPrice +
+          totalDiscountPrice.pointDiscountPrice)
+    );
+  }, [totalPrice, totalDelPrice, totalDiscountPrice]);
 
   ////// TOGGLE //////
 
@@ -172,20 +270,30 @@ const Index = () => {
     setPayValue(e.target.payvalue);
   };
 
-  // 배송비 계산
-  const weightDeliveryPrice = (weight, benefit) => {
-    let price = 0;
+  // 쿠폰 사용
+  const selectCouponChangeHandler = useCallback(
+    (data) => {
+      const getCoupon = couponSearchList.find((value) => value.id === data);
 
-    if (weight === 0.5) {
-      price = 9900;
-    } else if (weight > 0.5 && weight < 15.5) {
-      price = 10000 + ((weight - 0.5) / 0.5) * 2000;
-    } else {
-      price = 70000 + ((weight - 15.5) / 0.5) * 1500;
+      if (totalBuyPrice < getCoupon.minimunPay) {
+        return message.error("쿠폰 최소 사용금액에 맞지 않습니다.");
+      }
+
+      setSelectCoupon(data);
+    },
+    [selectCoupon, couponSearchList, totalBuyPrice]
+  );
+
+  // 포인트 사용
+  const usePointHandler = useCallback(() => {
+    const getFormData = form.getFieldsValue();
+
+    if (me.point < getFormData.point) {
+      return message.error("포인트가 없습니다.");
     }
 
-    return price;
-  };
+    setUsePoint(getFormData.point);
+  }, [usePoint, me]);
 
   ////// DATAVIEW //////
 
@@ -822,7 +930,11 @@ const Index = () => {
                         margin={`0 10px 0 0`}
                         radius={`0`}
                       >
-                        <Select placeholder={`사용하실 쿠폰을 선택해주세요.`}>
+                        <Select
+                          placeholder={`사용하실 쿠폰을 선택해주세요.`}
+                          value={selectCoupon}
+                          onChange={selectCouponChangeHandler}
+                        >
                           {couponSearchList &&
                             couponSearchList.map((data, idx) => {
                               return (
@@ -861,24 +973,31 @@ const Index = () => {
                       </Text>
                       <Wrapper dr={`row`} ju={`flex-start`}>
                         {me && (
-                          <TextInput
+                          <Wrapper
                             width={
                               width < 1100 ? `calc(100% - 120px)` : `265px`
                             }
-                            height={`46px`}
-                            border={`1px solid ${Theme.lightGrey2_C}`}
-                            al={`flex-start`}
                             margin={`0 10px 0 0`}
-                            placeholder="사용하실 포인트를 입력해주세요."
-                            type="number"
-                            max={me.point}
-                          />
+                          >
+                            <Form.Item name="point">
+                              <TextInput
+                                width={`100%`}
+                                height={`46px`}
+                                border={`1px solid ${Theme.lightGrey2_C}`}
+                                al={`flex-start`}
+                                placeholder="사용하실 포인트를 입력해주세요."
+                                type="number"
+                                max={me.point}
+                              />
+                            </Form.Item>
+                          </Wrapper>
                         )}
                         <CommonButton
                           width={`110px`}
                           height={`46px`}
                           fontSize={width < 800 ? `14px` : `16px`}
                           fontWeight={`600`}
+                          onClick={usePointHandler}
                         >
                           모두 사용
                         </CommonButton>
@@ -992,84 +1111,53 @@ const Index = () => {
                       margin={`0 0 16px`}
                       padding={`0 0 16px`}
                     >
-                      총 2개의 상품
+                      총 {orderData && orderData.length}개의 상품
                     </Wrapper>
                     <BoxText>
                       <Text>총 상품금액</Text>
                       <Text fontWeight={`600`}>
-                        {orderData &&
-                          numberWithCommas(
-                            orderData
-                              .map((data) => data.originRealPrice)
-                              .reduce((a, b) => a + b)
-                          )}
-                        원
+                        {numberWithCommas(totalPrice)}원
                       </Text>
                     </BoxText>
 
                     <BoxText>
                       <Text>총 무게</Text>
                       <Text fontWeight={`600`}>
-                        {orderData &&
-                          orderData
-                            .map((data) => data.productWeight)
-                            .reduce((a, b) => a + b)}
+                        {totalWeight}
                         kg
                       </Text>
                     </BoxText>
                     <BoxText>
                       <Text>총 배송비</Text>
                       <Text fontWeight={`600`}>
-                        {orderData &&
-                          me &&
-                          numberWithCommas(
-                            weightDeliveryPrice(
-                              orderData
-                                .map((data) => data.productWeight)
-                                .reduce((a, b) => a + b)
-                            ) -
-                              weightDeliveryPrice(
-                                orderData
-                                  .map((data) => data.productWeight)
-                                  .reduce((a, b) => a + b)
-                              ) *
-                                (me.benefit / 100)
-                          )}
-                        원
+                        {numberWithCommas(totalDelPrice)}원
                       </Text>
                     </BoxText>
                     <BoxText margin={`0 0 13px`}>
                       <Text>총 할인금액</Text>
-                      <Text fontWeight={`600`}>4,000원</Text>
+                      <Text fontWeight={`600`}>
+                        {totalDiscountPrice.delDiscountPrice +
+                          totalDiscountPrice.userDiscountPrice +
+                          totalDiscountPrice.couponDiscountPrice +
+                          totalDiscountPrice.pointDiscountPrice}
+                        원
+                      </Text>
                     </BoxText>
                     <SubText>
                       <Text>ㄴ배송 할인금액</Text>
-                      <Text>
-                        -
-                        {orderData &&
-                          me &&
-                          numberWithCommas(
-                            weightDeliveryPrice(
-                              orderData
-                                .map((data) => data.productWeight)
-                                .reduce((a, b) => a + b)
-                            ) *
-                              (me.benefit / 100)
-                          )}
-                        원
-                      </Text>
+                      <Text>-{totalDiscountPrice.delDiscountPrice}원</Text>
                     </SubText>
                     <SubText>
                       <Text>ㄴ회원 할인금액(00%)</Text>
-                      <Text>-0원</Text>
+                      <Text>-{totalDiscountPrice.userDiscountPrice}원</Text>
                     </SubText>
                     <SubText>
                       <Text>ㄴ쿠폰 사용</Text>
-                      <Text>-0원</Text>
+                      <Text>-{totalDiscountPrice.couponDiscountPrice}원</Text>
                     </SubText>
                     <SubText margin={`0 0 30px`}>
                       <Text>ㄴ포인트 사용</Text>
-                      <Text>-0원</Text>
+                      <Text>-{totalDiscountPrice.pointDiscountPrice}원</Text>
                     </SubText>
                     <Wrapper
                       dr={`row`}
@@ -1079,25 +1167,7 @@ const Index = () => {
                     >
                       <Text fontSize={`18px`}>총 결제금액</Text>
                       <Text fontSize={`24px`} fontWeight={`bold`}>
-                        {orderData &&
-                          me &&
-                          numberWithCommas(
-                            orderData
-                              .map((data) => data.originRealPrice)
-                              .reduce((a, b) => a + b) +
-                              (weightDeliveryPrice(
-                                orderData
-                                  .map((data) => data.productWeight)
-                                  .reduce((a, b) => a + b)
-                              ) -
-                                weightDeliveryPrice(
-                                  orderData
-                                    .map((data) => data.productWeight)
-                                    .reduce((a, b) => a + b)
-                                ) *
-                                  (me.benefit / 100))
-                          )}
-                        원
+                        {numberWithCommas(totalBuyPrice)}원
                       </Text>
                     </Wrapper>
                   </Wrapper>

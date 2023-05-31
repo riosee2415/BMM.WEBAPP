@@ -96,7 +96,48 @@ router.post("/item/create", isLoggedIn, async (req, res, next) => {
 
         await models.sequelize.query(updateWishQuery);
 
-        return res.status(200).json({ result: true });
+        const selectItemQuery = `
+        SELECT  A.id,
+                A.ProductId,
+                A.productPrice,
+                CONCAT(FORMAT(A.productPrice, 0), "원")								                                                                                  AS viewProductPrice,
+                A.productDiscount,
+                CONCAT(A.productDiscount, "%")                                                                                                          AS viewProductDiscount,
+                A.productWeight,
+                CONCAT(A.productWeight, "KG")                                                                                                           AS concatProductWeight,
+                A.productTitle,
+                A.productThumbnail,
+                A.qun,
+                (A.productPrice * (A.productDiscount / 100) * A.qun)					                                                                          AS originCalDiscount,
+                FORMAT((A.productPrice * (A.productDiscount / 100) * A.qun), 0)					                                                                AS formatCalDiscount,
+                CONCAT(FORMAT((A.productPrice * (A.productDiscount / 100) * A.qun), 0), "원")		                                                        AS viewCalDiscount,
+                CASE
+                    WHEN	A.productDiscount = 0 THEN	(A.productPrice * A.qun + A.optionPrice)
+                    ELSE	A.productPrice * A.qun - (A.productPrice * (A.productDiscount / 100) * A.qun) + A.optionPrice
+                END														                                          	                                                              AS originRealPrice,
+                CASE
+                    WHEN	A.productDiscount = 0 THEN	CONCAT(FORMAT(A.productPrice * A.qun + A.optionPrice , 0), "원")
+                    ELSE	CONCAT(FORMAT(A.productPrice * A.qun - (A.productPrice * (A.productDiscount / 100) * A.qun) + A.optionPrice, 0), "원")
+                END														                                          	                                                              AS realPrice,
+                A.optionName,
+                A.optionPrice,
+                FORMAT(A.optionPrice, 0)                                                                                                                AS formatOptionPrice,
+                CONCAT(FORMAT(A.optionPrice, 0), "원")                                                                                                   AS viewOptionPrice,
+                A.isWrite,
+                A.optionId
+          FROM  wishItem           A
+         INNER
+          JOIN  wishList           B
+            ON  A.WishListId = B.id
+         WHERE  A.BoughtHistoryId IS NULL
+           AND  A.id = ${findItemResult[0][0].id}
+        `;
+
+        const selectItemResult = await models.sequelize.query(selectItemQuery);
+
+        return res
+          .status(201)
+          .json({ result: true, items: selectItemResult[0] });
       }
     }
 
