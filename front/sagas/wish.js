@@ -17,6 +17,10 @@ import {
   ITEM_DELETE_ALL_SUCCESS,
   ITEM_DELETE_ALL_FAILURE,
   //
+  ITEM_LIST_VIEW_REQUEST,
+  ITEM_LIST_VIEW_SUCCESS,
+  ITEM_LIST_VIEW_FAILURE,
+  //
   BOUGHT_ADMIN_LIST_REQUEST,
   BOUGHT_ADMIN_LIST_SUCCESS,
   BOUGHT_ADMIN_LIST_FAILURE,
@@ -72,7 +76,7 @@ function* itemUpdate(action) {
 // ******************************************************************************************************************
 // ******************************************************************************************************************
 async function itemDeleteAPI(data) {
-  return await axios.post(`/api/wish/wish/item/delete`, data);
+  return await axios.post(`/api/wish/item/delete`, data);
 }
 
 function* itemDelete(action) {
@@ -95,7 +99,7 @@ function* itemDelete(action) {
 // ******************************************************************************************************************
 // ******************************************************************************************************************
 async function itemDeleteAllAPI(data) {
-  return await axios.post(`/api/wish/wish/item/deleteAll`, data);
+  return await axios.post(`/api/wish/item/deleteAll`, data);
 }
 
 function* itemDeleteAll(action) {
@@ -117,8 +121,31 @@ function* itemDeleteAll(action) {
 
 // ******************************************************************************************************************
 // ******************************************************************************************************************
+async function itemListViewAPI(data) {
+  return await axios.post(`/api/wish/list/view`, data);
+}
+
+function* itemListView(action) {
+  try {
+    const result = yield call(itemListViewAPI, action.data);
+
+    yield put({
+      type: ITEM_LIST_VIEW_SUCCESS,
+      data: result.data,
+    });
+  } catch (err) {
+    console.error(err);
+    yield put({
+      type: ITEM_LIST_VIEW_FAILURE,
+      error: err.response.data,
+    });
+  }
+}
+
+// ******************************************************************************************************************
+// ******************************************************************************************************************
 async function boughtAdminListAPI(data) {
-  return await axios.post(`/api/wish/wish/bought/admin/list`, data);
+  return await axios.post(`/api/wish/bought/admin/list`, data);
 }
 
 function* boughtAdminList(action) {
@@ -154,7 +181,9 @@ function* watchItemDelete() {
 function* watchItemDeleteAll() {
   yield takeLatest(ITEM_DELETE_ALL_REQUEST, itemDeleteAll);
 }
-
+function* watchItemListView() {
+  yield takeLatest(ITEM_LIST_VIEW_REQUEST, itemListView);
+}
 function* watchBoughtAdminList() {
   yield takeLatest(BOUGHT_ADMIN_LIST_REQUEST, boughtAdminList);
 }
@@ -166,6 +195,7 @@ export default function* wishSaga() {
     fork(watchItemUpdate),
     fork(watchItemDelete),
     fork(watchItemDeleteAll),
+    fork(watchItemListView),
     fork(watchBoughtAdminList),
 
     //
