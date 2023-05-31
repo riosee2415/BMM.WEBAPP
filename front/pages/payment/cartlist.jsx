@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import ClientLayout from "../../components/ClientLayout";
 import Theme from "../../components/Theme";
 import Head from "next/head";
@@ -16,10 +16,11 @@ import {
   CommonButton,
 } from "../../components/commonComponents";
 import styled from "styled-components";
-import { Checkbox, Empty, Modal } from "antd";
+import { Checkbox, Empty, Modal, message } from "antd";
 import { CloseOutlined, MinusOutlined, PlusOutlined } from "@ant-design/icons";
 import { ITEM_LIST_VIEW_REQUEST } from "../../reducers/wish";
 import { useSelector } from "react-redux";
+import { numberWithCommas } from "../../components/commonUtils";
 
 const List = styled(Wrapper)`
   height: 100px;
@@ -50,9 +51,8 @@ const SubText = styled(Wrapper)`
 
 const CartList = () => {
   ////// GLOBAL STATE //////
+  const { me } = useSelector((state) => state.user);
   const { itemListView } = useSelector((state) => state.wish);
-  console.log(itemListView);
-
   ////// HOOKS //////
   const width = useWidth();
 
@@ -61,8 +61,91 @@ const CartList = () => {
 
   const [selectCart, setSelectCart] = useState([]);
 
+  // 총 상품금액
+  const [totalPrice, setTotalPrice] = useState(0);
+  // 총 무게
+  const [totalWeight, setTotalWeight] = useState(0);
+  // 총 배송비
+  const [totalDelPrice, setTotalDelPrice] = useState(0);
+  // 총 할인 금액
+  const [totalDiscountPrice, setTotalDiscountPrice] = useState({
+    delDiscountPrice: 0,
+    userDiscountPrice: 0,
+  });
+  // 총 결제 금액
+  const [totalBuyPrice, setTotalBuyPrice] = useState(0);
+
   ////// REDUX //////
+
+  // 배송비 계산
+  const weightDeliveryPrice = (weight) => {
+    let price = 0;
+
+    if (weight === 0.5) {
+      price = 9900;
+    } else if (weight > 0.5 && weight < 15.5) {
+      price = 10000 + ((weight - 0.5) / 0.5) * 2000;
+    } else {
+      price = 70000 + ((weight - 15.5) / 0.5) * 1500;
+    }
+
+    return price;
+  };
+
   ////// USEEFFECT //////
+
+  // 금액 측정
+  useEffect(() => {
+    if (selectCart && me) {
+      const wieghtDelPrice =
+        selectCart.length > 0
+          ? weightDeliveryPrice(
+              selectCart
+                .map((data) => data.productWeight)
+                .reduce((a, b) => a + b)
+            )
+          : 0;
+
+      // 총 상품긍맥
+      setTotalPrice(
+        selectCart.length > 0
+          ? selectCart
+              .map((data) => data.originRealPrice)
+              .reduce((a, b) => a + b)
+          : 0
+      );
+
+      // 총 무게
+      setTotalWeight(
+        selectCart.length > 0
+          ? selectCart.map((data) => data.productWeight).reduce((a, b) => a + b)
+          : 0
+      );
+
+      // 총 배송비
+      setTotalDelPrice(wieghtDelPrice - wieghtDelPrice * (me.benefit / 100));
+
+      // 총 할인 금액
+      setTotalDiscountPrice({
+        // 배송 할인금액
+        delDiscountPrice: wieghtDelPrice * (me.benefit / 100),
+
+        // 회원 할인 금액
+        userDiscountPrice: 0,
+      });
+    }
+  }, [selectCart, me]);
+
+  // 총 결제 금액
+  useEffect(() => {
+    setTotalBuyPrice(
+      totalPrice +
+        totalDelPrice -
+        (totalDiscountPrice.delDiscountPrice +
+          totalDiscountPrice.userDiscountPrice)
+    );
+  }, [totalPrice, totalDelPrice, totalDiscountPrice]);
+
   ////// TOGGLE //////
   const choiceModalToggle = useCallback(() => {
     setChoiceModal((prev) => !prev);
@@ -77,28 +160,20 @@ const CartList = () => {
   // 상품 선택
   const selectCartHandler = useCallback(
     (data) => {
-      if (selectCart) {
+      let selectCartArr = selectCart.map((value) => value);
+
+      if (selectCartArr.find((value) => value.id === data.id)) {
+        setSelectCart(selectCartArr.filter((value) => value.id !== data.id));
+
+        return;
       }
 
-      setSelectCart(data);
+      selectCartArr.push(data);
+
+      setSelectCart(selectCartArr);
     },
     [selectCart]
   );
-
-  // 배송비 계산
-  const weightDeliveryPrice = (weight, benefit) => {
-    let price = 0;
-
-    if (weight === 0.5) {
-      price = 9900;
-    } else if (weight > 0.5 && weight < 15.5) {
-      price = 10000 + ((weight - 0.5) / 0.5) * 2000;
-    } else {
-      price = 70000 + ((weight - 15.5) / 0.5) * 1500;
-    }
-
-    return price;
-  };
 
   ////// DATAVIEW //////
 
@@ -196,7 +271,12 @@ const CartList = () => {
                               fontWeight={`600`}
                               margin={`10px 0`}
                             >
-                              <Checkbox />
+                              <Checkbox
+                                checked={selectCart.find(
+                                  (value) => value.id === data.id
+                                )}
+                                onChange={() => selectCartHandler(data)}
+                              />
                               <Text padding={`0 0 0 15px`}>
                                 {data.productTitle}
                               </Text>
@@ -263,7 +343,12 @@ const CartList = () => {
                         </Wrapper>
                       ) : (
                         <List key={idx}>
-                          <Checkbox />
+                          <Checkbox
+                            checked={selectCart.find(
+                              (value) => value.id === data.id
+                            )}
+                            onChange={() => selectCartHandler(data)}
+                          />
                           <Wrapper
                             width={`calc(100% - 16px - 127px - 127px - 127px)`}
                             dr={`row`}
@@ -383,36 +468,43 @@ const CartList = () => {
 
                   <BoxText fontSize={`18px`}>
                     <Text>총 상품금액</Text>
-                    <Text fontWeight={`600`}>18,000원</Text>
+                    <Text fontWeight={`600`}>
+                      {numberWithCommas(totalPrice)}원
+                    </Text>
                   </BoxText>
 
                   <BoxText>
                     <Text>총 무게</Text>
-                    <Text fontWeight={`600`}>240g</Text>
+                    <Text fontWeight={`600`}>{totalWeight}kg</Text>
                   </BoxText>
                   <BoxText>
                     <Text>총 배송비</Text>
-                    <Text fontWeight={`600`}>6,000원</Text>
+                    <Text fontWeight={`600`}>
+                      {numberWithCommas(totalDelPrice)}원
+                    </Text>
                   </BoxText>
                   <BoxText margin={`0 0 13px`}>
                     <Text>총 할인금액</Text>
-                    <Text fontWeight={`600`}>4,000원</Text>
+                    <Text fontWeight={`600`}>
+                      {numberWithCommas(
+                        totalDiscountPrice.delDiscountPrice +
+                          totalDiscountPrice.userDiscountPrice
+                      )}
+                      원
+                    </Text>
                   </BoxText>
                   <SubText>
                     <Text>ㄴ배송 할인금액</Text>
-                    <Text>-2,000원</Text>
+                    <Text>
+                      -{numberWithCommas(totalDiscountPrice.delDiscountPrice)}원
+                    </Text>
                   </SubText>
                   <SubText>
                     <Text>ㄴ회원 할인금액(00%)</Text>
-                    <Text>-2,000원</Text>
-                  </SubText>
-                  <SubText>
-                    <Text>ㄴ쿠폰 사용</Text>
-                    <Text>-0원</Text>
-                  </SubText>
-                  <SubText margin={`0 0 30px`}>
-                    <Text>ㄴ포인트 사용</Text>
-                    <Text>-0원</Text>
+                    <Text>
+                      -{numberWithCommas(totalDiscountPrice.userDiscountPrice)}
+                      원
+                    </Text>
                   </SubText>
                   <Wrapper
                     dr={`row`}
@@ -422,7 +514,7 @@ const CartList = () => {
                   >
                     <Text fontSize={`18px`}>총 결제금액</Text>
                     <Text fontSize={`24px`} fontWeight={`bold`}>
-                      22,000원
+                      {numberWithCommas(totalBuyPrice)}원
                     </Text>
                   </Wrapper>
                   <CommonButton

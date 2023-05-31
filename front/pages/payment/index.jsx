@@ -87,7 +87,7 @@ const Index = () => {
   // 쿠폰 선택
   const [selectCoupon, setSelectCoupon] = useState(null);
 
-  // 포이트 사용
+  // 포인트 사용
   const [usePoint, setUsePoint] = useState(null);
 
   // 총 상품금액
