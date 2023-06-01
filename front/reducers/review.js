@@ -6,6 +6,7 @@ export const initailState = {
   reviewAdminList: [], //관리자리스트
   myReviewDetail: null, //나의리뷰내역상세
   productReviewList: [], //상품 별 리뷰 리스트
+  reviewAdminList: [], // 상품 리뷰 관리자 리스트
 
   //   requestMyList: [], //마이페이지 상품요청리스트
 
@@ -28,6 +29,10 @@ export const initailState = {
   st_myReviewListDetailLoading: false, // 나의 리뷰내역 상세목록 가져오기
   st_myReviewListDetailDone: false,
   st_myReviewListDetailError: null,
+  //
+  st_reviewAdminListLoading: false,
+  st_reviewAdminListDone: false,
+  st_reviewAdminListError: null,
   //
   st_myReviewCreateLoading: false, // 리뷰 작성하기
   st_myReviewCreateDone: false,
@@ -69,6 +74,10 @@ export const PRODUCT_REVIEW_FAILURE = "PRODUCT_REVIEW_FAILURE";
 export const MY_REVIEW_DETAIL_REQUEST = "MY_REVIEW_DETAIL_REQUEST"; // 나의 리뷰내역 상세목록 가져오기
 export const MY_REVIEW_DETAIL_SUCCESS = "MY_REVIEW_DETAIL_SUCCESS";
 export const MY_REVIEW_DETAIL_FAILURE = "MY_REVIEW_DETAIL_FAILURE";
+
+export const REVIEW_ADMIN_LIST_REQUEST = "REVIEW_ADMIN_LIST_REQUEST"; // 리뷰 관리자 리스트
+export const REVIEW_ADMIN_LIST_SUCCESS = "REVIEW_ADMIN_LIST_SUCCESS";
+export const REVIEW_ADMIN_LIST_FAILURE = "REVIEW_ADMIN_LIST_FAILURE";
 
 export const REVIEW_CREATE_REQUEST = "REVIEW_CREATE_REQUEST"; // 리뷰 작성하기
 export const REVIEW_CREATE_SUCCESS = "REVIEW_CREATE_SUCCESS";
@@ -173,6 +182,28 @@ const reducer = (state = initailState, action) =>
         draft.st_myReviewListDetailLoading = false;
         draft.st_myReviewListDetailDone = false;
         draft.st_myReviewListDetailError = action.error;
+        break;
+      }
+
+      //////////////////////////////////////////////
+      case REVIEW_ADMIN_LIST_REQUEST: {
+        draft.st_reviewAdminListLoading = true;
+        draft.st_reviewAdminListDone = false;
+        draft.st_reviewAdminListError = null;
+        break;
+      }
+      case REVIEW_ADMIN_LIST_SUCCESS: {
+        draft.st_reviewAdminListLoading = false;
+        draft.st_reviewAdminListDone = true;
+        draft.st_reviewAdminListError = null;
+        draft.reviewAdminList = action.data;
+
+        break;
+      }
+      case REVIEW_ADMIN_LIST_FAILURE: {
+        draft.st_reviewAdminListLoading = false;
+        draft.st_reviewAdminListDone = false;
+        draft.st_reviewAdminListError = action.error;
         break;
       }
 

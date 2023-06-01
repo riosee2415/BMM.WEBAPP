@@ -115,6 +115,11 @@ export const items = {
       link: "/admin/product",
       useYn: true,
     },
+    {
+      name: "리뷰관리",
+      link: "/admin/product/review",
+      useYn: true,
+    },
   ],
   게시판관리: [
     {

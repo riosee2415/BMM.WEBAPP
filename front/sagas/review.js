@@ -5,6 +5,10 @@ import {
   MY_REVIEW_SUCCESS,
   MY_REVIEW_FAILURE,
   //
+  REVIEW_ADMIN_LIST_REQUEST,
+  REVIEW_ADMIN_LIST_SUCCESS,
+  REVIEW_ADMIN_LIST_FAILURE,
+  //
   REVIEW_CREATE_REQUEST,
   REVIEW_CREATE_SUCCESS,
   REVIEW_CREATE_FAILURE,
@@ -61,6 +65,34 @@ function* myReviewList(action) {
     });
   }
 }
+// ******************************************************************************************************************
+// ******************************************************************************************************************
+// ******************************************************************************************************************
+
+// ******************************************************************************************************************
+// SAGA AREA ********************************************************************************************************
+// ******************************************************************************************************************
+async function reviewAdminListAPI(data) {
+  return await axios.post(`/api/review/admin/list`, data);
+}
+
+function* reviewAdminList(action) {
+  try {
+    const result = yield call(reviewAdminListAPI, action.data);
+
+    yield put({
+      type: REVIEW_ADMIN_LIST_SUCCESS,
+      data: result.data,
+    });
+  } catch (err) {
+    console.error(err);
+    yield put({
+      type: REVIEW_ADMIN_LIST_FAILURE,
+      error: err.response.data,
+    });
+  }
+}
+
 // ******************************************************************************************************************
 // ******************************************************************************************************************
 // ******************************************************************************************************************
@@ -286,6 +318,9 @@ function* watchmyReviewList() {
 function* watchProductReviewList() {
   yield takeLatest(PRODUCT_REVIEW_REQUEST, productReviewList);
 }
+function* watchReviewAdminList() {
+  yield takeLatest(REVIEW_ADMIN_LIST_REQUEST, reviewAdminList);
+}
 function* watchreviewCreate() {
   yield takeLatest(REVIEW_CREATE_REQUEST, reviewCreate);
 }
@@ -312,6 +347,7 @@ export default function* reviewSaga() {
   yield all([
     fork(watchmyReviewList),
     fork(watchProductReviewList),
+    fork(watchReviewAdminList),
     fork(watchreviewCreate),
     fork(watchreviewUpdate),
     fork(watchreviewDelete),
