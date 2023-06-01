@@ -203,6 +203,21 @@ const Index = () => {
   const dispatch = useDispatch();
 
   ////// REDUX //////
+  // 배송비 계산
+  const weightDeliveryPrice = (weight) => {
+    let price = 0;
+
+    if (weight === 0.5) {
+      price = 9900;
+    } else if (weight > 0.5 && weight < 15.5) {
+      price = 10000 + ((weight - 0.5) / 0.5) * 2000;
+    } else {
+      price = 70000 + ((weight - 15.5) / 0.5) * 1500;
+    }
+
+    return price;
+  };
+
   ////// USEEFFECT //////
   useEffect(() => {
     if (router.query) {
@@ -329,12 +344,18 @@ const Index = () => {
   useEffect(() => {
     let num = 0;
 
-    if (option.length !== 0) {
-      option.map((item) => (num += item.price * item.cnt));
+    if (productDetail && option.length !== 0) {
+      option.map(
+        (item) =>
+          (num +=
+            (productDetail.detailData.marketPrice + item.price) * item.cnt)
+      );
     }
 
+    console.log(num);
+
     setSelectOptionPrice(num);
-  }, [option]);
+  }, [option, productDetail]);
 
   // 갯수 선택
   const quantityHandler = useCallback(
@@ -675,7 +696,13 @@ const Index = () => {
                                 fontSize={width < 900 ? `15px` : `20px`}
                                 fontWeight={`600`}
                               >
-                                {numberWithCommas(item.price * item.cnt)}원
+                                {productDetail &&
+                                  numberWithCommas(
+                                    (productDetail.detailData.marketPrice +
+                                      item.price) *
+                                      item.cnt
+                                  )}
+                                원
                               </Text>
                               <Text
                                 isHover
@@ -704,11 +731,7 @@ const Index = () => {
                     fontSize={width < 900 ? `20px` : `32px`}
                     fontWeight={`bold`}
                   >
-                    {productDetail &&
-                      numberWithCommas(
-                        productDetail.detailData.calcPrice + selectOptionPrice
-                      )}
-                    원
+                    {productDetail && numberWithCommas(selectOptionPrice)}원
                   </Text>
                 </Wrapper>
 
@@ -1166,7 +1189,15 @@ const Index = () => {
                           al={`flex-start`}
                           padding={width < 900 ? `15px 10px` : `20px 22px`}
                         >
-                          <Text>· 해당 내용이 들어오는 곳입니다.</Text>
+                          <Text>
+                            {productDetail &&
+                              numberWithCommas(
+                                weightDeliveryPrice(
+                                  productDetail.detailData.weight
+                                )
+                              )}
+                            원
+                          </Text>
                         </Wrapper>
                       </Wrapper>
                       <Wrapper
@@ -1456,7 +1487,13 @@ const Index = () => {
                                 fontSize={width < 900 ? `15px` : `20px`}
                                 fontWeight={`600`}
                               >
-                                {numberWithCommas(item.price * item.cnt)}원
+                                {productDetail &&
+                                  numberWithCommas(
+                                    (productDetail.detailData.marketPrice +
+                                      item.price) *
+                                      item.cnt
+                                  )}
+                                원
                               </Text>
                               <Text
                                 isHover
@@ -1484,11 +1521,7 @@ const Index = () => {
                     fontSize={width < 900 ? `20px` : `32px`}
                     fontWeight={`bold`}
                   >
-                    {productDetail &&
-                      numberWithCommas(
-                        productDetail.detailData.calcPrice + selectOptionPrice
-                      )}
-                    원
+                    {productDetail && numberWithCommas(selectOptionPrice)}원
                   </Text>
                 </Wrapper>
                 <CommonButton
@@ -1655,7 +1688,13 @@ const Index = () => {
                               fontSize={width < 900 ? `15px` : `20px`}
                               fontWeight={`600`}
                             >
-                              {numberWithCommas(item.price * item.cnt)}원
+                              {productDetail &&
+                                numberWithCommas(
+                                  (productDetail.detailData.marketPrice +
+                                    item.price) *
+                                    item.cnt
+                                )}
+                              원
                             </Text>
                             <Text
                               isHover
@@ -1683,11 +1722,7 @@ const Index = () => {
                   fontSize={width < 900 ? `20px` : `32px`}
                   fontWeight={`bold`}
                 >
-                  {productDetail &&
-                    numberWithCommas(
-                      productDetail.detailData.calcPrice + selectOptionPrice
-                    )}
-                  원
+                  {productDetail && numberWithCommas(selectOptionPrice)}원
                 </Text>
               </Wrapper>
               <Wrapper dr={`row`} ju={`space-between`}>
