@@ -687,6 +687,40 @@ router.post("/best/list", async (req, res, next) => {
       })
     );
 
+    const optionQuery = `
+  SELECT ROW_NUMBER()    OVER(ORDER  BY A.createdAt)     AS num,
+         A.id,
+         A.value,
+         A.price,
+         FORMAT(A.price, 0)                              AS formatPrice,
+         CONCAT(FORMAT(A.price, 0), "원")                 AS concatPrice,
+         A.ProductId,
+         A.createdAt,
+         A.updatedAt,
+         DATE_FORMAT(A.createdAt, "%Y년 %m월 %d일")        AS viewCreatedAt,                
+         DATE_FORMAT(A.createdAt, "%Y.%m.%d")            AS viewFrontCreatedAt,                
+         DATE_FORMAT(A.updatedAt, "%Y년 %m월 %d일")        AS viewUpdatedAt,
+         B.username                                      AS updator           
+    FROM productOption       A
+    LEFT
+   OUTER
+    JOIN users               B
+      ON A.updator = B.id
+   WHERE A.isDelete = 0
+   ORDER BY num DESC
+  `;
+
+    const options = await models.sequelize.query(optionQuery);
+    productList.map((ele) => {
+      ele["options"] = [];
+
+      options[0].map((innerItem) => {
+        if (parseInt(ele.id) === parseInt(innerItem.ProductId)) {
+          ele.options.push(innerItem);
+        }
+      });
+    });
+
     return res.status(200).json({
       types: findCategroryData[0],
       productList,

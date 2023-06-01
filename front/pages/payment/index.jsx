@@ -26,6 +26,7 @@ import { useSelector } from "react-redux";
 import { COUPON_SEARCH_REQUEST } from "../../reducers/coupon";
 import { numberWithCommas } from "../../components/commonUtils";
 import { useRouter } from "next/router";
+import moment from "moment";
 
 const List = styled(Wrapper)`
   height: 100px;
@@ -153,7 +154,7 @@ const Index = () => {
       form.resetFields();
     }
   }, [value]);
-  console.log(orderData);
+
   // 금액 측정
   useEffect(() => {
     if (orderData && me && orderData.length > 0) {
@@ -303,6 +304,38 @@ const Index = () => {
     setUsePoint(getFormData.point);
   }, [usePoint, me]);
 
+  // 결제
+  const paymentHadnler = useCallback(
+    (data) => {
+      cookiepayments.init({
+        api_id: "ooh5giv2h4w", //쿠키페이 연동 id
+        api_key: "5bf9c19f1ad8bcdadf2ba2d781be595958979eb05d818607c8", //쿠키 페이 연동 key
+      });
+
+      const orderNo = "ORDER" + moment().format("x");
+
+      cookiepayments.payrequest({
+        ORDERNO: orderNo, //주문번호 필수
+        PRODUCTNAME: "테스트", //상품명 필수
+        AMOUNT: 150, //결제 금액 필수
+        BUYERNAME: "홍민기", //고객명 필수
+        BUYEREMAIL: "4leaf.hmg@gmail.com", //고객 이메일 필수
+        RETURNURL: "http://localhost:3000/payment", //결제 결과값을 받을 url 필수
+      });
+      // .then((data) => console.log("data", data));
+      // PAYMETHOD: $("#PAYMETHOD").val(), //결제 수단 선택 default :CARD PRODUCTCODE : $("#PRODUCTCODE").val(), //상품코드 선택
+      // BUYERID: $("#BUYERID").val(), //고객 아이디 선택
+      // BUYERADDRESS: $("#BUYERADDRESS").val(), //고객 주소 선택
+      // BUYERPHONE: $("#BUYERPHONE").val(), //고객 휴대폰번호 선택, 단 웰컴페이시 필수 값
+      // ETC1 : $("#ETC1").val(), //추가 필드1 선택
+      // ETC2: $("#ETC2").val(), //추가 필드2 선택
+      // ETC3: $("#ETC3").val(), //추가 필드3 선택
+      // ETC4: $("#ETC4").val(), //추가 필드4 선택
+      // ETC5: $("#ETC5").val(), //추가 필드5 선택
+    },
+    [router]
+  );
+
   ////// DATAVIEW //////
 
   return (
@@ -343,7 +376,7 @@ const Index = () => {
                 </Text>
               </Wrapper>
             </Wrapper>
-            <CustomForm layout="inline" form={form}>
+            <CustomForm layout="inline" form={form} onFinish={paymentHadnler}>
               <Wrapper dr={`row`} ju={`space-between`} al={`flex-start`}>
                 <Wrapper width={width < 900 ? `100%` : `65%`}>
                   <Wrapper
