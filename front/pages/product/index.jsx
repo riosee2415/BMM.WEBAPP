@@ -260,6 +260,10 @@ const Index = () => {
         return message.error("로그인 후 이용해주세요.");
       }
 
+      if (st_itemCreateLoading) {
+        return;
+      }
+
       if (!oData) {
         return message.info("잠시 후 다시 시도해주세요.");
       }
@@ -284,7 +288,7 @@ const Index = () => {
         },
       });
     },
-    [me, oData]
+    [me, oData, st_itemCreateLoading]
   );
 
   ////// DATAVIEW //////

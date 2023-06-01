@@ -30,7 +30,7 @@ import { RightOutlined } from "@ant-design/icons";
 import { ADVERTISE_LIST_REQUEST } from "../reducers/advertise";
 import { EVENT_LIST_REQUEST } from "../reducers/event";
 import Link from "next/dist/client/link";
-import { Empty, message } from "antd";
+import { Empty, Modal, message } from "antd";
 import {
   PRODUCT_BEST_LIST_REQUEST,
   PRODUCT_LECO_LIST_REQUEST,
@@ -38,6 +38,8 @@ import {
 } from "../reducers/product";
 import { useState } from "react";
 import { LIKE_CREATE_REQUEST } from "../reducers/like";
+import { ITEM_CREATE_REQUEST } from "../reducers/wish";
+import { useRouter } from "next/router";
 
 const Btn = styled(Wrapper)`
   width: auto;
@@ -101,6 +103,19 @@ const EventBox = styled(Wrapper)`
   }
 `;
 
+const OptionModal = styled(Modal)`
+  & .ant-modal-body {
+    padding: 0px;
+  }
+`;
+
+const OptionWrapper = styled(Wrapper)`
+  cursor: pointer;
+  &:hover {
+    background-color: ${(props) => props.theme.subTheme_C};
+  }
+`;
+
 const Home = ({}) => {
   ////// GLOBAL STATE //////
   const { advertiseList } = useSelector((state) => state.advertise);
@@ -113,12 +128,19 @@ const Home = ({}) => {
   } = useSelector((state) => state.product);
   const { st_likeCreateDone } = useSelector((state) => state.like);
   const { me } = useSelector((state) => state.user);
+  const { st_itemCreateLoading, st_itemCreateDone, st_itemCreateError } =
+    useSelector((state) => state.wish);
 
   ////// HOOKS //////
   const width = useWidth();
+  const router = useRouter();
 
   const [isLikeState, setIsLikeState] = useState(false);
   const [currentBestType, setCurrentBestType] = useState(null);
+
+  // 옵션 선택
+  const [oModal, setOModal] = useState(false);
+  const [oData, setOData] = useState(null);
 
   ////// REDUX //////
   const dispatch = useDispatch();
@@ -143,7 +165,31 @@ const Home = ({}) => {
       setCurrentBestType(productBestCategory[0].id);
     }
   }, [productBestCategory]);
+
+  useEffect(() => {
+    if (st_itemCreateDone) {
+      router.push("/payment/cartlist");
+      return message.success("장바구니에 추가되었습니다.");
+    }
+
+    if (st_itemCreateError) {
+      return message.error(st_itemCreateError);
+    }
+  }, [st_itemCreateDone, st_itemCreateError]);
   ////// TOGGLE //////
+  const oModalToggle = useCallback(
+    (data) => {
+      if (data) {
+        setOData(data);
+      } else {
+        setOData(null);
+      }
+
+      setOModal((prev) => !prev);
+    },
+    [oModal, oData]
+  );
+
   ////// HANDLER //////
 
   const likeCreateHandler = useCallback(
@@ -161,6 +207,45 @@ const Home = ({}) => {
       }
     },
     [isLikeState, me]
+  );
+
+  // 장바구니 담기
+  const itemCreateHandler = useCallback(
+    (data) => {
+      if (!me) {
+        router.push("/user/login");
+        return message.error("로그인 후 이용해주세요.");
+      }
+
+      if (st_itemCreateLoading) {
+        return;
+      }
+
+      if (!oData) {
+        return message.info("잠시 후 다시 시도해주세요.");
+      }
+
+      dispatch({
+        type: ITEM_CREATE_REQUEST,
+        data: {
+          ProductId: oData.id,
+          productPrice: oData.marketPrice,
+          productDiscount: oData.discount,
+          productTitle: oData.title,
+          productThumbnail: oData.thumbnail1,
+          productWeight: oData.weight,
+          optionList: [
+            {
+              optionName: data.value,
+              optionPrice: data.price,
+              optionId: data.id,
+              qun: 1,
+            },
+          ],
+        },
+      });
+    },
+    [me, oData]
   );
 
   ////// DATAVIEW //////
@@ -235,7 +320,7 @@ const Home = ({}) => {
                   );
                 })}
             </Wrapper>
-
+            {console.log(productBestList)}
             <Wrapper dr={`row`} ju={`flex-start`} al={`flex-start`}>
               {/* 최대 8개 */}
               {productBestList &&
@@ -300,6 +385,7 @@ const Home = ({}) => {
                               width={width < 800 ? `18px` : `21px`}
                               alt="cart icon"
                               margin={`0 14px 0 0`}
+                              onClick={() => oModalToggle(data)}
                               src={`https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/bmm/assets/images/header/icon_cart.png`}
                             />
                             {data.isLike === 0 ? (
@@ -382,6 +468,51 @@ const Home = ({}) => {
             )}
           </RsWrapper>
           <Popup />
+
+          <OptionModal
+            title="옵션 선택"
+            visible={oModal}
+            onCancel={() => oModalToggle(null)}
+            footer={null}
+          >
+            <Wrapper
+              bgColor={Theme.basicTheme_C}
+              dr={`row`}
+              ju={`space-between`}
+              padding={`10px`}
+              color={Theme.white_C}
+            >
+              <Text>옵션명</Text>
+              <Text>가격</Text>
+            </Wrapper>
+            {oData &&
+              (oData.options.length === 0 ? (
+                <Wrapper margin={`30px`}>
+                  <Empty description="상품에 옵션이 없습니다." />
+                </Wrapper>
+              ) : (
+                oData.options.map((data, idx) => {
+                  return (
+                    <OptionWrapper
+                      key={idx}
+                      dr={`row`}
+                      ju={`space-between`}
+                      borderTop={idx === 0 && `1px solid ${Theme.basicTheme_C}`}
+                      borderBottom={`1px solid ${Theme.basicTheme_C}`}
+                      padding={`10px`}
+                      onClick={() => itemCreateHandler(data)}
+                    >
+                      <Text width={`60%`} isEllipsis>
+                        {data.value}
+                      </Text>
+                      <Text width={`40%`} isEllipsis textAlign={`end`}>
+                        {data.concatPrice}
+                      </Text>
+                    </OptionWrapper>
+                  );
+                })
+              ))}
+          </OptionModal>
         </WholeWrapper>
       </ClientLayout>
     </>
