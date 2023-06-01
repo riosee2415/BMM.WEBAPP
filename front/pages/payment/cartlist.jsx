@@ -18,9 +18,14 @@ import {
 import styled from "styled-components";
 import { Checkbox, Empty, Modal, message } from "antd";
 import { CloseOutlined, MinusOutlined, PlusOutlined } from "@ant-design/icons";
-import { ITEM_LIST_VIEW_REQUEST } from "../../reducers/wish";
-import { useSelector } from "react-redux";
+import {
+  ITEM_DELETE_ALL_REQUEST,
+  ITEM_LIST_VIEW_REQUEST,
+  ITEM_UPDATE_REQUEST,
+} from "../../reducers/wish";
+import { useDispatch, useSelector } from "react-redux";
 import { numberWithCommas } from "../../components/commonUtils";
+import { useRouter } from "next/router";
 
 const List = styled(Wrapper)`
   height: 100px;
@@ -52,9 +57,21 @@ const SubText = styled(Wrapper)`
 const CartList = () => {
   ////// GLOBAL STATE //////
   const { me } = useSelector((state) => state.user);
-  const { itemListView } = useSelector((state) => state.wish);
+  const {
+    itemListView,
+    //
+    st_itemDeleteAllLoading,
+    st_itemDeleteAllDone,
+    st_itemDeleteAllError,
+    //
+    st_itemUpdateLoading,
+    st_itemUpdateDone,
+    st_itemUpdateError,
+  } = useSelector((state) => state.wish);
   ////// HOOKS //////
   const width = useWidth();
+  const router = useRouter();
+  const dispatch = useDispatch();
 
   const [choiceModal, setChoiceModal] = useState(false);
   const [isModal, setIsModal] = useState(false);
@@ -146,6 +163,40 @@ const CartList = () => {
     );
   }, [totalPrice, totalDelPrice, totalDiscountPrice]);
 
+  // 전체 삭제 및 선택 삭제 후처리
+  useEffect(() => {
+    if (st_itemDeleteAllDone) {
+      dispatch({
+        type: ITEM_LIST_VIEW_REQUEST,
+      });
+
+      setSelectCart([]);
+
+      return message.success("상품이 삭제되었습니다.");
+    }
+
+    if (st_itemDeleteAllError) {
+      return message.error(st_itemDeleteAllError);
+    }
+  }, [st_itemDeleteAllDone, st_itemDeleteAllError]);
+
+  // 상품 수량 수정
+  useEffect(() => {
+    if (st_itemUpdateDone) {
+      dispatch({
+        type: ITEM_LIST_VIEW_REQUEST,
+      });
+
+      setSelectCart([]);
+
+      return message.success("상품 수량이 수정되었습니다.");
+    }
+
+    if (st_itemUpdateError) {
+      return message.error(st_itemUpdateError);
+    }
+  }, [st_itemUpdateDone, st_itemUpdateError]);
+
   ////// TOGGLE //////
   const choiceModalToggle = useCallback(() => {
     setChoiceModal((prev) => !prev);
@@ -173,6 +224,87 @@ const CartList = () => {
       setSelectCart(selectCartArr);
     },
     [selectCart]
+  );
+
+  // 상품 전체 선택
+  const selectAllCartHandler = useCallback(() => {
+    if (selectCart.length > 0) {
+      setSelectCart([]);
+      return;
+    }
+
+    setSelectCart(itemListView.map((data) => data));
+  }, [selectCart, itemListView]);
+
+  // 전체 삭제 및 선택 삭제
+  const itemDeleteHandler = useCallback(
+    (type) => {
+      if (st_itemDeleteAllLoading) {
+        return;
+      }
+
+      // 전체 삭제
+      if (type === 1) {
+        dispatch({
+          type: ITEM_DELETE_ALL_REQUEST,
+          data: {
+            itemIds: itemListView.map((value) => value.id),
+          },
+        });
+      }
+      // 선택 삭제
+      else {
+        if (!selectCart || selectCart.length === 0) {
+          return message.info("상품을 선택해주세요.");
+        }
+
+        dispatch({
+          type: ITEM_DELETE_ALL_REQUEST,
+          data: {
+            itemIds: selectCart.map((data) => data.id),
+          },
+        });
+      }
+    },
+    [itemListView, selectCart, st_itemDeleteAllLoading]
+  );
+
+  // 전체상품주문 및 선택상품주문
+  const orderHandler = useCallback(
+    (type) => {
+      // 전체상품주문
+      if (type === 1) {
+        sessionStorage.setItem("BMM_ORDER", JSON.stringify(itemListView));
+        router.push("/payment");
+      }
+      // 선택상품주문
+      else {
+        sessionStorage.setItem("BMM_ORDER", JSON.stringify(selectCart));
+        router.push("/payment");
+      }
+    },
+    [selectCart, itemListView]
+  );
+
+  // 수량 변경
+  const qunChnageHandler = useCallback(
+    (id, qun) => {
+      if (st_itemUpdateLoading) {
+        return;
+      }
+
+      if (qun === 0) {
+        return message.info("주문 수량을 더 줄일 수 없습니다.");
+      }
+      dispatch({
+        type: ITEM_UPDATE_REQUEST,
+        data: {
+          id: id,
+          qun: qun,
+        },
+      });
+    },
+    [st_itemUpdateLoading]
   );
 
   ////// DATAVIEW //////
@@ -221,15 +353,28 @@ const CartList = () => {
                 ju={`space-between`}
                 margin={`0 0 15px`}
               >
-                <Checkbox>
+                <Checkbox
+                  onClick={selectAllCartHandler}
+                  checked={
+                    selectCart &&
+                    itemListView &&
+                    (itemListView.length === 0
+                      ? false
+                      : selectCart.length === itemListView.length)
+                  }
+                >
                   <Text color={Theme.grey2_C}>전체 선택</Text>
                 </Checkbox>
                 <Wrapper width={`auto`} dr={`row`} color={Theme.grey2_C}>
-                  <Text isHover>전체 삭제</Text>
+                  <Text isHover onClick={() => itemDeleteHandler(1)}>
+                    전체 삭제
+                  </Text>
                   <Text fontSize={`10px`} margin={`0 8px`}>
                     |
                   </Text>
-                  <Text isHover>선택 삭제</Text>
+                  <Text isHover onClick={() => itemDeleteHandler(2)}>
+                    선택 삭제
+                  </Text>
                 </Wrapper>
               </Wrapper>
             </Wrapper>
@@ -256,7 +401,7 @@ const CartList = () => {
                 </Wrapper>
                 {itemListView &&
                   (itemListView.length === 0 ? (
-                    <Wrapper>
+                    <Wrapper margin={`30px 0`}>
                       <Empty description="장바구니에 담은 상품이 없습니다." />
                     </Wrapper>
                   ) : (
@@ -343,6 +488,7 @@ const CartList = () => {
                         </Wrapper>
                       ) : (
                         <List key={idx}>
+                          {console.log(data)}
                           <Checkbox
                             checked={selectCart.find(
                               (value) => value.id === data.id
@@ -352,9 +498,7 @@ const CartList = () => {
                           <Wrapper
                             width={`calc(100% - 16px - 127px - 127px - 127px)`}
                             dr={`row`}
-                            ju={`flex-start`}
-                            fontSize={`18px`}
-                            fontWeight={`600`}
+                            ju={`space-between`}
                             padding={`0 0 0 14px`}
                           >
                             <Image
@@ -363,9 +507,17 @@ const CartList = () => {
                               width={`64px`}
                               height={`64px`}
                             />
-                            <Text padding={`0 0 0 14px`}>
-                              {data.productTitle}
-                            </Text>
+                            <Wrapper
+                              width={`calc(100% - 70px)`}
+                              al={`flex-start`}
+                            >
+                              <Text fontSize={`18px`} fontWeight={`600`}>
+                                {data.productTitle}
+                              </Text>
+                              <Text fontSize={`14px`} color={Theme.grey2_C}>
+                                {data.optionName}
+                              </Text>
+                            </Wrapper>
                           </Wrapper>
                           <Wrapper width={`127px`}>
                             <Wrapper
@@ -379,6 +531,9 @@ const CartList = () => {
                                 cursor={`pointer`}
                                 height={`35px`}
                                 fontSize={`12px`}
+                                onClick={() =>
+                                  qunChnageHandler(data.id, data.qun - 1)
+                                }
                               >
                                 <MinusOutlined />
                               </Wrapper>
@@ -398,6 +553,9 @@ const CartList = () => {
                                 cursor={`pointer`}
                                 height={`35px`}
                                 fontSize={`12px`}
+                                onClick={() =>
+                                  qunChnageHandler(data.id, data.qun + 1)
+                                }
                               >
                                 <PlusOutlined />
                               </Wrapper>
@@ -463,7 +621,7 @@ const CartList = () => {
                     margin={`0 0 16px`}
                     padding={`0 0 16px`}
                   >
-                    총 2개의 상품
+                    총 {selectCart.length}개의 상품
                   </Wrapper>
 
                   <BoxText fontSize={`18px`}>
@@ -499,13 +657,13 @@ const CartList = () => {
                       -{numberWithCommas(totalDiscountPrice.delDiscountPrice)}원
                     </Text>
                   </SubText>
-                  <SubText>
+                  {/* <SubText>
                     <Text>ㄴ회원 할인금액(00%)</Text>
                     <Text>
                       -{numberWithCommas(totalDiscountPrice.userDiscountPrice)}
                       원
                     </Text>
-                  </SubText>
+                  </SubText> */}
                   <Wrapper
                     dr={`row`}
                     ju={`space-between`}
@@ -524,7 +682,15 @@ const CartList = () => {
                     width={`100%`}
                     height={`54px`}
                     margin={`30px 0 10px`}
-                    onClick={choiceModalToggle}
+                    onClick={() =>
+                      selectCart &&
+                      selectCart.length > 0 &&
+                      selectCart
+                        .map((data) => data.qun)
+                        .reduce((a, b) => a + b) > 6
+                        ? choiceModalToggle()
+                        : orderHandler(1)
+                    }
                   >
                     전체 상품 주문
                   </CommonButton>
@@ -653,7 +819,7 @@ const CartList = () => {
                   kindOf={`white`}
                   width={`49%`}
                   height={`54px`}
-                  onClick={isModalToggle}
+                  onClick={() => orderHandler(2)}
                 >
                   상품 주문하기
                 </CommonButton>

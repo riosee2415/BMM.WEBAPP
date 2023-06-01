@@ -153,22 +153,30 @@ const Index = () => {
       form.resetFields();
     }
   }, [value]);
-
+  console.log(orderData);
   // 금액 측정
   useEffect(() => {
-    if (orderData && me) {
+    if (orderData && me && orderData.length > 0) {
       const wieghtDelPrice = weightDeliveryPrice(
-        orderData.map((data) => data.productWeight).reduce((a, b) => a + b)
+        orderData.map((data) => data.productWeight).length > 0
+          ? orderData.map((data) => data.productWeight).reduce((a, b) => a + b)
+          : 0
       );
 
-      // 총 상품긍맥
+      // 총 상품금액
       setTotalPrice(
-        orderData.map((data) => data.originRealPrice).reduce((a, b) => a + b)
+        orderData.map((data) => data.originRealPrice).length > 0
+          ? orderData
+              .map((data) => data.originRealPrice)
+              .reduce((a, b) => a + b)
+          : 0
       );
 
       // 총 무게
       setTotalWeight(
-        orderData.map((data) => data.productWeight).reduce((a, b) => a + b)
+        orderData.map((data) => data.productWeight).length > 0
+          ? orderData.map((data) => data.productWeight).reduce((a, b) => a + b)
+          : 0
       );
 
       // 총 배송비
@@ -1147,10 +1155,10 @@ const Index = () => {
                       <Text>ㄴ배송 할인금액</Text>
                       <Text>-{totalDiscountPrice.delDiscountPrice}원</Text>
                     </SubText>
-                    <SubText>
+                    {/* <SubText>
                       <Text>ㄴ회원 할인금액(00%)</Text>
                       <Text>-{totalDiscountPrice.userDiscountPrice}원</Text>
-                    </SubText>
+                    </SubText> */}
                     <SubText>
                       <Text>ㄴ쿠폰 사용</Text>
                       <Text>-{totalDiscountPrice.couponDiscountPrice}원</Text>
