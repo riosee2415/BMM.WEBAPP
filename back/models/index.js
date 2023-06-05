@@ -50,6 +50,7 @@ const wishlist = require("./wishlist");
 const wishitem = require("./wishitem");
 const boughthistory = require("./boughthistory");
 const review = require("./review");
+const boughtcancel = require("./boughtcancel");
 
 const env = process.env.NODE_ENV || "development";
 const config = require("../config/config")[env];
@@ -113,6 +114,7 @@ db.WishList = wishlist;
 db.WishItem = wishitem;
 db.BoughtHistory = boughthistory;
 db.Review = review;
+db.BoughtCancel = boughtcancel;
 
 Object.keys(db).forEach((modelName) => {
   db[modelName].init(sequelize);
