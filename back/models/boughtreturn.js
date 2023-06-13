@@ -1,15 +1,11 @@
 const DataTypes = require("sequelize");
 const { Model } = DataTypes;
 
-// 취소 / 환불 신청
-module.exports = class BoughtCancel extends Model {
+// 환불 신청
+module.exports = class BoughtReturn extends Model {
   static init(sequelize) {
     return super.init(
       {
-        type: {
-          type: DataTypes.INTEGER, // [1. 취소 신청 | 2. 환불 신청]
-          allowNull: false,
-        },
         receiverName: {
           type: DataTypes.STRING(50), // 수령인 이름
           allowNull: false,
@@ -40,15 +36,15 @@ module.exports = class BoughtCancel extends Model {
         },
         imagePath2: {
           type: DataTypes.STRING(600), // 상품 이미지 2
-          allowNull: false,
+          allowNull: true,
         },
         imagePath3: {
           type: DataTypes.STRING(600), // 상품 이미지 3
-          allowNull: false,
+          allowNull: true,
         },
         imagePath4: {
           type: DataTypes.STRING(600), // 상품 이미지 4
-          allowNull: false,
+          allowNull: true,
         },
         reason: {
           type: DataTypes.STRING(1000), // 환불 사유 (시안상에 셀렉트 박스로 되어있음.)
@@ -69,8 +65,8 @@ module.exports = class BoughtCancel extends Model {
         },
       },
       {
-        modelName: "BoughtCancel",
-        tableName: "boughtCancel",
+        modelName: "BoughtReturn",
+        tableName: "boughtReturn",
         charset: "utf8mb4",
         collate: "utf8mb4_general_ci", // 한글 저장
         sequelize,
@@ -78,6 +74,6 @@ module.exports = class BoughtCancel extends Model {
     );
   }
   static associate(db) {
-    db.BoughtCancel.belongsTo(db.User);
+    db.BoughtReturn.belongsTo(db.BoughtHistory);
   }
 };

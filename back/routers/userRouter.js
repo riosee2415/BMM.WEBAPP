@@ -1307,6 +1307,12 @@ router.post("/userExit", isLoggedIn, async (req, res, next) => {
    WHERE  id = ${req.user.id}
   `;
 
+  const updateQuery2 = `
+  UPDATE  users
+     SET  recommId = NULL
+   WHERE  recommId = "${req.user.userId}"
+  `;
+
   try {
     const findPasswordData = await models.sequelize.query(findPasswordQuery);
 
@@ -1324,6 +1330,7 @@ router.post("/userExit", isLoggedIn, async (req, res, next) => {
     }
 
     await models.sequelize.query(updateQuery);
+    await models.sequelize.query(updateQuery2);
 
     return res.status(200).json({ result: true });
   } catch (error) {
