@@ -4,6 +4,7 @@ export const initailState = {
   boughtAdminList: [], // 결제내역목록(관리자)
   items: [], // 장바구니 상품
   itemListView: [], // 장바구니 리스트
+  boughtId: null, // 구매아이디
   //
   st_itemCreateLoading: false, // 장바구니 상품 추가
   st_itemCreateDone: false,
@@ -28,6 +29,10 @@ export const initailState = {
   st_boughtAdminListLoading: false, // 결제내역 목록(관리자)
   st_boughtAdminListDone: false,
   st_boughtAdminListError: null,
+  //
+  st_boughtCreateLoading: false, // 구매하기
+  st_boughtCreateDone: false,
+  st_boughtCreateError: null,
   //
 };
 
@@ -55,6 +60,10 @@ export const ITEM_LIST_VIEW_FAILURE = "ITEM_LIST_VIEW_FAILURE";
 export const BOUGHT_ADMIN_LIST_REQUEST = "BOUGHT_ADMIN_LIST_REQUEST";
 export const BOUGHT_ADMIN_LIST_SUCCESS = "BOUGHT_ADMIN_LIST_SUCCESS";
 export const BOUGHT_ADMIN_LIST_FAILURE = "BOUGHT_ADMIN_LIST_FAILURE";
+// 구매하기
+export const BOUGHT_CREATE_REQUEST = "BOUGHT_CREATE_REQUEST";
+export const BOUGHT_CREATE_SUCCESS = "BOUGHT_CREATE_SUCCESS";
+export const BOUGHT_CREATE_FAILURE = "BOUGHT_CREATE_FAILURE";
 
 const reducer = (state = initailState, action) =>
   produce(state, (draft) => {
@@ -183,6 +192,27 @@ const reducer = (state = initailState, action) =>
         draft.st_boughtAdminListLoading = false;
         draft.st_boughtAdminListDone = false;
         draft.st_boughtAdminListError = action.error;
+        break;
+      }
+
+      //////////////////////////////////////////////
+      case BOUGHT_CREATE_REQUEST: {
+        draft.st_boughtCreateLoading = true;
+        draft.st_boughtCreateDone = false;
+        draft.st_boughtCreateError = null;
+        break;
+      }
+      case BOUGHT_CREATE_SUCCESS: {
+        draft.st_boughtCreateLoading = false;
+        draft.st_boughtCreateDone = true;
+        draft.st_boughtCreateError = null;
+        draft.boughtId = action.data.historyId;
+        break;
+      }
+      case BOUGHT_CREATE_FAILURE: {
+        draft.st_boughtCreateLoading = false;
+        draft.st_boughtCreateDone = false;
+        draft.st_boughtCreateError = action.error;
         break;
       }
 

@@ -24,6 +24,10 @@ import {
   BOUGHT_ADMIN_LIST_REQUEST,
   BOUGHT_ADMIN_LIST_SUCCESS,
   BOUGHT_ADMIN_LIST_FAILURE,
+  //
+  BOUGHT_CREATE_REQUEST,
+  BOUGHT_CREATE_SUCCESS,
+  BOUGHT_CREATE_FAILURE,
 } from "../reducers/wish";
 
 // ******************************************************************************************************************
@@ -167,6 +171,29 @@ function* boughtAdminList(action) {
 
 // ******************************************************************************************************************
 // ******************************************************************************************************************
+async function boughtCreateAPI(data) {
+  return await axios.post(`/api/wish/bought/create`, data);
+}
+
+function* boughtCreate(action) {
+  try {
+    const result = yield call(boughtCreateAPI, action.data);
+
+    yield put({
+      type: BOUGHT_CREATE_SUCCESS,
+      data: result.data,
+    });
+  } catch (err) {
+    console.error(err);
+    yield put({
+      type: BOUGHT_CREATE_FAILURE,
+      error: err.response.data,
+    });
+  }
+}
+
+// ******************************************************************************************************************
+// ******************************************************************************************************************
 
 //////////////////////////////////////////////////////////////
 function* watchItemCreate() {
@@ -187,6 +214,9 @@ function* watchItemListView() {
 function* watchBoughtAdminList() {
   yield takeLatest(BOUGHT_ADMIN_LIST_REQUEST, boughtAdminList);
 }
+function* watchBoughtCreate() {
+  yield takeLatest(BOUGHT_CREATE_REQUEST, boughtCreate);
+}
 
 //////////////////////////////////////////////////////////////
 export default function* wishSaga() {
@@ -197,7 +227,7 @@ export default function* wishSaga() {
     fork(watchItemDeleteAll),
     fork(watchItemListView),
     fork(watchBoughtAdminList),
-
+    fork(watchBoughtCreate),
     //
   ]);
 }
