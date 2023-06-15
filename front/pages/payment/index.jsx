@@ -329,7 +329,7 @@ const Index = () => {
         AMOUNT: 150, //결제 금액 필수
         BUYERNAME: data.name, //고객명 필수
         BUYEREMAIL: data.email, //고객 이메일 필수
-        RETURNURL: "http://localhost:3000/payment/orderresult", //결제 결과값을 받을 url 필수
+        RETURNURL: "https://buymemine.com/payment/orderresult", //결제 결과값을 받을 url 필수
       });
 
       dispatch({
