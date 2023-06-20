@@ -361,7 +361,7 @@ const Index = () => {
           payWay: payvalue === 1 ? "card" : "vbank",
           cardBankInfo: "cardBankInfo",
           cardInstallment: "cardInstallment",
-          userDiscountPrice: "userDiscountPrice",
+          userDiscountPrice: 0,
           wishItemIds: orderData.map((data) => data.id),
         })
       );
