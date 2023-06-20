@@ -329,42 +329,28 @@ const Index = () => {
         AMOUNT: 150, //결제 금액 필수
         BUYERNAME: data.name, //고객명 필수
         BUYEREMAIL: data.email, //고객 이메일 필수
-        RETURNURL: "https://buymemine.com/payment/orderresult", //결제 결과값을 받을 url 필수
-      });
-
-      dispatch({
-        type: BOUGHT_CREATE_REQUEST,
-        data: {
-          price: "price",
-          totalPrice: totalPrice,
-          totalWeight: totalWeight,
-          totalDeliveryPrice: totalDelPrice,
-          name: data.name,
-          englishName: data.englishName,
-          clearanceNum: "clearanceNum",
-          email: data.email,
-          tel: data.tel,
-          postCode: data.postCode,
-          address: data.address,
-          detailAddress: data.detailAddress,
-          deliveryMessage: data.deliveryMessage,
-          useCoupon: selectCoupon ? true : false,
-          couponPrice: selectCoupon
+        RETURNURL: `https://buymemine.com/payment/middleware?price=${totalPrice}&totalPrice=${totalBuyPrice}&totalWeight=${totalWeight}&totalDeliveryPrice=${totalDelPrice}&name=${
+          data.name
+        }&englishName=${data.englishName}&clearanceNum=${
+          data.clearanceNum
+        }&email=${data.email}&tel=${data.tel}&postCode=${
+          data.postCode
+        }&address=${data.address}&detailAddress=${
+          data.detailAddress
+        }&deliveryMessage=${data.deliveryMessage}&useCoupon=${
+          selectCoupon ? true : false
+        }&couponPrice=${
+          selectCoupon
             ? couponSearchList.find((data) => data.id === selectCoupon)
                 .discountPay
-            : 0,
-          CouponId: selectCoupon,
-          usePoint: usePoint ? true : false,
-          pointPrice: usePoint,
-          payWay: payvalue === 1 ? "card" : "vbank",
-          cardBankInfo: "cardBankInfo",
-          cardInstallment: "cardInstallment",
-          userDiscountPrice: "userDiscountPrice",
-          wishItemIds: "wishItemIds",
-        },
+            : 0
+        }&CouponId=${selectCoupon}&usePoint=${
+          usePoint ? true : false
+        }&pointPrice=${usePoint}&payWay=${
+          payvalue === 1 ? "card" : "vbank"
+        }&cardBankInf=cardBankInfo&cardInstallmen=cardInstallment&userDiscountPric=userDiscountPrice&wishItemId=wishItemId
+              `, //결제 결과값을 받을 url 필수
       });
-
-      console.log("2", test);
     },
     [router, payvalue]
   );
@@ -695,24 +681,30 @@ const Index = () => {
                       al={`flex-start`}
                     >
                       <Wrapper dr={`row`} ju={`flex-start`} margin={`0 0 10px`}>
-                        <TextInput
-                          width={width < 1100 ? `calc(100% - 120px)` : `265px`}
-                          height={`46px`}
-                          border={`1px solid ${Theme.lightGrey2_C}`}
-                          al={`flex-start`}
-                          margin={`0 10px 0 0`}
-                          placeholder="개인통관고유부호를 입력해주세요."
-                        />
-                        <CommonButton
-                          width={`110px`}
-                          height={`46px`}
-                          fontSize={width < 800 ? `14px` : `16px`}
-                          fontWeight={`600`}
-                          kindOf={`grey2`}
-                          padding={`0`}
+                        <Form.Item
+                          name="clearanceNum"
+                          rules={[
+                            {
+                              required: true,
+                              message: (
+                                <Text fontSize={width < 800 ? `14px` : `16px`}>
+                                  * 개인통관고유부호를 입력해주세요.
+                                </Text>
+                              ),
+                            },
+                          ]}
                         >
-                          번호 확인하기
-                        </CommonButton>
+                          <TextInput
+                            width={
+                              width < 1100 ? `calc(100% - 120px)` : `385px`
+                            }
+                            height={`46px`}
+                            border={`1px solid ${Theme.lightGrey2_C}`}
+                            al={`flex-start`}
+                            margin={`0 10px 0 0`}
+                            placeholder="개인통관고유부호를 입력해주세요."
+                          />
+                        </Form.Item>
                       </Wrapper>
                       <ATag
                         width={width < 1100 ? `100%` : `385px`}
