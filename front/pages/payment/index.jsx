@@ -329,28 +329,40 @@ const Index = () => {
         AMOUNT: 150, //결제 금액 필수
         BUYERNAME: data.name, //고객명 필수
         BUYEREMAIL: data.email, //고객 이메일 필수
-        RETURNURL: `https://buymemine.com/payment/middleware?price=${totalPrice}&totalPrice=${totalBuyPrice}&totalWeight=${totalWeight}&totalDeliveryPrice=${totalDelPrice}&name=${
-          data.name
-        }&englishName=${data.englishName}&clearanceNum=${
-          data.clearanceNum
-        }&email=${data.email}&tel=${data.tel}&postCode=${
-          data.postCode
-        }&address=${data.address}&detailAddress=${
-          data.detailAddress
-        }&deliveryMessage=${data.deliveryMessage}&useCoupon=${
-          selectCoupon ? true : false
-        }&couponPrice=${
-          selectCoupon
+        RETURNURL: `https://buymemine.com/payment/middleware`, //결제 결과값을 받을 url 필수
+      });
+
+      sessionStorage.setItem(
+        "bmm_boughtData",
+        JSON.stringify({
+          price: totalPrice,
+          totalPrice: totalBuyPrice,
+          totalWeight: totalWeight,
+          totalDeliveryPrice: totalDelPrice,
+          name: data.name,
+          englishName: data.englishName,
+          clearanceNum: data.clearanceNum,
+          email: data.email,
+          tel: data.tel,
+          postCode: data.postCode,
+          address: data.address,
+          detailAddress: data.detailAddress,
+          deliveryMessage: data.deliveryMessage,
+          useCoupon: selectCoupon ? true : false,
+          couponPrice: selectCoupon
             ? couponSearchList.find((data) => data.id === selectCoupon)
                 .discountPay
-            : 0
-        }&CouponId=${selectCoupon}&usePoint=${
-          usePoint ? true : false
-        }&pointPrice=${usePoint}&payWay=${
-          payvalue === 1 ? "card" : "vbank"
-        }&cardBankInf=cardBankInfo&cardInstallmen=cardInstallment&userDiscountPric=userDiscountPrice&wishItemId=wishItemId
-              `, //결제 결과값을 받을 url 필수
-      });
+            : 0,
+          CouponId: selectCoupon,
+          usePoint: usePoint ? true : false,
+          pointPrice: usePoint,
+          payWay: payvalue === 1 ? "card" : "vbank",
+          cardBankInfo: "cardBankInfo",
+          cardInstallment: "cardInstallment",
+          userDiscountPrice: "userDiscountPrice",
+          wishItemIds: "wishItemIds",
+        })
+      );
     },
     [router, payvalue]
   );

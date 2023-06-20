@@ -16,34 +16,16 @@ const Middleware = () => {
 
   useEffect(() => {
     if (router.query) {
-      dispatch({
-        type: BOUGHT_CREATE_REQUEST,
-        data: {
-          price: router.query.price,
-          totalPrice: router.query.totalPrice,
-          totalWeight: router.query.totalWeight,
-          totalDeliveryPrice: router.query.totalDeliveryPrice,
-          name: router.query.name,
-          englishName: router.query.englishName,
-          clearanceNum: router.query.clearanceNum,
-          email: router.query.email,
-          tel: router.query.tel,
-          postCode: router.query.postCode,
-          address: router.query.address,
-          detailAddress: router.query.detailAddress,
-          deliveryMessage: router.query.deliveryMessage,
-          useCoupon: router.query.useCoupon === "true" ? true : false,
-          couponPrice: router.query.couponPrice,
-          CouponId: router.query.CouponId,
-          usePoint: router.query.usePoint === "true" ? true : false,
-          pointPrice: router.query.pointPrice,
-          payWay: router.query.payWay,
-          cardBankInfo: router.query.cardBankInfo,
-          cardInstallment: router.query.cardInstallment,
-          userDiscountPrice: router.query.userDiscountPrice,
-          wishItemIds: router.query.wishItemIds,
-        },
-      });
+      const bmmBoughtData = sessionStorage.getItem("bmm_boughtData")
+        ? JSON.parse(sessionStorage.getItem("bmm_boughtData"))
+        : null;
+
+      if (bmmBoughtData) {
+        dispatch({
+          type: BOUGHT_CREATE_REQUEST,
+          data: bmmBoughtData,
+        });
+      }
     }
   }, [router.query]);
 
@@ -64,7 +46,7 @@ const Middleware = () => {
     }
 
     if (st_boughtCreateError) {
-      router.push("/");
+      //   router.push("/");
       return message.error(st_boughtCreateError);
     }
   }, [st_boughtCreateDone, st_boughtCreateError]);
