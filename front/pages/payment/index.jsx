@@ -216,6 +216,8 @@ const Index = () => {
     );
   }, [totalPrice, totalDelPrice, totalDiscountPrice]);
 
+  console.log(orderData);
+
   ////// TOGGLE //////
 
   // 우편 번호 검색 모달
@@ -360,11 +362,11 @@ const Index = () => {
           cardBankInfo: "cardBankInfo",
           cardInstallment: "cardInstallment",
           userDiscountPrice: "userDiscountPrice",
-          wishItemIds: "wishItemIds",
+          wishItemIds: orderData.map((data) => data.id),
         })
       );
     },
-    [router, payvalue]
+    [router, payvalue, orderData]
   );
 
   ////// DATAVIEW //////

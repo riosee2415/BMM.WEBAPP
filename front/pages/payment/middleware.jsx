@@ -20,6 +20,8 @@ const Middleware = () => {
         ? JSON.parse(sessionStorage.getItem("bmm_boughtData"))
         : null;
 
+      console.log(bmmBoughtData);
+
       if (bmmBoughtData) {
         dispatch({
           type: BOUGHT_CREATE_REQUEST,
