@@ -1222,8 +1222,7 @@ router.post("/bought/create", isLoggedIn, async (req, res, next) => {
     status,
     UserId,
     createdAt,
-    updatedAt,
-    status
+    updatedAt
   )
   VALUES
   (
@@ -1249,11 +1248,10 @@ router.post("/bought/create", isLoggedIn, async (req, res, next) => {
     ${cardBankInfo ? `"${cardBankInfo}"` : null},
     ${cardInstallment ? `"${cardInstallment}"` : null},
     ${userDiscountPrice},
-    1,
+    ${payWay === "nobank" ? `1` : `2`},
     ${req.user.id},
     NOW(),
-    NOW(),
-    ${payWay === "nobank" ? `1` : `2`}
+    NOW()
   )
   `;
 
