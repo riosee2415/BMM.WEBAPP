@@ -15,6 +15,28 @@ const Middleware = () => {
   } = useSelector((state) => state.wish);
 
   useEffect(() => {
+    // RESULTCODE
+    // RESULTMSG
+    // ORDERNO
+    // AMOUNT
+    // TID
+    // ACCEPTDATE
+    // ACCEPTNO
+    // CASH_BILL_NO
+    // CARDNAME
+    // ACCOUNTNO
+    // RECEIVERNAME
+    // DEPOSITENDDATE
+    // CARDCODE
+    // QUOTA
+    // ETC1
+    // ETC2
+    // ETC3
+    // ETC4
+    // ETC5
+  }, []);
+
+  useEffect(() => {
     if (router.query) {
       const bmmBoughtData = sessionStorage.getItem("bmm_boughtData")
         ? JSON.parse(sessionStorage.getItem("bmm_boughtData"))
@@ -53,7 +75,31 @@ const Middleware = () => {
     }
   }, [st_boughtCreateDone, st_boughtCreateError]);
 
-  return <></>;
+  return (
+    <>
+      <form method="post">
+        <input id="RESULTCODE" name="RESULTCODE" />
+        <input id="RESULTMSG" name="RESULTMSG" />
+        <input id="ORDERNO" name="ORDERNO" />
+        <input id="AMOUNT" name="AMOUNT" />
+        <input id="TID" name="TID" />
+        <input id="ACCEPTDATE" name="ACCEPTDATE" />
+        <input id="ACCEPTNO" name="ACCEPTNO" />
+        <input id="CASH_BILL_NO" name="CASH_BILL_NO" />
+        <input id="CARDNAME" name="CARDNAME" />
+        <input id="ACCOUNTNO" name="ACCOUNTNO" />
+        <input id="RECEIVERNAME" name="RECEIVERNAME" />
+        <input id="DEPOSITENDDATE" name="DEPOSITENDDATE" />
+        <input id="CARDCODE" name="CARDCODE" />
+        <input id="QUOTA" name="QUOTA" />
+        <input id="ETC1" name="ETC1" />
+        <input id="ETC2" name="ETC2" />
+        <input id="ETC3" name="ETC3" />
+        <input id="ETC4" name="ETC4" />
+        <input id="ETC5" name="ETC5" />
+      </form>
+    </>
+  );
 };
 
 export default Middleware;
