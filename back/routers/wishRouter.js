@@ -2,6 +2,7 @@ const express = require("express");
 const models = require("../models");
 const isLoggedIn = require("../middlewares/isLoggedIn");
 const isAdminCheck = require("../middlewares/isAdminCheck");
+const axios = require("axios");
 
 const router = express.Router();
 
@@ -1399,7 +1400,7 @@ router.post("/bought/create", isLoggedIn, async (req, res, next) => {
        WHERE  id = ${req.user.id}
       `;
 
-      await models.sequelize.queyr(updateQuery);
+      await models.sequelize.query(updateQuery);
     }
 
     if (findResult[0].length === 10 && req.user.UserGradeId === 2) {
@@ -1409,7 +1410,7 @@ router.post("/bought/create", isLoggedIn, async (req, res, next) => {
        WHERE  id = ${req.user.id}
       `;
 
-      await models.sequelize.queyr(updateQuery);
+      await models.sequelize.query(updateQuery);
     }
 
     if (findResult[0].length === 20 && req.user.UserGradeId === 3) {
@@ -1419,7 +1420,7 @@ router.post("/bought/create", isLoggedIn, async (req, res, next) => {
        WHERE  id = ${req.user.id}
       `;
 
-      await models.sequelize.queyr(updateQuery);
+      await models.sequelize.query(updateQuery);
     }
 
     return res
@@ -1473,7 +1474,7 @@ router.post("/bought/cancel", isLoggedIn, async (req, res, next) => {
     if (findResult[0].length !== 0) {
       return res
         .status(401)
-        .send("해당 구매내역의 환불 신청 이력이 존재합니다.");
+        .send("해당 구매내역에 대한 신청 이력이 존재합니다.");
     }
 
     if (findResult2[0].length === 0) {
@@ -1620,7 +1621,7 @@ router.post("/bought/cancel", isLoggedIn, async (req, res, next) => {
        WHERE  id = ${req.user.id}
       `;
 
-      await models.sequelize.queyr(updateQuery);
+      await models.sequelize.query(updateQuery);
     }
 
     if (
@@ -1634,7 +1635,7 @@ router.post("/bought/cancel", isLoggedIn, async (req, res, next) => {
        WHERE  id = ${req.user.id}
       `;
 
-      await models.sequelize.queyr(updateQuery);
+      await models.sequelize.query(updateQuery);
     }
 
     if (
@@ -1648,7 +1649,7 @@ router.post("/bought/cancel", isLoggedIn, async (req, res, next) => {
        WHERE  id = ${req.user.id}
       `;
 
-      await models.sequelize.queyr(updateQuery);
+      await models.sequelize.query(updateQuery);
     }
 
     return res.status(200).json({ result: true });
@@ -1658,4 +1659,64 @@ router.post("/bought/cancel", isLoggedIn, async (req, res, next) => {
   }
 });
 
+/**
+ * SUBJECT : 배송 정보 등록
+ * PARAMETERS : id, trackingNo
+ * ORDER BY : -
+ * STATEMENT : -
+ * DEVELOPMENT : 신태섭
+ * DEV DATE : 2023/07/05
+ */
+router.post("/boughtInfo/update", isAdminCheck, async (req, res, next) => {
+  const { id, trackingNo } = req.body;
+
+  const updateQuery = `
+  UPDATE  boughtHistory
+     SET  deliveryNum = "${trackingNo}",
+          deliveryCom = "Qxpress",
+          status = 3
+   WHERE  id = ${id}
+  `;
+
+  try {
+    await models.sequelize.query(updateQuery);
+
+    return res.status(200).json({ result: true });
+  } catch (error) {
+    console.error(error);
+    return res.status(401).send("배송 정보를 등록할 수 없습니다.");
+  }
+});
+
+/**
+ * SUBJECT : 배송 조회
+ * PARAMETERS : trackingNo
+ * ORDER BY : -
+ * STATEMENT : -
+ * DEVELOPMENT : 신태섭
+ * DEV DATE : 2023/07/05
+ */
+router.post("/delivery/search", async (req, res, next) => {
+  const { trackingNo } = req.body;
+
+  try {
+    const getTrackingInfo = await axios({
+      url: `https://api.qxpress.net/GMKT.INC.GLPS.OpenApiService/SmartShipService.qapi/Tracking?returnType=json&key=${process.env.QXPRESS_KEY}`,
+      method: "post",
+      headers: { "Content-Type": "application/json" },
+      data: {
+        trackingNo: `${trackingNo}`,
+      },
+    });
+
+    if (getTrackingInfo.data.ResultMsg === "No Result") {
+      return res.status(401).send("존재하지 않는 배송정보입니다.");
+    }
+
+    return res.status(200).json(getTrackingInfo.data);
+  } catch (error) {
+    console.error(error);
+    return res.status(401).send("배송 정보를 조회할 수 없습니다.");
+  }
+});
 module.exports = router;

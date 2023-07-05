@@ -76,7 +76,7 @@ router.post("/list", isLoggedIn, async (req, res, next) => {
     JOIN  users                   B
       ON  A.UserId = B.id
    WHERE  1 = 1
-     AND  B.status IN (6,7,8,9)
+     AND  A.status IN (6,7,8,9)
      AND  A.UserId = ${req.user.id}
   `;
 
@@ -133,7 +133,7 @@ router.post("/list", isLoggedIn, async (req, res, next) => {
     JOIN  users                   B
       ON  A.UserId = B.id
    WHERE  1 = 1
-     AND  B.status IN (6,7,8,9)
+     AND  A.status IN (6,7,8,9)
      AND  A.UserId = ${req.user.id}
    ORDER  BY num DESC
    LIMIT  ${LIMIT}
@@ -327,14 +327,14 @@ router.post("/create", isLoggedIn, async (req, res, next) => {
 
 /**
  * SUBJECT : 환불 신청 승인 / 반려 처리
- * PARAMETERS : id, status, rejectReason
+ * PARAMETERS : id, status, rejectReason, BoughtHistoryId, UserId
  * ORDER BY : -
  * STATEMENT : -
  * DEVELOPMENT : 신태섭
  * DEV DATE : 2023/06/13
  */
 router.post("/permit", isAdminCheck, async (req, res, next) => {
-  const { id, status, rejectReason } = req.body;
+  const { id, status, rejectReason, BoughtHistoryId, UserId } = req.body;
 
   // status 2 = 승인
   // status 3 = 반려
@@ -359,10 +359,202 @@ router.post("/permit", isAdminCheck, async (req, res, next) => {
   try {
     const findResult = await models.sequelize.query(findQuery);
 
+    if (findResult[0].length === 0) {
+      return res.status(401).send("존재하지 않는 신청 이력입니다.");
+    }
+
+    if (parseInt(findResult[0][0].isComlete) === 0) {
+      return res.status(401).send("이미 처리된 이력입니다.");
+    }
+
     await models.sequelize.query(updateQuery);
+
+    const findQuery2 = `
+  SELECT  status,
+          isCanBoughtCancel,
+          useCoupon,
+          usePoint,
+          pointPrice,
+          CouponId
+    FROM  boughtHistory
+   WHERE  id = ${BoughtHistoryId}
+  `;
+
+    const findUserQuery = `
+  SELECT  point,
+          CASE
+              WHEN  recommId IS NULL THEN 0
+              ELSE  recommId
+          END                                 AS isRecomm,
+          UserGradeId
+    FROM  users
+   WHERE  id = ${UserId}
+  `;
+
+    const findResult2 = await models.sequelize.query(findQuery2);
+    const findUserData = await models.sequelize.query(findUserQuery);
+
+    if (findResult2[0][0].useCoupon) {
+      const findCouponQuery = `
+      SELECT  isUse
+        FROM  cuponuser
+       WHERE  UserId = ${UserId}
+         AND  CuponId = ${findResult2[0][0].CouponId}
+      `;
+
+      const findCouponData = await models.sequelize.query(findCouponQuery);
+
+      const updateQuery = `
+      UPDATE  cuponuser
+         SET  isUse = 0,
+              usedAt = NULL
+       WHERE  id = ${findCouponData[0][0].id}
+      `;
+
+      await models.sequelize.query(updateQuery);
+    }
+
+    if (findResult2[0][0].usePoint) {
+      const updateQuery = `
+      UPDATE  users
+         SET  point = ${
+           parseInt(findUserData[0][0].point) +
+           parseInt(findResult2[0][0].pointPrice)
+         }
+       WHERE  id = ${UserId}
+      `;
+
+      const insertPointQuery = `
+      INSERT  INTO  point
+      (
+        type,
+        content,
+        price,
+        createdAt,
+        updatedAt,
+        UserId
+      )
+      VALUES
+      (
+        "적립",
+        "상품 환불 - 포인트 환원",
+        ${parseInt(findResult2[0][0].pointPrice)},
+        NOW(),
+        NOW(),
+        ${UserId}
+      )
+      `;
+
+      await models.sequelize.query(updateQuery);
+      await models.sequelize.query(insertPointQuery);
+    }
+
+    const selectHistoryQuery = `
+    SELECT  id
+      FROM  boughtHistory
+     WHERE  UserId = ${UserId}
+       AND  status NOT IN (6, 7, 8, 9)
+    `;
+
+    const findHistoryResult = await models.sequelize.query(selectHistoryQuery);
+
+    if (parseInt(findUserData[0][0].isRecomm) !== 0) {
+      const findRecommUserQuery = `
+      SELECT  point,
+              id
+        FROM  users
+       WHERE  userId = "${findUserData[0][0].isRecomm}"
+         AND  isExit = 0
+      `;
+
+      const findRecommUserData = await models.sequelize.query(
+        findRecommUserQuery
+      );
+
+      if (findRecommUserData[0].length === 0) {
+        return res.status(401).send("존재하지 않는 추천인 정보입니다.");
+      }
+
+      const userMileagePoint =
+        parseInt(findResult2[0][0].totalPrice) * (parseFloat(0.5) / 100);
+
+      const updateQuery = `
+      UPDATE  users
+         SET  point = ${
+           parseInt(findRecommUserData[0][0].point) - userMileagePoint
+         }
+       WHERE  userId = "${findUserData[0][0].isRecomm}"
+      `;
+
+      const insertPointQuery = `
+      INSERT  INTO  point
+      (
+        type,
+        content,
+        price,
+        createdAt,
+        updatedAt,
+        UserId
+      )
+      VALUES
+      (
+        "사용",
+        "추천인 - 결제 취소",
+        ${userMileagePoint},
+        NOW(),
+        NOW(),
+        ${findRecommUserData[0][0].id}
+      )
+      `;
+
+      await models.sequelize.query(updateQuery);
+      await models.sequelize.query(insertPointQuery);
+    }
+
+    if (
+      findHistoryResult[0].length < 5 &&
+      findUserData[0][0].UserGradeId === 2
+    ) {
+      const updateQuery = `
+      UPDATE  users
+         SET  UserGradeId = 1
+       WHERE  id = ${UserId}
+      `;
+
+      await models.sequelize.query(updateQuery);
+    }
+
+    if (
+      findHistoryResult[0].length >= 5 &&
+      findHistoryResult[0].length < 10 &&
+      findUserData[0][0].UserGradeId === 3
+    ) {
+      const updateQuery = `
+      UPDATE  users
+         SET  UserGradeId = 2
+       WHERE  id = ${UserId}
+      `;
+
+      await models.sequelize.query(updateQuery);
+    }
+
+    if (
+      findHistoryResult[0].length >= 10 &&
+      findHistoryResult[0].length < 20 &&
+      findUserData[0][0].UserGradeId === 4
+    ) {
+      const updateQuery = `
+      UPDATE  users
+         SET  UserGradeId = 3
+       WHERE  id = ${UserId}
+      `;
+
+      await models.sequelize.query(updateQuery);
+    }
   } catch (error) {
     console.error(error);
     return res.status(401).send("환불 신청을 처리할 수 없습니다.");
   }
 });
+
 module.exports = router;
