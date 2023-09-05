@@ -45,6 +45,7 @@ import {
   UP_NEW_REQUEST,
   UP_UPDATE_REQUEST,
 } from "../../../reducers/category";
+import { items } from "../../../components/AdminLayout";
 
 const InfoTitle = styled.div`
   font-size: 19px;
@@ -67,6 +68,8 @@ const ViewStatusIcon = styled(EyeOutlined)`
 `;
 
 const Category = ({}) => {
+  const { me, st_loadMyInfoDone } = useSelector((state) => state.user);
+
   const router = useRouter();
   const dispatch = useDispatch();
 
@@ -95,6 +98,31 @@ const Category = ({}) => {
       })}
     </PopWrapper>
   );
+
+  useEffect(() => {
+    if (st_loadMyInfoDone) {
+      if (!me || parseInt(me.level) < 3) {
+        moveLinkHandler(`/admin`);
+      }
+
+      if (!(me && me.menuRight7)) {
+        message.error("접근권한이 없는 페이지 입니다.");
+        moveLinkHandler(`/admin`);
+      }
+    }
+  }, [st_loadMyInfoDone]);
+
+  useEffect(() => {
+    const currentMenus = items[level1];
+
+    setSameDepth(currentMenus);
+
+    currentMenus.map((data) => {
+      if (data.link === router.pathname) {
+        setLevel2(data.name);
+      }
+    });
+  }, []);
 
   /////////////////////////////////////////////////////////////////////////
 

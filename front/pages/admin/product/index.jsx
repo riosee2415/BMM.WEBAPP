@@ -34,10 +34,12 @@ import { HomeOutlined, RightOutlined, EyeOutlined } from "@ant-design/icons";
 import { BRAND_IMAGE_RESET, BRAND_LIST_REQUEST } from "../../../reducers/brand";
 import {
   PRODUCT_ADMIN_LIST_REQUEST,
+  PRODUCT_BEST_UPDATE_REQUEST,
   PRODUCT_CREATE_REQUEST,
   PRODUCT_DELETE_REQUEST,
   PRODUCT_IMAGE_RESET,
   PRODUCT_LECO_UPDATE_REQUEST,
+  PRODUCT_NEW_UPDATE_REQUEST,
   PRODUCT_OPTION_CREATE_REQUEST,
   PRODUCT_OPTION_DELETE_REQUEST,
   PRODUCT_OPTION_LIST_REQUEST,
@@ -54,8 +56,11 @@ import {
 } from "../../../reducers/product";
 import { DOWN_LIST_REQUEST, UP_LIST_REQUEST } from "../../../reducers/category";
 import { SEARCHTAG_LIST_REQUEST } from "../../../reducers/searchTag";
+import { items } from "../../../components/AdminLayout";
 
 const Index = ({}) => {
+  const { me, st_loadMyInfoDone } = useSelector((state) => state.user);
+
   const router = useRouter();
   const dispatch = useDispatch();
 
@@ -84,6 +89,31 @@ const Index = ({}) => {
       })}
     </PopWrapper>
   );
+
+  useEffect(() => {
+    if (st_loadMyInfoDone) {
+      if (!me || parseInt(me.level) < 3) {
+        moveLinkHandler(`/admin`);
+      }
+
+      if (!(me && me.menuRight7)) {
+        message.error("접근권한이 없는 페이지 입니다.");
+        moveLinkHandler(`/admin`);
+      }
+    }
+  }, [st_loadMyInfoDone]);
+
+  useEffect(() => {
+    const currentMenus = items[level1];
+
+    setSameDepth(currentMenus);
+
+    currentMenus.map((data) => {
+      if (data.link === router.pathname) {
+        setLevel2(data.name);
+      }
+    });
+  }, []);
 
   /////////////////////////////////////////////////////////////////////////
 
@@ -124,6 +154,12 @@ const Index = ({}) => {
     //
     st_productLecoUpdateDone,
     st_productLecoUpdateError,
+    //
+    st_productBestUpdateDone,
+    st_productBestUpdateError,
+    //
+    st_productNewUpdateDone,
+    st_productNewUpdateError,
   } = useSelector((state) => state.product);
   const { upList, downList } = useSelector((state) => state.category);
   const { searchTagList } = useSelector((state) => state.searchTag);
@@ -154,6 +190,32 @@ const Index = ({}) => {
   const image5Ref = useRef();
 
   ////// USEEFFECT //////
+
+  useEffect(() => {
+    if (st_productNewUpdateDone) {
+      dispatch({
+        type: PRODUCT_ADMIN_LIST_REQUEST,
+      });
+      return message.success("NEW 상품이 수정되었습니다.");
+    }
+    if (st_productNewUpdateError) {
+      return message.error(st_productNewUpdateError);
+    }
+  }, [st_productNewUpdateDone, st_productNewUpdateError]);
+
+  useEffect(() => {
+    if (st_productBestUpdateDone) {
+      dispatch({
+        type: PRODUCT_ADMIN_LIST_REQUEST,
+      });
+
+      return message.success("BEST 상품이 수정되었습니다.");
+    }
+
+    if (st_productBestUpdateError) {
+      return message.error(st_productBestUpdateError);
+    }
+  }, [st_productBestUpdateDone, st_productBestUpdateError]);
 
   useEffect(() => {
     if (st_productLecoUpdateDone) {
@@ -381,6 +443,30 @@ const Index = ({}) => {
       type: DOWN_LIST_REQUEST,
       data: {
         CateUpId: data,
+      },
+    });
+  }, []);
+
+  // new 설정하기
+  const newHandler = useCallback((data) => {
+    dispatch({
+      type: PRODUCT_NEW_UPDATE_REQUEST,
+      data: {
+        id: data.id,
+        title: data.title,
+        isNew: !data.isNew,
+      },
+    });
+  }, []);
+
+  // 추천여부 설정하기
+  const bestHandler = useCallback((data) => {
+    dispatch({
+      type: PRODUCT_BEST_UPDATE_REQUEST,
+      data: {
+        id: data.id,
+        title: data.title,
+        isBest: !data.isBest,
       },
     });
   }, []);
@@ -718,8 +804,12 @@ const Index = ({}) => {
       dataIndex: "brandName",
     },
     {
-      title: "카테고리명",
+      title: "상위카테고리명",
       dataIndex: "upCategoryValue",
+    },
+    {
+      title: "하위카테고리명",
+      dataIndex: "downCategoryValue",
     },
     {
       title: "상품명",
@@ -744,6 +834,18 @@ const Index = ({}) => {
     {
       title: "생성일",
       dataIndex: "viewCreatedAt",
+    },
+    {
+      title: "NEW",
+      render: (data) => (
+        <Switch checked={data.isNew} onChange={() => newHandler(data)} />
+      ),
+    },
+    {
+      title: "BEST",
+      render: (data) => (
+        <Switch checked={data.isBest} onChange={() => bestHandler(data)} />
+      ),
     },
     {
       title: "추천여부",

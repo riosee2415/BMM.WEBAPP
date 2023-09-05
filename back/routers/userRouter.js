@@ -646,6 +646,23 @@ router.post("/signup", async (req, res, next) => {
 
     const hashedPassword = await bcrypt.hash(password, 12);
 
+    if (recommId) {
+      const selectRecommUserQuery = `
+      SELECT  id
+        FROM  users
+       WHERE  userId = "${recommId}"
+         AND  isExit = 0
+      `;
+
+      const recommResult = await models.sequelize.query(selectRecommUserQuery);
+
+      if (recommResult[0].length === 0) {
+        return res
+          .status(401)
+          .send("탈퇴했거나 존재하지 않는 추천인 정보입니다.");
+      }
+    }
+
     const insertQuery = `
     INSERT  INTO  users
     (
@@ -660,7 +677,8 @@ router.post("/signup", async (req, res, next) => {
       recommId,
       terms,
       createdAt,
-      updatedAt
+      updatedAt,
+      UserGradeId
     )
     VALUES
     (
@@ -675,7 +693,8 @@ router.post("/signup", async (req, res, next) => {
       ${recommId ? `"${recommId}"` : null},
       ${terms},
       NOW(),
-      NOW()
+      NOW(),
+      1
     )
     `;
 
@@ -1288,6 +1307,12 @@ router.post("/userExit", isLoggedIn, async (req, res, next) => {
    WHERE  id = ${req.user.id}
   `;
 
+  const updateQuery2 = `
+  UPDATE  users
+     SET  recommId = NULL
+   WHERE  recommId = "${req.user.userId}"
+  `;
+
   try {
     const findPasswordData = await models.sequelize.query(findPasswordQuery);
 
@@ -1305,6 +1330,7 @@ router.post("/userExit", isLoggedIn, async (req, res, next) => {
     }
 
     await models.sequelize.query(updateQuery);
+    await models.sequelize.query(updateQuery2);
 
     return res.status(200).json({ result: true });
   } catch (error) {

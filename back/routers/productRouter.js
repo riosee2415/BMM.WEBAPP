@@ -131,6 +131,8 @@ router.post("/list", async (req, res, next) => {
           A.customInfo,
           A.refundInfo,
           A.isRecommend,
+          A.isNew,
+          A.isBest,
           A.createdAt,
           A.updatedAt,
           DATE_FORMAT(A.createdAt, "%Y년 %m월 %d일")															  AS viewCreatedAt,
@@ -227,6 +229,8 @@ router.post("/list", async (req, res, next) => {
           A.customInfo,
           A.refundInfo,
           A.isRecommend,
+          A.isNew,
+          A.isBest,
           A.createdAt,
           A.updatedAt,
           DATE_FORMAT(A.createdAt, "%Y년 %m월 %d일")															  AS viewCreatedAt,
@@ -414,6 +418,8 @@ SELECT	ROW_NUMBER()	OVER(ORDER	BY	A.createdAt)														AS num,
         A.customInfo,
         A.refundInfo,
         A.isRecommend,
+        A.isNew,
+        A.isBest,
         A.createdAt,
         A.updatedAt,
         DATE_FORMAT(A.createdAt, "%Y년 %m월 %d일")													  AS viewCreatedAt,
@@ -462,6 +468,371 @@ SELECT	ROW_NUMBER()	OVER(ORDER	BY	A.createdAt)														AS num,
  WHERE	1 = 1
    AND	A.isDelete = 0
    AND  A.isRecommend = 1
+ ORDER  BY num DESC
+  `;
+
+  const optionQuery = `
+ SELECT ROW_NUMBER()    OVER(ORDER  BY A.createdAt)     AS num,
+        A.id,
+        A.value,
+        A.price,
+        FORMAT(A.price, 0)                              AS formatPrice,
+        CONCAT(FORMAT(A.price, 0), "원")                 AS concatPrice,
+        A.ProductId,
+        A.createdAt,
+        A.updatedAt,
+        DATE_FORMAT(A.createdAt, "%Y년 %m월 %d일")        AS viewCreatedAt,                
+        DATE_FORMAT(A.createdAt, "%Y.%m.%d")            AS viewFrontCreatedAt,                
+        DATE_FORMAT(A.updatedAt, "%Y년 %m월 %d일")        AS viewUpdatedAt,
+        B.username                                      AS updator           
+   FROM productOption       A
+   LEFT
+  OUTER
+   JOIN users               B
+     ON A.updator = B.id
+  WHERE A.isDelete = 0
+  ORDER BY num DESC
+ `;
+
+  const tagQuery = `
+  SELECT    ROW_NUMBER()    OVER(ORDER  BY A.createdAt)     AS  num,
+            A.id,
+            B.value,
+            A.ProductId,
+            A.SearchTagId
+    FROM    productSearchTag                A
+   INNER
+    JOIN    searchTag                       B
+      ON    A.SearchTagId = B.id
+   ORDER    BY num DESC
+  `;
+
+  try {
+    const product = await models.sequelize.query(selectQuery);
+    const options = await models.sequelize.query(optionQuery);
+    const tags = await models.sequelize.query(tagQuery);
+
+    product[0].map((ele) => {
+      ele["options"] = [];
+
+      options[0].map((innerItem) => {
+        if (parseInt(ele.id) === parseInt(innerItem.ProductId)) {
+          ele.options.push(innerItem);
+        }
+      });
+    });
+
+    product[0].map((item) => {
+      item["tags"] = [];
+
+      tags[0].map((innerItem) => {
+        if (parseInt(item.id) === parseInt(innerItem.ProductId)) {
+          item.tags.push(innerItem);
+        }
+      });
+    });
+
+    return res.status(200).json(product[0]);
+  } catch (error) {
+    console.error(error);
+    return res.status(401).send("상품 목록을 조회할 수 없습니다.");
+  }
+});
+
+/**
+ * SUBJECT : 카테고리 별 베스트 상품 리스트
+ * PARAMETERS : -
+ * ORDER BY : -
+ * STATEMENT : -
+ * DEVELOPMENT : 신태섭
+ * DEV DATE : 2023/05/30
+ */
+router.post("/best/list", async (req, res, next) => {
+  const findCategroryQuery = `
+  SELECT  A.id,
+          A.value,
+          (
+            SELECT  COUNT(id)
+              FROM  product
+             WHERE  isDelete = 0
+               AND  isBest = 1
+               AND  CateDownId = A.id
+          )                             AS cnt
+    FROM  cateDown      A
+   WHERE  A.isDelete = 0
+     AND  0 < (
+                    SELECT  COUNT(id)
+                      FROM  product
+                     WHERE  isDelete = 0
+                       AND  isBest = 1
+                       AND  CateDownId = A.id
+               )
+   ORDER  BY cnt DESC
+  `;
+
+  try {
+    const productList = [];
+
+    const findCategroryData = await models.sequelize.query(findCategroryQuery);
+
+    if (findCategroryData[0].length === 0) {
+      return res.status(200).json({
+        types: [],
+        productList: [],
+      });
+    }
+
+    await Promise.all(
+      findCategroryData[0].map(async (data) => {
+        const selectQuery = `
+        SELECT	ROW_NUMBER()	OVER(ORDER	BY	A.createdAt)														AS num,
+                A.id,
+                A.thumbnail1,
+                A.thumbnail2,
+                A.thumbnail3,
+                A.thumbnail4,
+                A.title,
+                A.description,
+                A.marketPrice,
+                FORMAT(A.marketPrice, 0)																			        AS formatMarketPrice,
+                CONCAT(FORMAT(A.marketPrice, 0), "원")																AS concatMarketPrice,
+                A.memberPrice,
+                FORMAT(A.memberPrice, 0)																			        AS formatMemberPrice,
+                CONCAT(FORMAT(A.memberPrice, 0), "원")																AS concatMemberPrice,
+                A.weight,
+                CONCAT(A.weight, "Kg")																				        AS concatWeight,
+                A.buyMinLimitCount,
+                A.buyMaxLimitCount,
+                CONCAT("최소 ", A.buyMinLimitCount, "개 이상", " ~ ", "최대 ", A.buyMaxLimitCount, "개 이하 구매 가능")		AS viewBuyLimitCount,
+                A.discount,
+                CONCAT(A.discount, "%")																				        AS viewDiscount,
+                FORMAT((A.marketPrice * (A.discount / 100)), 0)					                        AS calDiscountPrice,
+                CONCAT(FORMAT((A.marketPrice * (A.discount / 100)), 0), "원")		                AS viewDiscountPrice,
+                CASE
+                  WHEN	A.discount = 0 THEN	CONCAT(FORMAT(A.marketPrice, 0), "원")
+                  ELSE	CONCAT(FORMAT(A.marketPrice - (A.marketPrice * (A.discount / 100)), 0), "원")
+                END															                                          AS realPrice,
+                A.marketPrice - (A.marketPrice * (A.discount / 100))                                  AS calcPrice,
+                A.youtubeLink,
+                A.detailImage,
+                A.origin,
+                A.madeCompany,
+                A.location,
+                A.howToUse,
+                A.madeDate,
+                A.howToKeep,
+                A.tel,
+                A.warning,
+                A.canDeliveryArea,
+                A.customInfo,
+                A.refundInfo,
+                A.isRecommend,
+                A.isNew,
+                A.isBest,
+                A.createdAt,
+                A.updatedAt,
+                DATE_FORMAT(A.createdAt, "%Y년 %m월 %d일")													  AS viewCreatedAt,
+                DATE_FORMAT(A.createdAt, "%Y.%m.%d")																AS viewFrontCreatedAt,
+                DATE_FORMAT(A.updatedAt, "%Y년 %m월 %d일")													  AS viewUpdatedAt,
+                A.CateUpId,
+                A.CateDownId,
+                A.BrandId,
+                B.username																							            AS updator,
+                C.value 																							              AS upCategoryValue,
+                D.value 																							              AS downCategoryValue,
+                E.imagePath																							            AS brandImage,
+                E.name 																								              AS brandName,
+                E.subDesc 																							            AS brandSubDesc,
+                ${
+                  req.user
+                    ? `
+                CASE
+                      WHEN (
+                              SELECT  COUNT(id)
+                                FROM  productLike
+                              WHERE  ProductId = A.id
+                                AND  UserId = ${req.user.id}
+                          ) > 0 THEN       1
+                                ELSE       0
+                END                                                                     AS isLike
+                `
+                    : `
+                0                                                                       AS isLike    
+                    `
+                }
+          FROM	product		A
+          LEFT
+         OUTER
+          JOIN	users		B
+            ON	A.updator = B.id
+         INNER
+          JOIN	cateUp 		C
+            ON	A.CateUpId = C.id
+         INNER
+          JOIN	cateDown 	D
+            ON	A.CateDownId = D.id
+         INNER
+          JOIN	brand 		E
+            ON	A.BrandId = E.id
+         WHERE	1 = 1
+           AND	A.isDelete = 0
+           AND  A.isBest = 1
+           AND  A.CateDownId = ${data.id}
+         ORDER  BY num DESC
+          `;
+
+        const selectResult = await models.sequelize.query(selectQuery);
+
+        productList.push(selectResult[0][0]);
+      })
+    );
+
+    const optionQuery = `
+  SELECT ROW_NUMBER()    OVER(ORDER  BY A.createdAt)     AS num,
+         A.id,
+         A.value,
+         A.price,
+         FORMAT(A.price, 0)                              AS formatPrice,
+         CONCAT(FORMAT(A.price, 0), "원")                 AS concatPrice,
+         A.ProductId,
+         A.createdAt,
+         A.updatedAt,
+         DATE_FORMAT(A.createdAt, "%Y년 %m월 %d일")        AS viewCreatedAt,                
+         DATE_FORMAT(A.createdAt, "%Y.%m.%d")            AS viewFrontCreatedAt,                
+         DATE_FORMAT(A.updatedAt, "%Y년 %m월 %d일")        AS viewUpdatedAt,
+         B.username                                      AS updator           
+    FROM productOption       A
+    LEFT
+   OUTER
+    JOIN users               B
+      ON A.updator = B.id
+   WHERE A.isDelete = 0
+   ORDER BY num DESC
+  `;
+
+    const options = await models.sequelize.query(optionQuery);
+    productList.map((ele) => {
+      ele["options"] = [];
+
+      options[0].map((innerItem) => {
+        if (parseInt(ele.id) === parseInt(innerItem.ProductId)) {
+          ele.options.push(innerItem);
+        }
+      });
+    });
+
+    return res.status(200).json({
+      types: findCategroryData[0],
+      productList,
+    });
+  } catch (error) {
+    console.error(error);
+    return res.status(401).send("상품 목록을 조회할 수 없습니다.");
+  }
+});
+
+/**
+ * SUBJECT : 새로운 상품 리스트
+ * PARAMETERS :  -
+ * ORDER BY : -
+ * STATEMENT : -
+ * DEVELOPMENT : 신태섭
+ * DEV DATE : 2023/05/30
+ */
+router.post("/new/list", async (req, res, next) => {
+  const selectQuery = `
+SELECT	ROW_NUMBER()	OVER(ORDER	BY	A.createdAt)														AS num,
+        A.id,
+        A.thumbnail1,
+        A.thumbnail2,
+        A.thumbnail3,
+        A.thumbnail4,
+        A.title,
+        A.description,
+        A.marketPrice,
+        FORMAT(A.marketPrice, 0)																			        AS formatMarketPrice,
+        CONCAT(FORMAT(A.marketPrice, 0), "원")																AS concatMarketPrice,
+        A.memberPrice,
+        FORMAT(A.memberPrice, 0)																			        AS formatMemberPrice,
+        CONCAT(FORMAT(A.memberPrice, 0), "원")																AS concatMemberPrice,
+        A.weight,
+        CONCAT(A.weight, "Kg")																				        AS concatWeight,
+        A.buyMinLimitCount,
+        A.buyMaxLimitCount,
+        CONCAT("최소 ", A.buyMinLimitCount, "개 이상", " ~ ", "최대 ", A.buyMaxLimitCount, "개 이하 구매 가능")		AS viewBuyLimitCount,
+        A.discount,
+        CONCAT(A.discount, "%")																				        AS viewDiscount,
+        FORMAT((A.marketPrice * (A.discount / 100)), 0)					                        AS calDiscountPrice,
+        CONCAT(FORMAT((A.marketPrice * (A.discount / 100)), 0), "원")		                AS viewDiscountPrice,
+        CASE
+          WHEN	A.discount = 0 THEN	CONCAT(FORMAT(A.marketPrice, 0), "원")
+          ELSE	CONCAT(FORMAT(A.marketPrice - (A.marketPrice * (A.discount / 100)), 0), "원")
+        END															                                          AS realPrice,
+        A.marketPrice - (A.marketPrice * (A.discount / 100))                                  AS calcPrice,
+        A.youtubeLink,
+        A.detailImage,
+        A.origin,
+        A.madeCompany,
+        A.location,
+        A.howToUse,
+        A.madeDate,
+        A.howToKeep,
+        A.tel,
+        A.warning,
+        A.canDeliveryArea,
+        A.customInfo,
+        A.refundInfo,
+        A.isRecommend,
+        A.isNew,
+        A.isBest,
+        A.createdAt,
+        A.updatedAt,
+        DATE_FORMAT(A.createdAt, "%Y년 %m월 %d일")													  AS viewCreatedAt,
+        DATE_FORMAT(A.createdAt, "%Y.%m.%d")																AS viewFrontCreatedAt,
+        DATE_FORMAT(A.updatedAt, "%Y년 %m월 %d일")													  AS viewUpdatedAt,
+        A.CateUpId,
+        A.CateDownId,
+        A.BrandId,
+        B.username																							            AS updator,
+        C.value 																							              AS upCategoryValue,
+        D.value 																							              AS downCategoryValue,
+        E.imagePath																							            AS brandImage,
+        E.name 																								              AS brandName,
+        E.subDesc 																							            AS brandSubDesc,
+        ${
+          req.user
+            ? `
+        CASE
+              WHEN (
+                      SELECT  COUNT(id)
+                        FROM  productLike
+                       WHERE  ProductId = A.id
+                         AND  UserId = ${req.user.id}
+                   ) > 0 THEN       1
+                         ELSE       0
+        END                                                                     AS isLike
+        `
+            : `
+        0                                                                       AS isLike    
+            `
+        }
+  FROM	product		A
+  LEFT
+ OUTER
+  JOIN	users		B
+    ON	A.updator = B.id
+ INNER
+  JOIN	cateUp 		C
+    ON	A.CateUpId = C.id
+ INNER
+  JOIN	cateDown 	D
+    ON	A.CateDownId = D.id
+ INNER
+  JOIN	brand 		E
+    ON	A.BrandId = E.id
+ WHERE	1 = 1
+   AND	A.isDelete = 0
+   AND  A.isNew = 1
  ORDER  BY num DESC
   `;
 
@@ -593,6 +964,8 @@ SELECT	ROW_NUMBER()	OVER(ORDER	BY	A.createdAt)														    AS num,
         A.customInfo,
         A.refundInfo,
         A.isRecommend,
+        A.isNew,
+        A.isBest,
         A.createdAt,
         A.updatedAt,
         DATE_FORMAT(A.createdAt, "%Y년 %m월 %d일")															  AS viewCreatedAt,
@@ -751,6 +1124,8 @@ SELECT	A.id,
         A.customInfo,
         A.refundInfo,
         A.isRecommend,
+        A.isNew,
+        A.isBest,
         A.createdAt,
         A.updatedAt,
         DATE_FORMAT(A.createdAt, "%Y년 %m월 %d일")															  AS viewCreatedAt,
@@ -1167,6 +1542,121 @@ router.post("/recommend/update", isAdminCheck, async (req, res, next) => {
   } catch (error) {
     console.error(error);
     return res.status(401).send("추천 상품 여부를 변경할 수 없습니다.");
+  }
+});
+
+/**
+ * SUBJECT : 새로운 상품 여부 변경
+ * PARAMETERS : id, title, isNew
+ * ORDER BY : -
+ * STATEMENT : -
+ * DEVELOPMENT : 신태섭
+ * DEV DATE : 2023/05/03
+ */
+router.post("/new/update", isAdminCheck, async (req, res, next) => {
+  const { id, title, isNew } = req.body;
+
+  const updateQuery = `
+  UPDATE    product
+     SET    isNew = ${isNew},
+            updatedAt = NOW(),
+            updator = ${req.user.id}
+   WHERE    id = ${id}
+  `;
+
+  const insertHistoryQuery = `
+    INSERT  INTO    productHistory
+    (
+        title,
+        content,
+        updator,
+        createdAt,
+        updatedAt
+    )
+    VALUES
+    (
+        "새로운상품 여부 변경",
+        "${title}",
+        ${req.user.id},
+        NOW(),
+        NOW()
+    )
+    `;
+
+  try {
+    await models.sequelize.query(updateQuery);
+    await models.sequelize.query(insertHistoryQuery);
+
+    return res.status(200).json({ result: true });
+  } catch (error) {
+    console.error(error);
+    return res.status(401).send("새로운 상품 여부를 변경할 수 없습니다.");
+  }
+});
+
+/**
+ * SUBJECT : 베스트 상품 여부 변경
+ * PARAMETERS : id, title, isBest, CateDownId
+ * ORDER BY : -
+ * STATEMENT : -
+ * DEVELOPMENT : 신태섭
+ * DEV DATE : 2023/05/03
+ */
+router.post("/best/update", isAdminCheck, async (req, res, next) => {
+  const { id, title, isBest, CateDownId } = req.body;
+
+  const updateQuery = `
+  UPDATE    product
+     SET    isBest = ${isBest},
+            updatedAt = NOW(),
+            updator = ${req.user.id}
+   WHERE    id = ${id}
+  `;
+
+  const insertHistoryQuery = `
+    INSERT  INTO    productHistory
+    (
+        title,
+        content,
+        updator,
+        createdAt,
+        updatedAt
+    )
+    VALUES
+    (
+        "베스트상품 여부 변경",
+        "${title}",
+        ${req.user.id},
+        NOW(),
+        NOW()
+    )
+    `;
+
+  try {
+    if (isBest) {
+      const selectQuery = `
+      SELECT  id
+        FROM  product
+       WHERE  isBest = 1
+         AND  CateDownId = ${CateDownId}
+      `;
+
+      const findResult = await models.sequelize.query(selectQuery);
+
+      if (findResult[0].length === 8) {
+        return res
+          .status(401)
+          .send("카테고리별 베스트 상품은 최대 8개까지 등록 가능합니다.");
+      }
+    }
+
+    await models.sequelize.query(updateQuery);
+    await models.sequelize.query(insertHistoryQuery);
+
+    return res.status(200).json({ result: true });
+  } catch (error) {
+    console.error(error);
+    return res.status(401).send("베스트 상품 여부를 변경할 수 없습니다.");
   }
 });
 

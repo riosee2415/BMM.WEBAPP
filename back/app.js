@@ -36,6 +36,7 @@ const productRouter = require("./routers/productRouter");
 const searchTagRouter = require("./routers/searchTagRouter");
 const likeRouter = require("./routers/likeRouter");
 const wishRouter = require("./routers/wishRouter");
+const pointRouter = require("./routers/pointRouter");
 
 // Config Settings
 db.sequelize
@@ -127,6 +128,7 @@ app.use("/api/product", productRouter);
 app.use("/api/searchTag", searchTagRouter);
 app.use("/api/like", likeRouter);
 app.use("/api/wish", wishRouter);
+app.use("/api/point", pointRouter);
 
 // second minute hour day-of-month month day-of-week
 const task = cron.schedule(

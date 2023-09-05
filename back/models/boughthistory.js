@@ -16,7 +16,7 @@ module.exports = class BoughtHistory extends Model {
           defaultValue: 0,
         },
         totalWeight: {
-          type: DataTypes.FLOAT, // 총 무게 (19.5) KG 단위 (각각 무게는 wishItem에 있음)
+          type: DataTypes.FLOAT, // 총 무게 | Ex)19.5 (KG 단위) (각각 무게는 wishItem에 있음)
           allowNull: false,
         },
         totalDeliveryPrice: {
@@ -117,14 +117,10 @@ module.exports = class BoughtHistory extends Model {
           type: DataTypes.DATE, // 처리 완료일
           allowNull: true,
         },
-        isCancel: {
-          type: DataTypes.BOOLEAN, // 결제 취소여부
+        status: {
+          type: DataTypes.INTEGER, // [ 1. 입금대기 | 2. 결제완료 | 3. 배송 준비중 | 4. 배송중 | 5. 배송완료 | 6. 취소완료 | 7. 환불 신청완료 | 8. 환불완료 | 9. 환불 신청 반려]
           allowNull: false,
-          defaultValue: false,
-        },
-        cancelAt: {
-          type: DataTypes.DATE, // 결제취소일
-          allowNull: true,
+          defaultValue: 1,
         },
         isCanBoughtCancel: {
           type: DataTypes.BOOLEAN, // 결제 취소 가능 여부 (배송 전 / 후)

@@ -94,33 +94,10 @@ const SliderWrapper = styled(Carousel)`
   }
 `;
 
-const MainNewSlider = () => {
+const MainNewSlider = ({ datum }) => {
   const width = useWidth();
   const router = useRouter();
   const dispatch = useDispatch();
-
-  const bannerData = [
-    {
-      img: "https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/bmm/assets/images/main/img_3nd_banner1.png",
-      name: "베진카 300정",
-      content: "일본 위장약 소화제 위염약",
-    },
-    {
-      img: "https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/bmm/assets/images/main/img_3nd_banner2.png",
-      name: "베진카 300정",
-      content: "일본 위장약 소화제 위염약",
-    },
-    {
-      img: "https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/bmm/assets/images/main/img_3nd_banner1.png",
-      name: "베진카 300정",
-      content: "일본 위장약 소화제 위염약",
-    },
-    {
-      img: "https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/bmm/assets/images/main/img_3nd_banner2.png",
-      name: "베진카 300정",
-      content: "일본 위장약 소화제 위염약",
-    },
-  ];
 
   return (
     <MainNewSliderWrapper>
@@ -146,27 +123,29 @@ const MainNewSlider = () => {
           dots={false}
           arrows={true}
         >
-          {bannerData &&
-            bannerData.map((data, idx) => {
+          {datum &&
+            datum.map((data, idx) => {
               return (
                 <Wrapper
                   key={idx}
                   position={`relative`}
                   display={`flex !important`}
                   al={`flex-start`}
+                  onClick={() => router.push(`/product/${data.id}`)}
+                  cursor={`pointer`}
                 >
                   <SquareBox position={`relative`}>
-                    <Image alt="thumbnail" src={data.img} />
+                    <Image alt="thumbnail" src={data.thumbnail1} />
                   </SquareBox>
                   <Text
                     fontSize={width < 800 ? `20px` : `24px`}
                     fontWeight={`600`}
                     margin={`18px 0 8px`}
                   >
-                    {data.name}
+                    {data.title}
                   </Text>
-                  <Text color={Theme.grey_C} fontSize={`16px`}>
-                    {data.content}
+                  <Text color={Theme.grey_C} fontSize={`16px`} isEllipsis>
+                    {data.description}
                   </Text>
                 </Wrapper>
               );

@@ -72,6 +72,17 @@ const Fourleaf = ({ Component }) => {
           href="https://webfontworld.github.io/pretendard/Pretendard.css"
           rel="stylesheet"
         />
+
+        {/* <!-- jQuery --> */}
+        <script
+          type="text/javascript"
+          src="https://code.jquery.com/jquery-1.12.4.min.js"
+        ></script>
+
+        <script
+          type="text/javascript"
+          src="https://www.cookiepayments.com/js/cookiepayments-1.1.3.js"
+        ></script>
       </Head>
       <Component />
     </ThemeProvider>

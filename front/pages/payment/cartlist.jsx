@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import ClientLayout from "../../components/ClientLayout";
 import Theme from "../../components/Theme";
 import Head from "next/head";
@@ -16,8 +16,16 @@ import {
   CommonButton,
 } from "../../components/commonComponents";
 import styled from "styled-components";
-import { Checkbox, Modal } from "antd";
+import { Checkbox, Empty, Modal, message } from "antd";
 import { CloseOutlined, MinusOutlined, PlusOutlined } from "@ant-design/icons";
+import {
+  ITEM_DELETE_ALL_REQUEST,
+  ITEM_LIST_VIEW_REQUEST,
+  ITEM_UPDATE_REQUEST,
+} from "../../reducers/wish";
+import { useDispatch, useSelector } from "react-redux";
+import { numberWithCommas } from "../../components/commonUtils";
+import { useRouter } from "next/router";
 
 const List = styled(Wrapper)`
   height: 100px;
@@ -48,15 +56,147 @@ const SubText = styled(Wrapper)`
 
 const CartList = () => {
   ////// GLOBAL STATE //////
-  const [choiceModal, setChoiceModal] = useState(false);
-
-  const [isModal, setIsModal] = useState(false);
-
+  const { me } = useSelector((state) => state.user);
+  const {
+    itemListView,
+    //
+    st_itemDeleteAllLoading,
+    st_itemDeleteAllDone,
+    st_itemDeleteAllError,
+    //
+    st_itemUpdateLoading,
+    st_itemUpdateDone,
+    st_itemUpdateError,
+  } = useSelector((state) => state.wish);
   ////// HOOKS //////
   const width = useWidth();
+  const router = useRouter();
+  const dispatch = useDispatch();
+
+  const [choiceModal, setChoiceModal] = useState(false);
+  const [isModal, setIsModal] = useState(false);
+
+  const [selectCart, setSelectCart] = useState([]);
+
+  // 총 상품금액
+  const [totalPrice, setTotalPrice] = useState(0);
+  // 총 무게
+  const [totalWeight, setTotalWeight] = useState(0);
+  // 총 배송비
+  const [totalDelPrice, setTotalDelPrice] = useState(0);
+  // 총 할인 금액
+  const [totalDiscountPrice, setTotalDiscountPrice] = useState({
+    delDiscountPrice: 0,
+    userDiscountPrice: 0,
+  });
+  // 총 결제 금액
+  const [totalBuyPrice, setTotalBuyPrice] = useState(0);
 
   ////// REDUX //////
+
+  // 배송비 계산
+  const weightDeliveryPrice = (weight) => {
+    let price = 0;
+
+    if (weight === 0.5) {
+      price = 9900;
+    } else if (weight > 0.5 && weight < 15.5) {
+      price = 10000 + ((weight - 0.5) / 0.5) * 2000;
+    } else {
+      price = 70000 + ((weight - 15.5) / 0.5) * 1500;
+    }
+
+    return price;
+  };
+
   ////// USEEFFECT //////
+
+  // 금액 측정
+  useEffect(() => {
+    if (selectCart && me) {
+      const wieghtDelPrice =
+        selectCart.length > 0
+          ? weightDeliveryPrice(
+              selectCart
+                .map((data) => data.productWeight)
+                .reduce((a, b) => a + b)
+            )
+          : 0;
+
+      // 총 상품긍맥
+      setTotalPrice(
+        selectCart.length > 0
+          ? selectCart
+              .map((data) => data.originRealPrice)
+              .reduce((a, b) => a + b)
+          : 0
+      );
+
+      // 총 무게
+      setTotalWeight(
+        selectCart.length > 0
+          ? selectCart.map((data) => data.productWeight).reduce((a, b) => a + b)
+          : 0
+      );
+
+      // 총 배송비
+      setTotalDelPrice(wieghtDelPrice - wieghtDelPrice * (me.benefit / 100));
+
+      // 총 할인 금액
+      setTotalDiscountPrice({
+        // 배송 할인금액
+        delDiscountPrice: wieghtDelPrice * (me.benefit / 100),
+
+        // 회원 할인 금액
+        userDiscountPrice: 0,
+      });
+    }
+  }, [selectCart, me]);
+
+  // 총 결제 금액
+  useEffect(() => {
+    setTotalBuyPrice(
+      totalPrice +
+        totalDelPrice -
+        (totalDiscountPrice.delDiscountPrice +
+          totalDiscountPrice.userDiscountPrice)
+    );
+  }, [totalPrice, totalDelPrice, totalDiscountPrice]);
+
+  // 전체 삭제 및 선택 삭제 후처리
+  useEffect(() => {
+    if (st_itemDeleteAllDone) {
+      dispatch({
+        type: ITEM_LIST_VIEW_REQUEST,
+      });
+
+      setSelectCart([]);
+
+      return message.success("상품이 삭제되었습니다.");
+    }
+
+    if (st_itemDeleteAllError) {
+      return message.error(st_itemDeleteAllError);
+    }
+  }, [st_itemDeleteAllDone, st_itemDeleteAllError]);
+
+  // 상품 수량 수정
+  useEffect(() => {
+    if (st_itemUpdateDone) {
+      dispatch({
+        type: ITEM_LIST_VIEW_REQUEST,
+      });
+
+      setSelectCart([]);
+
+      return message.success("상품 수량이 수정되었습니다.");
+    }
+
+    if (st_itemUpdateError) {
+      return message.error(st_itemUpdateError);
+    }
+  }, [st_itemUpdateDone, st_itemUpdateError]);
+
   ////// TOGGLE //////
   const choiceModalToggle = useCallback(() => {
     setChoiceModal((prev) => !prev);
@@ -67,6 +207,106 @@ const CartList = () => {
   }, [isModal]);
 
   ////// HANDLER //////
+
+  // 상품 선택
+  const selectCartHandler = useCallback(
+    (data) => {
+      let selectCartArr = selectCart.map((value) => value);
+
+      if (selectCartArr.find((value) => value.id === data.id)) {
+        setSelectCart(selectCartArr.filter((value) => value.id !== data.id));
+
+        return;
+      }
+
+      selectCartArr.push(data);
+
+      setSelectCart(selectCartArr);
+    },
+    [selectCart]
+  );
+
+  // 상품 전체 선택
+  const selectAllCartHandler = useCallback(() => {
+    if (selectCart.length > 0) {
+      setSelectCart([]);
+      return;
+    }
+
+    setSelectCart(itemListView.map((data) => data));
+  }, [selectCart, itemListView]);
+
+  // 전체 삭제 및 선택 삭제
+  const itemDeleteHandler = useCallback(
+    (type) => {
+      if (st_itemDeleteAllLoading) {
+        return;
+      }
+
+      // 전체 삭제
+      if (type === 1) {
+        dispatch({
+          type: ITEM_DELETE_ALL_REQUEST,
+          data: {
+            itemIds: itemListView.map((value) => value.id),
+          },
+        });
+      }
+      // 선택 삭제
+      else {
+        if (!selectCart || selectCart.length === 0) {
+          return message.info("상품을 선택해주세요.");
+        }
+
+        dispatch({
+          type: ITEM_DELETE_ALL_REQUEST,
+          data: {
+            itemIds: selectCart.map((data) => data.id),
+          },
+        });
+      }
+    },
+    [itemListView, selectCart, st_itemDeleteAllLoading]
+  );
+
+  // 전체상품주문 및 선택상품주문
+  const orderHandler = useCallback(
+    (type) => {
+      // 전체상품주문
+      if (type === 1) {
+        sessionStorage.setItem("BMM_ORDER", JSON.stringify(itemListView));
+        router.push("/payment");
+      }
+      // 선택상품주문
+      else {
+        sessionStorage.setItem("BMM_ORDER", JSON.stringify(selectCart));
+        router.push("/payment");
+      }
+    },
+    [selectCart, itemListView]
+  );
+
+  // 수량 변경
+  const qunChnageHandler = useCallback(
+    (id, qun) => {
+      if (st_itemUpdateLoading) {
+        return;
+      }
+
+      if (qun === 0) {
+        return message.info("주문 수량을 더 줄일 수 없습니다.");
+      }
+      dispatch({
+        type: ITEM_UPDATE_REQUEST,
+        data: {
+          id: id,
+          qun: qun,
+        },
+      });
+    },
+    [st_itemUpdateLoading]
+  );
+
   ////// DATAVIEW //////
 
   return (
@@ -113,15 +353,28 @@ const CartList = () => {
                 ju={`space-between`}
                 margin={`0 0 15px`}
               >
-                <Checkbox>
+                <Checkbox
+                  onClick={selectAllCartHandler}
+                  checked={
+                    selectCart &&
+                    itemListView &&
+                    (itemListView.length === 0
+                      ? false
+                      : selectCart.length === itemListView.length)
+                  }
+                >
                   <Text color={Theme.grey2_C}>전체 선택</Text>
                 </Checkbox>
                 <Wrapper width={`auto`} dr={`row`} color={Theme.grey2_C}>
-                  <Text isHover>전체 삭제</Text>
+                  <Text isHover onClick={() => itemDeleteHandler(1)}>
+                    전체 삭제
+                  </Text>
                   <Text fontSize={`10px`} margin={`0 8px`}>
                     |
                   </Text>
-                  <Text isHover>선택 삭제</Text>
+                  <Text isHover onClick={() => itemDeleteHandler(2)}>
+                    선택 삭제
+                  </Text>
                 </Wrapper>
               </Wrapper>
             </Wrapper>
@@ -146,214 +399,178 @@ const CartList = () => {
                   <Wrapper width={`127px`}>상품금액</Wrapper>
                   <Wrapper width={`127px`}>무게</Wrapper>
                 </Wrapper>
-                {width < 1100 ? (
-                  <Wrapper>
-                    <MobileList>
-                      <Wrapper
-                        dr={`row`}
-                        ju={`flex-start`}
-                        fontSize={`16px`}
-                        fontWeight={`600`}
-                        margin={`10px 0`}
-                      >
-                        <Checkbox />
-                        <Text padding={`0 0 0 15px`}>오레오 시리즈</Text>
-                      </Wrapper>
-                      <Wrapper
-                        dr={`row`}
-                        ju={`flex-start`}
-                        al={`flex-start`}
-                        fontSize={`14px`}
-                        margin={`0 0 10px`}
-                      >
-                        <Image
-                          alt="샘플사진"
-                          src={`https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/bmm/assets/images/sample-img/review.png`}
-                          width={`80px`}
-                          height={`80px`}
-                        />
-                        <Wrapper
-                          width={`auto`}
-                          al={`flex-start`}
-                          padding={`0 0 0 10px`}
-                        >
-                          <Text>무게: 420g</Text>
-                          <Text fontWeight={`600`} margin={`2px 0 5px`}>
-                            상품금액: 9,000원
-                          </Text>
-                          <Wrapper
-                            width={`auto`}
-                            dr={`row`}
-                            border={`1px solid ${Theme.lightGrey2_C}`}
-                            bgColor={Theme.white_C}
-                            margin={`0 0 10px`}
-                          >
+                {itemListView &&
+                  (itemListView.length === 0 ? (
+                    <Wrapper margin={`30px 0`}>
+                      <Empty description="장바구니에 담은 상품이 없습니다." />
+                    </Wrapper>
+                  ) : (
+                    itemListView.map((data, idx) => {
+                      return width < 1100 ? (
+                        <Wrapper key={idx}>
+                          <MobileList>
                             <Wrapper
-                              width={`30px`}
-                              cursor={`pointer`}
-                              height={`30px`}
-                              fontSize={`12px`}
-                            >
-                              <MinusOutlined />
-                            </Wrapper>
-                            <Wrapper
-                              width={`50px`}
-                              height={`30px`}
+                              dr={`row`}
+                              ju={`flex-start`}
+                              fontSize={`16px`}
                               fontWeight={`600`}
-                              color={Theme.darkGrey_C}
-                              borderLeft={`1px solid ${Theme.lightGrey2_C}`}
-                              borderRight={`1px solid ${Theme.lightGrey2_C}`}
+                              margin={`10px 0`}
                             >
-                              1
+                              <Checkbox
+                                checked={selectCart.find(
+                                  (value) => value.id === data.id
+                                )}
+                                onChange={() => selectCartHandler(data)}
+                              />
+                              <Text padding={`0 0 0 15px`}>
+                                {data.productTitle}
+                              </Text>
                             </Wrapper>
                             <Wrapper
-                              width={`30px`}
-                              cursor={`pointer`}
-                              height={`30px`}
-                              fontSize={`12px`}
+                              dr={`row`}
+                              ju={`flex-start`}
+                              al={`flex-start`}
+                              fontSize={`14px`}
+                              margin={`0 0 10px`}
                             >
-                              <PlusOutlined />
+                              <Image
+                                alt="샘플사진"
+                                src={data.productThumbnail}
+                                width={`80px`}
+                                height={`80px`}
+                              />
+                              <Wrapper
+                                width={`auto`}
+                                al={`flex-start`}
+                                padding={`0 0 0 10px`}
+                              >
+                                <Text>무게: {data.productWeight}kg</Text>
+                                <Text fontWeight={`600`} margin={`2px 0 5px`}>
+                                  상품금액: {data.realPrice}
+                                </Text>
+                                <Wrapper
+                                  width={`auto`}
+                                  dr={`row`}
+                                  border={`1px solid ${Theme.lightGrey2_C}`}
+                                  bgColor={Theme.white_C}
+                                  margin={`0 0 10px`}
+                                >
+                                  <Wrapper
+                                    width={`30px`}
+                                    cursor={`pointer`}
+                                    height={`30px`}
+                                    fontSize={`12px`}
+                                  >
+                                    <MinusOutlined />
+                                  </Wrapper>
+                                  <Wrapper
+                                    width={`50px`}
+                                    height={`30px`}
+                                    fontWeight={`600`}
+                                    color={Theme.darkGrey_C}
+                                    borderLeft={`1px solid ${Theme.lightGrey2_C}`}
+                                    borderRight={`1px solid ${Theme.lightGrey2_C}`}
+                                  >
+                                    {data.qun}
+                                  </Wrapper>
+                                  <Wrapper
+                                    width={`30px`}
+                                    cursor={`pointer`}
+                                    height={`30px`}
+                                    fontSize={`12px`}
+                                  >
+                                    <PlusOutlined />
+                                  </Wrapper>
+                                </Wrapper>
+                              </Wrapper>
+                            </Wrapper>
+                          </MobileList>
+                        </Wrapper>
+                      ) : (
+                        <List key={idx}>
+                          {console.log(data)}
+                          <Checkbox
+                            checked={selectCart.find(
+                              (value) => value.id === data.id
+                            )}
+                            onChange={() => selectCartHandler(data)}
+                          />
+                          <Wrapper
+                            width={`calc(100% - 16px - 127px - 127px - 127px)`}
+                            dr={`row`}
+                            ju={`space-between`}
+                            padding={`0 0 0 14px`}
+                          >
+                            <Image
+                              alt="thumbnail"
+                              src={data.productThumbnail}
+                              width={`64px`}
+                              height={`64px`}
+                            />
+                            <Wrapper
+                              width={`calc(100% - 70px)`}
+                              al={`flex-start`}
+                            >
+                              <Text fontSize={`18px`} fontWeight={`600`}>
+                                {data.productTitle}
+                              </Text>
+                              <Text fontSize={`14px`} color={Theme.grey2_C}>
+                                {data.optionName}
+                              </Text>
                             </Wrapper>
                           </Wrapper>
-                        </Wrapper>
-                      </Wrapper>
-                    </MobileList>
-                  </Wrapper>
-                ) : (
-                  <>
-                    <List>
-                      <Checkbox />
-                      <Wrapper
-                        width={`calc(100% - 16px - 127px - 127px - 127px)`}
-                        dr={`row`}
-                        ju={`flex-start`}
-                        fontSize={`18px`}
-                        fontWeight={`600`}
-                        padding={`0 0 0 14px`}
-                      >
-                        <Image
-                          alt="샘플사진"
-                          src={`https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/bmm/assets/images/sample-img/review.png`}
-                          width={`64px`}
-                          height={`64px`}
-                        />
-                        <Text padding={`0 0 0 14px`}>오레오 시리즈</Text>
-                      </Wrapper>
-                      <Wrapper width={`127px`}>
-                        <Wrapper
-                          width={`auto`}
-                          dr={`row`}
-                          border={`1px solid ${Theme.lightGrey2_C}`}
-                          bgColor={Theme.white_C}
-                        >
-                          <Wrapper
-                            width={`35px`}
-                            cursor={`pointer`}
-                            height={`35px`}
-                            fontSize={`12px`}
-                          >
-                            <MinusOutlined />
+                          <Wrapper width={`127px`}>
+                            <Wrapper
+                              width={`auto`}
+                              dr={`row`}
+                              border={`1px solid ${Theme.lightGrey2_C}`}
+                              bgColor={Theme.white_C}
+                            >
+                              <Wrapper
+                                width={`35px`}
+                                cursor={`pointer`}
+                                height={`35px`}
+                                fontSize={`12px`}
+                                onClick={() =>
+                                  qunChnageHandler(data.id, data.qun - 1)
+                                }
+                              >
+                                <MinusOutlined />
+                              </Wrapper>
+                              <Wrapper
+                                width={`48px`}
+                                height={`35px`}
+                                fontSize={width < 900 ? `14px` : `16px`}
+                                fontWeight={`600`}
+                                color={Theme.darkGrey_C}
+                                borderLeft={`1px solid ${Theme.lightGrey2_C}`}
+                                borderRight={`1px solid ${Theme.lightGrey2_C}`}
+                              >
+                                {data.qun}
+                              </Wrapper>
+                              <Wrapper
+                                width={`35px`}
+                                cursor={`pointer`}
+                                height={`35px`}
+                                fontSize={`12px`}
+                                onClick={() =>
+                                  qunChnageHandler(data.id, data.qun + 1)
+                                }
+                              >
+                                <PlusOutlined />
+                              </Wrapper>
+                            </Wrapper>
                           </Wrapper>
-                          <Wrapper
-                            width={`48px`}
-                            height={`35px`}
-                            fontSize={width < 900 ? `14px` : `16px`}
-                            fontWeight={`600`}
-                            color={Theme.darkGrey_C}
-                            borderLeft={`1px solid ${Theme.lightGrey2_C}`}
-                            borderRight={`1px solid ${Theme.lightGrey2_C}`}
-                          >
-                            1
+                          <Wrapper color={Theme.darkGrey_C} width={`127px`}>
+                            {data.realPrice}
                           </Wrapper>
-                          <Wrapper
-                            width={`35px`}
-                            cursor={`pointer`}
-                            height={`35px`}
-                            fontSize={`12px`}
-                          >
-                            <PlusOutlined />
+                          <Wrapper color={Theme.darkGrey_C} width={`127px`}>
+                            {data.productWeight}kg
                           </Wrapper>
-                        </Wrapper>
-                      </Wrapper>
-                      <Wrapper color={Theme.darkGrey_C} width={`127px`}>
-                        9,000원
-                      </Wrapper>
-                      <Wrapper color={Theme.darkGrey_C} width={`127px`}>
-                        420g
-                      </Wrapper>
-                    </List>
-                    <List>
-                      <Checkbox />
-                      <Wrapper
-                        width={`auto`}
-                        al={`flex-start`}
-                        margin={`18px 0 18px`}
-                        padding={`0 0 0 14px`}
-                      >
-                        <Image
-                          alt="샘플사진"
-                          src={`https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/bmm/assets/images/sample-img/related-product.png`}
-                          width={`64px`}
-                          height={`64px`}
-                          radius={`3px`}
-                        />
-                      </Wrapper>
-
-                      <Wrapper
-                        width={`calc(100% - 16px - 78px - 127px - 127px - 127px)`}
-                        padding={`0 0 0 14px`}
-                        al={`flex-start`}
-                      >
-                        <Text fontSize={`18px`} fontWeight={`600`}>
-                          랩 에센스
-                        </Text>
-                        <Text color={Theme.grey_C}>옵션 : 오레오 핑크</Text>
-                      </Wrapper>
-                      <Wrapper width={`127px`}>
-                        <Wrapper
-                          width={`auto`}
-                          dr={`row`}
-                          border={`1px solid ${Theme.lightGrey2_C}`}
-                          bgColor={Theme.white_C}
-                        >
-                          <Wrapper
-                            width={`35px`}
-                            cursor={`pointer`}
-                            height={`35px`}
-                            fontSize={`12px`}
-                          >
-                            <MinusOutlined />
-                          </Wrapper>
-                          <Wrapper
-                            width={`48px`}
-                            height={`35px`}
-                            fontSize={width < 900 ? `14px` : `16px`}
-                            fontWeight={`600`}
-                            color={Theme.darkGrey_C}
-                            borderLeft={`1px solid ${Theme.lightGrey2_C}`}
-                            borderRight={`1px solid ${Theme.lightGrey2_C}`}
-                          >
-                            1
-                          </Wrapper>
-                          <Wrapper
-                            width={`35px`}
-                            cursor={`pointer`}
-                            height={`35px`}
-                            fontSize={`12px`}
-                          >
-                            <PlusOutlined />
-                          </Wrapper>
-                        </Wrapper>
-                      </Wrapper>
-                      <Wrapper color={Theme.darkGrey_C} width={`127px`}>
-                        9,000원
-                      </Wrapper>
-                      <Wrapper color={Theme.darkGrey_C} width={`127px`}>
-                        420g
-                      </Wrapper>
-                    </List>
-                  </>
-                )}
+                        </List>
+                      );
+                    })
+                  ))}
                 <Wrapper
                   al={`flex-start`}
                   border={`1px solid ${Theme.lightGrey2_C}`}
@@ -404,42 +621,49 @@ const CartList = () => {
                     margin={`0 0 16px`}
                     padding={`0 0 16px`}
                   >
-                    총 2개의 상품
+                    총 {selectCart.length}개의 상품
                   </Wrapper>
 
                   <BoxText fontSize={`18px`}>
                     <Text>총 상품금액</Text>
-                    <Text fontWeight={`600`}>18,000원</Text>
+                    <Text fontWeight={`600`}>
+                      {numberWithCommas(totalPrice)}원
+                    </Text>
                   </BoxText>
 
                   <BoxText>
                     <Text>총 무게</Text>
-                    <Text fontWeight={`600`}>240g</Text>
+                    <Text fontWeight={`600`}>{totalWeight}kg</Text>
                   </BoxText>
                   <BoxText>
                     <Text>총 배송비</Text>
-                    <Text fontWeight={`600`}>6,000원</Text>
+                    <Text fontWeight={`600`}>
+                      {numberWithCommas(totalDelPrice)}원
+                    </Text>
                   </BoxText>
                   <BoxText margin={`0 0 13px`}>
                     <Text>총 할인금액</Text>
-                    <Text fontWeight={`600`}>4,000원</Text>
+                    <Text fontWeight={`600`}>
+                      {numberWithCommas(
+                        totalDiscountPrice.delDiscountPrice +
+                          totalDiscountPrice.userDiscountPrice
+                      )}
+                      원
+                    </Text>
                   </BoxText>
                   <SubText>
                     <Text>ㄴ배송 할인금액</Text>
-                    <Text>-2,000원</Text>
+                    <Text>
+                      -{numberWithCommas(totalDiscountPrice.delDiscountPrice)}원
+                    </Text>
                   </SubText>
-                  <SubText>
+                  {/* <SubText>
                     <Text>ㄴ회원 할인금액(00%)</Text>
-                    <Text>-2,000원</Text>
-                  </SubText>
-                  <SubText>
-                    <Text>ㄴ쿠폰 사용</Text>
-                    <Text>-0원</Text>
-                  </SubText>
-                  <SubText margin={`0 0 30px`}>
-                    <Text>ㄴ포인트 사용</Text>
-                    <Text>-0원</Text>
-                  </SubText>
+                    <Text>
+                      -{numberWithCommas(totalDiscountPrice.userDiscountPrice)}
+                      원
+                    </Text>
+                  </SubText> */}
                   <Wrapper
                     dr={`row`}
                     ju={`space-between`}
@@ -448,7 +672,7 @@ const CartList = () => {
                   >
                     <Text fontSize={`18px`}>총 결제금액</Text>
                     <Text fontSize={`24px`} fontWeight={`bold`}>
-                      22,000원
+                      {numberWithCommas(totalBuyPrice)}원
                     </Text>
                   </Wrapper>
                   <CommonButton
@@ -458,7 +682,15 @@ const CartList = () => {
                     width={`100%`}
                     height={`54px`}
                     margin={`30px 0 10px`}
-                    onClick={choiceModalToggle}
+                    onClick={() =>
+                      selectCart &&
+                      selectCart.length > 0 &&
+                      selectCart
+                        .map((data) => data.qun)
+                        .reduce((a, b) => a + b) > 6
+                        ? choiceModalToggle()
+                        : orderHandler(1)
+                    }
                   >
                     전체 상품 주문
                   </CommonButton>
@@ -587,7 +819,7 @@ const CartList = () => {
                   kindOf={`white`}
                   width={`49%`}
                   height={`54px`}
-                  onClick={isModalToggle}
+                  onClick={() => orderHandler(2)}
                 >
                   상품 주문하기
                 </CommonButton>
@@ -613,6 +845,10 @@ export const getServerSideProps = wrapper.getServerSideProps(
 
     context.store.dispatch({
       type: LOAD_MY_INFO_REQUEST,
+    });
+
+    context.store.dispatch({
+      type: ITEM_LIST_VIEW_REQUEST,
     });
 
     // 구현부 종료
